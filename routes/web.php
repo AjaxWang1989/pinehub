@@ -10,7 +10,9 @@
 | and give it the Closure to call when that URI is requested.
 |
 */
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$api = app('api.router');
+$api->version(env('WEB_API_VERSION'), ['prefix' => env('WEB_API_PREFIX'), 'domain' => env('API_DOMAIN')], function () use($api){
+    $api->get('/version', function (){
+       return 'web api version '.env('WEB_API_VERSION');
+    });
 });

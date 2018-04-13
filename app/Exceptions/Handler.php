@@ -30,6 +30,7 @@ class Handler extends ExceptionHandler
      *
      * @param  \Exception  $e
      * @return void
+     * @throws
      */
     public function report(Exception $e)
     {
