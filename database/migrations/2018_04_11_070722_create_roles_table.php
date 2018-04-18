@@ -19,7 +19,6 @@ class CreateRolesTable extends Migration
             $table->string('display_name')->comment('角色显示名称');
             $table->unsignedInteger('group_id')->nullable()->comment('部门组织id');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

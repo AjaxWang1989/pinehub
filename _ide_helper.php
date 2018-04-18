@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel Lumen (5.6.3) (Laravel Components 5.6.*) on 2018-04-13 02:37:45.
+ * Generated for Laravel Lumen (5.6.3) (Laravel Components 5.6.*) on 2018-04-18 06:18:08.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1088,12 +1088,24 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the currently authenticated user.
          *
-         * @return \App\User|null 
+         * @return \App\Entities\User|null 
          * @static 
          */ 
         public static function user()
         {
-            return \Illuminate\Auth\RequestGuard::user();
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::user();
+        }
+        
+        /**
+         * Log a user into the application without sessions or cookies.
+         *
+         * @param array $credentials
+         * @return bool 
+         * @static 
+         */ 
+        public static function once($credentials = array())
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::once($credentials);
         }
         
         /**
@@ -1105,7 +1117,170 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function validate($credentials = array())
         {
-            return \Illuminate\Auth\RequestGuard::validate($credentials);
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::validate($credentials);
+        }
+        
+        /**
+         * Attempt to authenticate the user using the given credentials and return the token.
+         *
+         * @param array $credentials
+         * @param bool $login
+         * @return mixed 
+         * @static 
+         */ 
+        public static function attempt($credentials = array(), $login = true)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::attempt($credentials, $login);
+        }
+        
+        /**
+         * Create a token for a user.
+         *
+         * @param \Zoran\JwtAuthGuard\Authenticatable $user
+         * @return string 
+         * @static 
+         */ 
+        public static function login($user)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::login($user);
+        }
+        
+        /**
+         * Log the given user ID into the application without sessions or cookies.
+         *
+         * @param mixed $id
+         * @return bool 
+         * @static 
+         */ 
+        public static function onceUsingId($id)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::onceUsingId($id);
+        }
+        
+        /**
+         * Logout the user.
+         *
+         * @param bool $forceForever
+         * @return bool 
+         * @static 
+         */ 
+        public static function logout($forceForever = true)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::logout($forceForever);
+        }
+        
+        /**
+         * Generate new token by ID.
+         *
+         * @param mixed $id
+         * @return string|null 
+         * @static 
+         */ 
+        public static function generateTokenById($id)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::generateTokenById($id);
+        }
+        
+        /**
+         * Refresh current expired token.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function refresh()
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::refresh();
+        }
+        
+        /**
+         * Invalidate current token (add it to the blacklist).
+         *
+         * @param boolean $forceForever
+         * @return boolean 
+         * @static 
+         */ 
+        public static function invalidate($forceForever = false)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::invalidate($forceForever);
+        }
+        
+        /**
+         * Get the token.
+         *
+         * @return false|\Zoran\JwtAuthGuard\Token 
+         * @static 
+         */ 
+        public static function getToken()
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::getToken();
+        }
+        
+        /**
+         * Set the token.
+         *
+         * @param \Zoran\JwtAuthGuard\Token|string $token
+         * @return \Zoran\JwtAuthGuard\JwtAuthGuard 
+         * @static 
+         */ 
+        public static function setToken($token)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::setToken($token);
+        }
+        
+        /**
+         * Get the raw Payload instance.
+         *
+         * @return \Tymon\JWTAuth\Payload 
+         * @static 
+         */ 
+        public static function getPayload()
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::getPayload();
+        }
+        
+        /**
+         * Get the last user we attempted to authenticate.
+         *
+         * @return \App\Entities\User 
+         * @static 
+         */ 
+        public static function getLastAttempted()
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::getLastAttempted();
+        }
+        
+        /**
+         * Return the currently cached user.
+         *
+         * @return \App\Entities\User|null 
+         * @static 
+         */ 
+        public static function getUser()
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::getUser();
+        }
+        
+        /**
+         * Get the user provider used by the guard.
+         *
+         * @return \Illuminate\Contracts\Auth\UserProvider 
+         * @static 
+         */ 
+        public static function getProvider()
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::getProvider();
+        }
+        
+        /**
+         * Set the user provider used by the guard.
+         *
+         * @param \Illuminate\Contracts\Auth\UserProvider $provider
+         * @return $this 
+         * @static 
+         */ 
+        public static function setProvider($provider)
+        {
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::setProvider($provider);
         }
         
         /**
@@ -1117,19 +1292,19 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function setRequest($request)
         {
-            return \Illuminate\Auth\RequestGuard::setRequest($request);
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::setRequest($request);
         }
         
         /**
          * Determine if the current user is authenticated.
          *
-         * @return \App\User 
+         * @return \App\Entities\User 
          * @throws \Illuminate\Auth\AuthenticationException
          * @static 
          */ 
         public static function authenticate()
         {
-            return \Illuminate\Auth\RequestGuard::authenticate();
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::authenticate();
         }
         
         /**
@@ -1140,7 +1315,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function check()
         {
-            return \Illuminate\Auth\RequestGuard::check();
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::check();
         }
         
         /**
@@ -1151,7 +1326,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function guest()
         {
-            return \Illuminate\Auth\RequestGuard::guest();
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::guest();
         }
         
         /**
@@ -1162,7 +1337,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function id()
         {
-            return \Illuminate\Auth\RequestGuard::id();
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::id();
         }
         
         /**
@@ -1174,68 +1349,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function setUser($user)
         {
-            return \Illuminate\Auth\RequestGuard::setUser($user);
-        }
-        
-        /**
-         * Get the user provider used by the guard.
-         *
-         * @return \Illuminate\Contracts\Auth\UserProvider 
-         * @static 
-         */ 
-        public static function getProvider()
-        {
-            return \Illuminate\Auth\RequestGuard::getProvider();
-        }
-        
-        /**
-         * Set the user provider used by the guard.
-         *
-         * @param \Illuminate\Contracts\Auth\UserProvider $provider
-         * @return void 
-         * @static 
-         */ 
-        public static function setProvider($provider)
-        {
-            \Illuminate\Auth\RequestGuard::setProvider($provider);
-        }
-        
-        /**
-         * Register a custom macro.
-         *
-         * @param string $name
-         * @param object|callable $macro
-         * @return void 
-         * @static 
-         */ 
-        public static function macro($name, $macro)
-        {
-            \Illuminate\Auth\RequestGuard::macro($name, $macro);
-        }
-        
-        /**
-         * Mix another object into the class.
-         *
-         * @param object $mixin
-         * @return void 
-         * @throws \ReflectionException
-         * @static 
-         */ 
-        public static function mixin($mixin)
-        {
-            \Illuminate\Auth\RequestGuard::mixin($mixin);
-        }
-        
-        /**
-         * Checks if macro is registered.
-         *
-         * @param string $name
-         * @return bool 
-         * @static 
-         */ 
-        public static function hasMacro($name)
-        {
-            return \Illuminate\Auth\RequestGuard::hasMacro($name);
+            return \Zoran\JwtAuthGuard\JwtAuthGuard::setUser($user);
         }
          
     }
@@ -2007,6 +2121,18 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Unset the event dispatcher for this connection.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function unsetEventDispatcher()
+        {
+            //Method inherited from \Illuminate\Database\Connection            
+            \Illuminate\Database\MySqlConnection::unsetEventDispatcher();
+        }
+        
+        /**
          * Determine if the connection in a "dry run".
          *
          * @return bool 
@@ -2252,7 +2378,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get a cache driver instance.
          *
-         * @param string $driver
+         * @param string|null $driver
          * @return mixed 
          * @static 
          */ 
@@ -2382,7 +2508,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $value
-         * @param \DateTimeInterface|\DateInterval|float|int $minutes
+         * @param \DateTimeInterface|\DateInterval|float|int|null $minutes
          * @return void 
          * @static 
          */ 

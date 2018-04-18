@@ -3,16 +3,25 @@
 namespace App\Providers;
 
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
-use Dingo\Api\Provider\DingoServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
+use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Redis\RedisServiceProvider;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
-use Irazasyed\JwtAuthGuard\JwtAuthGuardServiceProvider;
+use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
 use Prettus\Repository\Providers\RepositoryServiceProvider;
 use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
+use Overtrue\LaravelWeChat\ServiceProvider as WechatLumenServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public function boot()
+    {
+        DB::listen(function (QueryExecuted $event){
+            Log::debug($event->time.':'.$event->sql);
+        });
+    }
     /**
      * Register any application services.
      *
@@ -23,9 +32,10 @@ class AppServiceProvider extends ServiceProvider
         //
         $this->app->register(RedisServiceProvider::class);
         $this->app->register(JWTAuthServiceProvider::class);
-//        $this->app->register(JwtAuthGuardServiceProvider::class);
+        $this->app->register(JwtAuthGuardServiceProvider::class);
         $this->app->register(LumenServiceProvider::class);
         $this->app->register(RepositoryServiceProvider::class);
+        $this->app->register(WechatLumenServiceProvider::class);
 
         if ($this->app->environment() !== 'production') {
             $this->app->register(IdeHelperServiceProvider::class);

@@ -17,6 +17,7 @@ class ConfigServiceProvider extends ServiceProvider
         $configs = [];
         foreach ([
             'app',
+            'auth',
             'jwt',
             'ide-helper',
             'repository'

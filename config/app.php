@@ -61,6 +61,8 @@ return [
         'Schema' => 'Illuminate\Support\Facades\Schema',
         'Session' => 'Illuminate\Support\Facades\Session',
         'Storage' => 'Illuminate\Support\Facades\Storage',
+        'JWTAuth' => '\Tymon\JWTAuth\Facades\JWTAuth',
+        'EasyWeChat' => '\Overtrue\LaravelWeChat\Facade',
         //'Validator' => 'Illuminate\Support\Facades\Validator',
     ]
 ];

@@ -18,7 +18,6 @@ class CreateGroupsTable extends Migration
             $table->string('code')->unique()->comment('部门编号');
             $table->string('display_name')->comment('部门名称');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

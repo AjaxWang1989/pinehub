@@ -25,6 +25,7 @@ class AliasesLoaderServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        AliasLoader::getInstance()->setAliases(config('app.alias'));
+
+        setAliases(config('app.alias'));
     }
 }

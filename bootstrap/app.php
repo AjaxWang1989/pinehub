@@ -65,10 +65,18 @@ $app->bind('path.config', function (){
 //    App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-// ]);
+ $app->routeMiddleware([
+     'auth' => App\Http\Middleware\Authenticate::class,
+     'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+     'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class,
+ ]);
 
+/**
+ *fix cache and auth manager bug
+ * */
+$app->alias('cache', 'Illuminate\Cache\CacheManager');
+$app->alias('auth', 'Illuminate\Auth\AuthManager');
+$app->alias('tymon.jwt', \Tymon\JWTAuth\JWTAuth::class);
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -79,6 +87,7 @@ $app->bind('path.config', function (){
 | totally optional, so you are not required to uncomment this line.
 |
 */
+
  $app->register(\App\Providers\ConfigServiceProvider::class);
  $app->register(\App\Providers\AliasesLoaderServiceProvider::class);
  $app->register(App\Providers\AppServiceProvider::class);

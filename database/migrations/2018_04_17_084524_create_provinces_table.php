@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStoresTable extends Migration
+class CreateProvincesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,14 @@ class CreateStoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('stores', function (Blueprint $table) {
+        Schema::create('provinces', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('country_id')->comment('国家ID');
+            $table->string('code', 6)->comment('省份编码');
+            $table->string('name')->comment('省份名称');
             $table->timestamps();
+            $table->index('code');
+            $table->index('country_id');
         });
     }
 
@@ -26,6 +31,6 @@ class CreateStoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('stores');
+        Schema::dropIfExists('provinces');
     }
 }
