@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
+use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Redis\RedisServiceProvider;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         DB::listen(function (QueryExecuted $event){
-            Log::debug($event->time.':'.$event->sql);
+            Log::debug($event->time.':'.$event->sql, $event->bindings);
         });
     }
     /**
@@ -36,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(LumenServiceProvider::class);
         $this->app->register(RepositoryServiceProvider::class);
         $this->app->register(WechatLumenServiceProvider::class);
+        $this->app->register(SpatialServiceProvider::class);
 
         if ($this->app->environment() !== 'production') {
             $this->app->register(IdeHelperServiceProvider::class);

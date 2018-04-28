@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\Console\TestMakeCommand;
 use App\Console\Commands\JWTGenerateCommand;
 use App\Console\Commands\ModelsCommand;
 use Illuminate\Auth\Console\AuthMakeCommand;
@@ -63,7 +64,8 @@ class Kernel extends ConsoleKernel
         ConfigCacheCommand::class,
         ConfigClearCommand::class,
         JWTGenerateCommand::class,
-        ModelsCommand::class
+        ModelsCommand::class,
+        TestMakeCommand::class
     ];
 
     /**

@@ -2,8 +2,10 @@
 
 namespace App\Entities;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Auth\Authenticatable;
@@ -31,6 +33,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @property string $token
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCreatedAt($value)
@@ -47,6 +50,12 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereVipLevel($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereProvince($value)
+ * @property string|null $province 省份
+ * @property string|null $country 国家
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
@@ -83,5 +92,15 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')
             ->withTimestamps();
+    }
+
+    public function orderItems() : HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'buyer_user_id', 'id');
+    }
+
+    public function orders() : BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'order_items', 'buyer_user_id', 'order_id' );
     }
 }

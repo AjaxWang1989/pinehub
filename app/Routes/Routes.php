@@ -9,31 +9,59 @@
 namespace App\Routes;
 
 
+use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Router;
+use Laravel\Lumen\Application;
 
 class Routes
 {
-    /**
-     * @Router
-     * */
-    protected $router = null;
+    protected $namespace = 'App\Http\Controllers';
 
-    public function __construct()
+    protected $prefix = '';
+
+    protected $domain = '';
+
+    protected $version = null;
+
+    protected $app = null;
+
+    public function __construct(Application $app, $version = null, $namespace = null, $prefix =null, $domain = null)
     {
-        $this->router = app(Router::class);
-        $this->map();
+        $this->app = $app;
+        $this->namespace = $namespace;
+        $this->prefix = $prefix;
+        $this->domain = $domain;
+        $this->version = $version;
     }
 
-    protected function map()
+    public function load()
     {
-        $this->router->version(env('API_VERSION'), function (Router $router){
-            $router->group(['prefix' => env('API_PREFIX')], function (Router $router){
-                $this->routes($router);
+        $second = [];
+        if($this->prefix){
+            $second['prefix'] = $this->prefix;
+        }
+
+        if($this->namespace){
+            $second['namespace'] = $this->namespace;
+        }
+
+        if($this->domain){
+            $second['domain'] = $this->domain;
+        }
+        $this->app->router->group([
+            'namespace' => 'App\Http\Controllers',
+        ], function () use ($second){
+            $api = $this->app->make('api.router');
+            $api->version($this->version, $second, function () use ($api){
+                $this->routes($api);
             });
         });
     }
 
-    protected function routes(Router $router){
-
+    protected function routes(Router $api){
+        $self = $this;
+        $api->get('/version', function (Request $request) use ($self){
+            return 'web api version '.$self->version.', host domain '.$request->getHost();
+        });
     }
 }

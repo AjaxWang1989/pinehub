@@ -11,8 +11,10 @@ use \Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Zoran\JwtAuthGuard\JwtAuthGuard;
 
 class AuthController extends Controller
 {
@@ -50,7 +52,7 @@ class AuthController extends Controller
             return $this->response()->item($this->user(), new AuthenticateTransformer);
         }else{
             if($input = $this->validate($request, self::RULES,self::MESSAGES)){
-                if(!($token = JWTAuth::attempt($input))){;
+                if(!($token = Auth::attempt($input))){;
                     $this->response()->error('登录密码与手机不匹配无法登录！', HTTP_STATUS_NOT_FOUND);
                 }
                 $user = JWTAuth::toUser($token);
@@ -75,7 +77,7 @@ class AuthController extends Controller
      * */
     public function logout(Request $request)
     {
-        if(JWTAuth::invalidate()){
+        if(Auth::invalidate()){
             $response = $this->response()->noContent();
             $response->setContent(['message' => '成功退出系统']);
             return $response;

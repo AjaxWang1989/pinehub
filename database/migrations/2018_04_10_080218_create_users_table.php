@@ -22,6 +22,8 @@ class CreateUsersTable extends Migration
             $table->enum('sex', ['UNKNOWN', 'MALE', 'FEMALE'])->default('UNKNOWN')->comment('性别');
             $table->string('avatar')->nullable()->comment('头像');
             $table->string('city')->nullable()->comment('城市');
+            $table->string('province')->nullable()->comment('省份');
+            $table->string('country')->nullable()->comment('国家');
             $table->unsignedInteger('vip_level')->default(0)->comment('VIP等级');
             $table->timestamp('last_login_at')->nullable()->comment('最后登录时间');
             $table->unsignedTinyInteger('status')->default(1)->comment('用户状态0-账户冻结 1-激活状态 2-等待授权');

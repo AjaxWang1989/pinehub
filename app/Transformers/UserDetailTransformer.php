@@ -36,7 +36,7 @@ class UserDetailTransformer extends TransformerAbstract
             'status'        => $model->status,
             'vip_level'     => $model->vipLevel,
             'roles'         => $model->roles,
-            'orders'        => [],
+            'orders'        => $model->orders,
             'created_at'    => $model->createdAt
         ];
     }

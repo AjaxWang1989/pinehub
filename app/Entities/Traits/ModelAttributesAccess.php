@@ -14,6 +14,9 @@ trait ModelAttributesAccess
     public function __get($name)
     {
         // TODO: Implement __get() method.
+        if(($value = $this->getAttributeValue($name)) || ($value = $this[$name])){
+            return $value;
+        }
         $key = upperCaseSplit($name, '_');
         return $this->getAttributeValue($key) ?? $this[$key] ;
     }

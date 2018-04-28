@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Routes\AuthRoutes;
+use App\Routes\Routes;
 use App\Routes\WebRoutes;
-use Dingo\Api\Routing\Router;
+use Dingo\Api\Http\Request;
 use Illuminate\Support\ServiceProvider;
 
 class RoutesManagerServiceProvider extends ServiceProvider
@@ -22,6 +24,15 @@ class RoutesManagerServiceProvider extends ServiceProvider
      * @var string
      */
     protected $namespace = 'App\Http\Controllers';
+
+    protected $routes = null;
+
+    protected $config = [];
+
+    protected $host = null;
+
+    protected $domain = null;
+
     /**
      * Bootstrap services.
      *
@@ -30,21 +41,83 @@ class RoutesManagerServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-        if(!$this->app->runningInConsole()){
-            $this->map();
-        }
+        $this->loadRoutes();
 
     }
 
     /**
-     * @throws
-     * */
-    protected function map()
+     * Load the application routes.
+     *
+     * @return void
+     */
+    protected function loadRoutes()
     {
-        $domains = explode('.', $_SERVER['HTTP_HOST']);
-        switch ($domains[1]){
-            case 'web':{
-                new WebRoutes();
+        $this->routes = $this->app->make('api.routes');
+        $this->routes->load();
+    }
+
+    public function register()
+    {
+        $request = Request::capture();
+        $this->host = $request->getHost();
+        $domains = explode('.', $this->host);
+        if($domains[0] === 'www')
+        {
+            array_shift($domains);
+        }
+        $this->domain = implode('.', $domains);
+        $this->registerConfig();
+        $this->registerRoutes();
+    }
+
+    protected function registerConfig()
+    {
+        switch ($this->domain){
+            case env('WEB_API_DOMAIN'): {
+                $this->config = [
+                    'domain' => $this->host,
+                    'version' => env('WEB_API_VERSION'),
+                    'prefix'  => env('WEB_API_PREFIX')
+                ];
+                break;
+            }
+            case env('AUTH_API_DOMAIN') : {
+                $this->config = [
+                    'domain' => $this->host,
+                    'version' => env('AUTH_API_VERSION'),
+                    'prefix'  => env('AUTH_API_PREFIX')
+                ];
+                break;
+            }
+        }
+        if($this->domain)
+            config(['api' => $this->config]);
+        else
+            $this->config = config('api');
+    }
+
+    protected function registerRoutes()
+    {
+        switch ($this->domain){
+            case env('WEB_API_DOMAIN'): {
+                $this->app->singleton('api.routes',function (){
+                    return new WebRoutes($this->app, $this->config['version'], $this->namespace.'\Admin',
+                        $this->config['prefix'], $this->config['domain']);
+                });
+                break;
+            }
+            case env('AUTH_API_DOMAIN') : {
+                $this->app->singleton('api.routes',function (){
+                    return new AuthRoutes($this->app, $this->config['version'], $this->namespace.'\Auth',
+                        $this->config['prefix'], $this->config['domain']);
+                });
+                break;
+            }
+            default: {
+                $this->app->singleton('api.routes',function (){
+                    return new Routes($this->app, $this->config['version'], $this->namespace,
+                        $this->config['prefix'], $this->config['domain']);
+                });
                 break;
             }
         }

@@ -3,8 +3,13 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -20,6 +25,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $countyId 所属区县id
  * @property string|null $address 详细地址
  * @property mixed|null $position 店铺定位
+ * @property string|null $geoHash 位置hash编码
  * @property float $totalAmount 店铺总计营业额
  * @property float $todayAmount 今日营业额
  * @property float $totalOffLineAmount 店铺预定总计营业额
@@ -39,14 +45,30 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\City $city
  * @property-read \App\Entities\Country $country
  * @property-read \App\Entities\County $county
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \App\Entities\Province $province
  * @property-read \App\Entities\User $shopManager
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop comparison($geometryColumn, $geometry, $relationship)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop contains($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop crosses($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop disjoint($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop distance($geometryColumn, $geometry, $distance)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop distanceExcludingSelf($geometryColumn, $geometry, $distance)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop distanceSphere($geometryColumn, $geometry, $distance)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop distanceSphereExcludingSelf($geometryColumn, $geometry, $distance)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop distanceSphereValue($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop distanceValue($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop doesTouch($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop equals($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop intersects($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop overlaps($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCountyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereGeoHash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop wherePosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereProvinceId($value)
@@ -65,11 +87,18 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereTotalOrderingNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop within($geometryColumn, $polygon)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  */
 class Shop extends Model implements Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use TransformableTrait, ModelAttributesAccess, SpatialTrait;
+
+    /**
+     * @var Collection
+     * */
+    protected $orderList = null;
 
     /**
      * The attributes that are mass assignable.
@@ -80,7 +109,11 @@ class Shop extends Model implements Transformable
         'user_id', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'position', 'total_amount', 'today_amount',
         'total_off_line_amount', 'today_off_line_amount', 'total_ordering_amount', 'today_ordering_amount', 'total_ordering_num',
         'today_ordering_num', 'total_order_write_off_num', 'total_order_write_off_num', 'total_order_write_off_amount',
-        'total_order_write_off_amount', 'status'
+        'total_order_write_off_amount', 'status', 'geo_hash'
+    ];
+
+    protected $spatialFields = [
+        'position'
     ];
 
     public function shopManager() : BelongsTo
@@ -106,5 +139,21 @@ class Shop extends Model implements Transformable
     public function county() : BelongsTo
     {
         return $this->belongsTo(County::class, 'county_id', 'id');
+    }
+
+    public function orderItems() : HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'shop_id', 'id');
+    }
+
+    public function orders() : BelongsToMany
+    {
+        return $this->belongsToMany(Order::class, 'order_items', 'shop_id', 'order_id');
+    }
+
+    public function waitWriteOffBuyers()
+    {
+        return $this->orders && $this->orders->count() > 0 ? $this->orders->where('status', Order::PAID)
+                   ->pluck('buyer_user_id') : null;
     }
 }

@@ -5,6 +5,7 @@ namespace App\Entities;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
@@ -58,10 +59,16 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  */
 class Order extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
+    const CANCEL = 0;
+    const MAKE_SURE = 10;
+    const PAID = 20;
+    const SEND = 30;
+    const COMPLETED = 40;
 
     protected $dates = [
         'signed_at',
@@ -83,5 +90,10 @@ class Order extends Model implements Transformable
     public function buyer() : BelongsTo
     {
         return $this->belongsTo(User::class, 'buyer_user_id', 'id');
+    }
+
+    public function orderItems() : HasMany
+    {
+        return $this->hasMany(OrderItem::class, 'order_id', 'id');
     }
 }

@@ -38,9 +38,14 @@ class UsersController extends Controller
         return $this->response()->paginator($result, new UsersTransformer);
     }
 
-    public function getDetail(int $id)
+    /**
+     * 用户详情
+     * @param int $id
+     * @return Response
+     * */
+    public function getUserDetail(int $id)
     {
-        $user = $this->userModel->with('roles.group')->find($id);
+        $user = $this->userModel->with(['roles.group', 'orders.orderItems'])->find($id);
         return $this->response()->item($user, new UserDetailTransformer);
     }
 }
