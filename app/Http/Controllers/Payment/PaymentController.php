@@ -11,13 +11,16 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\OrderRepositoryEloquent;
+use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
+use Laravel\Lumen\Application;
 use Payment\ChargeContext;
+use Payment\Client\Notify;
 use Payment\Common\PayException;
+use Payment\NotifyContext;
 
 class PaymentController extends Controller
 {
-    protected $orderModel = null;
 
     const WEB_PAY = 'web';
     const WAP_PAY = 'wap';
@@ -27,10 +30,14 @@ class PaymentController extends Controller
     const PUB_PAY = 'public';
     const MINI_PAY = 'miniProgram';
 
+    protected $app = null;
 
-    public function __construct(OrderRepositoryEloquent $orderRepositoryEloquent)
+    protected $orderModel = null;
+
+    public function __construct(OrderRepositoryEloquent $orderRepositoryEloquent, Application $app)
     {
         $this->orderModel = $orderRepositoryEloquent;
+        $this->app = $app;
     }
 
     /**
@@ -55,16 +62,29 @@ class PaymentController extends Controller
         return null;
     }
 
-    public function notify(string $type)
+    /**
+     * @param string $type
+     * @param NotifyContext $notify
+     * @throws
+     * */
+    public function notify (string $type = '', NotifyContext $notify = null)
     {
-        $notify = app('payment.'.$type.'.notify');
-        $notify->notify(function (){
-            $this->notifyCallback();
-        });
+        $notify->notify($this->app->make('payment.notify'));
     }
 
-    protected function notifyCallback ()
+    public function aggregate (Request $request)
     {
-
+        $userAgent = $request->userAgent();
+        $version = $request->version();
+        if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)){
+            return $this->app->make('api.dispatcher')->version($version)->post('/wechat/payment',
+                $request->toArray());
+        } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
+            return $this->app->make('api.dispatcher')->version($version)->post('/ali/payment',
+                $request->toArray());
+        } else {
+            $this->response()->error('未知支付方式', HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        }
+        return null;
     }
 }

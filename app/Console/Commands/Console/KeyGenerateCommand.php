@@ -34,20 +34,25 @@ class KeyGenerateCommand extends Command
     public function handle()
     {
         $key = $this->generateRandomKey();
+        $publicKey = $this->generateRandomKey();
+        $privateKey = $this->generateRandomKey();
 
         if ($this->option('show')) {
             $this->line('<comment>'.$key.'</comment>');
+            $this->line('<comment>'.$publicKey.'</comment>');
+            $this->line('<comment>'.$privateKey.'</comment>');
         }
 
         // Next, we will replace the application key in the environment file so it is
         // automatically setup for this developer. This key gets generated using a
         // secure random byte generator and is later base64 encoded for storage.
-        if (! $this->setKeyInEnvironmentFile($key)) {
+        if (! $this->setKeyInEnvironmentFile($key, $publicKey, $privateKey)) {
             return;
         }
 
         laravelToLumen($this->laravel)['config']['app.key'] = $key;
-
+        laravelToLumen($this->laravel)['config']['app.public_key'] = $publicKey;
+        laravelToLumen($this->laravel)['config']['app.private_key'] = $privateKey;
         $this->info("Application key [$key] set successfully.");
     }
 
@@ -67,9 +72,11 @@ class KeyGenerateCommand extends Command
      * Set the application key in the environment file.
      *
      * @param  string  $key
+     * @param  string $publicKey
+     * @param  string $privateKey
      * @return bool
      */
-    protected function setKeyInEnvironmentFile($key)
+    protected function setKeyInEnvironmentFile($key, $publicKey = '', $privateKey = '')
     {
         $currentKey = config('app.key');
 
@@ -77,7 +84,7 @@ class KeyGenerateCommand extends Command
             return false;
         }
 
-        $this->writeNewEnvironmentFileWith($key);
+        $this->writeNewEnvironmentFileWith($key, $publicKey, $privateKey);
 
         return true;
     }
@@ -86,13 +93,19 @@ class KeyGenerateCommand extends Command
      * Write a new environment file with the given key.
      *
      * @param  string  $key
+     * @param  string $publicKey
+     * @param  string $privateKey
      * @return void
      */
-    protected function writeNewEnvironmentFileWith($key)
+    protected function writeNewEnvironmentFileWith($key, $publicKey = '', $privateKey = '')
     {
         file_put_contents(environmentFilePath(), preg_replace(
             $this->keyReplacementPattern(),
-            'APP_KEY='.$key,
+            [
+                'APP_KEY='.$key,
+                'APP_PUBLIC_KEY='.$publicKey,
+                'APP_PRIVATE_KEY='.$privateKey
+            ],
             file_get_contents(environmentFilePath())
         ));
     }
@@ -100,12 +113,14 @@ class KeyGenerateCommand extends Command
     /**
      * Get a regex pattern that will match env APP_KEY with any random key.
      *
-     * @return string
+     * @return string|string[]
      */
     protected function keyReplacementPattern()
     {
-        $escaped = preg_quote('='.laravelToLumen($this->laravel)['config']['app.key'], '/');
+        $keyEscaped = preg_quote('='.laravelToLumen($this->laravel)['config']['app.key'], '/');
+        $publicEscaped = preg_quote('='.laravelToLumen($this->laravel)['config']['app.public_key'], '/');
+        $privateEscaped = preg_quote('='.laravelToLumen($this->laravel)['config']['app.private_key'], '/');
 
-        return "/^APP_KEY{$escaped}/m";
+        return ["/^APP_KEY{$keyEscaped}/m", "/^APP_PUBLIC_KEY{$publicEscaped}/m", "/^APP_PRIVATE_KEY{$privateEscaped}/m"];
     }
 }

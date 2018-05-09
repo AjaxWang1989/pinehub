@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\Console\TestMakeCommand;
+use App\Console\Commands\HashEncrypt;
 use App\Console\Commands\JWTGenerateCommand;
 use App\Console\Commands\ModelsCommand;
 use Illuminate\Auth\Console\AuthMakeCommand;
@@ -40,6 +41,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
+        HashEncrypt::class,
         VendorPublishCommand::class,
         ConsoleMakeCommand::class,
         AuthMakeCommand::class,

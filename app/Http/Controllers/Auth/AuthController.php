@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Response;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Zoran\JwtAuthGuard\JwtAuthGuard;
@@ -38,6 +39,13 @@ class AuthController extends Controller
     public function __construct(UserRepositoryEloquent $userRepository)
     {
         $this->userModel = $userRepository;
+    }
+
+    public function getPublicKey()
+    {
+        return $this->response([
+            'public_key' => config('app.public_key')
+        ]);
     }
 
     /**
