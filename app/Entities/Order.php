@@ -65,10 +65,20 @@ class Order extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
     const CANCEL = 0;
-    const MAKE_SURE = 10;
-    const PAID = 20;
-    const SEND = 30;
-    const COMPLETED = 40;
+    const WAIT = 100;
+    const MAKE_SURE = 200;
+    const PAID = 300;
+    const SEND = 400;
+    const COMPLETED = 500;
+
+    const ALI_PAY = 'ALI_PAY';
+
+    const WECHAT_PAY = 'WECHAT_PAY';
+
+
+    const OFF_LINE_PAY = 0;
+    const ORDERING_PAY = 1;
+    const E_SHOP_PAY =2;
 
     protected $dates = [
         'signed_at',

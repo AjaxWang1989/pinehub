@@ -18,6 +18,8 @@ return [
 */
 
     'key' => env('APP_KEY', 'SomeRandomString!!!'),
+    'public_key' => env('APP_PUBLIC_KEY', 'SomeRandomString!!!'),
+    'private_key' => env('APP_PRIVATE_KEY', 'SomeRandomString!!!'),
 
     'cipher' => 'AES-256-CBC',
 

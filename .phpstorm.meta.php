@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2018-04-27 15:10:33.
+    * Generated on 2018-04-28 09:49:51.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -92,6 +92,9 @@ namespace PHPSTORM_META {
         'payment.wechat.miniProgram' => \Payment\ChargeContext::class,
         'payment.wechat.qr' => \Payment\ChargeContext::class,
         'payment.wechat.notify' => \Payment\NotifyContext::class,
+        'payment.ali.notify' => \Payment\NotifyContext::class,
+        'payment.notify' => \App\Services\PaymentNotify::class,
+        'order.builder' => \App\Services\OrderBuilder::class,
         'api.routes' => \App\Routes\Routes::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\RedisQueue::class,
@@ -212,6 +215,9 @@ namespace PHPSTORM_META {
         'payment.wechat.miniProgram' => \Payment\ChargeContext::class,
         'payment.wechat.qr' => \Payment\ChargeContext::class,
         'payment.wechat.notify' => \Payment\NotifyContext::class,
+        'payment.ali.notify' => \Payment\NotifyContext::class,
+        'payment.notify' => \App\Services\PaymentNotify::class,
+        'order.builder' => \App\Services\OrderBuilder::class,
         'api.routes' => \App\Routes\Routes::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\RedisQueue::class,
@@ -332,6 +338,9 @@ namespace PHPSTORM_META {
         'payment.wechat.miniProgram' => \Payment\ChargeContext::class,
         'payment.wechat.qr' => \Payment\ChargeContext::class,
         'payment.wechat.notify' => \Payment\NotifyContext::class,
+        'payment.ali.notify' => \Payment\NotifyContext::class,
+        'payment.notify' => \App\Services\PaymentNotify::class,
+        'order.builder' => \App\Services\OrderBuilder::class,
         'api.routes' => \App\Routes\Routes::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\RedisQueue::class,
@@ -452,6 +461,9 @@ namespace PHPSTORM_META {
         'payment.wechat.miniProgram' => \Payment\ChargeContext::class,
         'payment.wechat.qr' => \Payment\ChargeContext::class,
         'payment.wechat.notify' => \Payment\NotifyContext::class,
+        'payment.ali.notify' => \Payment\NotifyContext::class,
+        'payment.notify' => \App\Services\PaymentNotify::class,
+        'order.builder' => \App\Services\OrderBuilder::class,
         'api.routes' => \App\Routes\Routes::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\RedisQueue::class,
@@ -572,6 +584,9 @@ namespace PHPSTORM_META {
         'payment.wechat.miniProgram' => \Payment\ChargeContext::class,
         'payment.wechat.qr' => \Payment\ChargeContext::class,
         'payment.wechat.notify' => \Payment\NotifyContext::class,
+        'payment.ali.notify' => \Payment\NotifyContext::class,
+        'payment.notify' => \App\Services\PaymentNotify::class,
+        'order.builder' => \App\Services\OrderBuilder::class,
         'api.routes' => \App\Routes\Routes::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\RedisQueue::class,
@@ -692,6 +707,9 @@ namespace PHPSTORM_META {
         'payment.wechat.miniProgram' => \Payment\ChargeContext::class,
         'payment.wechat.qr' => \Payment\ChargeContext::class,
         'payment.wechat.notify' => \Payment\NotifyContext::class,
+        'payment.ali.notify' => \Payment\NotifyContext::class,
+        'payment.notify' => \App\Services\PaymentNotify::class,
+        'order.builder' => \App\Services\OrderBuilder::class,
         'api.routes' => \App\Routes\Routes::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\RedisQueue::class,
@@ -812,6 +830,9 @@ namespace PHPSTORM_META {
         'payment.wechat.miniProgram' => \Payment\ChargeContext::class,
         'payment.wechat.qr' => \Payment\ChargeContext::class,
         'payment.wechat.notify' => \Payment\NotifyContext::class,
+        'payment.ali.notify' => \Payment\NotifyContext::class,
+        'payment.notify' => \App\Services\PaymentNotify::class,
+        'order.builder' => \App\Services\OrderBuilder::class,
         'api.routes' => \App\Routes\Routes::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\RedisQueue::class,

@@ -33,3 +33,7 @@ define('CHINA_UNION', '中国联通');
 define('CHINA_TEL', '中国电信');
 
 define('PAGE_LIMIT', 15);
+
+define('ALI_PAY_USER_AGENT', '/alipayclient/i');
+
+define('WECHAT_PAY_USER_AGENT', '/micromessenger/i');

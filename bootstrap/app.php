@@ -94,6 +94,7 @@ $app->alias('tymon.jwt', \Tymon\JWTAuth\JWTAuth::class);
  $app->register(App\Providers\AuthServiceProvider::class);
  $app->register(App\Providers\EventServiceProvider::class);
  $app->register(\App\Providers\PaymentServiceProvider::class);
+ $app->register(\App\Providers\OrderServiceProvider::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
 
 
