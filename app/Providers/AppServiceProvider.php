@@ -19,9 +19,11 @@ class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        DB::listen(function (QueryExecuted $event){
-            Log::debug($event->time.':'.$event->sql, $event->bindings);
-        });
+        if($this->app->environment() !== "production" && !$this->app->runningInConsole()){
+            DB::listen(function (QueryExecuted $event){
+                Log::debug($event->time.':'.$event->sql, $event->bindings);
+            });
+        }
     }
     /**
      * Register any application services.
