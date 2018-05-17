@@ -22,6 +22,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\County[] $counties
  * @property-read \App\Entities\Country $country
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
+ * @property-read integer countiesCount
+ * @property-read integer  citiesCount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Province whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Province whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Province whereCreatedAt($value)

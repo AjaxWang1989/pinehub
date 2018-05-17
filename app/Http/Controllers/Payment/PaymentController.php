@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection ALL */
+
 /**
  * Created by PhpStorm.
  * User: wang
@@ -9,10 +10,17 @@
 namespace App\Http\Controllers\Payment;
 
 
+use App\Entities\Order;
 use App\Http\Controllers\Controller;
+use App\Http\Response\UpdateResponse;
 use App\Repositories\OrderRepositoryEloquent;
-use Dingo\Api\Http\Request;
+use App\Repositories\ShopRepositoryEloquent;
+use App\Transformers\Api\UpdateResponseTransformer;
+use Dingo\Api\Http\Request as DingoRequest;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
+use Illuminate\View\View;
 use Laravel\Lumen\Application;
 use Payment\ChargeContext;
 use Payment\Client\Notify;
@@ -34,28 +42,27 @@ class PaymentController extends Controller
 
     protected $orderModel = null;
 
-    public function __construct(OrderRepositoryEloquent $orderRepositoryEloquent, Application $app)
+    protected $shopModel = null;
+
+    public function __construct(OrderRepositoryEloquent $orderRepositoryEloquent, Application $app, ShopRepositoryEloquent $shopRepositoryEloquent)
     {
         $this->orderModel = $orderRepositoryEloquent;
+        $this->shopModel = $shopRepositoryEloquent;
         $this->app = $app;
     }
 
     /**
      * 统一下单
-     * @param int $id
-     * @param string $type
+     * @param array $order
      * @param ChargeContext|null $charge
      * @return Response| null
      * @throws
      * */
-    public function preOrder(string $type, int $id, $charge = null)
+    public function preOrder(array $order, $charge = null)
     {
-        $order = $this->orderModel->find($id);
         try{
-            $signedStr = $charge->charge($order);
-            return $this->response([
-                'signed' => $signedStr
-            ]);
+            $signed = $charge->charge($order);
+            return $signed;
         }catch (PayException $exception){
             $this->response()->error($exception->errorMessage(), HTTP_STATUS_INTERNAL_SERVER_ERROR);
         }
@@ -72,19 +79,37 @@ class PaymentController extends Controller
         $notify->notify($this->app->make('payment.notify'));
     }
 
-    public function aggregate (Request $request)
+    /**
+     *@param LumenRequest|DingoRequest $request
+     *@return View|RedirectResponse|null
+     * */
+    public function aggregate (LumenRequest $request)
     {
         $userAgent = $request->userAgent();
-        $version = $request->version();
-        if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)){
-            return $this->app->make('api.dispatcher')->version($version)->post('/wechat/payment',
-                $request->toArray());
+        if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
+            return app('wechat.official_account.default')
+                ->oauth->scopes(['snsapi_base'])
+                ->setRequest($request)
+                ->redirect(paymentUriGenerator('/wechat/aggregate/payment?shop_id='.$request->input('shop_id', null)));
         } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
-            return $this->app->make('api.dispatcher')->version($version)->post('/ali/payment',
-                $request->toArray());
+            return redirect(paymentUriGenerator('/ali/aggregate/payment?shop_id='.$request->input('shop_id', null)));
         } else {
-            $this->response()->error('未知支付方式', HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            return view('404');
         }
         return null;
+    }
+
+    public function quit(Request $request, string $orderNo) {
+        $order = $this->orderModel->findByField('code', $orderNo);
+        if($request->ajax()){
+            $order->status = Order::CANCEL;
+            $result = $order->save();
+            if(!$result){
+                $this->response()->error('操作失败');
+            }
+            return $this->response()->item(new UpdateResponse('放弃支付，关闭订单'), new UpdateResponseTransformer());
+        }else{
+            return view('payment.quit')->with('order', $order);
+        }
     }
 }

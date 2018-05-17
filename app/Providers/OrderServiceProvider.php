@@ -34,7 +34,7 @@ class OrderServiceProvider extends ServiceProvider
     {
         //
         $this->app->singleton('order.builder', function (Application $app){
-            $request = Request::capture();
+            $request = $app->make('request');
             $input = collect($request->all());
             $auth = app('api.auth');
             return new OrderBuilder(

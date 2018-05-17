@@ -22,6 +22,7 @@ return [
     'private_key' => env('APP_PRIVATE_KEY', 'SomeRandomString!!!'),
 
     'cipher' => 'AES-256-CBC',
+    'payment_domain' => env('WEB_PROTO', 'http')."://".env('WEB_PAYMENT_DOMAIN', 'payment.pinehub'),
 
     /*
     |--------------------------------------------------------------------------

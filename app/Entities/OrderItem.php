@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace App\Entities;
 
@@ -68,6 +68,7 @@ class OrderItem extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    const ORDERITEM_NUMBER_PREFIX = 'PHS';
     protected $dates = [
         'signed_at',
         'consigned_at'

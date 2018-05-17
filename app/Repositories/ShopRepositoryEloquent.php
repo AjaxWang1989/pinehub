@@ -5,9 +5,7 @@ namespace App\Repositories;
 use App\Validators\Admin\ShopsValidator;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\ShopRepository;
 use App\Entities\Shop;
-use App\Validators\ShopValidator;
 
 /**
  * Class ShopRepositoryEloquent.
@@ -16,6 +14,12 @@ use App\Validators\ShopValidator;
  */
 class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
 {
+    protected $fieldSearchable = [
+        'country.name',
+        'province.name',
+        'city.name',
+        'county.name'
+    ];
     /**
      * Specify Model class name
      *
@@ -35,6 +39,17 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+//        $this->model->addObservableEvents([
+//            'creating' => function (Shop $shop) {
+//
+//            },
+//            'created' => function (Shop $shop) {
+//
+//            },
+//            'updated' => function (Shop $shop) {
+//
+//            }
+//        ]);
     }
 
     public function validator()

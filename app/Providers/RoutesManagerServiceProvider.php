@@ -2,13 +2,15 @@
 
 namespace App\Providers;
 
-use App\Routes\AuthRoutes;
-use App\Routes\MiniProgramRoutes;
+use App\Routes\AuthApiRoutes;
+use App\Routes\MiniProgramApiRoutes;
+use App\Routes\PaymentApiRoutes;
 use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
-use App\Routes\WebRoutes;
-use Dingo\Api\Http\Request;
+use App\Routes\WebApiRoutes;
 use Illuminate\Support\ServiceProvider;
+use Dingo\Api\Provider\LumenServiceProvider;
+use Illuminate\Http\Request;
 
 class RoutesManagerServiceProvider extends ServiceProvider
 {
@@ -35,6 +37,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     protected $domain = null;
 
+    protected $loaded = false;
+
     /**
      * Bootstrap services.
      *
@@ -54,8 +58,12 @@ class RoutesManagerServiceProvider extends ServiceProvider
      */
     protected function loadRoutes()
     {
-        $this->routes = $this->app->make('api.routes');
-        $this->routes->load();
+        if(!$this->loaded){
+            $this->routes = $this->app->make('app.routes');
+            $this->routes->load();
+            $this->loaded = true;
+        }
+
     }
 
     public function register()
@@ -68,9 +76,23 @@ class RoutesManagerServiceProvider extends ServiceProvider
             array_shift($domains);
         }
         $this->domain = implode('.', $domains);
+        $this->registerApiServices();
         $this->registerConfig();
         $this->registerRoutes();
     }
+
+    protected function registerApiServices()
+    {
+        $this->app['isApiServer'] = in_array($this->domain, [env('WEB_API_DOMAIN'), env('AUTH_API_DOMAIN'),
+            env('MP_API_DOMAIN'), env('PAYMENT_API_DOMAIN')]) ;
+        if($this->app['isApiServer'] || $this->app->runningInConsole()){
+            $this->app->register(LumenServiceProvider::class);
+            $this->app->register(ApiExceptionHandlerServiceProvider::class);
+        }
+
+    }
+
+
 
     protected function registerConfig()
     {
@@ -107,6 +129,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 ];
                 break;
             }
+            case env('WEB_PAYMENT_DOMAIN') : {
+                $this->config = [
+                    'domain' => $this->host,
+                    'version' => null,
+                    'prefix'  => null
+                ];
+                break;
+            }
         }
         if($this->domain)
             config(['api' => $this->config]);
@@ -118,35 +148,42 @@ class RoutesManagerServiceProvider extends ServiceProvider
     {
         switch ($this->domain){
             case env('WEB_API_DOMAIN'): {
-                $this->app->singleton('api.routes',function (){
-                    return new WebRoutes($this->app, $this->config['version'], 'Admin',
+                $this->app->singleton('app.routes',function (){
+                    return new WebApiRoutes($this->app, $this->config['version'], 'Admin',
                         $this->config['prefix'], $this->config['domain']);
                 });
                 break;
             }
             case env('AUTH_API_DOMAIN') : {
-                $this->app->singleton('api.routes',function (){
-                    return new AuthRoutes($this->app, $this->config['version'], 'Auth',
+                $this->app->singleton('app.routes',function (){
+                    return new AuthApiRoutes($this->app, $this->config['version'], 'Auth',
                         $this->config['prefix'], $this->config['domain']);
                 });
                 break;
             }
             case env('MP_API_DOMAIN') : {
-                $this->app->singleton('api.routes',function (){
-                    return new MiniProgramRoutes($this->app, $this->config['version'], 'MiniProgram',
+                $this->app->singleton('app.routes',function (){
+                    return new MiniProgramApiRoutes($this->app, $this->config['version'], 'MiniProgram',
                         $this->config['prefix'], $this->config['domain']);
                 });
                 break;
             }
             case env('PAYMENT_API_DOMAIN') : {
-                $this->app->singleton('api.routes',function (){
+                $this->app->singleton('app.routes',function (){
+                    return new PaymentApiRoutes($this->app, $this->config['version'], 'Payment',
+                        $this->config['prefix'], $this->config['domain']);
+                });
+                break;
+            }
+            case env('WEB_PAYMENT_DOMAIN') : {
+                $this->app->singleton('app.routes',function (){
                     return new PaymentRoutes($this->app, $this->config['version'], 'Payment',
                         $this->config['prefix'], $this->config['domain']);
                 });
                 break;
             }
             default: {
-                $this->app->singleton('api.routes',function (){
+                $this->app->singleton('app.routes',function (){
                     return new Routes($this->app, $this->config['version'], null,
                         $this->config['prefix'], $this->config['domain']);
                 });

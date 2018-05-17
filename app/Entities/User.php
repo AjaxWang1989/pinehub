@@ -65,6 +65,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     const ACTIVATED_ACCOUNT = 1;
     const WAIT_AUTH_ACCOUNT = 2;
 
+    protected $table = "users";
 
     protected $dates = [
         'last_login_at'

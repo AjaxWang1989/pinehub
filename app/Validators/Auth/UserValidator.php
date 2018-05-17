@@ -22,12 +22,12 @@ class UserValidator extends LaravelValidator
      */
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'mobile' => ['required', 'unique', 'regex:'.MOBILE_PATTERN],
-            'password' => ['required', 'regex:'.PASSWORD_PATTERN]
+            'mobile' => ['required', 'unique:users', 'regex:'.MOBILE_PATTERN],
+            'password' => ['required', 'string']
         ],
         ValidatorInterface::RULE_UPDATE => [
-            'mobile' => ['unique', 'regex:'.MOBILE_PATTERN],
-            'password' => ['regex:'.PASSWORD_PATTERN],
+            'mobile' => ['unique:users', 'regex:'.MOBILE_PATTERN],
+            'password' => ['string'],
             'user_name' => ['unique', 'string', 'size:'.USER_NAME_MAX_LENGTH],
             'nickname'  => ['string', 'size:'.USER_NAME_MAX_LENGTH],
             'real_name' => ['string', 'size:'.USER_NAME_MAX_LENGTH],

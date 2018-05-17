@@ -1,4 +1,5 @@
-<?php
+<?php /** @noinspection PhpUndefinedClassInspection */
+
 /**
  * Created by PhpStorm.
  * User: wang
@@ -31,7 +32,10 @@ class PaymentNotify implements PayNotifyInterface
         $order->paidAt = Carbon::now();
         $this->offLinePayOrder($order);
         tap($order, function (Order $order){
-            $order->save();
+            $result = $order->save();
+            if($result) {
+                //发送模版消息
+            }
         });
     }
 

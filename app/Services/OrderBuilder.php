@@ -106,7 +106,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 'discount_amount' => $order['discount_amount'],
                 'payment_amount'  => $order['payment_amount'],
                 'shop_id'   => $this->input['shop_id'],
-                'buyer_user_id' => $this->buyer->id
+                'buyer_user_id' => $this->buyer ? $this->buyer->id : null
             ];
             $orderItem = collect($orderItem);
             $orderItems = collect();
@@ -120,16 +120,18 @@ class OrderBuilder implements InterfaceServiceHandler
             $this->checkOrder($orderItems, $order);
         }
         $orderModel = null;
-        DB::transaction(function () use($order, $orderItems, $orderModel){
+        DB::transaction(function () use($order, $orderItems, &$orderModel){
             $orderModel = $this->order->create($order->toArray());
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['order_id'] = $orderModel->id;
-                    $orderItem['order_item_product']['order_id'] = $orderModel->id;
                     $orderItemModel = $this->orderItem->create($orderItem->except(['order_item_product'])
                         ->toArray());
-                    $orderItem['order_item_product']['order_item_id'] = $orderItemModel->id;
-                    $this->orderItemMerchandise->create($orderItem->only(['order_item_product'])->toArray());
+                    if(isset($orderItem['order_item_product'])){
+                        $orderItem['order_item_product']['order_id'] = $orderModel->id;
+                        $orderItem['order_item_product']['order_item_id'] = $orderItemModel->id;
+                        $this->orderItemMerchandise->create($orderItem->only(['order_item_product'])->toArray());
+                    }
                 });
             }
         });
@@ -139,7 +141,7 @@ class OrderBuilder implements InterfaceServiceHandler
 
     protected function buildOrderItems (Collection $orderItems)
     {
-        return $orderItems->map(function (array $orderItem){
+        return $orderItems->map(function (Collection $orderItem){
             $subOrder = null;
             if(isset($orderItem['sku_product_id'])) {
                 $product = $this->skuProduct->find($orderItem['sku_product_id']);
@@ -152,27 +154,31 @@ class OrderBuilder implements InterfaceServiceHandler
                 $subOrder = $this->buildOrderItem($goods, $orderItem['quality']);
                 $subOrder['order_item_product'] = $orderItemProduct;
             }
-            $this->checkOrderItem($subOrder, $orderItem);
-            return $subOrder;
+            if($subOrder){
+                $this->checkOrderItem($subOrder, $orderItem);
+            }
+            return $subOrder ? $subOrder : $orderItem;
         });
     }
 
     protected function checkOrder(Collection $orderItems, $order) {
         $errors = null;
-        if ($orderItems->sum('total_amount') !== $order['total_amount']) {
+        \Log::debug('order items total amount sum :'.$orderItems->sum('total_amount').' order total amount '.$order['total_amount']);
+        if ($orderItems->sum('total_amount') != $order['total_amount']) {
             $errors = new MessageBag([
                 'total_amount' => '订单总金额有误无法提交'
             ]);
-        } elseif ($orderItems->sum('discount_amount') !== $order['discount_amount']) {
+        } elseif ($orderItems->sum('discount_amount') != $order['discount_amount']) {
             $errors = new MessageBag([
                 'discount_amount' => '订单优惠金额有误无法提交'
             ]);
-        } elseif ( $orderItems->sum('payment_amount') !== $order['payment_amount'] ) {
+        } elseif ( $orderItems->sum('payment_amount') != $order['payment_amount'] ) {
             $errors = new MessageBag([
                 'payment_amount' => '订单实际支付金额有误无法提交'
             ]);
         }
         if($errors) {
+            \Log::debug('errors', $errors->toArray());
             throw new ValidationHttpException($errors);
         }
     }

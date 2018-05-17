@@ -1,41 +1,36 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace App\Http\Controllers\Payment;
 
 use App\Entities\Order;
-use Dingo\Api\Http\Request;
+use Dingo\Api\Http\Request as DingoRequest;
+use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
 use App\Http\Controllers\Payment\PaymentController as Controller;
-use Payment\ChargeContext;
+use Illuminate\View\View;
 use Payment\NotifyContext;
+
 
 class AliPaymentController extends Controller
 {
     /**
      * 聚合支付
-     * @param Request $request
-     * @return Response| null
+     * @param DingoRequesti|LumenRequest $request
+     * @return Response|View|null
      * @throws
      * */
-    public function aggregate(Request $request)
+    public function aggregate(LumenRequest $request)
     {
-        $_POST['pay_type'] = Order::ALI_PAY;
+        if($request->method() === HTTP_METHOD_GET){
+            $shop = $this->shopModel->find($request->input('shop_id'));
+            return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop]);
+        }
+        $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
-        return $this->preOrder(self::WAP_PAY, $order->id);
+        $charge = app('ali.payment.aggregate');
+        return $this->response()->created( $this->preOrder($order->buildAliAggregatePaymentOrder(), $charge))->statusCode(HTTP_STATUS_NOT_MODIFIED);
     }
 
-    /**
-     * 统一下单
-     * @param int $id
-     * @param string $type
-     * @param ChargeContext|null $charge
-     * @return Response| null
-     * */
-    public function preOrder(string $type , int $id, $charge = null)
-    {
-        $charge = app('payment.ali.'.$type);
-        return parent::preOrder($type, $id, $charge);
-    }
 
     public function notify(string $type = 'ali', NotifyContext $notify = null)
     {

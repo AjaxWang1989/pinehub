@@ -114,5 +114,13 @@ class PaymentServiceProvider extends ServiceProvider
         $this->app->singleton('payment.notify', function (Application $app){
             return new PaymentNotify($app->make(OrderRepositoryEloquent::class));
         });
+
+        $this->app->singleton('wechat.payment.aggregate', function (Application $application){
+            return $application->make('payment.wechat.wap');
+        });
+
+        $this->app->singleton('ali.payment.aggregate', function (Application $application){
+            return $application->make('payment.ali.qr');
+        });
     }
 }

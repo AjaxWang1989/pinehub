@@ -23,9 +23,7 @@ $factory->define(\App\Entities\User::class, function (Faker\Generator $faker) {
         'sex'    => ['UNKNOWN', 'MALE', 'FEMALE'][random_int(0, 2)],
         'nickname' => $faker->name,
         'user_name' => $faker->userName,
-        'password' => \Illuminate\Support\Facades\Hash::make(md5($mobile.config('app.public_key')), [
-            'slat' => config('app.private_key')
-        ]),
+        'password' => password($mobile),
     ];
 });
 

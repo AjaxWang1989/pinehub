@@ -10,7 +10,8 @@ namespace App\Routes;
 
 
 use Dingo\Api\Http\Request;
-use Dingo\Api\Routing\Router;
+use Dingo\Api\Routing\Router as DingoRouter;
+use Laravel\Lumen\Routing\Router as LumenRouter;
 use Laravel\Lumen\Application;
 
 class Routes
@@ -18,13 +19,22 @@ class Routes
     protected $namespace = 'App\Http\Controllers';
 
     protected $subNamespace = null;
+
     protected $prefix = '';
 
     protected $domain = '';
 
     protected $version = null;
 
+    /**
+     *@var Application $app
+     * */
     protected $app = null;
+
+    /**
+     * @var LumenRouter|DingoRouter $router
+     * */
+    protected $router = null;
 
     public function __construct(Application $app, $version = null, $namespace = null, $prefix =null, $domain = null)
     {
@@ -40,47 +50,32 @@ class Routes
 
     public function load()
     {
-        $second = [];
-        if($this->prefix){
-            $second['prefix'] = $this->prefix;
-        }
-
-        if($this->domain){
-            $second['domain'] = $this->domain;
-        }
+        $this->boot();
         $this->app->router->group([
             //'namespace' => 'App\Http\Controllers',
-        ], function () use ($second){
-            $api = $this->app->make('api.router');
-            $api->version($this->version, $second, function () use ($api){
-                $self = $this;
-                $api->get('/version', function (Request $request) use ($self){
-                    return 'web api version '.$self->version.', host domain '.$request->getHost();
-                });
-                $namespace = $this->namespace;
-                if($this->namespace){
-                    $namespace = $this->namespace.($this->subNamespace ? $this->subNamespace : '');
-                }
-
-                $api->group(['namespace' => $namespace], function () use($api){
-                    $this->subRoutes($api);
-                });
-
-                $namespace = $this->namespace;
-                $api->group(['namespace' => $namespace], function () use($api){
-                    $this->routes($api);
-                });
-
-            });
+            //'middleware' => 'cross'
+        ], function () {
+            $this->routesRegister();
         });
     }
 
-    protected function routes(Router $api)
+    protected function routesRegister()
     {
 
     }
 
-    protected function subRoutes(Router $api)
+    protected function boot()
     {
+
+    }
+
+
+
+    /**
+     * @param DingoRouter|LumenRouter $router
+     * */
+    protected function subRoutes($router)
+    {
+
     }
 }

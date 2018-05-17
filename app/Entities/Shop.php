@@ -90,6 +90,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop within($geometryColumn, $polygon)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @property string|null $description 描述
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDescription($value)
+ * @property string|null $code 餐车编号
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCode($value)
  */
 class Shop extends Model implements Transformable
 {
@@ -109,7 +113,7 @@ class Shop extends Model implements Transformable
         'user_id', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'position', 'total_amount', 'today_amount',
         'total_off_line_amount', 'today_off_line_amount', 'total_ordering_amount', 'today_ordering_amount', 'total_ordering_num',
         'today_ordering_num', 'total_order_write_off_num', 'total_order_write_off_num', 'total_order_write_off_amount',
-        'total_order_write_off_amount', 'status', 'geo_hash'
+        'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code'
     ];
 
     protected $spatialFields = [

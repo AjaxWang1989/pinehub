@@ -2,8 +2,7 @@
 
 namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
-use Dingo\Api\Auth\Provider\Basic as DingoBasic;
-use Dingo\Api\Auth\Provider\JWT as DingoJWT;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -40,9 +39,6 @@ class AuthServiceProvider extends ServiceProvider
 //        });
 
         //dingo auth JSON Web Tokens (JWT)
-        app('api.auth')->extend('jwt', function ($app) {
-            return new DingoJWT($app['Tymon\JWTAuth\JWTAuth']);
-        });
 
         //dingo auth OAuth 2.0
     }

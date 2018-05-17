@@ -17,6 +17,7 @@ class CreateShopsTable extends Migration
 	{
 		Schema::create('shops', function(Blueprint $table) {
             $table->increments('id');
+            $table->string('code', 32)->nullable()->comment('餐车编号');
             $table->unsignedInteger('user_id')->comment('店铺老板用户id');
             $table->unsignedInteger('country_id')->comment('国家id');
             $table->unsignedInteger('province_id')->comment('省份id');
@@ -24,6 +25,7 @@ class CreateShopsTable extends Migration
             $table->unsignedInteger('county_id')->comment('所属区县id');
             $table->string('address')->nullable()->comment('详细地址');
             $table->point('position')->nullable()->comment('店铺定位');
+            $table->text('position')->nullable()->comment('店铺描述');
             $table->string('geo_hash')->nullable()->comment('位置hash编码');
             $table->float('total_amount', 12, 2)->default(0)->comment('店铺总计营业额');
             $table->float('today_amount', 12, 2)->default(0)->comment('今日营业额');

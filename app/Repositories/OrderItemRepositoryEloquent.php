@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace App\Repositories;
 
@@ -33,6 +33,10 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        OrderItem::creating(function (OrderItem &$orderItem) {
+            $orderItem->code = generatorUID(OrderItem::ORDERITEM_NUMBER_PREFIX);
+            return $orderItem;
+        });
     }
     
 }

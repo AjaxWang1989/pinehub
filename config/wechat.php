@@ -59,8 +59,8 @@ return [
      */
     'official_account' => [
         'default' => [
-            'app_id' => env('WECHAT_OFFICIAL_ACCOUNT_APPID', 'your-app-id'),         // AppID
-            'secret' => env('WECHAT_OFFICIAL_ACCOUNT_SECRET', 'your-app-secret'),    // AppSecret
+            'app_id' => env('WECHAT_OFFICIAL_ACCOUNT_APPID', 'wx581a7ad7ca810da6'),         // AppID
+            'secret' => env('WECHAT_OFFICIAL_ACCOUNT_SECRET', '1b6df1bd03c8a41fb41cecaff1492532'),    // AppSecret
             'token' => env('WECHAT_OFFICIAL_ACCOUNT_TOKEN', 'your-token'),           // Token
             'aes_key' => env('WECHAT_OFFICIAL_ACCOUNT_AES_KEY', ''),                 // EncodingAESKey
 
@@ -70,10 +70,10 @@ return [
              * scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
              * callback：OAuth授权完成后的回调页地址(如果使用中间件，则随便填写。。。)
              */
-            // 'oauth' => [
-            //     'scopes'   => array_map('trim', explode(',', env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_SCOPES', 'snsapi_userinfo'))),
-            //     'callback' => env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_CALLBACK', '/examples/oauth_callback.php'),
-            // ],
+             'oauth' => [
+                 'scopes'   => array_map('trim', explode(',', env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_SCOPES', 'snsapi_userinfo'))),
+                 'callback' => env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_CALLBACK', '/examples/oauth_callback.php'),
+             ],
         ],
     ],
 
@@ -92,14 +92,14 @@ return [
     /*
      * 小程序
      */
-    // 'mini_program' => [
-    //     'default' => [
-    //         'app_id'  => env('WECHAT_MINI_PROGRAM_APPID', ''),
-    //         'secret'  => env('WECHAT_MINI_PROGRAM_SECRET', ''),
-    //         'token'   => env('WECHAT_MINI_PROGRAM_TOKEN', ''),
-    //         'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', ''),
-    //     ],
-    // ],
+     'mini_program' => [
+         'default' => [
+             'app_id'  => env('WECHAT_MINI_PROGRAM_APPID', 'wx67127c10ce9c598c'),
+             'secret'  => env('WECHAT_MINI_PROGRAM_SECRET', 'd96b9a53551391805e79447d79f96499'),
+             'token'   => env('WECHAT_MINI_PROGRAM_TOKEN', ''),
+             'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', ''),
+         ],
+     ],
 
     /*
      * 微信支付
@@ -117,7 +117,7 @@ return [
          // ...
          'use_sandbox'       => false,// 是否使用 微信支付仿真测试系统
 
-         'app_id'            => 'wxxxxxx',  // 公众账号ID
+         'app_id'            => 'wx67127c10ce9c598c',  // 公众账号ID
          'mch_id'            => 'xxxxx',// 商户id
          'md5_key'           => 'xxxxxxx',// md5 秘钥
          'app_cert_pem'      => dirname(__FILE__) . DIRECTORY_SEPARATOR . 'wx' . DIRECTORY_SEPARATOR .  'pem' . DIRECTORY_SEPARATOR . 'weixin_app_cert.pem',

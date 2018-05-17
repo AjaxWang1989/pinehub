@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Entities\AuthSecretKey;
 use App\Entities\User;
-use App\Repositories\UserRepository;
+use App\Http\Response\UpdateResponse;
 use App\Repositories\UserRepositoryEloquent;
+use App\Transformers\Api\UpdateResponseTransformer;
 use App\Transformers\AuthenticateTransformer;
-use App\Validators\Auth\UserValidator;
+use App\Transformers\AuthPublicKeyTransformer;
 use \Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Response;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Zoran\JwtAuthGuard\JwtAuthGuard;
 
 class AuthController extends Controller
 {
@@ -43,9 +42,8 @@ class AuthController extends Controller
 
     public function getPublicKey()
     {
-        return $this->response([
-            'public_key' => config('app.public_key')
-        ]);
+        $item = new AuthSecretKey();
+        return $this->response()->item($item, new AuthPublicKeyTransformer());
     }
 
     /**
@@ -57,7 +55,8 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
         if($this->auth()->check()){
-            return $this->response()->item($this->user(), new AuthenticateTransformer);
+            $token = Auth::refresh();
+            return $this->response()->item($this->user(), new AuthenticateTransformer)->addMeta('token' , $token);
         }else{
             if($input = $this->validate($request, self::RULES,self::MESSAGES)){
                 if(!($token = Auth::attempt($input))){;
@@ -71,7 +70,7 @@ class AuthController extends Controller
                 }
                 $user->lastLoginAt = date('Y-m-d h:m:s');
                 $user->save();
-                return $this->response()->item($user, new AuthenticateTransformer)->withHeader('Authorization', 'Bearer '.$token);
+                return $this->response()->item($user, new AuthenticateTransformer)->addMeta('token', $token);
             }
         }
         return null;
@@ -79,33 +78,34 @@ class AuthController extends Controller
 
     /**
      * 退出
-     * @param Request $request
      * @return Response|null
      * @throws
      * */
-    public function logout(Request $request)
+    public function logout()
     {
-        if(Auth::invalidate()){
-            $response = $this->response()->noContent();
-            $response->setContent(['message' => '成功退出系统']);
-            return $response;
-        }else{
-            $this->response()->error('退出失败', HTTP_STATUS_OK);
+        try{
+            if(Auth::logout(false)){
+                return $this->response()->item(new UpdateResponse('退出成功'), new UpdateResponseTransformer());
+            }else{
+                $this->response()->error('退出失败', HTTP_STATUS_OK);
+            }
+        }catch (\Exception $exception){
+
         }
         return null;
     }
 
     /**
      * 注册
-     * @param Request $request
      * @return Response|null
      * @throws
      * */
-    public function register(Request $request)
+    public function register( )
     {
         /** @var array $user */
         if(($user = $this->userModel->makeValidator()->passesOrFail(ValidatorInterface::RULE_CREATE))){
             $user['mobile_company'] = mobileCompany($user['mobile']);
+            $user['password'] = password($user['password'], true);
             $model = $this->userModel->create($user);
             if(!$model){
                 $this->response()->error('注册失败', HTTP_STATUS_INTERNAL_SERVER_ERROR);

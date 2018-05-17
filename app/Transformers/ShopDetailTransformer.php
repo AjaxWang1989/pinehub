@@ -24,6 +24,8 @@ class ShopDetailTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             /* place your other model properties here */
+            'country' => $model->country->only(['id', 'code', 'name']),
+            'province' => $model->province->only(['id', 'code', 'name']),
             'city' => $model->city->only(['id', 'name', 'code']),
             'county' => $model->county->only(['id', 'name', 'code']),
             'address' => $model->address,

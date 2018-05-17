@@ -1,0 +1,154 @@
+
+*{
+      margin: 0;
+      padding: 0;
+      font-size: 62.5%;
+}
+.warp {
+    width: 100%;
+    height: 100vh;
+    background-color: #f2f2f2;
+}
+.empty {
+    height: 88px;
+}
+.warp .content {
+    height: 800px;
+    width: 94%;
+    margin: 0 auto;
+    background-color: #fff;
+}
+.warp .header {
+    display: flex;
+    justify-content: space-between;
+    height:auto;
+    padding: 40px;
+    background-color: #fbfbfb;
+}
+.header .info {
+    height: 100%;
+    width: 60%;
+}
+.header .avatar {
+    /*height: 100%;
+    width: 100px;*/
+    border-radius: 4px;
+    /*background-color: #999;*/
+}
+.header .info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.header .title {
+    font-size: 3.8rem;
+    color: #000;
+}
+.header .name {
+    font-size: 3.4rem;
+    color: #666;
+}
+.content .payment {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 500px;
+    padding: 40px;
+}
+.payment .title {
+    font-size: 3.4rem;
+    color: #424242;
+}
+.payment .input-money {
+    height: 168px;
+    width: auto;
+    display: inline-block;
+    /*border-bottom: 2px solid #ccc;*/
+    background: none;
+    border: none;
+    -webkit-appearance: none;
+    outline: none;
+    font-size: 12rem;
+    text-indent: 40px;
+}
+.payment .input-area {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+.payment .input-area div:first-child {
+    display: inline-block;
+    line-height: 168px;
+    font-family: PingFang SC;
+    font-size: 8rem;
+    font-weight: bold;
+}
+.payment .btn {
+    height: 11rem;
+    width: 100%;
+    color: #fff;
+    font-size: 36px;
+    border:2px solid #209e1f;
+    outline: none;
+    border-radius: 10px;
+    background-color: #1aad19;
+}
+html,body {
+    height: 100%;
+    overflow: hidden;
+}
+.layer-content {
+    position: absolute;
+    left: 50%;
+    bottom: 0px;
+    width: 100%;
+    /*max-width: 640px;*/
+    height: auto;
+    z-index: 12;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.form_edit {
+    width: 100%;
+    background: #D1D4DD;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    align-content: flex-start;
+}
+
+.form_edit> div {
+    width: 33.33333%;
+    height: 100px;
+    text-align: center;
+    color: #505050;
+    line-height: 100px;
+    font-size: 7rem;
+    font-weight: 300;
+    background-color: #fff;
+}
+
+.form_edit> div:nth-child(3n) {
+    /*margin-right: 0;*/
+}
+
+.form_edit> div:last-child {
+    background-color: #f2f2f2;
+}
+.cursor{
+    height:168px;
+    display: inline-block;
+    border-left:2px solid blue;
+    width:2px;
+    margin-left: 5px;
+}
+.avatar{
+    width:150px;
+}
+.clearfix {
+    *zoom: 1;
+}

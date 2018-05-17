@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Entities\Shop;
 use App\Entities\User;
 use App\Http\Response\CreateResponse;
 use App\Http\Response\UpdateResponse;
@@ -12,12 +11,12 @@ use App\Transformers\Api\UpdateResponseTransformer;
 use App\Transformers\CreateResponeTransformer;
 use App\Transformers\ShopDetailTransformer;
 use App\Transformers\ShopsTransformer;
-use App\Transformers\StoreDetailTransformer;
 use App\Utils\GeoHash;
 use Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Response;
-use GeoJson\Geometry\Point;
+use Grimzy\LaravelMysqlSpatial\Types\Point as PointType;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Validator\Contracts\ValidatorInterface;
 
@@ -49,22 +48,19 @@ class ShopsController extends Controller
     public function store(Request $request)
     {
         $validator = $this->shopModel->makeValidator();
-//        print_r($request->toArray()); exit();
         $validator->with($request->toArray());
         /** @var array $store */
-        $attributes = $request->toArray();
-        if(!isset($attributes['manager_name']) || !isset($attributes['manager_mobile'])){
+        $attributes = $request->only(['country_id', 'province_id', 'city_id', 'county_id', 'address', 'description', 'code']);
+        if(!$request->input('manager_name', null) || !$request->input('manager_mobile', null)){
             $this->response()->error('参数manager_name或者manager_mobile缺少',
                 HTTP_STATUS_UNPROCESSABLE_ENTITY);
         }
-        $attributes['user_id'] = $this->getOwner($attributes['manager_mobile'], $attributes['manager_name'])->id;
-        unset($attributes['manager_mobile'], $attributes['manager_name']);
-        if(isset($attributes['lat']) && isset($attributes['long'])){
-            $attributes['position'] = new Point($attributes['lat'], $attributes['long']);
-            $attributes['geo_hash'] = (new GeoHash())->encode($attributes['lat'], $attributes['long']);
-            unset($attributes['lat'], $attributes['long']);
+        $attributes['user_id'] = $this->getOwner($request->input('manager_mobile', null), $request->input('manager_name', null))->id;
+        if($request->input('lat', null) && $request->input('lng', null)){
+            $attributes['position'] = new PointType($request->input('lat'), $request->input('lng'));
+            $attributes['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
-
+        Log::debug('shop data', $attributes);
         $store = $this->shopModel->create($attributes);
         if(!$store){
             $this->response()->error('创建失败', HTTP_STATUS_INTERNAL_SERVER_ERROR);
@@ -74,11 +70,12 @@ class ShopsController extends Controller
 
     /**
      * 更新店铺信息
-     * @param integer $id
+     * @param  int $id
      * @return Response
-     * @throws
-     * */
-    public function update(integer $id)
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
+     * @throws \Prettus\Validator\Exceptions\ValidatorException
+     */
+    public function update(int $id)
     {
         $validator = $this->shopModel->makeValidator();
         /** @var array $store */
@@ -103,7 +100,7 @@ class ShopsController extends Controller
     {
         $user = $this->userModel->findWhere(['mobile' => $mobile])->first();
         if(!$user){
-            $user = $this->userModel->create(['user_name' => $mobile, 'real_name' => $name, 'mobile' => $mobile]);
+            $user = $this->userModel->create(['user_name' => $mobile, 'password' => password($mobile),'real_name' => $name, 'mobile' => $mobile]);
         }
         return $user;
     }

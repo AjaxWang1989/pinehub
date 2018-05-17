@@ -1,15 +1,20 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: wang
- * Date: 2018/4/28
- * Time: 上午10:11
+ * User: wangzaron
+ * Date: 2018/5/17
+ * Time: 下午4:26
  */
 
 namespace App\Routes;
 
 
-class PaymentRoutes extends Routes
+class PaymentRoutes extends WebRoutes
 {
-
+    protected function subRoutes($router)
+    {
+        $router->get('/aggregate/payment', ['as' => 'aggregate.payment', 'uses' => 'PaymentController@aggregate']);
+        $router->get('/ali/aggregate/payment', ['as' => 'aggregate.ali.payment.get', 'uses' => 'AliPaymentController@aggregate']);
+        $router->get('/wechat/aggregate/payment', ['as' => 'aggregate.wechat.payment.get', 'uses' => 'WechatPaymentController@aggregate']);
+    }
 }

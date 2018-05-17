@@ -24,10 +24,13 @@ class ShopsTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             /* place your other model properties here */
+            'country' => $model->country->name,
+            'province' => $model->province->name,
             'city' => $model->city->name,
             'county' => $model->county->name,
             'address' => $model->address,
             'manager'  => $model->shopManager->only(['id', 'user_name', 'nickname', 'mobile']),
+            'description' => $model->description,
             'total_amount' => $model->totalAmount,
             'today_amount' => $model->todayAmount,
             'total_off_line_amount' => $model->totalOffLineAmount,

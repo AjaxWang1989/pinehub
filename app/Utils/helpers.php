@@ -96,3 +96,25 @@ if(!function_exists('mobileCompany')){
         }
     }
 }
+
+if(!function_exists('password')){
+    function password(string  $before, bool $handle = false){
+        return \Illuminate\Support\Facades\Hash::make($handle ? $before : md5($before.config('app.public_key')), [
+            'slat' => config('app.private_key')
+        ]);
+    }
+}
+
+if(!function_exists('generatorUID')){
+    function generatorUID (string $prefix) {
+        $now = \Illuminate\Support\Carbon::now();
+        $formatDate = $now->format('YmdHisu');
+        return $prefix.$formatDate;
+    }
+}
+
+if(!function_exists('paymentUriGenerator')) {
+    function paymentUriGenerator(string $route){
+        return config('app.payment_domain').$route;
+    }
+}

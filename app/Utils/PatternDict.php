@@ -14,7 +14,7 @@ define('CU_MOBILE_PATTERN', '/^(13[0-2]|155|156|145|185|186|176)\d{8}$/');
 //移动
 define('CM_MOBILE_PATTERN', '/^(134[0-9][0-8])\d{6}|(13[5-9]|15[0,1,2,7,8,9]|18[2,3,4,7,8]|147|178)\d{8}$/');
 
-define('PASSWORD_PATTERN','/^[a-zA-Z0-9\@\!\$\&\%]{5,20}/');
+define('PASSWORD_PATTERN','/^[a-zA-Z0-9\@\!\$\&\%]{6,20}/');
 
 define('USER_NAME_MAX_LENGTH', 64);
 
@@ -37,3 +37,10 @@ define('PAGE_LIMIT', 15);
 define('ALI_PAY_USER_AGENT', '/alipayclient/i');
 
 define('WECHAT_PAY_USER_AGENT', '/micromessenger/i');
+
+define('HTTP_METHOD_GET', 'GET');
+define('HTTP_METHOD_POST', 'POST');
+define('HTTP_METHOD_PUT', 'PUT');
+define('HTTP_METHOD_DELETE', 'DELETE');
+define('HTTP_METHOD_HEADER', 'HEADER');
+define('HTTP_METHOD_OPTIONS', 'OPTIONS');

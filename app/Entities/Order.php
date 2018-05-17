@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace App\Entities;
 
@@ -60,6 +60,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
+ * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostType($value)
  */
 class Order extends Model implements Transformable
 {
@@ -71,6 +73,7 @@ class Order extends Model implements Transformable
     const SEND = 400;
     const COMPLETED = 500;
 
+    const ORDER_NUMBER_PREFIX = 'PH';
     const ALI_PAY = 'ALI_PAY';
 
     const WECHAT_PAY = 'WECHAT_PAY';
@@ -80,6 +83,10 @@ class Order extends Model implements Transformable
     const ORDERING_PAY = 1;
     const E_SHOP_PAY =2;
 
+    const EXPIRES_SECOND = 600;
+
+    const VIRTRUAL_MERCHANDISE = 0;
+    const REAL_MERCHANDISE = 1;
     protected $dates = [
         'signed_at',
         'consigned_at',
@@ -105,5 +112,81 @@ class Order extends Model implements Transformable
     public function orderItems() : HasMany
     {
         return $this->hasMany(OrderItem::class, 'order_id', 'id');
+    }
+
+    public function buildAliWapPaymentOrder(){
+        $now = Carbon::now();
+        $expire = $now->addSeconds(self::EXPIRES_SECOND);
+        $clientIp = app('request')->getClientIp();
+        return [
+            'body'    => 'PineHub offline scan qrcode pay',
+            'subject'    => '支付宝手机网站支付',
+            'order_no'    => $this->code,
+            'timeout_express' => $expire->timestamp, // 表示必须 600s 内付款
+            'amount'    => $this->paymentAmount, // 单位为元 ,最小为0.01
+            'return_param' => 'tata', // 一定不要传入汉字，只能是 字母 数字组合
+            'client_ip' => $clientIp,// 客户地址
+            'goods_type' => self::REAL_MERCHANDISE,// 0—虚拟类商品，1—实物类商品
+            'store_id' => '',
+            'quit_url' => 'http://helei112g.github.io', // 收银台的返回按钮（用户打断支付操作时返回的地址,4.0.3版本新增）
+        ];
+    }
+
+    public function buildAliAggregatePaymentOrder() {
+        $now = Carbon::now();
+        $expire = $now->addSeconds(self::EXPIRES_SECOND);
+        $clientIp = app('request')->getClientIp();
+        return [
+            'body'    => 'ali qr pay',
+            'subject'    => '支付宝扫码支付',
+            'order_no'    => $this->code,
+            'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
+            'amount'    => $this->paymentAmount,// 单位为元 ,最小为0.01
+            'client_ip' => $clientIp,// 客户地址
+            'goods_type' => self::REAL_MERCHANDISE,// 0—虚拟类商品，1—实物类商品
+            'store_id' => '',
+            'operator_id' => '',
+            'terminal_id' => '',// 终端设备号(门店号或收银设备ID) 默认值 web
+        ];
+    }
+
+    public function buildWechatWapPaymentOrder(){
+        $now = Carbon::now();
+        $expire = $now->addSeconds(self::EXPIRES_SECOND);
+        $clientIp = app('request')->getClientIp();
+        return [
+            'body'    => 'PineHub offline scan qrcode pay',
+            'subject'    => '微信扫码支付',
+            'order_no'    => $this->code,
+            'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
+            'amount'    => $this->paymentAmount,// 微信沙箱模式，需要金额固定为3.01
+            'return_param' => '123',
+            'client_ip' => $clientIp,// 客户地址
+            // 如果是服务商，请提供以下参数
+            'sub_appid' => '',//微信分配的子商户公众账号ID
+            'sub_mch_id' => '',// 微信支付分配的子商户号
+        ];
+    }
+
+    public function buildWechatAggregatePaymentOrder() {
+        $now = Carbon::now();
+        $expire = $now->addSeconds(self::EXPIRES_SECOND);
+        $clientIp = app('request')->getClientIp();
+        $openId = app('request')->input('open_id', null);
+        return [
+            'body'    => 'PineHub offline scan qrcode pay',
+            'subject'    => '微信扫码支付',
+            'order_no'    => $this->code,
+            'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
+            'amount'    => $this->paymentAmount,// 微信沙箱模式，需要金额固定为3.01
+            'return_param' => '123',
+            'client_ip' => $clientIp,// 客户地址
+            'open_id' => $openId,
+            'scene_info' => [
+                'type' => 'Wap',// IOS  Android  Wap  腾讯建议 IOS  ANDROID 采用app支付
+                'wap_url' => '',//自己的 wap 地址
+                'wap_name' => '测试充值',
+            ],
+        ];
     }
 }

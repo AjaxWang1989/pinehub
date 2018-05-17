@@ -22,8 +22,9 @@ class ShopsValidator extends LaravelValidator
      */
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'name' => ['required', 'string', 'max:255'],
+            'name' => [ 'string', 'size:32'],
             'user_id' => ['integer'],
+            'description' => ['string'],
             'country_id'     => ['required', 'integer'],
             'province_id'    => ['required', 'integer'],
             'city_id'        => ['required', 'integer'],
@@ -32,9 +33,10 @@ class ShopsValidator extends LaravelValidator
             'position'       => ['required']
         ],
         ValidatorInterface::RULE_UPDATE => [
-            'name' => [ 'string', 'max:255'],
+            //'name' => [ 'string', 'max:255'],
             'manager_mobile' => ['regex:'.MOBILE_PATTERN],
             'manager_name'   => ['string', 'max:255'],
+            'description' => ['string'],
             'country_id'     => [ 'integer'],
             'province_id'    => [ 'integer'],
             'city_id'        => [ 'integer'],
