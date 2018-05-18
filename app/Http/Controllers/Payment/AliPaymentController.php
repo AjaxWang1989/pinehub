@@ -26,7 +26,7 @@ class AliPaymentController extends Controller
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop]);
             }catch (\Exception $exception){
-                return View('404');
+                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY]);
             }
 
         }
