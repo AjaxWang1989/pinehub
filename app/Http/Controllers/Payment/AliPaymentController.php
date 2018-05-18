@@ -22,8 +22,13 @@ class AliPaymentController extends Controller
     public function aggregate(LumenRequest $request)
     {
         if($request->method() === HTTP_METHOD_GET){
-            $shop = $this->shopModel->find($request->input('shop_id'));
-            return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop]);
+            try{
+                $shop = $this->shopModel->find($request->input('shop_id'));
+                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop]);
+            }catch (\Exception $exception){
+                return View('404');
+            }
+
         }
         $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
