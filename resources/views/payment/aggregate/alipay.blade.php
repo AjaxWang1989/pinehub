@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>PineHub支付</title>
+    <title>扫码支付</title>
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
     <style type="text/css">
         *{
@@ -195,12 +195,12 @@
                 <img class="user-avatar" width="100%" src="{{ url('images/logo_ali.png') }}">
             </div>
             <div class="info">
-                { @if (isset($shop)) }
+                @if (isset($shop))
                 <p class="title">福年来早餐车</p>
                 <p class="name"><span class="shop">商家</span>餐车(编号：{{ $shop['code'] }})</p>
-                {@else}
-                <p class="title">Pinehub扫码支付</p>
-                {@endif}
+                @else
+                <p class="title">福年来扫码支付</p>
+                @endif
             </div>
         </div>
         <div class="payment">
