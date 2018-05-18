@@ -90,9 +90,9 @@ class PaymentController extends Controller
             return app('wechat.official_account.default')
                 ->oauth->scopes(['snsapi_base'])
                 ->setRequest($request)
-                ->redirect(paymentUriGenerator('/wechat/aggregate/payment?shop_id='.$request->input('shop_id', null)));
+                ->redirect(paymentUriGenerator('/wechat/aggregate.html?shop_id='.$request->input('shop_id', null)));
         } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
-            return redirect(paymentUriGenerator('/ali/aggregate/payment?shop_id='.$request->input('shop_id', null)));
+            return redirect(paymentUriGenerator('/ali/aggregate.html?shop_id='.$request->input('shop_id', null)));
         } else {
             return view('404');
         }
