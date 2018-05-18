@@ -39,6 +39,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     protected $loaded = false;
 
+    protected $prefix = null;
+
     /**
      * Bootstrap services.
      *
@@ -70,12 +72,9 @@ class RoutesManagerServiceProvider extends ServiceProvider
     {
         $request = Request::capture();
         $this->host = $request->getHost();
-        $domains = explode('.', $this->host);
-        if($domains[0] === 'www')
-        {
-            array_shift($domains);
-        }
-        $this->domain = implode('.', $domains);
+        list( $domain, $prefix) = domainAndPrefix($request);
+        $this->prefix = $prefix;
+        $this->domain = $domain;
         $this->registerApiServices();
         $this->registerConfig();
         $this->registerRoutes();
@@ -88,6 +87,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
         if($this->app['isApiServer'] || $this->app->runningInConsole()){
             $this->app->register(LumenServiceProvider::class);
             $this->app->register(ApiExceptionHandlerServiceProvider::class);
+            $this->app->register(ApiAuthServiceProvider::class);
         }
 
     }
@@ -139,7 +139,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
             }
         }
         if($this->domain)
-            config(['api' => $this->config]);
+            config(['api' => array_merge(config('api'), $this->config)]);
         else
             $this->config = config('api');
     }

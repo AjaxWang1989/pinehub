@@ -128,7 +128,7 @@ class Order extends Model implements Transformable
             'client_ip' => $clientIp,// 客户地址
             'goods_type' => self::REAL_MERCHANDISE,// 0—虚拟类商品，1—实物类商品
             'store_id' => '',
-            'quit_url' => 'http://helei112g.github.io', // 收银台的返回按钮（用户打断支付操作时返回的地址,4.0.3版本新增）
+            'quit_url' => '', // 收银台的返回按钮（用户打断支付操作时返回的地址,4.0.3版本新增）
         ];
     }
 

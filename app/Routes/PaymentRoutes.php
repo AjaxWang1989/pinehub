@@ -13,8 +13,8 @@ class PaymentRoutes extends WebRoutes
 {
     protected function subRoutes($router)
     {
-        $router->get('/aggregate/payment', ['as' => 'aggregate.payment', 'uses' => 'PaymentController@aggregate']);
-        $router->get('/ali/aggregate/payment', ['as' => 'aggregate.ali.payment.get', 'uses' => 'AliPaymentController@aggregate']);
-        $router->get('/wechat/aggregate/payment', ['as' => 'aggregate.wechat.payment.get', 'uses' => 'WechatPaymentController@aggregate']);
+        $router->get('/aggregate.html', ['as' => 'aggregate.payment', 'uses' => 'PaymentController@aggregate']);
+        $router->get('/ali/aggregate.html', ['as' => 'aggregate.ali.payment.get', 'uses' => 'AliPaymentController@aggregate']);
+        $router->get('/wechat/aggregate.html', ['as' => 'aggregate.wechat.payment.get', 'uses' => 'WechatPaymentController@aggregate']);
     }
 }

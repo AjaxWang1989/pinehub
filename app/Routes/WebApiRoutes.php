@@ -10,7 +10,6 @@ use Dingo\Api\Routing\Router as DingoRouter;
 use Laravel\Lumen\Routing\Router as LumenRouter;
 class WebApiRoutes extends ApiRoutes
 {
-    use CommonApiRoutes;
 
     /**
      * @param DingoRouter|LumenRouter $router

@@ -115,6 +115,28 @@ if(!function_exists('generatorUID')){
 
 if(!function_exists('paymentUriGenerator')) {
     function paymentUriGenerator(string $route){
-        return config('app.payment_domain').$route;
+        return env('WEB_PROTO', 'http')."://".config('app.payment_domain').$route;
+    }
+}
+
+if(!function_exists('paymentApiUriGenerator')) {
+    function paymentApiUriGenerator(string $route){
+        return env('WEB_PROTO', 'http')."://".config('app.payment_api_domain').$route;
+    }
+}
+
+if(!function_exists('domainAndPrefix')) {
+    function domainAndPrefix (\Illuminate\Http\Request $request) {
+        $domain = $request->getHost();
+        $domains = explode('.', $domain);
+        if($domains[0] === 'www')
+        {
+            array_shift($domains);
+        }
+        $domain = implode('.', $domains);
+        $path = $request->path();
+        $tmp = explode('/', $path);
+        $prefix = $tmp[0];
+        return [$domain, $prefix];
     }
 }

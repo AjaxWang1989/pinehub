@@ -26,10 +26,8 @@ class ApiAuthServiceProvider extends ServiceProvider
     {
         //
         //dingo auth JSON Web Tokens (JWT)
-        if($this->app->has('api.auth')){
-            app('api.auth')->extend('jwt', function ($app) {
-                return new DingoJWT($app['Tymon\JWTAuth\JWTAuth']);
-            });
-        }
+        app('api.auth')->extend('jwt', function ($app) {
+            return new DingoJWT($app['Tymon\JWTAuth\JWTAuth']);
+        });
     }
 }

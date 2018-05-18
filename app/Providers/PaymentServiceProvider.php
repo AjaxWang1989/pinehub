@@ -57,49 +57,49 @@ class PaymentServiceProvider extends ServiceProvider
 
         $this->app->singleton('payment.wechat.app', function (){
             $chargeContext = new ChargeContext();
-            $config = config('wechat.payment');
+            $config = config('wechat.other_sdk_payment');
             $chargeContext->initCharge(Config::WX_CHANNEL_APP, $config);
             return $chargeContext;
         });
 
         $this->app->singleton('payment.wechat.wap', function (){
             $chargeContext = new ChargeContext();
-            $config = config('wechat.payment');
+            $config = config('wechat.other_sdk_payment');
             $chargeContext->initCharge(Config::WX_CHANNEL_WAP, $config);
             return $chargeContext;
         });
 
         $this->app->singleton('payment.wechat.public', function (){
             $chargeContext = new ChargeContext();
-            $config = config('wechat.payment');
+            $config = config('wechat.other_sdk_payment');
             $chargeContext->initCharge(Config::WX_CHANNEL_PUB, $config);
             return $chargeContext;
         });
 
         $this->app->singleton('payment.wechat.bar', function (){
             $chargeContext = new ChargeContext();
-            $config = config('wechat.payment');
+            $config = config('wechat.other_sdk_payment');
             $chargeContext->initCharge(Config::WX_CHANNEL_BAR, $config);
             return $chargeContext;
         });
 
         $this->app->singleton('payment.wechat.miniProgram', function (){
             $chargeContext = new ChargeContext();
-            $config = config('wechat.payment');
+            $config = config('wechat.other_sdk_payment');
             $chargeContext->initCharge(Config::WX_CHANNEL_LITE, $config);
             return $chargeContext;
         });
 
         $this->app->singleton('payment.wechat.qr', function (){
             $chargeContext = new ChargeContext();
-            $config = config('wechat.payment');
+            $config = config('wechat.other_sdk_payment');
             $chargeContext->initCharge(Config::WX_CHANNEL_QR, $config);
             return $chargeContext;
         });
 
         $this->app->singleton('payment.wechat.notify', function (){
             $chargeContext = new NotifyContext();
-            $config = config('wechat.payment');
+            $config = config('wechat.other_sdk_payment');
             $chargeContext->initNotify(Config::WX_CHARGE, $config);
             return $chargeContext;
         });
