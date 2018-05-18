@@ -25,7 +25,7 @@ class CreateShopsTable extends Migration
             $table->unsignedInteger('county_id')->comment('所属区县id');
             $table->string('address')->nullable()->comment('详细地址');
             $table->point('position')->nullable()->comment('店铺定位');
-            $table->text('position')->nullable()->comment('店铺描述');
+            $table->text('description')->nullable()->comment('店铺描述');
             $table->string('geo_hash')->nullable()->comment('位置hash编码');
             $table->float('total_amount', 12, 2)->default(0)->comment('店铺总计营业额');
             $table->float('today_amount', 12, 2)->default(0)->comment('今日营业额');
