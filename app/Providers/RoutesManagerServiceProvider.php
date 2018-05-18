@@ -138,12 +138,12 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 break;
             }
         }
-        //$config = config();
-        //dd($config);
-        if($this->domain)
-            config(['api' => array_merge(config('api'), $this->config)]);
-        else
-            $this->config = config('api');
+        if($this->app['isApiServer']){
+            if($this->domain)
+                config(['api' => array_merge(config('api'), $this->config)]);
+            else
+                $this->config = config('api');
+        }
     }
 
     protected function registerRoutes()
