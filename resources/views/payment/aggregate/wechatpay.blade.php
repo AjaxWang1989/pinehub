@@ -234,6 +234,7 @@
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
     $(function(){
         FastClick.attach(document.body);
