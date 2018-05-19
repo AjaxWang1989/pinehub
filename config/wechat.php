@@ -134,15 +134,15 @@ return [
         'app_id'             => env('WECHAT_PAYMENT_APPID', 'wx581a7ad7ca810da6'),
         'mch_id'             => env('WECHAT_PAYMENT_MCH_ID', '1502557441'),
         'md5_key'                => env('WECHAT_PAYMENT_KEY', 'e4c7096983336907b9e04fd1489de954'),
-        'app_cert_pem'          => storage_path(env('WECHAT_PAYMENT_CERT_PATH', '/wechat/cert/apiclient_cert.pem')),    // XXX: 绝对路径！！！！
-        'app_key_pem'           => storage_path(env('WECHAT_PAYMENT_KEY_PATH', '/wechat/cert/apiclient_key.pem')),      // XXX: 绝对路径！！！！
-        'sign_type'         => 'MD5',// MD5  HMAC-SHA256
+        'app_cert_pem'          => storage_path(env('WECHAT_PAYMENT_CERT_PATH', 'app/wechat/cert/apiclient_cert.pem')),    // XXX: 绝对路径！！！！
+        'app_key_pem'           => storage_path(env('WECHAT_PAYMENT_KEY_PATH', 'app/wechat/cert/apiclient_key.pem')),      // XXX: 绝对路径！！！！
+        'sign_type'         => env('WECHAT_PAYMENT_SIGN_TYPE', 'MD5'),// MD5  HMAC-SHA256
         'limit_pay'         => [
             //'no_credit',
         ],// 指定不能使用信用卡支付   不传入，则均可使用
-        'fee_type'          => 'CNY',// 货币类型  当前仅支持该字段
-        'notify_url'        => paymentApiUriGenerator('/wechat/payment/notify'),
-        'redirect_url'      => paymentUriGenerator('/wechat/aggregate.html'),// 如果是h5支付，可以设置该值，返回到指定页面
-        'return_raw'        => false,// 在处理回调时，是否直接返回原始数据，默认为true
+        'fee_type'          => env('WECHAT_PAYMENT_FEE_TYPE', 'CNY'),// 货币类型  当前仅支持该字段
+        'notify_url'        => paymentApiUriGenerator(env('WECHAT_PAYMENT_NOTIFY_URL', '/wechat/payment/notify')),
+        'redirect_url'      => paymentUriGenerator(env('WECHAT_PAYMENT_REDIRECT_URL', '/wechat/aggregate.html')),// 如果是h5支付，可以设置该值，返回到指定页面
+        'return_raw'        => env('WECHAT_PAYMENT_RETURN_RAW', false),// 在处理回调时，是否直接返回原始数据，默认为true
     ]
 ];

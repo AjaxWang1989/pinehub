@@ -56,6 +56,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $country 国家
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @property string|null $realName 真实姓名
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereRealName($value)
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {

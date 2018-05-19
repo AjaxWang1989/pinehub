@@ -63,6 +63,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $buyerUserId 买家ID
  */
 class OrderItem extends Model implements Transformable
 {

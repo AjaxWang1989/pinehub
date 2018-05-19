@@ -62,6 +62,9 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostType($value)
+ * @property string|null $receiverCity 收货城市
+ * @property string|null $receiverDistrict 收货人所在城市区县
+ * @property string|null $receiverAddress 收货地址
  */
 class Order extends Model implements Transformable
 {

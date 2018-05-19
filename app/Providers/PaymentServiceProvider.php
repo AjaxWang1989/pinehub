@@ -116,7 +116,7 @@ class PaymentServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('wechat.payment.aggregate', function (Application $application){
-            return $application->make('payment.wechat.wap');
+            return $application->make('payment.wechat.public');
         });
 
         $this->app->singleton('ali.payment.aggregate', function (Application $application){

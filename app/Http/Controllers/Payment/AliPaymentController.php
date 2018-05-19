@@ -22,11 +22,12 @@ class AliPaymentController extends Controller
     public function aggregate(LumenRequest $request)
     {
         if($request->method() === HTTP_METHOD_GET){
+            $paymentApi = paymentApiUriGenerator('/ali/aggregate');
             try{
                 $shop = $this->shopModel->find($request->input('shop_id'));
-                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop]);
+                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop, 'paymentApi' => $paymentApi]);
             }catch (\Exception $exception){
-                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY]);
+                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'paymentApi' => $paymentApi]);
             }
 
         }

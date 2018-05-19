@@ -305,26 +305,26 @@
                 $('.btn').addClass('active');
                 $('.btn').attr('disabled', true);
             }
-        })
-    })
-    $('.btn').click(function(){
-        var name =  $(".input-money")[0].innerHTML;
-        $.ajax({
-            url:"hello.php",
-            type:"POST",
-            data:{'search':name},
-            beforeSend: function(){
-                alert("this is before send");
-            },
-            success:function(data)
-            {
-                alert(data+"123");
-            },
-            error: function(){
-                alert('error');
-            }
         });
-    })
+        $('.btn').click(function(){
+            var amount =  parseFloat($(".input-money")[0].innerHTML);
+            $.ajax({
+                url:"{{ $paymentApi }}",
+                type:"POST",
+                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount},
+                beforeSend: function(){
+                    alert("this is before send");
+                },
+                success:function(data)
+                {
+                    alert(data+"123");
+                },
+                error: function(){
+                    alert('error');
+                }
+            });
+        });
+    });
 </script>
 </body>
 </html>
