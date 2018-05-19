@@ -195,8 +195,12 @@
                 <img class="user-avatar" width="100%" src="{{ url('images/logo_wechat.png') }}">
             </div>
             <div class="info">
-                <p class="title">福年来早餐车</p>
-                <p class="name"><span class="shop">商家</span>餐车(编号：{{ $shop['code'] }})</p>
+                @if (isset($shop))
+                    <p class="title">福年来早餐车</p>
+                    <p class="name"><span class="shop">商家</span>餐车(编号：{{ $shop['code'] }})</p>
+                @else
+                    <p class="title">福年来扫码支付</p>
+                @endif
             </div>
         </div>
         <div class="payment">

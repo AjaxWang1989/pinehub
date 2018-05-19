@@ -20,15 +20,15 @@ class WechatPaymentController extends Controller
     public function aggregate(LumenRequest $request)
     {
         if($request->method() === HTTP_METHOD_GET){
+            $openId= null;
+            $user = app('wechat.official_account.default')
+                ->oauth->setRequest($request)->user();
+            $openId = $user->getId();
             try{
-                $openId= null;
-                $user = app('wechat.official_account.default')
-                    ->oauth->setRequest($request)->user();
-                $openId = $user->getId();
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop]);
-            }catch (\Exception $exception){
-                return View('404');
+            }catch (\Exception $exception) {
+                return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId]);
             }
         }
         $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);

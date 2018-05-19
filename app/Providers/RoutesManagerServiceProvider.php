@@ -129,13 +129,18 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 ];
                 break;
             }
-            case env('WEB_PAYMENT_DOMAIN') : {
-                $this->config = [
-                    'domain' => $this->host,
-                    'version' => null,
-                    'prefix'  => null
-                ];
-                break;
+            case env('WEB_DOMAIN') : {
+                switch ($this->prefix) {
+                    case env('WEB_PAYMENT_PREFIX'):{
+                        $this->config = [
+                            'domain' => $this->host,
+                            'version' => env('WEB_VERSION'),
+                            'prefix'  => env('WEB_PAYMENT_PREFIX')
+                        ];
+                        break;
+                    }
+                }
+
             }
         }
         if($this->app['isApiServer']){
@@ -177,11 +182,16 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 });
                 break;
             }
-            case env('WEB_PAYMENT_DOMAIN') : {
-                $this->app->singleton('app.routes',function (){
-                    return new PaymentRoutes($this->app, $this->config['version'], 'Payment',
-                        $this->config['prefix'], $this->config['domain']);
-                });
+            case env('WEB_DOMAIN') : {
+                switch ($this->prefix){
+                    case env('WEB_PAYMENT_PREFIX'):{
+                        $this->app->singleton('app.routes',function (){
+                            return new PaymentRoutes($this->app, $this->config['version'], 'Payment',
+                                $this->config['prefix'], $this->config['domain']);
+                        });
+                        break;
+                    }
+                }
                 break;
             }
             default: {

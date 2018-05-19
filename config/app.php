@@ -25,6 +25,7 @@ return [
     'payment_domain' =>  env('WEB_PAYMENT_DOMAIN', 'payment.pinehub'),
     'payment_api_domain' => env('PAYMENT_API_DOMAIN', 'api.payment.pinehub'),
 
+    'protocol' => env('WEB_PROTO', 'http://'),
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration

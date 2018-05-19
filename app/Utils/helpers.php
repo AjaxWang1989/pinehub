@@ -113,9 +113,9 @@ if(!function_exists('generatorUID')){
     }
 }
 
-if(!function_exists('paymentUriGenerator')) {
-    function paymentUriGenerator(string $route){
-        return env('WEB_PROTO', 'http')."://".config('app.payment_domain').$route;
+if(!function_exists('webUriGenerator')) {
+    function webUriGenerator(string $route) {
+        return config('protocol').config('app.payment_domain').(env('WEB_PAYMENT_PREFIX') ? env('WEB_PAYMENT_PREFIX') : '').$route;
     }
 }
 
