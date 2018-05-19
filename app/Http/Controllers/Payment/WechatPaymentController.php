@@ -21,10 +21,10 @@ class WechatPaymentController extends Controller
     {
         if($request->method() === HTTP_METHOD_GET){
             $openId= null;
-            $user = app('wechat.official_account.default')
-                ->oauth->setRequest($request)->user();
-            $openId = $user->getId();
             try{
+                $user = app('wechat.official_account.default')
+                    ->oauth->setRequest($request)->user();
+                $openId = $user->getId();
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop]);
             }catch (\Exception $exception) {
