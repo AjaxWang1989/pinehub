@@ -24,7 +24,7 @@ class Cross
             $response = $next($request);
             $this->setHeader($response);
         }
-
+        dd('cross');
         return $response;
     }
 
