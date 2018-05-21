@@ -20,7 +20,7 @@ class CreateOrderItemsTable extends Migration
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
             $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家ID');
             $table->unsignedInteger('order_id')->comment('订单id');
-            $table->string('code', 16)->comment('订单子项编码');
+            $table->string('code', 24)->comment('订单子项编码');
             $table->float('total_amount')->default(0)->comment('应付');
             $table->float('discount_amount')->default(0)->comment('优惠');
             $table->float('payment_amount')->default(0)->comment('实付');
