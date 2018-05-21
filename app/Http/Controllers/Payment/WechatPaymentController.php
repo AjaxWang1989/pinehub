@@ -22,6 +22,7 @@ class WechatPaymentController extends Controller
         if($request->method() === HTTP_METHOD_GET){
             $openId= null;
             $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
+            $accept = "application/vnd.pinehub.v0.0.1+json";
             $config = app('wechat.official_account.default')->jssdk->buildConfig(['chooseWXPay']);
             try{
                 $user = app('wechat.official_account.default')
@@ -29,10 +30,10 @@ class WechatPaymentController extends Controller
                 $openId = $user->getId();
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop,
-                    'paymentApi' => $paymentApi, 'config' => $config]);
+                    'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
             }catch (\Exception $exception) {
                 return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId,
-                    'paymentApi' => $paymentApi, 'config' => $config]);
+                    'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
             }
         }
         $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
