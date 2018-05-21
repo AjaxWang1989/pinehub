@@ -24,6 +24,7 @@ use Dingo\Api\Exception\ValidationHttpException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
 
 class OrderBuilder implements InterfaceServiceHandler
@@ -125,6 +126,7 @@ class OrderBuilder implements InterfaceServiceHandler
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['order_id'] = $orderModel->id;
+                    Log::debug('order item data ', $orderItem->toArray());
                     $orderItemModel = $this->orderItem->create($orderItem->except(['order_item_product'])
                         ->toArray());
                     if(isset($orderItem['order_item_product'])){
