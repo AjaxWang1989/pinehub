@@ -317,6 +317,7 @@
                 url:"{{ $paymentApi }}",
                 accept: "{{ $accept }}",
                 type:"POST",
+                'Content-Type': 'application/json',
                 data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount},
                 beforeSend: function(){
                     wx.config({!! $config !!});
