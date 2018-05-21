@@ -330,6 +330,7 @@
                 },
                 success:function(data) {
                     let $data =data;
+                    $data['timeStamp'] = data['timestamp'];
                     $data['success'] = function (res) {
                         console.log(res);
                     };
