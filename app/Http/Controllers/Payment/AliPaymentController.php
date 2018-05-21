@@ -23,11 +23,14 @@ class AliPaymentController extends Controller
     {
         if($request->method() === HTTP_METHOD_GET){
             $paymentApi = paymentApiUriGenerator('/ali/aggregate');
+            $accept = "application/vnd.pinehub.v0.0.1+json";
             try{
                 $shop = $this->shopModel->find($request->input('shop_id'));
-                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop, 'paymentApi' => $paymentApi]);
+                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop,
+                    'paymentApi' => $paymentApi, 'accept' => $accept]);
             }catch (\Exception $exception){
-                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'paymentApi' => $paymentApi]);
+                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY,
+                    'paymentApi' => $paymentApi, 'accept' => $accept]);
             }
 
         }
