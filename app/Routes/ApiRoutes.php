@@ -9,6 +9,7 @@
 namespace App\Routes;
 
 
+use App\Http\Middleware\Cross;
 use Laravel\Lumen\Application;
 
 class ApiRoutes extends Routes
@@ -18,6 +19,7 @@ class ApiRoutes extends Routes
 
         parent::__construct($app, $version, $namespace, $prefix, $domain);
         $this->router = $this->app->make('api.router');
+        $this->app->middleware(Cross::class);
     }
 
     protected function routesRegister()
