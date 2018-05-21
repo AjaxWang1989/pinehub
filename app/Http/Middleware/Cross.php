@@ -25,12 +25,13 @@ class Cross
 //            $this->setHeader($response);
 //        }
         $response = $next($request);
+        $this->setHeader($response);
         //Log::debug('header', $response->headers->all());
         return $response;
     }
 
     private function setHeader( &$response ) {
-        Log::debug('response', [$response instanceof RedirectResponse, class_basename($response)]);
+//        Log::debug('response', [$response instanceof RedirectResponse, class_basename($response)]);
         if(!($response instanceof RedirectResponse)) {
             $response->header('Access-Control-Allow-Origin', '*');
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
