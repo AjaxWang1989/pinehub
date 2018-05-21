@@ -186,9 +186,9 @@ class Order extends Model implements Transformable
             'client_ip' => $clientIp,// 客户地址
             'openid' => $openId,
             // 如果是服务商，请提供以下参数
-            'sub_appid' => '',//微信分配的子商户公众账号ID
-            'sub_mch_id' => '',// 微信支付分配的子商户号
-            'sub_openid' => '',// 用户在子商户appid下的唯一标识
+//            'sub_appid' => '',//微信分配的子商户公众账号ID
+//            'sub_mch_id' => '',// 微信支付分配的子商户号
+//            'sub_openid' => '',// 用户在子商户appid下的唯一标识
         ];
     }
 }
