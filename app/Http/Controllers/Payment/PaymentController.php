@@ -17,6 +17,7 @@ use App\Repositories\OrderRepositoryEloquent;
 use App\Repositories\ShopRepositoryEloquent;
 use App\Transformers\Api\UpdateResponseTransformer;
 use Dingo\Api\Http\Request as DingoRequest;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
@@ -62,6 +63,7 @@ class PaymentController extends Controller
     {
         try{
             $signed = $charge->charge($order);
+            Log::debug('signed', [$signed]);
             return $signed;
         }catch (PayException $exception){
             $this->response()->error($exception->errorMessage(), HTTP_STATUS_INTERNAL_SERVER_ERROR);
