@@ -24,11 +24,11 @@ class Cross
             $response = $next($request);
             $this->setHeader($response);
         }
-        dd('cross');
+
         return $response;
     }
 
-    private function setHeader( $response) {
+    private function setHeader( &$response ) {
         if(!($response instanceof RedirectResponse)) {
             Log::debug('set header');
             return $response->header('Access-Control-Allow-Origin', '*')
