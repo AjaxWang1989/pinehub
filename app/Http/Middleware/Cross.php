@@ -17,7 +17,6 @@ class Cross
      */
     public function handle($request, Closure $next = null)
     {
-
         $response = $next($request);
         $this->setHeader($response);
         return $response;

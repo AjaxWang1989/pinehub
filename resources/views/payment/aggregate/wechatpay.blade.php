@@ -315,9 +315,12 @@
             var amount =  parseFloat($(".input-money")[0].innerHTML);
             $.ajax({
                 url:"{{ $paymentApi }}",
-                accept: "{{ $accept }}",
                 type:"POST",
-                'Content-Type': 'application/json',
+
+                headers:{
+                    accept: "{{ $accept }}",
+                    //'Content-Type': 'application/json',
+                },
                 data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount},
                 beforeSend: function(){
                     wx.config({!! $config !!});
