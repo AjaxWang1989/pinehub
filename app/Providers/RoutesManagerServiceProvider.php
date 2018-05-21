@@ -74,7 +74,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $request = Request::capture();
         $this->host = $request->getHost();
         list( $domain, $prefix) = domainAndPrefix($request);
-        Log::debug("domain {$domain}, prefix {$prefix}");
+        Log::debug("domain {$domain}, prefix {$prefix} url {$request->fullUrl()}");
         $this->prefix = $prefix;
         $this->domain = $domain;
         $this->registerApiServices();
