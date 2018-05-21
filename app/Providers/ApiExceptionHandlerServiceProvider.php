@@ -55,7 +55,7 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                         break;
                     }
                 }
-                (new Response( $response))->send();
+                return (new Response( $response));
             });
         }
 
