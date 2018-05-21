@@ -185,11 +185,10 @@ class Order extends Model implements Transformable
             'return_param' => '123',
             'client_ip' => $clientIp,// 客户地址
             'open_id' => $openId,
-            'scene_info' => [
-                'type' => 'Wap',// IOS  Android  Wap  腾讯建议 IOS  ANDROID 采用app支付
-                'wap_url' => '',//自己的 wap 地址
-                'wap_name' => '测试充值',
-            ],
+            // 如果是服务商，请提供以下参数
+            'sub_appid' => '',//微信分配的子商户公众账号ID
+            'sub_mch_id' => '',// 微信支付分配的子商户号
+            'sub_openid' => '',// 用户在子商户appid下的唯一标识
         ];
     }
 }
