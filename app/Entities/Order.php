@@ -184,7 +184,7 @@ class Order extends Model implements Transformable
             'amount'    => $this->paymentAmount,// 微信沙箱模式，需要金额固定为3.01
             'return_param' => '123',
             'client_ip' => $clientIp,// 客户地址
-            'open_id' => $openId,
+            'openid' => $openId,
             // 如果是服务商，请提供以下参数
             'sub_appid' => '',//微信分配的子商户公众账号ID
             'sub_mch_id' => '',// 微信支付分配的子商户号
