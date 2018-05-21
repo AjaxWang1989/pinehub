@@ -318,7 +318,10 @@
                 type:"POST",
                 data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount},
                 beforeSend: function(){
-                    alert("this is before send");
+                    wx.config({!! $config !!});
+                    wx.ready(function () {
+                        console.log('wx-sdk is ready to call the api');
+                    });
                 },
                 success:function(data)
                 {

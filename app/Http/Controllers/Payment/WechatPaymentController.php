@@ -22,14 +22,17 @@ class WechatPaymentController extends Controller
         if($request->method() === HTTP_METHOD_GET){
             $openId= null;
             $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
+            $config = app('wechat.official_account.default')->jssdk->buildConfig(['chooseWXPay']);
             try{
                 $user = app('wechat.official_account.default')
                     ->oauth->setRequest($request)->user();
                 $openId = $user->getId();
                 $shop = $this->shopModel->find($request->input('shop_id'));
-                return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop, 'paymentApi' => $paymentApi]);
+                return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop,
+                    'paymentApi' => $paymentApi, 'config' => $config]);
             }catch (\Exception $exception) {
-                return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'paymentApi' => $paymentApi]);
+                return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId,
+                    'paymentApi' => $paymentApi, 'config' => $config]);
             }
         }
         $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
