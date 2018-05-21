@@ -141,13 +141,22 @@ class RoutesManagerServiceProvider extends ServiceProvider
                     }
                 }
 
+                break;
+
             }
         }
+
         if($this->app['isApiServer']){
             if($this->domain)
                 config(['api' => array_merge(config('api'), $this->config)]);
             else
                 $this->config = config('api');
+        }else{
+            $app = config('app');
+            $app['web_prefix'] = $this->config['prefix'];
+            config([
+                'app' => $app
+            ]);
         }
     }
 

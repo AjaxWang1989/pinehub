@@ -115,13 +115,13 @@ if(!function_exists('generatorUID')){
 
 if(!function_exists('webUriGenerator')) {
     function webUriGenerator(string $route) {
-        return config('protocol').config('app.payment_domain').(env('WEB_PAYMENT_PREFIX') ? env('WEB_PAYMENT_PREFIX') : '').$route;
+        return config('app.protocol').config('app.web_domain').(config('app.web_prefix') ? '/'.config('app.web_prefix') : '').$route;
     }
 }
 
 if(!function_exists('paymentApiUriGenerator')) {
     function paymentApiUriGenerator(string $route){
-        return env('WEB_PROTO', 'http')."://".config('app.payment_api_domain').$route;
+        return config('app.protocol').config('app.payment_api_domain').(env('PAYMENT_API_PREFIX')? '/'.env('PAYMENT_API_PREFIX') : '').$route;
     }
 }
 

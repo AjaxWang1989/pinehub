@@ -29,6 +29,7 @@ class Cross
 
     private function setHeader( $response) {
         if(!($response instanceof RedirectResponse)) {
+            dd('set header');
             return $response->header('Access-Control-Allow-Origin', '*')
                 ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Accept, Cookie')
                 ->header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
