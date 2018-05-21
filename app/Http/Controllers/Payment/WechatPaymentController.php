@@ -28,7 +28,7 @@ class WechatPaymentController extends Controller
                 $user = app('wechat.official_account.default')
                     ->oauth->setRequest($request)->user();
                 $openId = $user->getId();
-                $request->getSession()->push('wx_open_id', $openId);
+
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop,
                     'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
@@ -37,7 +37,7 @@ class WechatPaymentController extends Controller
                     'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
             }
         }
-        $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY, 'open_id' => $request->getSession()->get('wx_open_id')]);
+        $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('wechat.payment.aggregate');
         return $this->response()->created( $this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge))->statusCode(HTTP_STATUS_NOT_MODIFIED);
