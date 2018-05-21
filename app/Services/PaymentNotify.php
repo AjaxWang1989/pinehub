@@ -40,7 +40,7 @@ class PaymentNotify implements PayNotifyInterface
                     $data['signed_at'] = $order->signedAt;
                     $data['consigned_at'] = $order->consignedAt;
                 }
-                $data['status'] = $order->paidAt;
+                $data['status'] = $order->status;
                 $order->orderItems()->update($data);
             }
         });
