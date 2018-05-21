@@ -26,18 +26,18 @@ class Cross
 //        }
         $response = $next($request);
         $this->setHeader($response);
-        //Log::debug('header', $response->headers->all());
+        Log::debug('header', $response->headers->all());
         return $response;
     }
 
     private function setHeader( &$response ) {
-//        Log::debug('response', [$response instanceof RedirectResponse, class_basename($response)]);
+        Log::debug('response', [$response instanceof RedirectResponse, class_basename($response)]);
         if(!($response instanceof RedirectResponse)) {
             $response->header('Access-Control-Allow-Origin', '*');
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
             $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
             $response->header('Access-Control-Allow-Credentials', 'true');
-            //Log::debug('set header', $response->headers->all());
+            Log::debug('set header', $response->headers->all());
             return $response;
         }else{
             return $response;
