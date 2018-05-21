@@ -37,7 +37,7 @@ class WechatPaymentController extends Controller
                     'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
             }
         }
-        $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
+        $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('wechat.payment.aggregate');
         return $this->response()->created( $this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge))->statusCode(HTTP_STATUS_NOT_MODIFIED);

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
@@ -171,9 +172,10 @@ class Order extends Model implements Transformable
     public function buildWechatAggregatePaymentOrder() {
         $now = Carbon::now();
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
-        $clientIp = app('request')->getClientIp();
-        $openId = app('request')->input('open_id', null);
-        dd($clientIp, $openId);
+        $request = app('request');
+        $clientIp = $request->getClientIp();
+        $openId = $request->input('open_id', null);
+        Log::debug('request', $request->all());
         return [
             'body'    => 'PineHub offline scan qrcode pay',
             'subject'    => '微信扫码支付',
