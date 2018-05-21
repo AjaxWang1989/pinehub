@@ -173,6 +173,7 @@ class Order extends Model implements Transformable
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
         $clientIp = app('request')->getClientIp();
         $openId = app('request')->input('open_id', null);
+        dd($clientIp, $openId);
         return [
             'body'    => 'PineHub offline scan qrcode pay',
             'subject'    => '微信扫码支付',
