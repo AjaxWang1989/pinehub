@@ -175,7 +175,7 @@ class Order extends Model implements Transformable
         $request = app('request');
         $clientIp = $request->getClientIp();
         $openId = $request->input('open_id', null);
-        Log::debug('openId='.$openId);
+        Log::debug('openId='.$openId,[time(), $expire->timestamp]);
         return [
             'body'    => 'PineHub offline scan qrcode pay',
             'subject'    => '微信扫码支付',
