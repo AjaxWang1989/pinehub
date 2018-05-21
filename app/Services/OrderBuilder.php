@@ -107,7 +107,8 @@ class OrderBuilder implements InterfaceServiceHandler
                 'discount_amount' => $order['discount_amount'],
                 'payment_amount'  => $order['payment_amount'],
                 'shop_id'   => (isset($this->input['shop_id']) ? $this->input['shop_id'] : null),
-                'buyer_user_id' => $this->buyer ? $this->buyer->id : null
+                'buyer_user_id' => $this->buyer ? $this->buyer->id : null,
+                'status' => Order::WAIT
             ];
             $orderItem = collect($orderItem);
             $orderItems = collect();
@@ -220,7 +221,6 @@ class OrderBuilder implements InterfaceServiceHandler
         $data['total_amount'] =  $model->sellPrice * $quality;
         $data['discount_amount'] = 0;
         $data['payment_amount'] = $data['total_amount'] - $data['discount_amount'];
-        $data['status'] = Order::WAIT;
         return collect($data);
     }
 
