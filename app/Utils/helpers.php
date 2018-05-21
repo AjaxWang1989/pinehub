@@ -114,8 +114,11 @@ if(!function_exists('generatorUID')){
 }
 
 if(!function_exists('webUriGenerator')) {
-    function webUriGenerator(string $route) {
-        return config('app.protocol').config('app.web_domain').(config('app.web_prefix') ? '/'.config('app.web_prefix') : '').$route;
+    function webUriGenerator(string $route, string $prefix = '') {
+        if(!$prefix){
+            $prefix = (config('app.web_prefix') ? '/'.config('app.web_prefix') : '');
+        }
+        return config('app.protocol').config('app.web_domain').$prefix.$route;
     }
 }
 
