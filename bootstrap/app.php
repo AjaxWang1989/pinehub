@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
 
+date_default_timezone_set(env('APP_TIMEZONE', 'UTC'));
+
 try {
     (new Dotenv\Dotenv(__DIR__.'/../'))->load();
 } catch (Dotenv\Exception\InvalidPathException $e) {
