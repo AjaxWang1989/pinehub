@@ -27,6 +27,7 @@ class WechatPaymentController extends Controller
             try{
                 $user = app('wechat.official_account.default')
                     ->oauth->setRequest($request)->user();
+                \Log::debug('user', $user->toArray());
                 $openId = $user->getId();
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop,
