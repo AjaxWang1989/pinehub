@@ -25,7 +25,7 @@ class Cross
 //            $this->setHeader($response);
 //        }
         $response = $next($request);
-        Log::debug('set header', $response->headers->headers->all());
+        Log::debug('set header', $response->headers->all());
         return $response;
     }
 
