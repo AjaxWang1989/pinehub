@@ -12,7 +12,7 @@ return [
     'payment' => [
         'use_sandbox'               => env('ALI_PAYMENT_SANDBOX', false),// 是否使用沙盒模式
 
-        'app_id'                    => env('ALI_PAYMENT_APPID', '2088131026450554'),
+        'app_id'                    => env('ALI_PAYMENT_APPID', '2018051860101849'),
         'sign_type'                 => env('ALI_PAYMENT_SIGN_TYPE', 'RSA2'),// RSA  RSA2
         'md5_key'                   => env('ALI_PAYMENT_MD5_KEY', 'zismisutln32vdlavqdg7brqmya9z3ts'),
 
