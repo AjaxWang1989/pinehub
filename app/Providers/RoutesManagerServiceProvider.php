@@ -8,6 +8,7 @@ use App\Routes\PaymentApiRoutes;
 use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
 use Illuminate\Http\Request;
@@ -73,6 +74,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $request = Request::capture();
         $this->host = $request->getHost();
         list( $domain, $prefix) = domainAndPrefix($request);
+        Log::debug("domain {$domain}, prefix {$prefix}");
         $this->prefix = $prefix;
         $this->domain = $domain;
         $this->registerApiServices();
