@@ -151,7 +151,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 config(['api' => array_merge(config('api'), $this->config)]);
             else
                 $this->config = config('api');
-        }else{
+        }elseif($this->config){
             $app = config('app');
             $app['web_prefix'] = $this->config['prefix'];
             config([

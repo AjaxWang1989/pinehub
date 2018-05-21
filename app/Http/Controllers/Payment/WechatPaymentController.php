@@ -8,6 +8,7 @@ use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
 use Payment\NotifyContext;
+use App\Transformers\Api\WechatPaymentSignedTransformer as WechatPaymentSigned;
 
 class WechatPaymentController extends Controller
 {
@@ -40,7 +41,7 @@ class WechatPaymentController extends Controller
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('wechat.payment.aggregate');
-        return $this->response()->created( $this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge))->statusCode(HTTP_STATUS_NOT_MODIFIED);
+        return $this->response()->item( $this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge), new WechatPaymentSigned());
     }
 
 
