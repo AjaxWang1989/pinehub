@@ -35,6 +35,13 @@ class PaymentNotify implements PayNotifyInterface
             $result = $order->save();
             if($result) {
                 //发送模版消息
+                $data=[];
+                if($order->type !== Order::OFF_LINE_PAY){
+                    $data['signed_at'] = $order->signedAt;
+                    $data['consigned_at'] = $order->consignedAt;
+                }
+                $data['status'] = $order->paidAt;
+                $order->orderItems()->update($data);
             }
         });
     }
