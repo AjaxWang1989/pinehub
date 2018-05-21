@@ -21,7 +21,5 @@ class PaymentApiRoutes extends ApiRoutes
         //$router->get('/aggregate/payment', ['as' => 'aggregate.payment', 'uses' => 'PaymentController@aggregate']);
         $router->post('/ali/aggregate', ['as' => 'aggregate.ali.payment.post', 'uses' => 'AliPaymentController@aggregate']);
         $router->post('/wechat/aggregate', ['as' => 'aggregate.wechat.payment.post', 'uses' => 'WechatPaymentController@aggregate']);
-        $router->any('/ali/payment/notify', ['as' => 'ali.payment.notify', 'uses' => 'AliPaymentController@notify']);
-        $router->any('/wechat/payment/notify', ['as' => 'wechat.payment.notify', 'uses' => 'WechatPaymentController@notify']);
     }
 }
