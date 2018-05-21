@@ -337,8 +337,7 @@
                     });
                 },
                 success:function(data) {
-                    let $data =data;
-                    $data['timeStamp'] = data['timestamp'];
+                    let $data =data.data;
                     $data['success'] = function (res) {
                         console.log(res);
                     };
