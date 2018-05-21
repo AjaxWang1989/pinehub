@@ -30,6 +30,7 @@ class Cross
     }
 
     private function setHeader( &$response ) {
+        Log::debug('response', [$response instanceof RedirectResponse, class_basename($response)]);
         if(!($response instanceof RedirectResponse)) {
             $response->header('Access-Control-Allow-Origin', '*');
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
