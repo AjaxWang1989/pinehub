@@ -2,6 +2,7 @@
 
 namespace App\Transformers\Api;
 
+use App\Entities\WechatPaymentSigned;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -14,11 +15,11 @@ class WechatPaymentSignedTransformer extends TransformerAbstract
     /**
      * Transform the WechatPaymentSigned entity.
      *
-     * @param mixed $model
+     * @param WechatPaymentSigned $model
      * @return array
      */
-    public function transform($model)
+    public function transform(WechatPaymentSigned $model)
     {
-        return $model;
+        return $model->data();
     }
 }

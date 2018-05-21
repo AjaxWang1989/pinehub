@@ -41,7 +41,7 @@ class WechatPaymentController extends Controller
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('wechat.payment.aggregate');
-        return $this->response()->item( $this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge), new WechatPaymentSigned());
+        return $this->response()->item( new WechatPaymentSigned($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)), new WechatPaymentSigned());
     }
 
 
