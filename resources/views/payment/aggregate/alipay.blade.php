@@ -336,8 +336,7 @@
 
                 },
                 success:function(data) {
-                    data = data.data;
-                    let tradeNo = data['trade_no'];
+                    location.href = data.data.redirect;
                 },
                 error: function(error){
                     alert(error);
