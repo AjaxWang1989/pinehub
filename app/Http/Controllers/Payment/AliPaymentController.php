@@ -7,6 +7,7 @@ use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
 use App\Http\Controllers\Payment\PaymentController as Controller;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Payment\NotifyContext;
 use App\Entities\PaymentSigned as AliPaymentSigned;
@@ -26,6 +27,7 @@ class AliPaymentController extends Controller
         if($request->method() === HTTP_METHOD_GET){
             $paymentApi = paymentApiUriGenerator('/ali/aggregate');
             $accept = "application/vnd.pinehub.v0.0.1+json";
+            $userId = Session::get('ali_user_id');
             try{
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop,
