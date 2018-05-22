@@ -98,7 +98,7 @@ class PaymentController extends Controller
             //return redirect(webUriGenerator('/ali/aggregate.html?shop_id='.$request->input('shop_id', null)));
             //$appId = config('app.payment.app_id');
             //$redirect = urlencode(config('app.payment.redirect_url'));
-            //return redirect("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id={$appId}&scope=auth_base&redirect_uri={$redirect}&state=init");
+            return redirect("https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm?app_id={$appId}&scope=auth_base&redirect_uri={$redirect}&state=init");
         } else {
             return view('404');
         }
