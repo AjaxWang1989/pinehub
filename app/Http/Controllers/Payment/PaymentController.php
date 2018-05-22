@@ -96,14 +96,9 @@ class PaymentController extends Controller
                 ->setRequest($request)
                 ->redirect($redirect);
         } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
-            $redirectUri = app('ali.user.oauth')->charge(['scopes' => 'auth_base,auth_user', 'state' => 'init']);
+            $redirectUri = app('ali.user.oauth')->charge(['scopes' => 'auth_base', 'state' => 'init']);
             Log::debug($redirectUri);
             return redirect($redirectUri);
-            //return redirect(webUriGenerator('/ali/aggregate.html?shop_id='.$request->input('shop_id', null)));
-            $appId = config('ali.payment.app_id');
-            $redirect = urlencode(config('ali.payment.redirect_url'));
-            Log::debug("appId = {$appId}, redirect = {$redirect}");
-            return redirect("https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm?app_id={$appId}&scope=auth_base&redirect_uri={$redirect}&state=init");
         } else {
             Log::debug('ali', config('ali'));
             return view('404');
