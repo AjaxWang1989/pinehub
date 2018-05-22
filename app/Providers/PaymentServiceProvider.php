@@ -59,14 +59,6 @@ class PaymentServiceProvider extends ServiceProvider
         });
 
 
-        $this->app->singleton('payment.ali.create', function (){
-            $chargeContext = new AliChargeContext();
-            $config = config('ali.payment');
-            Log::debug('ali config', $config);
-            $chargeContext->initCharge(\App\Ali\Payment\Config::ALI_TRADE_CREATE, $config);
-            return $chargeContext;
-        });
-
         $this->app->singleton('payment.wechat.app', function (){
             $chargeContext = new ChargeContext();
             $config = config('wechat.other_sdk_payment');
@@ -132,7 +124,7 @@ class PaymentServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('ali.payment.aggregate', function (Application $application){
-            return $application->make('payment.ali.create');
+            return $application->make('payment.ali.wap');
         });
     }
 }
