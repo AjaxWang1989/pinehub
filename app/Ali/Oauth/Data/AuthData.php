@@ -41,7 +41,7 @@ class AuthData extends ChargeBaseData
        }
 
        if(!isset($this->state)){
-           throw new PayException('state错误');
+           //throw new PayException('state错误');
        }
     }
 }
