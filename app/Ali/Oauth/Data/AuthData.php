@@ -66,7 +66,7 @@ class AuthData extends ChargeBaseData
             'sign_type'     => $this->signType,
             'timestamp'     => $this->timestamp,
             'version'       => $this->version,
-            'return_url'    => $this->returnUrl,
+            //'return_url'    => $this->returnUrl,
 
             // 业务参数
             'biz_content'   => json_encode($bizContent, JSON_UNESCAPED_UNICODE),
