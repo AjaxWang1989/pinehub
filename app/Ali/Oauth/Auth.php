@@ -60,7 +60,7 @@ class Auth extends AliBaseStrategy
         Log::debug('ali signed data', $data);
         $query['app_id'] = $this->config->appId;
         $query['redirect_uri'] = $this->redirect;
-        $query['scopes'] = $this->reqData->scopes;
+        $query['scope'] = $this->reqData->scopes;
         $query['state'] = $this->reqData->state;
         // 发起网络请求
         return $this->authGateway . '?' . http_build_query($query);
