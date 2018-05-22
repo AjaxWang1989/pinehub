@@ -118,6 +118,9 @@ if(!function_exists('webUriGenerator')) {
         if(!$prefix){
             $prefix = (config('app.web_prefix') ? '/'.config('app.web_prefix') : '');
         }
+        if(substr($prefix, 0, 1) !== '/'){
+            $prefix = '/'.$prefix;
+        }
         return config('app.protocol').config('app.web_domain').$prefix.$route;
     }
 }
