@@ -15,6 +15,10 @@ use Payment\Common\Ali\AliBaseStrategy;
 
 class Auth extends AliBaseStrategy
 {
+    /**
+     * @var AuthData
+     * */
+    protected $reqData = null;
     // wap 支付接口名称
     protected $method = 'alipay.user.info.auth';
 
@@ -54,9 +58,11 @@ class Auth extends AliBaseStrategy
     {
 //        $data = parent::retData($data);
         Log::debug('ali signed data', $data);
-        $data['app_id'] = $this->config->appId;
-        $data['redirect_uri'] = $this->redirect;
+        $query['app_id'] = $this->config->appId;
+        $query['redirect_uri'] = $this->redirect;
+        $query['scopes'] = $this->reqData->scopes;
+        $query['state'] = $this->reqData->state;
         // 发起网络请求
-        return $this->authGateway . '?' . http_build_query($data);
+        return $this->authGateway . '?' . http_build_query($query);
     }
 }
