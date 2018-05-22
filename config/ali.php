@@ -36,7 +36,7 @@ return [
         // 与业务相关参数
         'notify_url'                => webUriGenerator(env('ALI_PAYMENT_NOTIFY_URL', '/payment/ali//notify'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),
         'return_url'                => webUriGenerator(env('ALI_PAYMENT_RETURN_URL', '/payment/ali/success'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),
-
+        'redirect_url'      => webUriGenerator(env('ALi_PAYMENT_REDIRECT_URL', '/ali/aggregate.html'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),// 如果是h5支付，可以设置该值，返回到指定页面
         'return_raw'                => env('ALI_PAYMENT_RETURN_RAW', false),// 在处理回调时，是否直接返回原始数据，默认为 true
     ],
 ];
