@@ -114,15 +114,17 @@ if(!function_exists('generatorUID')){
 }
 
 if(!function_exists('webUriGenerator')) {
-    function webUriGenerator(string $route, string $prefix = '') {
+    function webUriGenerator(string $route, string $prefix = '', string $domain = '') {
         if(!$prefix){
             $prefix = (config('app.web_prefix') ? '/'.config('app.web_prefix') : '');
         }
         if(substr($prefix, 0, 1) !== '/'){
             $prefix = '/'.$prefix;
         }
-        \Illuminate\Support\Facades\Log::debug(config('app'), $prefix);
-        return config('app.protocol').config('app.web_domain').$prefix.$route;
+        if(!$domain) {
+            $domain = config('app.web_domain');
+        }
+        return config('app.protocol').$domain.$prefix.$route;
     }
 }
 

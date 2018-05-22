@@ -34,8 +34,8 @@ return [
         ],// 用户不可用指定渠道支付当有多个渠道时用“,”分隔
 
         // 与业务相关参数
-        'notify_url'                => webUriGenerator(env('ALI_PAYMENT_NOTIFY_URL', '/payment/ali//notify'), env('WEB_PAYMENT_PREFIX')),
-        'return_url'                => webUriGenerator(env('ALI_PAYMENT_RETURN_URL', '/payment/ali/success'), env('WEB_PAYMENT_PREFIX')),
+        'notify_url'                => webUriGenerator(env('ALI_PAYMENT_NOTIFY_URL', '/payment/ali//notify'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),
+        'return_url'                => webUriGenerator(env('ALI_PAYMENT_RETURN_URL', '/payment/ali/success'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),
 
         'return_raw'                => env('ALI_PAYMENT_RETURN_RAW', false),// 在处理回调时，是否直接返回原始数据，默认为 true
     ],
