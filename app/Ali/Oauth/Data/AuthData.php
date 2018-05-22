@@ -1,0 +1,35 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: wangzaron
+ * Date: 2018/5/22
+ * Time: 下午3:53
+ */
+
+namespace App\Ali\Oauth\Data;
+
+
+use Payment\Common\Ali\Data\Charge\ChargeBaseData;
+
+
+/**
+ * @property $scopes
+ * @property $state
+ * */
+class AuthData extends ChargeBaseData
+{
+    /**
+     * 业务请求参数的集合，最大长度不限，除公共参数外所有请求参数都必须放在这个参数中传递
+     *
+     * @return string
+     */
+    protected function getBizContent()
+    {
+        $content = [
+           'scopes' => $this->scopes,
+            'state' => $this->state
+        ];
+
+        return $content;
+    }
+}

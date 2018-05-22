@@ -2,21 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: wangzaron
- * Date: 2018/5/21
- * Time: 下午10:25
+ * Date: 2018/5/22
+ * Time: 下午3:39
  */
 
-namespace App\Ali\Payment;
+namespace App\Ali\Oauth;
 
 
-use App\Ali\Payment\Data\WapPaymentData;
-use Illuminate\Support\Facades\Log;
+use App\Ali\Oauth\Data\AuthData;
 use Payment\Common\Ali\AliBaseStrategy;
 
-class WapPayment extends AliBaseStrategy
+class Auth extends AliBaseStrategy
 {
     // wap 支付接口名称
-    protected $method = 'alipay.trade.create';
+    protected $method = 'alipay.user.info.auth';
 
     /**
      * 获取支付对应的数据完成类
@@ -27,7 +26,7 @@ class WapPayment extends AliBaseStrategy
     {
         $this->config->method = $this->method;
         // 以下两种方式任选一种
-        return WapPaymentData::class;
+        return AuthData::class;
     }
 
     /**

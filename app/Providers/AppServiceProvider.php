@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Ali\Oauth\AliOauthServiceProvider;
 use App\Http\Middleware\Cross;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
@@ -41,6 +42,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(RepositoryServiceProvider::class);
         $this->app->register(WechatLumenServiceProvider::class);
         $this->app->register(SpatialServiceProvider::class);
+        $this->app->register(AliOauthServiceProvider::class);
         if ($this->app->environment() !== 'production') {
             $this->app->register(IdeHelperServiceProvider::class);
         }
