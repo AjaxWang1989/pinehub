@@ -10,6 +10,7 @@ namespace App\Ali\Oauth;
 
 
 use App\Ali\Oauth\Data\AuthData;
+use Illuminate\Support\Facades\Log;
 use Payment\Common\Ali\AliBaseStrategy;
 
 class Auth extends AliBaseStrategy
