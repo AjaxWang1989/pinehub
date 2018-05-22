@@ -244,7 +244,7 @@
         }
     }
     ready(function() {
-        alert('ali bridge ready');
+        //alert('ali bridge ready');
     });
 
     $(function(){
