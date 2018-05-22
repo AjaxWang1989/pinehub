@@ -124,7 +124,11 @@ if(!function_exists('webUriGenerator')) {
         if(!$domain) {
             $domain = config('app.web_domain');
         }
-        return config('app.protocol').$domain.$prefix.$route;
+        $protocol = config('app.protocol');
+        if(!$protocol){
+            $protocol = env('WEB_PROTO');
+        }
+        return $protocol.$domain.$prefix.$route;
     }
 }
 
