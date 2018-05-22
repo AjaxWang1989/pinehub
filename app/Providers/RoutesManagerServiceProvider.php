@@ -202,6 +202,13 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         });
                         break;
                     }
+                    default: {
+                        $this->app->singleton('app.routes',function (){
+                            return new Routes($this->app, null , null,
+                                null, null);
+                        });
+                        break;
+                    }
                 }
                 break;
             }
