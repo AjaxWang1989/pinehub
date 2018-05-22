@@ -12,6 +12,7 @@ namespace App\Ali\Oauth\Data;
 use Illuminate\Support\Facades\Log;
 use Payment\Common\Ali\Data\Charge\ChargeBaseData;
 use Payment\Common\PayException;
+use Payment\Utils\ArrayUtil;
 
 
 /**
