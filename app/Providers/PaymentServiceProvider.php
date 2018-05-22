@@ -13,6 +13,7 @@ use App\Ali\Payment\AliChargeContext;
 use App\Ali\Payment\WapPayment;
 use App\Repositories\OrderRepositoryEloquent;
 use App\Services\PaymentNotify;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application;
 use Payment\ChargeContext;
@@ -61,6 +62,7 @@ class PaymentServiceProvider extends ServiceProvider
         $this->app->singleton('payment.ali.create', function (){
             $chargeContext = new AliChargeContext();
             $config = config('ali.payment');
+            Log::debug('ali config', $config);
             $chargeContext->initCharge(\App\Ali\Payment\Config::ALI_TRADE_CREATE, $config);
             return $chargeContext;
         });
