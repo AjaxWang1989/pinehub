@@ -96,7 +96,7 @@ class PaymentController extends Controller
                 ->setRequest($request)
                 ->redirect($redirect);
         } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
-            //return redirect(app('ali.user.oauth')->charge(['scopes' => 'auth_base', 'state' => 'init']));
+            return redirect(app('ali.user.oauth')->charge(['scopes' => 'auth_base', 'state' => 'init']));
             //return redirect(webUriGenerator('/ali/aggregate.html?shop_id='.$request->input('shop_id', null)));
             $appId = config('ali.payment.app_id');
             $redirect = urlencode(config('ali.payment.redirect_url'));

@@ -38,8 +38,8 @@ class Auth extends AliBaseStrategy
      */
     protected function retData(array $data)
     {
-        $reqData = parent::retData($data);
-        Log::debug('ali signed data', $reqData);
+        $data = parent::retData($data);
+        Log::debug('ali signed data', $data);
         // 发起网络请求
         return $this->config->getewayUrl . '?' . http_build_query($data);
     }

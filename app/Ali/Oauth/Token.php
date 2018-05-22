@@ -9,7 +9,9 @@
 namespace App\Ali\Oauth;
 
 
-class Token
+use Payment\Common\Ali\AliBaseStrategy;
+
+class Token extends AliBaseStrategy
 {
 
 }
