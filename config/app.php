@@ -24,7 +24,7 @@ return [
     'cipher' => 'AES-256-CBC',
     'web_domain' =>  env('WEB_DOMAIN', 'site.pinehub'),
     'payment_api_domain' => env('PAYMENT_API_DOMAIN', 'api.payment.pinehub'),
-    'web_prefix' => null,
+    'web_prefix' => env('WEB_PREFIX', ''),
 
     'protocol' => env('WEB_PROTO', 'http://'),
     /*
