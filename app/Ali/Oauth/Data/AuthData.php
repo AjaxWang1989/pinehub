@@ -10,6 +10,7 @@ namespace App\Ali\Oauth\Data;
 
 
 use Payment\Common\Ali\Data\Charge\ChargeBaseData;
+use Payment\Common\PayException;
 
 
 /**
