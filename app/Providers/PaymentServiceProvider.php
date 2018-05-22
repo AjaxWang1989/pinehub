@@ -9,6 +9,7 @@
 namespace App\Providers;
 
 
+use App\Ali\Payment\WapPayment;
 use App\Repositories\OrderRepositoryEloquent;
 use App\Services\PaymentNotify;
 use Illuminate\Support\ServiceProvider;
@@ -52,6 +53,14 @@ class PaymentServiceProvider extends ServiceProvider
             $chargeContext = new ChargeContext();
             $config = config('ali.payment');
             $chargeContext->initCharge(Config::ALI_CHANNEL_QR, $config);
+            return $chargeContext;
+        });
+
+
+        $this->app->singleton('payment.ali.create', function (){
+            $chargeContext = new ChargeContext();
+            $config = config('ali.payment');
+            $chargeContext->initCharge(\App\Ali\Payment\Config::ALI_TRADE_CREATE, $config);
             return $chargeContext;
         });
 
@@ -120,7 +129,7 @@ class PaymentServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('ali.payment.aggregate', function (Application $application){
-            return $application->make('payment.ali.qr');
+            return $application->make('payment.ali.create');
         });
     }
 }

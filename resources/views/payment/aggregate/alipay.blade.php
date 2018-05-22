@@ -234,7 +234,19 @@
 </div>
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.min.js"></script>
 <script>
+    function ready(callback) {
+        if (window.AlipayJSBridge) {
+            callback && callback();
+        } else {
+            document.addEventListener('AlipayJSBridgeReady', callback, false);
+        }
+    }
+    ready(function() {
+        alert('ali bridge ready');
+    });
+
     $(function(){
         FastClick.attach(document.body);
         setInterval(function(){
@@ -324,7 +336,8 @@
 
                 },
                 success:function(data) {
-                    alert(data+"123");
+                    data = data.data;
+                    let tradeNo = data['trade_no'];
                 },
                 error: function(error){
                     alert(error);
