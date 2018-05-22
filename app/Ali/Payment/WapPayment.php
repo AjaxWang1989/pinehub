@@ -32,11 +32,23 @@ class WapPayment extends AliBaseStrategy
     /**
      * 返回可发起h5支付的请求
      * @param array $data
-     * @return array|string
+     * @return array
+     * @throws
      */
     protected function retData(array $data)
     {
-        $data = parent::retData($data);
+        $reqData = parent::retData($data);
+        // 发起网络请求
+        try {
+            $data = $this->sendReq($reqData);
+        } catch (PayException $e) {
+            throw $e;
+        }
+
+        // 检查是否报错
+        if ($data['code'] !== '10000') {
+            new PayException($data['sub_msg']);
+        }
         return $data;
     }
 }
