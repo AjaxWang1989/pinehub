@@ -8,4 +8,7 @@ use App\Http\Controllers\Controller;
 class AliAuthController extends Controller
 {
     //
+    public function oauth2() {
+
+    }
 }

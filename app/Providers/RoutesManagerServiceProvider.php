@@ -141,6 +141,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         ];
                         break;
                     }
+                    case env('WEB_OAUTH_PREFIX'):{
+                        $this->config = [
+                            'domain' => $this->host,
+                            'version' => env('WEB_VERSION'),
+                            'prefix'  => env('WEB_OAUTH_PREFIX')
+                        ];
+                        break;
+                    }
                 }
 
                 break;
@@ -202,6 +210,15 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         });
                         break;
                     }
+
+                    case env('WEB_OAUTH_PREFIX'):{
+                        $this->app->singleton('app.routes',function (){
+                            return new PaymentRoutes($this->app, $this->config['version'], 'Payment',
+                                $this->config['prefix'], $this->config['domain']);
+                        });
+                        break;
+                    }
+
                     default: {
                         $this->app->singleton('app.routes',function (){
                             return new Routes($this->app, null , null,

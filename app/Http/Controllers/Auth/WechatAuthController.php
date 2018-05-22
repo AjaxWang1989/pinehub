@@ -14,7 +14,7 @@ class WechatAuthController extends Controller
 
     }
 
-    public function auth2(Request $request)
+    public function oauth2(Request $request)
     {
         $user = app('wechat.official_account.default')
             ->oauth->setRequest($request)->user();
