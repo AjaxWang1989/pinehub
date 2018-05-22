@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Routes\AuthApiRoutes;
 use App\Routes\MiniProgramApiRoutes;
+use App\Routes\OauthRoutes;
 use App\Routes\PaymentApiRoutes;
 use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
@@ -213,7 +214,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
                     case env('WEB_OAUTH_PREFIX'):{
                         $this->app->singleton('app.routes',function (){
-                            return new PaymentRoutes($this->app, $this->config['version'], 'Payment',
+                            return new OauthRoutes($this->app, $this->config['version'], 'Auth',
                                 $this->config['prefix'], $this->config['domain']);
                         });
                         break;
