@@ -9,6 +9,7 @@
 namespace App\Ali\Oauth\Data;
 
 
+use Illuminate\Support\Facades\Log;
 use Payment\Common\Ali\Data\Charge\ChargeBaseData;
 use Payment\Common\PayException;
 
@@ -39,7 +40,7 @@ class AuthData extends ChargeBaseData
        if(!in_array($this->scopes, ['auth_base', 'auth_user'])){
            throw new PayException('scope错误');
        }
-
+       Log::debug('state '.$this->state);
        if(!isset($this->state)){
            //throw new PayException('state错误');
        }
