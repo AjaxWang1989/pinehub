@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -23,7 +24,12 @@ class WechatAuthController extends Controller
         $session = app('session');
         $session->push('open_id', $openId);
         if($redirect) {
-            return redirect("{$redirect}?open_id={$openId}");
+            if(count(parse_query($redirect)) > 0){
+                $append = "&open_id={$openId}";
+            }else{
+                $append = "?open_id={$openId}";
+            }
+            return redirect("{$redirect}{$append}");
         }
         return null;
     }
