@@ -221,4 +221,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
             }
         }
     }
+
+    protected function routeExceptionHandle() {
+        $this->app;
+    }
 }

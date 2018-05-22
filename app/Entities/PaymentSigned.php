@@ -7,11 +7,11 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class WechatPaymentSigned.
+ * Class PaymentSigned.
  *
  * @package namespace App\Entities;
  */
-class WechatPaymentSigned implements Transformable
+class PaymentSigned implements Transformable
 {
     use TransformableTrait;
 

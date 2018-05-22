@@ -8,8 +8,8 @@ use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
 use Payment\NotifyContext;
-use App\Transformers\Api\WechatPaymentSignedTransformer as WechatPaymentSigned;
-use App\Entities\WechatPaymentSigned as WechatPayment;
+use App\Transformers\Api\PaymentSignedTransformer as WechatPaymentSigned;
+use App\Entities\PaymentSigned as WechatPayment;
 
 class WechatPaymentController extends Controller
 {

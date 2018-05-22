@@ -9,6 +9,8 @@ use Dingo\Api\Http\Response;
 use App\Http\Controllers\Payment\PaymentController as Controller;
 use Illuminate\View\View;
 use Payment\NotifyContext;
+use App\Entities\PaymentSigned as AliPaymentSigned;
+use App\Transformers\Api\PaymentSignedTransformer as AliPaymentSignedTransformer;
 
 
 class AliPaymentController extends Controller
@@ -37,7 +39,8 @@ class AliPaymentController extends Controller
         $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('ali.payment.aggregate');
-        return $this->response()->created( $this->preOrder($order->buildAliAggregatePaymentOrder(), $charge))->statusCode(HTTP_STATUS_NOT_MODIFIED);
+        return $this->response()->item( new AliPaymentSigned($this->preOrder($order->buildAliAggregatePaymentOrder(), $charge)),
+            new AliPaymentSignedTransformer());
     }
 
 
