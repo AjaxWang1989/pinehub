@@ -40,7 +40,7 @@ class AuthData extends ChargeBaseData
        if(!in_array($this->scopes, ['auth_base', 'auth_user'])){
            throw new PayException('scope错误');
        }
-       Log::debug('state '.$this->state);
+       Log::debug('state ', [$this->state, isset($this->state)]);
        if(!isset($this->state)){
            //throw new PayException('state错误');
        }
