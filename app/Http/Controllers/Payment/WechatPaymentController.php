@@ -27,10 +27,7 @@ class WechatPaymentController extends Controller
             $accept = "application/vnd.pinehub.v0.0.1+json";
             $config = app('wechat.official_account.default')->jssdk->buildConfig(['chooseWXPay']);
             try{
-                $user = app('wechat.official_account.default')
-                    ->oauth->setRequest($request)->user();
-                $openId = $user->getId();
-
+                $openId = $request->getSession()->get('open_id');
                 $shop = $this->shopModel->find($request->input('shop_id'));
                 return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId, 'shop' => $shop,
                     'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
