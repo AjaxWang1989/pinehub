@@ -20,7 +20,8 @@ class WechatAuthController extends Controller
             ->oauth->setRequest($request)->user();
         $openId = $user->getId();
         $redirect = $request->input('redirect_uri', null);
-        $request->getSession()->push('open_id', $openId);
+        $session = app('session');
+        $session->push('open_id', $openId);
         if($redirect) {
             return redirect("{$redirect}?open_id={$openId}");
         }

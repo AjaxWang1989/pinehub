@@ -95,7 +95,9 @@ class RoutesManagerServiceProvider extends ServiceProvider
             $this->app->register(LumenServiceProvider::class);
             $this->app->register(ApiExceptionHandlerServiceProvider::class);
             $this->app->register(ApiAuthServiceProvider::class);
-        }else{
+        }
+
+        if(!$this->app['isApiServer'] || $this->app->runningInConsole()){
             // 注册 SessionServiceProvider
             //
             $this->app->register(SessionServiceProvider::class);
