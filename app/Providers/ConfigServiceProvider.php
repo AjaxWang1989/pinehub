@@ -12,9 +12,6 @@ use Illuminate\Support\ServiceProvider;
 class ConfigServiceProvider extends ServiceProvider
 {
     public function register () {
-        $basePath = $this->app->basePath();
-
-        $configs = [];
         foreach ([
             'app',
             'auth',
@@ -23,9 +20,8 @@ class ConfigServiceProvider extends ServiceProvider
             'repository',
             'ali',
             'wechat'
-                 ] as $path){
-            $configs = array_merge($configs, [$path => require_once ("{$basePath}/config/{$path}.php")]);
+                 ] as $name){
+            laravelToLumen($this->app)->configure($name);
         }
-        config($configs);
     }
 }

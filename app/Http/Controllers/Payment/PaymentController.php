@@ -103,6 +103,7 @@ class PaymentController extends Controller
             Log::debug("appId = {$appId}, redirect = {$redirect}");
             return redirect("https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm?app_id={$appId}&scope=auth_base&redirect_uri={$redirect}&state=init");
         } else {
+            Log::debug('ali', config('ali'));
             return view('404');
         }
         return null;

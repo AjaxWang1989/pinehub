@@ -9,6 +9,9 @@ use App\Routes\PaymentApiRoutes;
 use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Session\SessionServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
@@ -78,12 +81,12 @@ class RoutesManagerServiceProvider extends ServiceProvider
         Log::debug("domain {$domain}, prefix {$prefix} url {$request->fullUrl()}");
         $this->prefix = $prefix;
         $this->domain = $domain;
-        $this->registerApiServices();
+        $this->registerServices();
         $this->registerConfig();
         $this->registerRoutes();
     }
 
-    protected function registerApiServices()
+    protected function registerServices()
     {
         $this->app['isApiServer'] = in_array($this->domain, [env('WEB_API_DOMAIN'), env('AUTH_API_DOMAIN'),
             env('MP_API_DOMAIN'), env('PAYMENT_API_DOMAIN')]) ;
@@ -91,8 +94,15 @@ class RoutesManagerServiceProvider extends ServiceProvider
             $this->app->register(LumenServiceProvider::class);
             $this->app->register(ApiExceptionHandlerServiceProvider::class);
             $this->app->register(ApiAuthServiceProvider::class);
+        }else{
+            // 注册 SessionServiceProvider
+            //
+            $this->app->middleware([
+                StartSession::class,
+                AuthenticateSession::class
+            ]);
+            $this->app->register(SessionServiceProvider::class);
         }
-
     }
 
 
