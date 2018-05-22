@@ -94,8 +94,8 @@ class PaymentController extends Controller
                 ->setRequest($request)
                 ->redirect(webUriGenerator('/wechat/aggregate.html?shop_id='.$request->input('shop_id', null)));
         } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
-            app('ali.user.oauth')->charge(['scopes' => 'auth_base', 'state' => 'init']);
-            return redirect(webUriGenerator('/ali/aggregate.html?shop_id='.$request->input('shop_id', null)));
+            return redirect(app('ali.user.oauth')->charge(['scopes' => 'auth_base', 'state' => 'init']));
+            //return redirect(webUriGenerator('/ali/aggregate.html?shop_id='.$request->input('shop_id', null)));
         } else {
             return view('404');
         }

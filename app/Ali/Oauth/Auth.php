@@ -41,16 +41,6 @@ class Auth extends AliBaseStrategy
         $reqData = parent::retData($data);
         Log::debug('ali signed data', $reqData);
         // 发起网络请求
-        try {
-            $data = $this->sendReq($reqData);
-        } catch (PayException $e) {
-            throw $e;
-        }
-
-        // 检查是否报错
-        if ($data['code'] !== '10000') {
-            new PayException($data['sub_msg']);
-        }
-        return $data;
+        return $this->config->getewayUrl . '?' . http_build_query($data);
     }
 }
