@@ -121,6 +121,7 @@ if(!function_exists('webUriGenerator')) {
         if(substr($prefix, 0, 1) !== '/'){
             $prefix = '/'.$prefix;
         }
+        \Illuminate\Support\Facades\Log::debug(config('app'));
         return config('app.protocol').config('app.web_domain').$prefix.$route;
     }
 }
