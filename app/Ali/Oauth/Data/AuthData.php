@@ -32,4 +32,15 @@ class AuthData extends ChargeBaseData
 
         return $content;
     }
+
+    protected function checkDataParam()
+    {
+       if(!in_array($this->scopes, ['auth_base', 'auth_user'])){
+           throw new PayException('scope错误');
+       }
+
+       if(!isset($this->state)){
+           throw new PayException('state错误');
+       }
+    }
 }
