@@ -3,6 +3,7 @@
 namespace App\Transformers\Api;
 
 use App\Entities\PaymentSigned;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 
 /**
@@ -20,6 +21,7 @@ class PaymentSignedTransformer extends TransformerAbstract
      */
     public function transform(PaymentSigned $model)
     {
+        Log::debug('signed data', $model->data());
         return $model->data();
     }
 }
