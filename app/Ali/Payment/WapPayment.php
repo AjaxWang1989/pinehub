@@ -10,6 +10,7 @@ namespace App\Ali\Payment;
 
 
 use App\Ali\Payment\Data\WapPaymentData;
+use Illuminate\Support\Facades\Log;
 use Payment\Common\Ali\AliBaseStrategy;
 
 class WapPayment extends AliBaseStrategy
@@ -38,6 +39,7 @@ class WapPayment extends AliBaseStrategy
     protected function retData(array $data)
     {
         $reqData = parent::retData($data);
+        Log::debug('ali signed data', $reqData);
         // 发起网络请求
         try {
             $data = $this->sendReq($reqData);
