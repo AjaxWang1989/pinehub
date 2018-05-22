@@ -20,6 +20,8 @@ class Auth extends AliBaseStrategy
 
     protected $authGateway = 'https://openauth.alipay.com/oauth2/publicAppAuthorize.htm';
 
+    protected $redirect = null;
+
     public function __construct(array $config)
     {
         parent::__construct($config);
@@ -27,6 +29,7 @@ class Auth extends AliBaseStrategy
         if (isset($config['use_sandbox']) && $config['use_sandbox'] === true) {
             $this->authGateway = 'https://openauth.alipaydev.com/oauth2/publicAppAuthorize.htm';
         }
+        $this->redirect = $config['redirect_url'];
     }
 
     /**
@@ -51,6 +54,8 @@ class Auth extends AliBaseStrategy
     {
 //        $data = parent::retData($data);
         Log::debug('ali signed data', $data);
+        $data['app_id'] = $this->config->appId;
+        $data['redirect_uri'] = $this->redirect;
         // 发起网络请求
         return $this->authGateway . '?' . http_build_query($data);
     }
