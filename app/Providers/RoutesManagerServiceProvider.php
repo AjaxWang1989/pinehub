@@ -11,6 +11,7 @@ use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Session\SessionManager;
 use Illuminate\Session\SessionServiceProvider;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
@@ -97,11 +98,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
         }else{
             // 注册 SessionServiceProvider
             //
+            $this->app->register(SessionServiceProvider::class);
+            $this->app->bind(SessionManager::class, function ($app){
+                return new SessionManager($app);
+            });
             $this->app->middleware([
                 StartSession::class,
                 AuthenticateSession::class
             ]);
-            $this->app->register(SessionServiceProvider::class);
         }
     }
 
