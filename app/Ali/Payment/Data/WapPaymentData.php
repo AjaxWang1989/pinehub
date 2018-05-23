@@ -11,6 +11,9 @@ namespace App\Ali\Payment\Data;
 
 use Payment\Common\Ali\Data\Charge\ChargeBaseData;
 
+/**
+ * @property $buyer_id
+ * */
 class WapPaymentData extends ChargeBaseData
 {
     /**
@@ -24,7 +27,8 @@ class WapPaymentData extends ChargeBaseData
             'body'          => strval($this->body),
             'subject'       => strval($this->subject),
             'out_trade_no'  => strval($this->order_no),
-            'total_amount'  => strval($this->amount)
+            'total_amount'  => strval($this->amount),
+            'buyer_id'      => $this->buyer_id
         ];
 
         $timeExpire = $this->timeout_express;
