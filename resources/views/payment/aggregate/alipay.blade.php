@@ -247,6 +247,15 @@
         //alert('ali bridge ready');
     });
 
+    const PAYMENT_SUCCESS = 9000;
+    const NETWORK_ERROR_NOT_RECIVED = 6004;
+    const SERVER_TIME_OUT_NOT_RECIVED = 8000;
+
+    const WALLET_CANCEL_PAY = 7001;
+    const NETWORK_ERROR_CANCEL_PAY = 6002;
+    const USER_CANCEL_PAY = 6001;
+    const PAYMENT_FAILED = 4000;
+
     $(function(){
         FastClick.attach(document.body);
         setInterval(function(){
@@ -258,11 +267,6 @@
         }, 800);
 
         //填写信息
-//				$('.infor-sub').click(function(e){
-//					$('.layer').hide();
-//					$('.form').hide();
-//					e.preventDefault();		//阻止表单提交
-//				})
         // 监听#div内容变化，改变支付按钮的颜色
         $('.input-money').bind('DOMNodeInserted', function(){
             console.log($(".input-money")[0].innerHTML)
@@ -333,11 +337,43 @@
                 },
                 data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'buyer_id': '{{ $userId }}'},
                 beforeSend: function(){
-
+                    AlipayJSBridge.call('showLoading', {
+                        text: '支付中······',
+                    });
                 },
                 success:function(data) {
                     //location.href = data.data.redirect;
                     console.log(data);
+                    if(!!data.data && !!data.data.trade_no){
+                        AlipayJSBridge.call('hideLoading');
+                        AlipayJSBridge.call("tradePay", {
+                            tradeNO: data.data.trade_no
+                        }, function(result) {
+                           switch (result.resultCode){
+                               case PAYMENT_SUCCESS: {
+
+                                   break;
+                               }
+                               case SERVER_TIME_OUT_NOT_RECIVED:{
+
+                                   break;
+                               }
+                               case NETWORK_ERROR_NOT_RECIVED:{
+
+                                   break;
+                               }
+                               case NETWORK_ERROR_CANCEL_PAY:
+                               case WALLET_CANCEL_PAY:
+                               case USER_CANCEL_PAY:
+                               case PAYMENT_FAILED:{
+                                   break
+                               }
+                               default:{
+                                   break;
+                               }
+                           }
+                        });
+                    }
                 },
                 error: function(error){
                     alert(error);

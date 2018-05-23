@@ -40,7 +40,6 @@ class WapPayment extends AliBaseStrategy
     protected function retData(array $data)
     {
         $reqData = parent::retData($data);
-        //dd($reqData);
         Log::debug('ali signed data', $reqData);
         // 发起网络请求
         try {

@@ -63,9 +63,7 @@ class PaymentController extends Controller
     public function preOrder(array $order, $charge = null)
     {
         try{
-            Log::debug('signed', $order);
             $signed = $charge->charge($order);
-            Log::debug('signed', [$signed]);
             return $signed;
         }catch (PayException $exception){
             $this->response()->error($exception->errorMessage(), HTTP_STATUS_INTERNAL_SERVER_ERROR);

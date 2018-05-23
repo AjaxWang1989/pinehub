@@ -181,9 +181,6 @@
             font-size: 1.1rem;
             text-align: center;
         }
-        .active{
-            opacity: 0.5;
-        }
     </style>
 </head>
 <body>
@@ -212,7 +209,7 @@
             </div>
             <div class="line"></div>
             <p class="tie">京抖云提供技术支持</p>
-            <button class="btn active" disabled="true">确认付款</button>
+            <button class="weui-btn  weui-btn_primary payment-btn" disabled="true">确认付款</button>
         </div>
     </div>
 </div>
@@ -311,8 +308,10 @@
                 $('.btn').attr('disabled', true);
             }
         });
-        $('.btn').click(function(){
+        $('.payment-btn').click(function(){
             var amount =  parseFloat($(".input-money")[0].innerHTML);
+            $(this).addClass('weui-btn_disabled');
+            $(this).disable();
             $.ajax({
                 url:"{{ $paymentApi }}",
                 type:"POST",
@@ -335,13 +334,23 @@
                     });
                 },
                 success:function(data) {
+                    $(this).removeClass('weui-btn_disabled');
+                    $(this).active();
                     let $data =data.data;
                     $data['timestamp'] = $data['timeStamp'];
                     $data['success'] = function (res) {
                         console.log(res);
+                        if(res === 'get_brand_wcpay_request:ok') {
+
+                        }else if (res === 'get_brand_wcpay_request:cancel') {
+
+                        }else if(res === 'get_brand_wcpay_request:fail'){
+
+                        }
                     };
                     $data['error'] = function (error) {
-                        console.log(error);
+                        $(this).removeClass('weui-btn_disabled');
+                        $(this).active();
                     }
                     wx.chooseWXPay($data);
                 },

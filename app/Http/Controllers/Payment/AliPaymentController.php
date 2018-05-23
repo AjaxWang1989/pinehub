@@ -28,9 +28,9 @@ class AliPaymentController extends Controller
         $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('ali.payment.aggregate');
-        $url = $this->preOrder($order->buildAliAggregatePaymentOrder(), $charge);
+        $order = $this->preOrder($order->buildAliAggregatePaymentOrder(), $charge);
 
-        return $this->response()->item( new AliPaymentSigned(['redirect' => $url]),
+        return $this->response()->item( new AliPaymentSigned($order),
             new AliPaymentSignedTransformer());
     }
 
