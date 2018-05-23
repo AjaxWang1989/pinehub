@@ -42,7 +42,7 @@ class AliPaymentController extends Controller
         $order = $this->app->make('order.builder')->handle();
         $charge = app('ali.payment.aggregate');
         $url = $this->preOrder($order->buildAliAggregatePaymentOrder(), $charge);
-        //return redirect($url);
+
         return $this->response()->item( new AliPaymentSigned(['redirect' => $url]),
             new AliPaymentSignedTransformer());
     }
