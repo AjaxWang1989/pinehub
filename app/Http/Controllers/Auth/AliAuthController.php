@@ -13,6 +13,7 @@ class AliAuthController extends Controller
     //
     public function oauth2(Request $request)
     {
+        Session::setId(Cookie::get(Session::getName()));
         Session::start();
         Log::debug('session id '.Session::getId().' session name '.Session::getName().' cookie '.Cookie::get(Session::getName()));
 
