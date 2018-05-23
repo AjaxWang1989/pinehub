@@ -136,7 +136,8 @@ class Order extends Model implements Transformable
     public function buildAliAggregatePaymentOrder() {
         $now = Carbon::now();
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
-        $clientIp = app('request')->getClientIp();
+        $request = app('request');
+        $clientIp = $request->getClientIp();
         $buyerId = $request->input('buyer_id', null);
         return [
             'body'    => 'ali qr pay',
