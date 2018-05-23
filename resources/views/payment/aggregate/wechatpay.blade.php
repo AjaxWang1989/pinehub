@@ -6,14 +6,14 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport"/>
     <link rel="stylesheet" type="text/css"  href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
     <style type="text/css">
-        /**{*/
-            /*margin: 0;*/
-            /*padding: 0;*/
-            /*font-size: 62.5%;*/
-            /*font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;*/
-            /*-webkit-font-smoothing: antialiased;*/
+        *{
+            margin: 0;
+            padding: 0;
+            font-size: 62.5%;
+            font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+            -webkit-font-smoothing: antialiased;
 
-        /*}*/
+        }
         .warp {
             width: 100%;
             height: 100vh;
