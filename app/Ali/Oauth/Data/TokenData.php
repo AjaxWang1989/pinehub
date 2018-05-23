@@ -29,9 +29,9 @@ class TokenData extends ChargeBaseData
     {
         $content = [];
         $content['grant_type'] = $this->grant_type;
-        if(isset($this->code))
+        if($this->code)
             $content['code'] = $this->code;
-        if(isset($this->refresh_token))
+        if($this->refresh_token)
             $content['refresh_token'] = $this->refresh_token;
 
         return $content;
