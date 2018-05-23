@@ -337,9 +337,11 @@
                         if(res === 'get_brand_wcpay_request:ok') {
 
                         }else if (res === 'get_brand_wcpay_request:cancel') {
-
+                            $(this).removeClass('weui-btn_disabled');
+                            $(this).removeAttr('disable');
                         }else if(res === 'get_brand_wcpay_request:fail'){
-
+                            $(this).removeClass('weui-btn_disabled');
+                            $(this).removeAttr('disable');
                         }
                     };
                     $data['error'] = function (error) {
