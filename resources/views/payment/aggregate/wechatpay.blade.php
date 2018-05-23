@@ -210,7 +210,7 @@
             </div>
             <div class="line"></div>
             <p class="tie">京抖云提供技术支持</p>
-            <a class="weui-btn  weui-btn_primary payment-btn" disabled="true">确认付款</a>
+            <a class="weui-btn  weui-btn_plain-primary payment-btn" disabled="true">确认付款</a>
         </div>
     </div>
 </div>
