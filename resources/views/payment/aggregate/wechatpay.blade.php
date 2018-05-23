@@ -343,9 +343,7 @@
                 },
                 data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'open_id' : '{{$openId}}' },
                 beforeSend: function(){
-                    if ($loadingToast.css('display') != 'none') return;
 
-                    $loadingToast.fadeIn(100);
                 },
                 success:function(data) {
                     $(this).removeClass('weui-btn_disabled');
@@ -353,25 +351,20 @@
                     let $data =data.data;
                     $data['timestamp'] = $data['timeStamp'];
                     $data['success'] = function (res) {
-                        console.log(res);
-                        setTimeout(function () {
-                            $loadingToast.fadeOut(100, function () {
-                                if(res === 'get_brand_wcpay_request:ok') {
-                                    if ($toast.css('display') != 'none') return;
+                        if(res === 'get_brand_wcpay_request:ok') {
+                            if ($toast.css('display') != 'none') return;
 
-                                    $toast.fadeIn(100);
-                                    setTimeout(function () {
-                                        $toast.fadeOut(100);
-                                    }, 2000);
-                                }else if (res === 'get_brand_wcpay_request:cancel') {
-                                    $(this).removeClass('weui-btn_disabled');
-                                    $(this).removeAttr('disable');
-                                }else if(res === 'get_brand_wcpay_request:fail'){
-                                    $(this).removeClass('weui-btn_disabled');
-                                    $(this).removeAttr('disable');
-                                }
-                            });
-                        }, 2000);
+                            $toast.fadeIn(100);
+                            setTimeout(function () {
+                                $toast.fadeOut(100);
+                            }, 2000);
+                        }else if (res === 'get_brand_wcpay_request:cancel') {
+                            $(this).removeClass('weui-btn_disabled');
+                            $(this).removeAttr('disable');
+                        }else if(res === 'get_brand_wcpay_request:fail'){
+                            $(this).removeClass('weui-btn_disabled');
+                            $(this).removeAttr('disable');
+                        }
 
                     };
                     $data['error'] = function (error) {
