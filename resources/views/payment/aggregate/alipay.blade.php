@@ -336,7 +336,8 @@
 
                 },
                 success:function(data) {
-                    location.href = data.data.redirect;
+                    //location.href = data.data.redirect;
+                    console.log(data);
                 },
                 error: function(error){
                     alert(error);
