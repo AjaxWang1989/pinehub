@@ -9,6 +9,7 @@
 namespace App\Ali\Oauth;
 
 
+use Illuminate\Support\Facades\Log;
 use Payment\ChargeContext;
 
 class OauthChargeContext extends ChargeContext
@@ -48,6 +49,7 @@ class OauthChargeContext extends ChargeContext
     public function redirect($redirectUri) {
         $this->responseData['redirect_uri'] = $redirectUri;
         $this->responseData = $this->charge($this->responseData);
+        Log::debug('response ali auth ', [$this->responseData]);
         return redirect($this->responseData);
     }
 
