@@ -56,8 +56,8 @@ class Auth extends AliBaseStrategy
     protected function retData(array $data)
     {
         $query = parent::retData($data);
-        if(isset($data['sign']))
-            unset($data['sign']);
+        if(isset($query['sign']))
+            unset($query['sign']);
         // 发起网络请求
         return $this->authGateway . '?' . http_build_query($query);
     }
