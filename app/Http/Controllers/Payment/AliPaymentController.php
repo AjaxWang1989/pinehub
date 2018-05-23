@@ -7,6 +7,7 @@ use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
 use App\Http\Controllers\Payment\PaymentController as Controller;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 use Payment\NotifyContext;
@@ -24,20 +25,6 @@ class AliPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
-        if($request->method() === HTTP_METHOD_GET){
-            $paymentApi = paymentApiUriGenerator('/ali/aggregate');
-            $accept = "application/vnd.pinehub.v0.0.1+json";
-            $userId = $request->input('buyer_id', null);
-            try{
-                $shop = $this->shopModel->find($request->input('shop_id'));
-                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop,
-                    'paymentApi' => $paymentApi, 'accept' => $accept, 'userId' => $userId]);
-            }catch (\Exception $exception){
-                return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY,
-                    'paymentApi' => $paymentApi, 'accept' => $accept, 'userId' => $userId]);
-            }
-
-        }
         $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('ali.payment.aggregate');
@@ -45,6 +32,21 @@ class AliPaymentController extends Controller
 
         return $this->response()->item( new AliPaymentSigned(['redirect' => $url]),
             new AliPaymentSignedTransformer());
+    }
+
+    public function aggregatePage(LumenRequest $request)
+    {
+        $paymentApi = paymentApiUriGenerator('/ali/aggregate');
+        $accept = "application/vnd.pinehub.v0.0.1+json";
+        $userId = $request->input('buyer_id', null);
+        try{
+            $shop = $this->shopModel->find($request->input('shop_id'));
+            return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop,
+                'paymentApi' => $paymentApi, 'accept' => $accept, 'userId' => $userId]);
+        }catch (\Exception $exception){
+            return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY,
+                'paymentApi' => $paymentApi, 'accept' => $accept, 'userId' => $userId]);
+        }
     }
 
 
