@@ -68,10 +68,10 @@ $app->bind('path.config', function (){
 // ]);
 
  $app->routeMiddleware([
-     'cross' => \App\Http\Middleware\Cross::class,
+     //'cross' => \App\Http\Middleware\Cross::class,
      'auth' => App\Http\Middleware\Authenticate::class,
-     'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-     'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class
+     //'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+     //'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class
  ]);
 
 /**

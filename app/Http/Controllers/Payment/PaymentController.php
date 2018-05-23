@@ -18,6 +18,7 @@ use App\Repositories\ShopRepositoryEloquent;
 use App\Transformers\Api\UpdateResponseTransformer;
 use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
@@ -88,8 +89,8 @@ class PaymentController extends Controller
     public function aggregate (LumenRequest $request)
     {
         $userAgent = $request->userAgent();
+        $shopId = $request->input('shop_id', null);
         if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
-            $shopId = $request->input('shop_id', null);
             $paymentUri = webUriGenerator('/wechat/aggregate.html', env('WEB_PAYMENT_PREFIX'));
             $uri = urlencode("{$paymentUri}?shop_id={$shopId}");
 
@@ -100,13 +101,20 @@ class PaymentController extends Controller
                 ->oauth->scopes(['snsapi_base'])
                 ->setRequest($request)
                 ->redirect($redirect);
+
         } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
-            $redirectUri = app('ali.user.oauth')->charge(['scopes' => 'auth_base', 'state' => 'init', 'redirect_uri' =>
-                config('ali.payment.redirect_url')]);
-            Log::debug($redirectUri);
-            return redirect($redirectUri);
+            $paymentUri = webUriGenerator('/ali/aggregate.html', env('WEB_PAYMENT_PREFIX'));
+            $uri = urlencode("{$paymentUri}?shop_id={$shopId}");
+
+            $redirect = config('ali.payment.redirect_url');
+            $redirect = "{$redirect}?redirect_uri={$uri}";
+
+            return app('ali.user.oauth')
+                ->defaultOAuth()
+                ->setRequest($request)
+                ->redirect($redirect);
+
         } else {
-            Log::debug('ali', config('ali'));
             return view('404');
         }
         return null;

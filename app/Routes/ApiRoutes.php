@@ -10,6 +10,7 @@ namespace App\Routes;
 
 
 use App\Http\Middleware\Cross;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 
 class ApiRoutes extends Routes
@@ -31,7 +32,7 @@ class ApiRoutes extends Routes
         if($this->domain){
             $second['domain'] = $this->domain;
         }
-
+        Log::debug('set cross');
         $second['middleware'] = ['cross'];
         $this->router->version($this->version, $second, function ($router){
             $self = $this;

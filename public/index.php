@@ -11,7 +11,7 @@
 */
 
 $app = require __DIR__.'/../bootstrap/app.php';
-
+\Illuminate\Support\Facades\Log::debug('run app');
 /*
 |--------------------------------------------------------------------------
 | Run The Application

@@ -95,6 +95,12 @@ class RoutesManagerServiceProvider extends ServiceProvider
             $this->app->register(LumenServiceProvider::class);
             $this->app->register(ApiExceptionHandlerServiceProvider::class);
             $this->app->register(ApiAuthServiceProvider::class);
+            $this->app->routeMiddleware([
+                'cross' => \App\Http\Middleware\Cross::class,
+                //'auth' => App\Http\Middleware\Authenticate::class,
+                'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
+                'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class
+            ]);
         }
 
         if(!$this->app['isApiServer'] || $this->app->runningInConsole()){
