@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
@@ -12,7 +13,7 @@ class AliAuthController extends Controller
     //
     public function oauth2(Request $request)
     {
-        Log::debug('session id'.Session::getId());
+        Log::debug('session id '.Session::getId().' session name '.Session::getName().' cookie '.Cookie::get(Session::getName()));
         $token = Session::get('ali.oauth.token', null);
         if($token){
             Log::debug('session ali.oauth.token', $token);
