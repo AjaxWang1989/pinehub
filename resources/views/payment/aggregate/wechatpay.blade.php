@@ -203,7 +203,7 @@
             </div>
             <div class="line"></div>
             <p class="tie">京抖云提供技术支持</p>
-            <a class="weui-btn  weui-btn_primary payment-btn" disabled="true">确认付款</a>
+            <a class="weui-btn weui-btn_disabled weui-btn_primary payment-btn" disabled="true">确认付款</a>
         </div>
     </div>
 </div>
@@ -247,10 +247,10 @@
         $('.input-money').bind('DOMNodeInserted', function(){
             console.log($(".input-money")[0].innerHTML)
             if($(".input-money")[0].innerHTML!="" || $(".input-money")[0].innerHTML>'0'){
-                $('.btn').removeClass('active');
+                $('.btn').removeClass('weui-btn_disabled');
                 $('.btn').attr('disabled', false);
             }else{
-                $('.btn').addClass('active');
+                $('.btn').addClass('weui-btn_disabled');
                 $('.btn').attr('disabled', true);
             }
         })
@@ -298,7 +298,7 @@
             var oDivHtml = oDiv.innerHTML;
             oDiv.innerHTML = oDivHtml.substring(0,oDivHtml.length-1);
             if(oDiv.innerHTML==''){
-                $('.btn').addClass('active');
+                $('.btn').addClass('weui-btn_disabled');
                 $('.btn').attr('disabled', true);
             }
         });
