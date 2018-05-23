@@ -25,6 +25,7 @@ class AliAuthController extends Controller
         $redirect = $request->input('redirect_uri', null);
         $token = app('ali.oauth.token')->charge(['grant_type' => 'authorization_code', 'code' => $authCode]);
         Session::put('ali.oauth.token', $token);
+        Session::save();
         return view('404');
     }
 }
