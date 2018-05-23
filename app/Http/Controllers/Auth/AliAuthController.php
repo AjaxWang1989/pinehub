@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
+
 
 class AliAuthController extends Controller
 {
