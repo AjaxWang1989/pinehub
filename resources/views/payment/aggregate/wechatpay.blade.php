@@ -247,11 +247,11 @@
         $('.input-money').bind('DOMNodeInserted', function(){
             console.log($(".input-money")[0].innerHTML)
             if($(".input-money")[0].innerHTML!="" || $(".input-money")[0].innerHTML>'0'){
-                $('.btn').removeClass('weui-btn_disabled');
-                $('.btn').attr('disabled', false);
+                $('.payment-btn').removeClass('weui-btn_disabled');
+                $('.payment-btn').active();
             }else{
-                $('.btn').addClass('weui-btn_disabled');
-                $('.btn').attr('disabled', true);
+                $('.payment-btn').addClass('weui-btn_disabled');
+                $('.payment-btn').disable();
             }
         })
         $('#div').trigger('DOMNodeInserted');
@@ -298,8 +298,8 @@
             var oDivHtml = oDiv.innerHTML;
             oDiv.innerHTML = oDivHtml.substring(0,oDivHtml.length-1);
             if(oDiv.innerHTML==''){
-                $('.btn').addClass('weui-btn_disabled');
-                $('.btn').attr('disabled', true);
+                $('.payment-btn').addClass('weui-btn_disabled');
+                $('.payment-btn').active();
             }
         });
         $('.payment-btn').click(function(){
