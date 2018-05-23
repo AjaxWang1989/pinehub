@@ -6,14 +6,14 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport"/>
     <link rel="stylesheet" type="text/css"  href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
     <style type="text/css">
-        *{
-            margin: 0;
-            padding: 0;
-            font-size: 62.5%;
-            font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-            -webkit-font-smoothing: antialiased;
+        /**{*/
+            /*margin: 0;*/
+            /*padding: 0;*/
+            /*font-size: 62.5%;*/
+            /*font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;*/
+            /*-webkit-font-smoothing: antialiased;*/
 
-        }
+        /*}*/
         .warp {
             width: 100%;
             height: 100vh;
@@ -105,15 +105,8 @@
             font-family: PingFang SC;
             font-size: 4rem;
         }
-        .payment .btn {
-            height: 50px;
+        .payment-btn {
             width: 100%;
-            color: #fff;
-            font-size: 20px;
-            border:none;
-            outline: none;
-            border-radius: 4px;
-            background-color: #1aad19;
         }
         html,body {
             height: 100%;
@@ -210,7 +203,7 @@
             </div>
             <div class="line"></div>
             <p class="tie">京抖云提供技术支持</p>
-            <a class="weui-btn  weui-btn_plain-primary payment-btn" disabled="true">确认付款</a>
+            <a class="weui-btn  weui-btn_primary payment-btn" disabled="true">确认付款</a>
         </div>
     </div>
 </div>
