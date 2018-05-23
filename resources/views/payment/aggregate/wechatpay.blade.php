@@ -248,10 +248,10 @@
             console.log($(".input-money")[0].innerHTML)
             if($(".input-money")[0].innerHTML!="" || $(".input-money")[0].innerHTML>'0'){
                 $('.payment-btn').removeClass('weui-btn_disabled');
-                $('.payment-btn').active();
+                $('.payment-btn').removeAttr('disable');
             }else{
                 $('.payment-btn').addClass('weui-btn_disabled');
-                $('.payment-btn').disable();
+                $('.payment-btn').attr('disable', true);
             }
         })
         $('#div').trigger('DOMNodeInserted');
@@ -299,13 +299,13 @@
             oDiv.innerHTML = oDivHtml.substring(0,oDivHtml.length-1);
             if(oDiv.innerHTML==''){
                 $('.payment-btn').addClass('weui-btn_disabled');
-                $('.payment-btn').active();
+                $('.payment-btn').removeAttr('disable');
             }
         });
         $('.payment-btn').click(function(){
             var amount =  parseFloat($(".input-money")[0].innerHTML);
             $(this).addClass('weui-btn_disabled');
-            $(this).disable();
+            $(this).attr('disable', true);
             $.ajax({
                 url:"{{ $paymentApi }}",
                 type:"POST",
@@ -329,7 +329,7 @@
                 },
                 success:function(data) {
                     $(this).removeClass('weui-btn_disabled');
-                    $(this).active();
+                    $(this).removeAttr('disable');
                     let $data =data.data;
                     $data['timestamp'] = $data['timeStamp'];
                     $data['success'] = function (res) {
@@ -344,7 +344,7 @@
                     };
                     $data['error'] = function (error) {
                         $(this).removeClass('weui-btn_disabled');
-                        $(this).active();
+                        $(this).removeAttr('disable');
                     }
                     wx.chooseWXPay($data);
                 },
