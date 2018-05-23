@@ -30,7 +30,7 @@ class AuthData extends ChargeBaseData
     protected function getBizContent()
     {
         $content = [
-           'scopes' => implode(',', $this->scopes),
+            'scope' => implode(',', $this->scopes),
             'state' => $this->state
         ];
         if($this->redirect_uri){
