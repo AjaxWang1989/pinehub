@@ -13,7 +13,7 @@ class AliAuthController extends Controller
     {
         $authCode = $request->input('auth_code', null);
         $redirect = $request->input('redirect_uri', null);
-        $token = app('ali.oauth.token')->charge(['grant_type' => 'authorization_code', 'auth_code' => $authCode]);
+        $token = app('ali.oauth.token')->charge(['grant_type' => 'authorization_code', 'code' => $authCode]);
         Log::debug('ali token', $token);
         return view('404');
     }
