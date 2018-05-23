@@ -55,10 +55,9 @@ class Auth extends AliBaseStrategy
      */
     protected function retData(array $data)
     {
-        $query['app_id'] = $this->config->appId;
-        $query['redirect_uri'] = $this->redirect;
-        $query['scope'] = $this->reqData->scopes;
-        $query['state'] = $this->reqData->state;
+        $query = parent::retData($data);
+        if(isset($data['sign']))
+            unset($data['sign']);
         // 发起网络请求
         return $this->authGateway . '?' . http_build_query($query);
     }

@@ -18,6 +18,7 @@ use Payment\Utils\ArrayUtil;
 /**
  * @property $scopes
  * @property $state
+ * @property $redirect_uri
  * */
 class AuthData extends ChargeBaseData
 {
@@ -29,21 +30,29 @@ class AuthData extends ChargeBaseData
     protected function getBizContent()
     {
         $content = [
-           'scopes' => $this->scopes,
+           'scopes' => implode(',', $this->scopes),
             'state' => $this->state
         ];
+        if($this->redirect_uri){
+            $content['redirect_uri'] = $this->redirect_uri;
+        }
 
         return $content;
     }
 
     protected function checkDataParam()
     {
-       if(!in_array($this->scopes, ['auth_base', 'auth_user'])){
-           //throw new PayException('scope错误');
-       }
-       Log::debug('state ', [$this->state, isset($this->state)]);
-       if(!isset($this->state)){
-           //throw new PayException('state错误');
+        if(!is_array($this->scopes)) {
+            $this->scopes = explode(',', $this->scopes);
+        }
+        foreach ($this->scopes as $scope){
+            if(!in_array($scope, ['auth_base', 'auth_user'])){
+                throw new PayException('scope错误');
+            }
+        }
+       Log::debug('state ', [$this->state, $this->state === null]);
+       if($this->state === null){
+           throw new PayException('state错误');
        }
     }
 
@@ -60,23 +69,8 @@ class AuthData extends ChargeBaseData
         $signData = [
             // 公共参数
             'app_id'        => $this->appId,
-            'method'        => $this->method,
-            'format'        => $this->format,
-            'charset'       => $this->charset,
-            'sign_type'     => $this->signType,
-            'timestamp'     => $this->timestamp,
-            'version'       => $this->version,
-            //'return_url'    => $this->returnUrl,
-
-            // 业务参数
-            'biz_content'   => json_encode($bizContent, JSON_UNESCAPED_UNICODE),
         ];
-
-//        // 电脑支付  wap支付添加额外参数
-//        if (in_array($this->method, ['alipay.trade.page.pay', 'alipay.trade.wap.pay'])) {
-//            $signData['return_url'] = $this->returnUrl;
-//        }
-
+        $signData = array_merge($signData, $bizContent);
         // 移除数组中的空值
         $this->retData = ArrayUtil::paraFilter($signData);
     }

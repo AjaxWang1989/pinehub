@@ -10,6 +10,8 @@ namespace App\Ali\Oauth\Data;
 
 
 use Payment\Common\Ali\Data\Charge\ChargeBaseData;
+use Payment\Common\PayException;
+
 /**
  * @property $grant_type
  * @property $code
@@ -32,6 +34,22 @@ class TokenData extends ChargeBaseData
             $content['refresh_token'] = $this->refresh_token;
 
         return $content;
+    }
+
+    protected function checkDataParam()
+    {
+        if(in_array($this->grant_type, ['authorization_code', 'refresh_token'])){
+            throw new PayException('grant_type错误');
+        }
+
+        if($this->grant_type === 'authorization_code' && !$this->code){
+           throw new PayException('authorization_code没有code');
+        }
+
+        if($this->grant_type === 'refresh_token' && !$this->refresh_token){
+            throw new PayException('refresh_token没有对应的refresh_token');
+        }
+
     }
 
     /**
