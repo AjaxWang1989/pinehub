@@ -63,6 +63,7 @@ class PaymentController extends Controller
     public function preOrder(array $order, $charge = null)
     {
         try{
+            Log::debug('signed', $order);
             $signed = $charge->charge($order);
             Log::debug('signed', [$signed]);
             return $signed;
