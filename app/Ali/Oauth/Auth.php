@@ -10,7 +10,6 @@ namespace App\Ali\Oauth;
 
 
 use App\Ali\Oauth\Data\AuthData;
-use Illuminate\Support\Facades\Log;
 use Payment\Common\Ali\AliBaseStrategy;
 
 class Auth extends AliBaseStrategy
@@ -56,8 +55,6 @@ class Auth extends AliBaseStrategy
      */
     protected function retData(array $data)
     {
-//        $data = parent::retData($data);
-        Log::debug('ali signed data', $data);
         $query['app_id'] = $this->config->appId;
         $query['redirect_uri'] = $this->redirect;
         $query['scope'] = $this->reqData->scopes;
