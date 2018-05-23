@@ -223,21 +223,6 @@
         <div id="remove"><img src="{{ url('images/Delete@2x.png') }}" alt="" width="20%"/></div>
     </div>
 </div>
-<div id="payment-success" style="display: none;">
-    <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
-        <i class="weui-icon-success-no-circle weui-icon_toast"></i>
-        <p class="weui-toast__content">支付成功</p>
-    </div>
-</div>
-
-<div id="payment-ing" style="display:none;">
-    <div class="weui-mask_transparent"></div>
-    <div class="weui-toast">
-        <i class="weui-loading weui-icon_toast"></i>
-        <p class="weui-toast__content">数据加载中</p>
-    </div>
-</div>
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
@@ -329,8 +314,7 @@
                 $('.payment-btn').removeAttr('disable');
             }
         });
-        let $loadingToast = $('#payment-ing');
-        let $toast = $('#payment-success');
+
         $('.payment-btn').click(function(){
             var amount =  parseFloat($(".input-money")[0].innerHTML);
             $(this).addClass('weui-btn_disabled');
@@ -352,12 +336,7 @@
                     $data['timestamp'] = $data['timeStamp'];
                     $data['success'] = function (res) {
                         if(res === 'get_brand_wcpay_request:ok') {
-                            if ($toast.css('display') != 'none') return;
 
-                            $toast.fadeIn(100);
-                            setTimeout(function () {
-                                $toast.fadeOut(100);
-                            }, 2000);
                         }else if (res === 'get_brand_wcpay_request:cancel') {
                             $(this).removeClass('weui-btn_disabled');
                             $(this).removeAttr('disable');
