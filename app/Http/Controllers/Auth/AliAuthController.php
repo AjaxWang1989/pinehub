@@ -13,7 +13,9 @@ class AliAuthController extends Controller
     //
     public function oauth2(Request $request)
     {
+        Session::start();
         Log::debug('session id '.Session::getId().' session name '.Session::getName().' cookie '.Cookie::get(Session::getName()));
+
         $token = Session::get('ali.oauth.token', null);
         if($token){
             Log::debug('session ali.oauth.token', $token);
