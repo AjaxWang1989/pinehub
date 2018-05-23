@@ -137,6 +137,7 @@ class Order extends Model implements Transformable
         $now = Carbon::now();
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
         $clientIp = app('request')->getClientIp();
+        $buyerId = $request->input('buyer_id', null);
         return [
             'body'    => 'ali qr pay',
             'subject'    => '支付宝扫码支付',
@@ -148,6 +149,7 @@ class Order extends Model implements Transformable
             'store_id' => '',
             'operator_id' => '',
             'terminal_id' => '',// 终端设备号(门店号或收银设备ID) 默认值 web
+            'buyer_id' => $buyerId
         ];
     }
 
@@ -175,7 +177,7 @@ class Order extends Model implements Transformable
         $request = app('request');
         $clientIp = $request->getClientIp();
         $openId = $request->input('open_id', null);
-        Log::debug('openId='.$openId,[date('Y-m-d H:i:s'), $expire->timestamp, $expire->format('Y-m-d H:i:s')]);
+
         return [
             'body'    => 'PineHub offline scan qrcode pay',
             'subject'    => '微信扫码支付',
@@ -185,10 +187,6 @@ class Order extends Model implements Transformable
             'return_param' => '123',
             'client_ip' => $clientIp,// 客户地址
             'openid' => $openId,
-            // 如果是服务商，请提供以下参数
-//            'sub_appid' => '',//微信分配的子商户公众账号ID
-//            'sub_mch_id' => '',// 微信支付分配的子商户号
-//            'sub_openid' => '',// 用户在子商户appid下的唯一标识
         ];
     }
 }
