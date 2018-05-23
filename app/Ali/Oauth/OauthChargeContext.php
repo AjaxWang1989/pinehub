@@ -42,6 +42,10 @@ class OauthChargeContext extends ChargeContext
         return $this;
     }
 
+    public function getToken() {
+        return $this->responseData;
+    }
+
     public function response() {
         return $this->responseData;
     }
