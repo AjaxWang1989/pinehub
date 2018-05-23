@@ -12,6 +12,7 @@ namespace App\Ali\Payment;
 use App\Ali\Payment\Data\WapPaymentData;
 use Illuminate\Support\Facades\Log;
 use Payment\Common\Ali\AliBaseStrategy;
+use Payment\Common\PayException;
 
 class WapPayment extends AliBaseStrategy
 {
