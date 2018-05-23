@@ -331,7 +331,7 @@
                 headers:{
                     accept: "{{ $accept }}",
                 },
-                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount},
+                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'buyer_id': '{{ $userId }}'},
                 beforeSend: function(){
 
                 },
