@@ -38,7 +38,7 @@ class TokenData extends ChargeBaseData
 
     protected function checkDataParam()
     {
-        if(in_array($this->grant_type, ['authorization_code', 'refresh_token'])){
+        if(!in_array($this->grant_type, ['authorization_code', 'refresh_token'])){
             throw new PayException('grant_type错误');
         }
 
