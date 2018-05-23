@@ -9,9 +9,9 @@
         *{
             margin: 0;
             padding: 0;
-            font-size: 62.5%;
-            font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-            -webkit-font-smoothing: antialiased;
+            /*font-size: 62.5%;*/
+            /*font-family: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;*/
+            /*-webkit-font-smoothing: antialiased;*/
 
         }
         .warp {
