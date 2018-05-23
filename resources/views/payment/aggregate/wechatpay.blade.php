@@ -343,10 +343,12 @@
                             $(this).removeClass('weui-btn_disabled');
                             $(this).removeAttr('disable');
                         }
+                        alert(res);
                     };
                     $data['error'] = function (error) {
                         $(this).removeClass('weui-btn_disabled');
                         $(this).removeAttr('disable');
+                        alert(error);
                     }
                     wx.chooseWXPay($data);
                 },
