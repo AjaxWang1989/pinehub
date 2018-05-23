@@ -142,7 +142,7 @@ return [
         ],// 指定不能使用信用卡支付   不传入，则均可使用
         'fee_type'          => env('WECHAT_PAYMENT_FEE_TYPE', 'CNY'),// 货币类型  当前仅支持该字段
         'notify_url'        => webUriGenerator(env('WECHAT_PAYMENT_NOTIFY_URL', '/payment/wechat/notify'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),
-        'redirect_url'      => webUriGenerator(env('WECHAT_PAYMENT_REDIRECT_URL', '/wechat/aggregate.html'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),// 如果是h5支付，可以设置该值，返回到指定页面
+        'redirect_url'      => webUriGenerator(env('WECHAT_PAYMENT_REDIRECT_URL', '/wechat'), env('WEB_OAUTH_PREFIX'), env('WEB_DOMAIN')),// 如果是h5支付，可以设置该值，返回到指定页面
         'return_raw'        => env('WECHAT_PAYMENT_RETURN_RAW', false),// 在处理回调时，是否直接返回原始数据，默认为true
     ]
 ];

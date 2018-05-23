@@ -89,8 +89,13 @@ class PaymentController extends Controller
     {
         $userAgent = $request->userAgent();
         if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
-            $uri = urlencode(webUriGenerator('/wechat/aggregate.html?shop_id='.$request->input('shop_id', null)));
-            $redirect = webUriGenerator("/wechat?redirect_uri={$uri}", 'oauth');
+            $shopId = $request->input('shop_id', null);
+            $paymentUri = webUriGenerator('/wechat/aggregate.html', env('WEB_PAYMENT_PREFIX'));
+            $uri = urlencode("{$paymentUri}?shop_id={$shopId}");
+
+            $redirect = config('wechat.other_sdk_payment.redirect_url');
+            $redirect = "{$redirect}?redirect_uri={$uri}";
+
             return app('wechat.official_account.default')
                 ->oauth->scopes(['snsapi_base'])
                 ->setRequest($request)
