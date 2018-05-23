@@ -223,12 +223,39 @@
         <div id="remove"><img src="{{ url('images/Delete@2x.png') }}" alt="" width="20%"/></div>
     </div>
 </div>
+<div id="payment-success" style="display: none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-icon-success-no-circle weui-icon_toast"></i>
+        <p class="weui-toast__content">支付成功</p>
+    </div>
+</div>
+
+<div id="payment-ing" style="display:none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">数据加载中</p>
+    </div>
+</div>
 <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
 <script src="https://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
 <script>
     $(function(){
         FastClick.attach(document.body);
+        wx.config({!! $config !!});
+        wx.ready(function () {
+            console.log('wx-sdk is ready to call the api');
+            wx.checkJsApi({
+                jsApiList: ['chooseWXPay'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+                success: function(res) {
+                    console.log(res);
+                    // 以键值对的形式返回，可用的api值true，不可用为false
+                    // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                }
+            });
+        });
         setInterval(function(){
             if($('.cursor').css("display")=="inline-block" || $('.cursor').css("display")=="block"){
                 $('.cursor').css("display","none")
@@ -302,6 +329,8 @@
                 $('.payment-btn').removeAttr('disable');
             }
         });
+        let $loadingToast = $('#payment-ing');
+        let $toast = $('#payment-success');
         $('.payment-btn').click(function(){
             var amount =  parseFloat($(".input-money")[0].innerHTML);
             $(this).addClass('weui-btn_disabled');
@@ -314,18 +343,9 @@
                 },
                 data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'open_id' : '{{$openId}}' },
                 beforeSend: function(){
-                    wx.config({!! $config !!});
-                    wx.ready(function () {
-                        console.log('wx-sdk is ready to call the api');
-                        wx.checkJsApi({
-                            jsApiList: ['chooseWXPay'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
-                            success: function(res) {
-                                console.log(res);
-                                // 以键值对的形式返回，可用的api值true，不可用为false
-                                // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
-                            }
-                        });
-                    });
+                    if ($loadingToast.css('display') != 'none') return;
+
+                    $loadingToast.fadeIn(100);
                 },
                 success:function(data) {
                     $(this).removeClass('weui-btn_disabled');
@@ -334,21 +354,29 @@
                     $data['timestamp'] = $data['timeStamp'];
                     $data['success'] = function (res) {
                         console.log(res);
-                        if(res === 'get_brand_wcpay_request:ok') {
+                        setTimeout(function () {
+                            $loadingToast.fadeOut(100, function () {
+                                if(res === 'get_brand_wcpay_request:ok') {
+                                    if ($toast.css('display') != 'none') return;
 
-                        }else if (res === 'get_brand_wcpay_request:cancel') {
-                            $(this).removeClass('weui-btn_disabled');
-                            $(this).removeAttr('disable');
-                        }else if(res === 'get_brand_wcpay_request:fail'){
-                            $(this).removeClass('weui-btn_disabled');
-                            $(this).removeAttr('disable');
-                        }
-                        alert(res);
+                                    $toast.fadeIn(100);
+                                    setTimeout(function () {
+                                        $toast.fadeOut(100);
+                                    }, 2000);
+                                }else if (res === 'get_brand_wcpay_request:cancel') {
+                                    $(this).removeClass('weui-btn_disabled');
+                                    $(this).removeAttr('disable');
+                                }else if(res === 'get_brand_wcpay_request:fail'){
+                                    $(this).removeClass('weui-btn_disabled');
+                                    $(this).removeAttr('disable');
+                                }
+                            });
+                        }, 2000);
+
                     };
                     $data['error'] = function (error) {
                         $(this).removeClass('weui-btn_disabled');
                         $(this).removeAttr('disable');
-                        alert(error);
                     }
                     wx.chooseWXPay($data);
                 },
