@@ -37,6 +37,9 @@ class WebRoutes extends Routes
         \Log::debug('register routes'.($this->router instanceof Router ? 'LumenRouter' : 'DingoRouter'), $second);
         $this->router->group($second, function ($router){
             $this->subRoutes($router);
+            $router->get('/webbanch', function (){
+                return "webbanch";
+            });
         });
     }
 }
