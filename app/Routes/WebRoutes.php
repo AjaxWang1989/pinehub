@@ -39,13 +39,13 @@ class WebRoutes extends Routes
         $this->router->group($second, function ($router){
             $this->subRoutes($router);
             $router->get('/webbanch', function (Request $request){
-                $test = $request->getSession()->get('test', 0);
+                $test = $request->getSession()->get('test1', 0);
                 if($test > 0){
                     $test ++;
                 }else{
                     $test = 1;
-                    $request->getSession()->push('test', $test);
                 }
+                $request->getSession()->put('test1', $test);
                 return "webbanch {$test}";
             });
         });
