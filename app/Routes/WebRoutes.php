@@ -9,6 +9,7 @@
 namespace App\Routes;
 
 
+use Illuminate\Http\Request;
 use Laravel\Lumen\Application;
 use Laravel\Lumen\Routing\Router;
 
@@ -37,8 +38,15 @@ class WebRoutes extends Routes
         \Log::debug('register routes'.($this->router instanceof Router ? 'LumenRouter' : 'DingoRouter'), $second);
         $this->router->group($second, function ($router){
             $this->subRoutes($router);
-            $router->get('/webbanch', function (){
-                return "webbanch";
+            $router->get('/webbanch', function (Request $request){
+                $test = $request->getSession()->get('test', 0);
+                if($test > 0){
+                    $test ++;
+                }else{
+                    $test = 1;
+                    $request->getSession()->push('test', $test);
+                }
+                return "webbanch {$test}";
             });
         });
     }
