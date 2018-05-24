@@ -196,10 +196,11 @@
             </div>
             <div class="info">
                 @if (isset($shop))
-                <p class="title">福年来早餐车</p>
-                <p class="name"><span class="shop">商家</span>餐车(编号：{{ $shop['code'] }})</p>
+                    <p class="title">福年来早餐车</p>
+                    <p class="name"><span class="shop">商家</span></p>
+                    <p>NO.{{ $shop['code'] }}</p>
                 @else
-                <p class="title">福年来扫码支付</p>
+                    <p class="title">福年来扫码支付</p>
                 @endif
             </div>
         </div>

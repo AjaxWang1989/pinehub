@@ -11,7 +11,6 @@ namespace App\Routes;
 
 use Illuminate\Http\Request;
 use Laravel\Lumen\Application;
-use Laravel\Lumen\Routing\Router;
 
 class WebRoutes extends Routes
 {
@@ -35,7 +34,6 @@ class WebRoutes extends Routes
         if($this->namespace){
             $second['namespace']  = $this->namespace.($this->subNamespace ? $this->subNamespace : '');
         }
-        \Log::debug('register routes'.($this->router instanceof Router ? 'LumenRouter' : 'DingoRouter'), $second);
         $this->router->group($second, function ($router){
             $this->subRoutes($router);
             $router->get('/webbanch', function (Request $request){
