@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use Carbon\Carbon;
+use Illuminate\Cache\RedisLock;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -41,6 +42,11 @@ class UIDGeneratorService implements InterfaceServiceHandler
     protected $dateTimeFormat = 'YmdHis';
 
     const UID_LOCK_TIME = 3;//unit second
+
+    /**
+     * @var RedisLock
+     * */
+    protected $lock = null;
 
     /**
      * UIDGeneratorService constructor.
@@ -84,7 +90,6 @@ class UIDGeneratorService implements InterfaceServiceHandler
         $key = $this->segmentRandKey();
         $left = $key;
         $right = $key;
-        $lock = Cache::lock(self::UID_LOCK, self::UID_LOCK_TIME);
         while ($this->segment[$left] && $this->segment[$right]) {
             $left --;
             $right ++;
@@ -95,7 +100,8 @@ class UIDGeneratorService implements InterfaceServiceHandler
         }
         $this->segment->put($key, true);
         Cache::put($this->segmentKey, $this->segment->toArray());
-        $lock->release();
+        $this->lock->release();
+        $this->lock = null;
         $keyLength = strlen($this->segmentMaxLength.'') - 1;
         $key = sprintf("%0{$keyLength}d", $key);
         return generatorUID($this->dateTimeFormat, $key);
@@ -118,6 +124,8 @@ class UIDGeneratorService implements InterfaceServiceHandler
 
     protected function segmentInit()
     {
+        if(!$this->lock)
+            $this->lock = Cache::lock(self::UID_LOCK, self::UID_LOCK_TIME);
         $this->segmentKey = $this->now->format($this->dateTimeFormat);
         $this->segment = $this->getSegment();
 

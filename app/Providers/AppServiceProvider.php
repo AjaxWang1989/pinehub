@@ -44,12 +44,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(WechatLumenServiceProvider::class);
         $this->app->register(SpatialServiceProvider::class);
         $this->app->register(AliOauthServiceProvider::class);
-        if ($this->app->environment() !== 'production') {
-            $this->app->register(IdeHelperServiceProvider::class);
-        }
-
         $this->app->singleton('uid.generator', function () {
             return new UIDGeneratorService();
         });
+        if ($this->app->environment() !== 'production') {
+            $this->app->register(IdeHelperServiceProvider::class);
+        }
     }
 }
