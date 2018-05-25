@@ -97,7 +97,7 @@ class UIDGeneratorService implements InterfaceServiceHandler
         Cache::put($this->segmentKey, $this->segment->toArray());
         $lock->release();
         $keyLength = strlen($this->segmentMaxLength.'');
-        $key = sprintf("%0{$keyLength}", $key);
+        $key = sprintf("%0{$keyLength}d", $key);
         return generatorUID($this->dateTimeFormat, $key);
     }
 
