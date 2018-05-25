@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Ali\Oauth\AliOauthServiceProvider;
 use App\Http\Middleware\Cross;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
+use App\Services\UIDGeneratorService;
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Redis\RedisServiceProvider;
@@ -46,5 +47,9 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment() !== 'production') {
             $this->app->register(IdeHelperServiceProvider::class);
         }
+
+        $this->app->singleton('uid.generator', function () {
+            return new UIDGeneratorService();
+        });
     }
 }

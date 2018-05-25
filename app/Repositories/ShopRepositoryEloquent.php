@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\Country;
 use App\Validators\Admin\ShopsValidator;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -39,17 +40,9 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-//        $this->model->addObservableEvents([
-//            'creating' => function (Shop $shop) {
-//
-//            },
-//            'created' => function (Shop $shop) {
-//
-//            },
-//            'updated' => function (Shop $shop) {
-//
-//            }
-//        ]);
+        Shop::creating(function (Shop $shop) {
+            $shop->code = app('uid.generator')->getUid(SHOP_CODE_FORMAT, SHOP_CODE_SEGMENT_MAX_LENGTH, ONE_DAY_SECONDS);
+        });
     }
 
     public function validator()

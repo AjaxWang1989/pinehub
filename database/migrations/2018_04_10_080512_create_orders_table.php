@@ -15,7 +15,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code', 24)->comment('订单编号');
+            $table->string('code', 16)->comment('订单编号');
             $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家');
             $table->float('total_amount')->default(0)->comment('应付款');
             $table->float('payment_amount')->default('0')->comment('实际付款');

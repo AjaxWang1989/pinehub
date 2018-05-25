@@ -33,7 +33,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
         Order::creating(function (Order &$order){
-            $order->code = generatorUID(Order::ORDER_NUMBER_PREFIX);
+            $order->code =  app('uid.generator')->getUid(ORDER_CODE_FORMAT, ORDER_SEGMENT_MAX_LENGTH);
             return $order;
         });
     }

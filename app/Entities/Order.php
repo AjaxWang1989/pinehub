@@ -88,6 +88,7 @@ class Order extends Model implements Transformable
 
     const VIRTRUAL_MERCHANDISE = 0;
     const REAL_MERCHANDISE = 1;
+
     protected $dates = [
         'signed_at',
         'consigned_at',
