@@ -17,7 +17,7 @@ class CreateShopsTable extends Migration
 	{
 		Schema::create('shops', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('code', 8)->nullable()->comment('餐车编号');
+            $table->string('code', 10)->nullable()->comment('餐车编号');
             $table->unsignedInteger('user_id')->comment('店铺老板用户id');
             $table->unsignedInteger('country_id')->comment('国家id');
             $table->unsignedInteger('province_id')->comment('省份id');
