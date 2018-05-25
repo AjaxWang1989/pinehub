@@ -55,7 +55,13 @@ class UIDGeneratorService implements InterfaceServiceHandler
     public function handle()
     {
         // TODO: Implement handle() method.
-        list($this->dateTimeFormat, $this->segmentMaxLength, $this->nextTimeSeconds) = func_get_args();
+        $argNum = func_num_args();
+        if ($argNum === 3) {
+            list($this->dateTimeFormat, $this->segmentMaxLength, $this->nextTimeSeconds) = func_get_args();
+        } else if ($argNum === 2) {
+            list($this->dateTimeFormat, $this->segmentMaxLength) = func_get_args();
+        }
+
         if($this->now->timestamp < Carbon::now()->timestamp){
             $this->now = Carbon::now();
             $this->next = $this->now->addSeconds($this->nextTimeSeconds);
