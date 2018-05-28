@@ -127,8 +127,7 @@ class OrderBuilder implements InterfaceServiceHandler
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['order_id'] = $orderModel->id;
-                    $orderItem['order_code'] = $orderModel->code;
-                    Log::debug('order item data ', $orderItem->toArray());
+                    $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);
                     $orderItemModel = $this->orderItem->create($orderItem->except(['order_item_product'])
                         ->toArray());
                     if(isset($orderItem['order_item_product'])){
