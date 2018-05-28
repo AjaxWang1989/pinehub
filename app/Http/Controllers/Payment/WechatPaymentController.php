@@ -35,6 +35,8 @@ class WechatPaymentController extends Controller
             $request->getSession()->put('count', ++ $count);
         }
         \Log::debug('count = '.$count);
+        $openid = $request->input('open_id', null);
+        \Log::debug('wechat open id '.$openid);
         $openId= null;
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
