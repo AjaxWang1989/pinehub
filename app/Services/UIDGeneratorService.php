@@ -37,11 +37,17 @@ class UIDGeneratorService implements InterfaceServiceHandler
 
     const UID_LOCK = 'uid.lock';
 
-    protected $segmentKey = '';
+    protected $segmentKey = null;
 
     protected $dateTimeFormat = 'YmdHis';
 
     const UID_LOCK_TIME = 3;//unit second
+
+    const WAIT_MAX_TIME = 6;
+
+    const INTERVAL_TIME = 1;
+
+    protected $wait_time = -1;
 
     /**
      * @var RedisLock
@@ -75,13 +81,21 @@ class UIDGeneratorService implements InterfaceServiceHandler
         }else if($this->nextTimeSeconds) {
             $this->next = $this->now->addSeconds($this->nextTimeSeconds);
         }
-
+        $this->wait_time ++;
         return $this->uidGenerator();
     }
 
     public function getUid(string $format, int $segmentLength)
     {
         return $this->handle($format, $segmentLength);
+    }
+
+    public function getSubUid(string $mainUid, int $subUidSegmentLength)
+    {
+        $this->segmentKey = $mainUid;
+        $this->segmentMaxLength = $subUidSegmentLength;
+        $this->segmentInit();
+        return $this->uidGenerator();
     }
 
     protected function uidGenerator()
@@ -98,13 +112,23 @@ class UIDGeneratorService implements InterfaceServiceHandler
         if($key === null) {
             throw new \Exception('无法生产需要的UID');
         }
-        $this->segment->put($key, true);
-        Cache::put($this->segmentKey, $this->segment->toArray());
-        $this->lock->release();
-        $this->lock = null;
-        $keyLength = strlen($this->segmentMaxLength.'') - 1;
-        $key = sprintf("%0{$keyLength}d", $key);
-        return generatorUID($this->dateTimeFormat, $key);
+        if(!$this->lock){
+            $this->lock = Cache::lock(self::UID_LOCK.'.'.$this->segmentKey.'.'.$key, self::UID_LOCK_TIME);
+        }
+        if ($this->lock) {
+            $this->segment->put($key, true);
+            Cache::put($this->segmentKey, $this->segment->toArray());
+            $this->lock->release();
+            $this->lock = null;
+            $keyLength = strlen($this->segmentMaxLength.'') - 1;
+            $key = sprintf("%0{$keyLength}d", $key);
+            return generatorUID($this->segmentKey, $key);
+        }elseif($this->wait_time < self::WAIT_MAX_TIME){
+            sleep(self::INTERVAL_TIME);
+            return $this->handle();
+        }else{
+            return null;
+        }
     }
 
     protected function segmentRandKey()
@@ -124,18 +148,20 @@ class UIDGeneratorService implements InterfaceServiceHandler
 
     protected function segmentInit()
     {
-        if(!$this->lock)
-            $this->lock = Cache::lock(self::UID_LOCK, self::UID_LOCK_TIME);
-        $this->segmentKey = $this->now->format($this->dateTimeFormat);
-        $this->segment = $this->getSegment();
+        if(!$this->segmentKey){
+            $this->segmentKey = $this->now->format($this->dateTimeFormat);
+            $this->segment = $this->getSegment();
 
-        $emptySegment = $this->segment->filter(function ($value){
+            $emptySegment = $this->segment->filter(function ($value){
                 return !$value;
-        });
+            });
 
-        if ($this->segment && $emptySegment->count() === 0) {
-            $this->segmentKey = $this->next->format($this->dateTimeFormat);
-            $this->segment = $this->nextSegment();
+            if ($this->segment && $emptySegment->count() === 0) {
+                $this->segmentKey = $this->next->format($this->dateTimeFormat);
+                $this->segment = $this->nextSegment();
+            }
+        }else{
+            $this->segment = $this->getSegment();
         }
     }
 

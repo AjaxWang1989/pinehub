@@ -106,10 +106,8 @@ if(!function_exists('password')){
 }
 
 if(!function_exists('generatorUID')){
-    function generatorUID (string $format, string $suffix = '') {
-        $now = \Illuminate\Support\Carbon::now();
-        $formatDate = $now->format($format);
-        return $formatDate.$suffix;
+    function generatorUID (string $prefix, string $suffix = '') {
+        return $prefix.$suffix;
     }
 }
 

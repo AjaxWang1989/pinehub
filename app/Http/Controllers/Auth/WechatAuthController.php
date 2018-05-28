@@ -17,6 +17,11 @@ class WechatAuthController extends Controller
 
     public function oauth2(Request $request)
     {
+        $count = $request->getSession()->get('count', 0);
+        if($count){
+            $request->getSession()->put('count', ++ $count);
+        }
+        \Log::debug('count = '.$count);
         $user = app('wechat.official_account.default')
             ->oauth->setRequest($request)->user();
         $openId = $user->getId();

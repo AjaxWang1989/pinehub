@@ -31,6 +31,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $consignedAt 发货时间
  * @property string $postNo 物流订单号
  * @property string $postName 物流公司名称
+ * @property string $orderCode 订单编号
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -69,6 +70,7 @@ class OrderItem extends Model implements Transformable
     use TransformableTrait, ModelAttributesAccess;
 
     const ORDERITEM_NUMBER_PREFIX = 'PHS';
+
     protected $dates = [
         'signed_at',
         'consigned_at'

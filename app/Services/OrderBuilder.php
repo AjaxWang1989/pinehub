@@ -127,6 +127,7 @@ class OrderBuilder implements InterfaceServiceHandler
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['order_id'] = $orderModel->id;
+                    $orderItem['order_code'] = $orderModel->code;
                     Log::debug('order item data ', $orderItem->toArray());
                     $orderItemModel = $this->orderItem->create($orderItem->except(['order_item_product'])
                         ->toArray());
@@ -238,6 +239,7 @@ class OrderBuilder implements InterfaceServiceHandler
             'cost_price',
             'main_image'
         ]);
+        $data['quality'] = $quality;
         if ($model instanceof SKUProduct) {
             $data['merchandise_id'] = $model->merchandiseId;
             $data['sku_product_id'] = $model->id;

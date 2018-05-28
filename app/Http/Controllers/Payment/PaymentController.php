@@ -89,6 +89,10 @@ class PaymentController extends Controller
     {
         $userAgent = $request->userAgent();
         $shopId = $request->input('shop_id', null);
+        $count = $request->getSession()->get('count', 0);
+        if(!$count){
+            $request->getSession()->put('count', ++ $count);
+        }
         if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
             $paymentUri = webUriGenerator('/wechat/aggregate.html', env('WEB_PAYMENT_PREFIX'));
             $uri = urlencode("{$paymentUri}?shop_id={$shopId}");

@@ -34,7 +34,8 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
     {
         $this->pushCriteria(app(RequestCriteria::class));
         OrderItem::creating(function (OrderItem &$orderItem) {
-            $orderItem->code = generatorUID(OrderItem::ORDERITEM_NUMBER_PREFIX);
+            $orderItem->code =app('uid.generator')->getSubUid($orderItem->orderCode, ORDER_SEGMENT_MAX_LENGTH);
+            unset($orderItem->orderCode);
             return $orderItem;
         });
     }
