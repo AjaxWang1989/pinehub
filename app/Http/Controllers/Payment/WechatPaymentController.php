@@ -21,6 +21,8 @@ class WechatPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
+        $openid = $request->input('open_id', null);
+        \Log::debug('order wechat open id '.$openid);
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('wechat.payment.aggregate');
