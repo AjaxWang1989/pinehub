@@ -31,7 +31,12 @@ use App\Entities\Traits\ModelAttributesAccess;
 class Role extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
-
+    const SUPPER_ADMIN = 'super.admin';
+    const PLATFORM_ADMIN = 'platform.admin';
+    const FNL_ADMIN    = 'fnl.admin';
+    const GK_ADMIN     = 'gk.admin';
+    const FNL_USER     = 'fnl.user';
+    const GK_USER     = 'gk.user';
     /**
      * The attributes that are mass assignable.
      *

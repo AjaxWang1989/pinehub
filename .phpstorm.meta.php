@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2018-05-28 01:56:06.
+    * Generated on 2018-05-29 08:43:41.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -56,6 +56,7 @@ namespace PHPSTORM_META {
         'wechat.payment.default' => \EasyWeChat\Payment\Application::class,
         'ali.user.oauth' => \App\Ali\Oauth\OauthChargeContext::class,
         'ali.oauth.token' => \App\Ali\Oauth\OauthChargeContext::class,
+        'wechat' => \App\Services\WechatService::class,
         'uid.generator' => \App\Services\UIDGeneratorService::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
         'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
@@ -190,6 +191,7 @@ namespace PHPSTORM_META {
         'wechat.payment.default' => \EasyWeChat\Payment\Application::class,
         'ali.user.oauth' => \App\Ali\Oauth\OauthChargeContext::class,
         'ali.oauth.token' => \App\Ali\Oauth\OauthChargeContext::class,
+        'wechat' => \App\Services\WechatService::class,
         'uid.generator' => \App\Services\UIDGeneratorService::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
         'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
@@ -324,6 +326,7 @@ namespace PHPSTORM_META {
         'wechat.payment.default' => \EasyWeChat\Payment\Application::class,
         'ali.user.oauth' => \App\Ali\Oauth\OauthChargeContext::class,
         'ali.oauth.token' => \App\Ali\Oauth\OauthChargeContext::class,
+        'wechat' => \App\Services\WechatService::class,
         'uid.generator' => \App\Services\UIDGeneratorService::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
         'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
@@ -458,6 +461,7 @@ namespace PHPSTORM_META {
         'wechat.payment.default' => \EasyWeChat\Payment\Application::class,
         'ali.user.oauth' => \App\Ali\Oauth\OauthChargeContext::class,
         'ali.oauth.token' => \App\Ali\Oauth\OauthChargeContext::class,
+        'wechat' => \App\Services\WechatService::class,
         'uid.generator' => \App\Services\UIDGeneratorService::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
         'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
@@ -592,6 +596,7 @@ namespace PHPSTORM_META {
         'wechat.payment.default' => \EasyWeChat\Payment\Application::class,
         'ali.user.oauth' => \App\Ali\Oauth\OauthChargeContext::class,
         'ali.oauth.token' => \App\Ali\Oauth\OauthChargeContext::class,
+        'wechat' => \App\Services\WechatService::class,
         'uid.generator' => \App\Services\UIDGeneratorService::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
         'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
@@ -726,6 +731,7 @@ namespace PHPSTORM_META {
         'wechat.payment.default' => \EasyWeChat\Payment\Application::class,
         'ali.user.oauth' => \App\Ali\Oauth\OauthChargeContext::class,
         'ali.oauth.token' => \App\Ali\Oauth\OauthChargeContext::class,
+        'wechat' => \App\Services\WechatService::class,
         'uid.generator' => \App\Services\UIDGeneratorService::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
         'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
@@ -860,6 +866,7 @@ namespace PHPSTORM_META {
         'wechat.payment.default' => \EasyWeChat\Payment\Application::class,
         'ali.user.oauth' => \App\Ali\Oauth\OauthChargeContext::class,
         'ali.oauth.token' => \App\Ali\Oauth\OauthChargeContext::class,
+        'wechat' => \App\Services\WechatService::class,
         'uid.generator' => \App\Services\UIDGeneratorService::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
         'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,

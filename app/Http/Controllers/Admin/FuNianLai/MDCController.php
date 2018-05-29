@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Admin\FuNianLai;
 
 use App\Entities\User;
 use App\Http\Response\CreateResponse;
 use App\Http\Response\UpdateResponse;
-use App\Repositories\ShopRepositoryEloquent;
+use App\Repositories\ShopRepositoryEloquent as MDCModel;
 use App\Repositories\UserRepositoryEloquent;
 use App\Transformers\Api\UpdateResponseTransformer;
 use App\Transformers\CreateResponeTransformer;
@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Validator\Contracts\ValidatorInterface;
 
-class ShopsController extends Controller
+class MDCController extends Controller
 {
     //
     /**
@@ -29,14 +29,14 @@ class ShopsController extends Controller
     protected $userModel = null;
 
     /**
-     * @var ShopRepositoryEloquent
+     * @var MDCModel
      * */
-    protected $shopModel = null;
+    protected $mdcModel = null;
 
-    public function __construct(UserRepositoryEloquent $userModel, ShopRepositoryEloquent $shopModel)
+    public function __construct(UserRepositoryEloquent $userModel, MDCModel $mdcModel)
     {
         $this->userModel = $userModel;
-        $this->shopModel = $shopModel;
+        $this->mdcModel = $mdcModel;
     }
 
     /**
@@ -47,7 +47,7 @@ class ShopsController extends Controller
      * */
     public function store(Request $request)
     {
-        $validator = $this->shopModel->makeValidator();
+        $validator = $this->mdcModel->makeValidator();
         $validator->with($request->toArray());
         /** @var array $store */
         $attributes = $request->only(['country_id', 'province_id', 'city_id', 'county_id', 'address', 'description', 'code']);
@@ -61,7 +61,7 @@ class ShopsController extends Controller
             $attributes['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
 
-        $store = $this->shopModel->create($attributes);
+        $store = $this->mdcModel->create($attributes);
         if(!$store){
             $this->response()->error('创建失败', HTTP_STATUS_INTERNAL_SERVER_ERROR);
         }
@@ -77,12 +77,12 @@ class ShopsController extends Controller
      */
     public function update(int $id)
     {
-        $validator = $this->shopModel->makeValidator();
+        $validator = $this->mdcModel->makeValidator();
         /** @var array $store */
         $store = $validator->passesOrFail(ValidatorInterface::RULE_UPDATE);
         $store['user_id'] = $this->getOwner($store['manager_mobile'], $store['manager_name'])->id;
         unset($store['manager_mobile'], $store['manager_name']);
-        $store = $this->shopModel->update($store, $id);
+        $store = $this->mdcModel->update($store, $id);
         if(!$store){
             $this->response()->error('创建失败', HTTP_STATUS_INTERNAL_SERVER_ERROR);
         }
@@ -113,8 +113,8 @@ class ShopsController extends Controller
      * */
     public function getShops(Request $request)
     {
-        $this->shopModel->pushCriteria(app(RequestCriteria::class));
-        $result = $this->shopModel->with(['shopManager', 'city', 'county'])->paginate($request->input('limit', PAGE_LIMIT));
+        $this->mdcModel->pushCriteria(app(RequestCriteria::class));
+        $result = $this->mdcModel->with(['shopManager', 'city', 'county'])->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($result, new ShopsTransformer);
     }
 
@@ -125,7 +125,7 @@ class ShopsController extends Controller
      * */
     public function getShopDetail(int $id)
     {
-        $shop = $this->shopModel->with(['shopManager', 'city', 'county', 'orders.orderItems'])->find($id);
+        $shop = $this->mdcModel->with(['shopManager', 'city', 'county', 'orders.orderItems'])->find($id);
         if(!$shop){
             $this->response()->errorNotFound('没有找到对应的店铺信息');
         }

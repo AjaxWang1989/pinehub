@@ -6,22 +6,16 @@ use App\Http\Controllers\Controller;
 
 class MessageServerController extends Controller
 {
-    protected $wechatApp = null;
-
-    protected $miniApp = null;
+    protected $wechat = null;
     //
     public function __construct()
     {
-        $this->wechatApp = app('wechat.official_account.default');
-        $this->miniApp = app('wechat.mini_program.default');
+        $this->wechat = app('wechat');
     }
 
     public function serve($server = 'wechat')
     {
-        $messageServer = ( $server === 'wechat' ? $this->wechatApp->server: $this->miniApp->server);
-        $messageServer->push(function (){
-            return "Welcome visit PineHub";
-        });
-        return $messageServer->serve();
+        return $server === 'wechat' ? $this->wechat->officeAccountServerHandle() :
+            $this->wechat->miniProgramServerHandle();
     }
 }

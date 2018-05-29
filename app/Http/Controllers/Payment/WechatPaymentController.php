@@ -21,8 +21,6 @@ class WechatPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
-        $openid = $request->input('open_id', null);
-        \Log::debug('order wechat open id '.$openid);
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
         $charge = app('wechat.payment.aggregate');
@@ -36,9 +34,6 @@ class WechatPaymentController extends Controller
         if($count){
             $request->getSession()->put('count', ++ $count);
         }
-        \Log::debug('count = '.$count);
-        $openid = $request->input('open_id', null);
-        \Log::debug('wechat open id '.$openid);
         $openId= null;
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";

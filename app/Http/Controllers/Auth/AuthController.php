@@ -29,6 +29,7 @@ class AuthController extends Controller
         'mobile.regex' => '手机号码格式错误',
         'password.regex' => '密码格式错误'
     ];
+
     protected $userModel = null;
 
     /**

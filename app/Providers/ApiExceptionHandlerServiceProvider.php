@@ -20,7 +20,8 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
     {
         //
         if($this->app->has('api.exception')){
-            $this->app->make('api.exception')->register(function (HttpException $exception){
+            $this->app->make('api.exception')->register(function (\Exception $exception){
+
                 $response['status_code'] = $exception->getStatusCode();
                 $response['message'] = $exception->getMessage();
                 switch($exception->getStatusCode()){

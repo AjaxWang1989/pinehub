@@ -52,3 +52,20 @@ define('SHOP_CODE_FORMAT', 'Ymd');
 define('SHOP_CODE_SEGMENT_MAX_LENGTH', 100);
 
 define('ONE_DAY_SECONDS', 86400);
+
+define('USER_AUTH_BASE', 'user_base');
+define('USER_AUTH_INFO', 'user_info');
+
+define('WECHAT_MEMBER_CARD', 'member_card');
+
+define('WECHAT_COUPON_CARD', 'coupon_card');
+define('WECHAT_GROUPON_CARD', 'groupon');
+define('WECHAT_DISCOUNT_CARD', 'discount');
+
+define('WECHAT_TEXT_MESSAGE', 'text');
+
+define('WECHAT_IMAGE_MESSAGE', 'image');
+
+define('WECHAT_VOICE_MESSAGE', 'voice');
+
+define('WECHAT_EVENT_MESSAGE', 'event');
