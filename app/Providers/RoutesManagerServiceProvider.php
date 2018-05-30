@@ -176,7 +176,6 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 }
 
                 break;
-
             }
         }
 

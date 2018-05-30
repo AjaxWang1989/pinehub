@@ -78,4 +78,19 @@ class Routes
     {
 
     }
+
+    public function domain()
+    {
+        return $this->domain;
+    }
+
+    public function prefix()
+    {
+        return $this->prefix;
+    }
+
+    public function router()
+    {
+        return $this->router;
+    }
 }
