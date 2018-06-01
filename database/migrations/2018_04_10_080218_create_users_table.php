@@ -31,6 +31,13 @@ class CreateUsersTable extends Migration
             $table->enum('mobile_company', ['CT', 'CU', 'CM'])->comment('手机号码所属公司');
             $table->timestamps();
             $table->softDeletes();
+            $table->unique('mobile');
+            $table->index('mobile');
+            $table->index('sex');
+            $table->index('city');
+            $table->index('province');
+            $table->index('country');
+            $table->index('mobile_company');
         });
     }
 

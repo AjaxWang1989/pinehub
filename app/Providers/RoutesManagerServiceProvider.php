@@ -9,6 +9,7 @@ use App\Routes\PaymentApiRoutes;
 use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
+use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Session\SessionManager;
@@ -55,7 +56,6 @@ class RoutesManagerServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-        $this->loadRoutes();
 
     }
 
@@ -82,9 +82,11 @@ class RoutesManagerServiceProvider extends ServiceProvider
         Log::debug("domain {$domain}, prefix {$prefix} url {$request->fullUrl()}");
         $this->prefix = $prefix;
         $this->domain = $domain;
+        $this->registerRouter();
         $this->registerServices();
         $this->registerConfig();
         $this->registerRoutes();
+        $this->loadRoutes();
     }
 
     protected function registerServices()
@@ -193,6 +195,18 @@ class RoutesManagerServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Register the router instance.
+     *
+     * @return void
+     */
+    protected function registerRouter()
+    {
+        $this->app->singleton('web.router', function ($app) {
+            return new Router($app['events'], $app);
+        });
+    }
+
     protected function registerRoutes()
     {
         switch ($this->domain){
@@ -253,8 +267,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 break;
             }
             default: {
-                $this->app->singleton('app.routes',function (){
-                    return new Routes($this->app, null , null,
+                $this->app->singleton('app.routes',function ($app){
+                    return new Routes($app, null , null,
                         null, null);
                 });
                 break;

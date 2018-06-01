@@ -56,11 +56,11 @@ define('ONE_DAY_SECONDS', 86400);
 define('USER_AUTH_BASE', 'user_base');
 define('USER_AUTH_INFO', 'user_info');
 
-define('WECHAT_MEMBER_CARD', 'member_card');
+define('MEMBER_CARD', 'member_card');
 
-define('WECHAT_COUPON_CARD', 'coupon_card');
-define('WECHAT_GROUPON_CARD', 'groupon');
-define('WECHAT_DISCOUNT_CARD', 'discount');
+define('COUPON_CARD', 'coupon_card');
+define('GROUPON_CARD', 'groupon');
+define('DISCOUNT_CARD', 'discount');
 
 define('WECHAT_TEXT_MESSAGE', 'text');
 

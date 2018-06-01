@@ -17,7 +17,7 @@ class WebRoutes extends Routes
     public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null)
     {
         parent::__construct($app, $version, $namespace, $prefix, $domain);
-        $this->router = $this->app->router;
+        $this->router = $this->app->make('web.router');
     }
 
     protected function routesRegister()

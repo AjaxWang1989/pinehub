@@ -47,7 +47,7 @@ class WechatService
 
     public function memberCard(array $data)
     {
-        return $this->officeAccount()->card->member_card->create(WECHAT_MEMBER_CARD, $data);
+        return $this->officeAccount()->card->member_card->create(MEMBER_CARD, $data);
     }
 
     public function redPack()
@@ -57,17 +57,17 @@ class WechatService
 
     public function couponCard(array $data)
     {
-        return $this->officeAccount()->card->general_card->create(WECHAT_COUPON_CARD, $data);
+        return $this->officeAccount()->card->general_card->create(COUPON_CARD, $data);
     }
 
     public function discountCard(array $data)
     {
-        return $this->officeAccount()->card->general_card->create(WECHAT_DISCOUNT_CARD, $data);
+        return $this->officeAccount()->card->general_card->create(DISCOUNT_CARD, $data);
     }
 
     public function grouponCard(array $data)
     {
-        return $this->officeAccount()->card->general_card->create(WECHAT_GROUPON_CARD, $data);
+        return $this->officeAccount()->card->general_card->create(GROUPON_CARD, $data);
     }
 
     public function cardCodeCheck(string $cardId, string $code)

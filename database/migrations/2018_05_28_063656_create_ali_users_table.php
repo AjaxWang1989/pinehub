@@ -18,6 +18,7 @@ class CreateAliUsersTable extends Migration
 		Schema::create('ali_users', function(Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->nullable()->default(null)->comment('用户id');
+            $table->string('app_id')->comment('');
             $table->string('openid')->comment('支付宝user_id');
             $table->string('avatar')->nullable()->default(null)->comment('头像');
             $table->string('province')->nullable()->default(null)->comment('省份');

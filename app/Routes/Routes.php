@@ -11,6 +11,7 @@ namespace App\Routes;
 
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Router as DingoRouter;
+use Illuminate\Routing\Router;
 use Laravel\Lumen\Routing\Router as LumenRouter;
 use Laravel\Lumen\Application;
 
@@ -32,7 +33,7 @@ class Routes
     protected $app = null;
 
     /**
-     * @var LumenRouter|DingoRouter $router
+     * @var LumenRouter|DingoRouter|Router $router
      * */
     protected $router = null;
 
@@ -46,12 +47,13 @@ class Routes
         $this->prefix = $prefix;
         $this->domain = $domain;
         $this->version = $version;
+        $this->router = $app->make('web.router');
     }
 
     public function load()
     {
         $this->boot();
-        $this->app->router->group([
+        $this->app->make('router')->group([
             //'namespace' => 'App\Http\Controllers',
             //'middleware' => 'cross'
         ], function () {

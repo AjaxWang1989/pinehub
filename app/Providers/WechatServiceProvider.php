@@ -16,13 +16,7 @@ class WechatServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-        $router = $this->app->make('app.routes')->router();
-        $request = $router->getCurrentRequest();
-        $appId = $request->route('app_id');
-        if(empty($appId)) {
-            $appId = $request->input('app_id');
-        }
-        $wechat = app(WechatConfigRepositoryEloquent::class)->first();
+
     }
 
     /**
@@ -33,8 +27,12 @@ class WechatServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $wechatConfig = '';
-        $config = config($wechatConfig);
+        $router = $this->app->make('app.routes')->router();
+        $request = $router->getCurrentRequest();
+        if (!empty($request)) {
+           $appId = $request->input('app_id', null);
+        }
+        $wechatConfig = app(WechatConfigRepositoryEloquent::class);
         $this->app->singleton('wechat', function () {
            return new WechatService();
         });

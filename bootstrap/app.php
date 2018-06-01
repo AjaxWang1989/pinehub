@@ -90,7 +90,6 @@ $app->alias('tymon.jwt', \Tymon\JWTAuth\JWTAuth::class);
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
  $app->register(\App\Providers\ConfigServiceProvider::class);
  $app->register(\App\Providers\AliasesLoaderServiceProvider::class);
  $app->register(App\Providers\AppServiceProvider::class);
@@ -98,7 +97,9 @@ $app->alias('tymon.jwt', \Tymon\JWTAuth\JWTAuth::class);
  $app->register(App\Providers\EventServiceProvider::class);
  $app->register(\App\Providers\PaymentServiceProvider::class);
  $app->register(\App\Providers\OrderServiceProvider::class);
+ $app->register(\Illuminate\Routing\RoutingServiceProvider::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
+ $app->register(\App\Providers\WechatServiceProvider::class);
 
 
 

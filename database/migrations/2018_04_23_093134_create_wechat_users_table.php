@@ -18,6 +18,9 @@ class CreateWechatUsersTable extends Migration
 		Schema::create('wechat_users', function(Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id')->nullable()->default(null)->comment('用户ID');
+            $table->string('app_id')->nullable()->default(null)->comment('微信公众平台、小程序、开放app id');
+            $table->string('type')->default('OFFICE_ACCOUNT')->comment('OFFICE_ACCOUNT 公众平台， 
+            OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序');
             $table->string('unionid')->nullable()->default(null)->comment('union id');
             $table->string('openid')->comment('open id');
             $table->string('session_key')->comment('session key');
@@ -31,6 +34,10 @@ class CreateWechatUsersTable extends Migration
             $table->text('privilege')->nullable()->comment('微信特权信息');
             $table->timestamps();
             $table->softDeletes();
+            $table->index('app_id');
+            $table->index('union_id');
+            $table->index('open_id');
+            $table->index('sex');
 		});
 	}
 

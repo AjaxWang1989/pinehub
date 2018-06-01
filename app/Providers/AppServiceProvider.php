@@ -9,6 +9,7 @@ use App\Services\UIDGeneratorService;
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Redis\RedisServiceProvider;
+use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Facades\{
     DB, Log
 };
@@ -44,7 +45,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(WechatLumenServiceProvider::class);
         $this->app->register(SpatialServiceProvider::class);
         $this->app->register(AliOauthServiceProvider::class);
-        $this->app->register(WechatServiceProvider::class);
         $this->app->singleton('uid.generator', function () {
             return new UIDGeneratorService();
         });

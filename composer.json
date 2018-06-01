@@ -16,6 +16,7 @@
         "overtrue/laravel-wechat": "~4.0",
         "predis/predis": "^1.1",
         "prettus/l5-repository": "^2.6",
+        "react/react": "^0.4.2",
         "riverslei/payment": "^4.1",
         "symfony/event-dispatcher": "~4.0",
         "tymon/jwt-auth": "^0.5.12",
