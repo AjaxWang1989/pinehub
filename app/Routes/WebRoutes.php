@@ -56,6 +56,6 @@ class WebRoutes extends Routes
 
     protected function subRoutes($router)
     {
-        $router->addRoute(['GET', 'POST'], '/wechat/serve', 'Wechat/MessageServerController@serve');
+        $router->addRoute(['GET', 'POST'], '/{server}/serve', 'Wechat\MessageServerController@serve');
     }
 }

@@ -22,6 +22,11 @@ class WechatService
 
     protected $payment = null;
 
+    public function __construct(array  $config)
+    {
+        $this->config = $config;
+    }
+
     public function officeAccount()
     {
         if(!$this->officeAccount)

@@ -32,8 +32,9 @@ class WechatServiceProvider extends ServiceProvider
            $appId = $request->input('app_id', null);
         }
         $wechatConfig = app(WechatConfigRepositoryEloquent::class);
-        $this->app->singleton('wechat', function () {
-           return new WechatService();
+        $config = config('wechat');
+        $this->app->singleton('wechat', function () use($config){
+           return new WechatService($config);
         });
     }
 }
