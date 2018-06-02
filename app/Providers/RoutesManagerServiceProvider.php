@@ -259,7 +259,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
                     default: {
                         $this->app->singleton('app.routes',function (){
-                            return new WebRoutes($this->app, $this->config['version'] , null,
+                            return new WebRoutes($this->app, null , null,
                                 null, $this->config['domain']);
                         });
                         break;
