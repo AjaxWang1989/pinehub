@@ -176,6 +176,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         ];
                         break;
                     }
+                    default:{
+                        $this->config = [
+                            'domain' => $this->host,
+                            'version' => env('WEB_VERSION'),
+                            'prefix'  => null
+                        ];
+                        break;
+                    }
                 }
 
                 break;
@@ -259,7 +267,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
                     default: {
                         $this->app->singleton('app.routes',function (){
-                            return new WebRoutes($this->app, null , null,
+                            return new WebRoutes($this->app, $this->config['version'] , null,
                                 null, $this->config['domain']);
                         });
                         break;
