@@ -10,6 +10,7 @@ namespace App\Routes;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 
 class WebRoutes extends Routes
@@ -51,6 +52,7 @@ class WebRoutes extends Routes
 
     protected function subRoutes($router)
     {
+        Log::debug("web routes\n");
        $router->any('/{server}/serve', 'Wechat/MessageServerController@serve');
     }
 }
