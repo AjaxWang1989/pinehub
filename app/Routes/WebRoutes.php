@@ -48,4 +48,9 @@ class WebRoutes extends Routes
             });
         });
     }
+
+    protected function subRoutes($router)
+    {
+       $router->any('{server}/serve', 'Wechat/MessageServerController@serve');
+    }
 }

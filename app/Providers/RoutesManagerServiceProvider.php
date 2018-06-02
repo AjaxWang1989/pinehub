@@ -9,6 +9,7 @@ use App\Routes\PaymentApiRoutes;
 use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
+use App\Routes\WebRoutes;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -258,8 +259,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
                     default: {
                         $this->app->singleton('app.routes',function (){
-                            return new Routes($this->app, null , null,
-                                null, null);
+                            return new WebRoutes($this->app, $this->config['version'] , null,
+                                null, $this->config['domain']);
                         });
                         break;
                     }
