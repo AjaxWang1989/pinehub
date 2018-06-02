@@ -48,6 +48,7 @@ $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
     App\Console\Kernel::class
 );
+
 $app->bind('path.config', function (){
     return __DIR__.'/../config';
 });
@@ -69,7 +70,7 @@ $app->bind('path.config', function (){
 
  $app->routeMiddleware([
      //'cross' => \App\Http\Middleware\Cross::class,
-     'auth' => App\Http\Middleware\Authenticate::class,
+     //'auth' => App\Http\Middleware\Authenticate::class,
      //'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
      //'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class
  ]);
