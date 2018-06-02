@@ -47,7 +47,9 @@ class Routes
         $this->prefix = $prefix;
         $this->domain = $domain;
         $this->version = $version;
-        $this->router = $app->make('web.router');
+        if($this->app->runningInConsole()){
+            $this->router = $app->make('router');
+        }
     }
 
     public function load()

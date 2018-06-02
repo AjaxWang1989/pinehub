@@ -49,6 +49,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     protected $prefix = null;
 
+    protected $request = null;
+
     /**
      * Bootstrap services.
      *
@@ -77,10 +79,9 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $request = Request::capture();
-        $this->host = $request->getHost();
-        list( $domain, $prefix) = domainAndPrefix($request);
-        Log::debug("domain {$domain}, prefix {$prefix} url {$request->fullUrl()}");
+        $this->request = Request::capture();
+        $this->host = $this->request->getHost();
+        list( $domain, $prefix) = domainAndPrefix($this->request);
         $this->prefix = $prefix;
         $this->domain = $domain;
         $this->registerRouter();
@@ -100,10 +101,12 @@ class RoutesManagerServiceProvider extends ServiceProvider
             $this->app->register(ApiAuthServiceProvider::class);
             $this->app->routeMiddleware([
                 'cross' => \App\Http\Middleware\Cross::class,
-                //'auth' => App\Http\Middleware\Authenticate::class,
                 'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
                 'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class
             ]);
+            $this->app->singleton('request', function (){
+                return \Dingo\Api\Http\Request::createFrom($this->request);
+            });
         }
 
         if(!$this->app['isApiServer'] || $this->app->runningInConsole()){
@@ -113,11 +116,16 @@ class RoutesManagerServiceProvider extends ServiceProvider
             $this->app->bind(SessionManager::class, function ($app){
                 return new SessionManager($app);
             });
+            $this->app->alias('session', SessionManager::class);
             $this->app->configure('session');
             $this->app->middleware([
                 StartSession::class,
                 AuthenticateSession::class
             ]);
+
+            $this->app->singleton('request', function (){
+                return $this->request;
+            });
         }
     }
 

@@ -14,6 +14,7 @@ class WechatAuthController extends Controller
     public function __construct(WechatUserRepositoryEloquent $eloquent)
     {
         $this->wechatUser = $eloquent;
+        $this->session = app('session');
     }
 
     public function serve()
@@ -23,7 +24,7 @@ class WechatAuthController extends Controller
 
     public function oauth2(Request $request)
     {
-        $session = $request->getSession();
+        $session = $this->session;
         $openId = null;
         $accessToken = $session->get('access_token', null);
         $scope = $request->get('scope', 'user_base');

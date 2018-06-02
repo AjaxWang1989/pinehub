@@ -17,7 +17,7 @@ class PaymentRoutes extends WebRoutes
         $router->get('/ali/aggregate.html', ['as' => 'aggregate.ali.payment.get', 'uses' => 'AliPaymentController@aggregatePage']);
         $router->get('/wechat/aggregate.html', ['as' => 'aggregate.wechat.payment.get', 'uses' => 'WechatPaymentController@aggregatePage']);
 
-        $router->any( '/ali/notify', ['as' => 'ali.payment.notify', 'uses' => 'AliPaymentController@notify']);
-        $router->any( '/wechat/notify', ['as' => 'wechat.payment.notify', 'uses' => 'WechatPaymentController@notify']);
+        $router->addRoute(['GET', 'POST'], '/ali/notify', ['as' => 'ali.payment.notify', 'uses' => 'AliPaymentController@notify']);
+        $router->addRoute(['GET', 'POST'], '/wechat/notify', ['as' => 'wechat.payment.notify', 'uses' => 'WechatPaymentController@notify']);
     }
 }

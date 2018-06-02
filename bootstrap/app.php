@@ -64,16 +64,13 @@ $app->bind('path.config', function (){
 |
 */
 
-// $app->middleware([
-//    App\Http\Middleware\ExampleMiddleware::class
-// ]);
+ //$app->middleware();
 
  $app->routeMiddleware([
-     //'cross' => \App\Http\Middleware\Cross::class,
-     //'auth' => App\Http\Middleware\Authenticate::class,
-     //'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
-     //'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class
+     'auth' => App\Http\Middleware\Authenticate::class,
  ]);
+
+
 
 /**
  *fix cache and auth manager bug

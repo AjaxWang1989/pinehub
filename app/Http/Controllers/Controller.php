@@ -9,6 +9,7 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 class Controller extends BaseController
 {
     use Helpers;
+    protected $session = null;
 
     protected function response($data = null)
     {

@@ -27,8 +27,7 @@ class WechatServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $router = $this->app->make('app.routes')->router();
-        $request = $router->getCurrentRequest();
+        $request = $this->app->make('request');
         if (!empty($request)) {
            $appId = $request->input('app_id', null);
         }

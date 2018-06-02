@@ -11,6 +11,7 @@ namespace App\Routes;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Laravel\Lumen\Application;
 
 class WebRoutes extends Routes
@@ -18,7 +19,9 @@ class WebRoutes extends Routes
     public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null)
     {
         parent::__construct($app, $version, $namespace, $prefix, $domain);
-        $this->router = $this->app->make('web.router');
+        $this->router = $this->app->router;
+        //$this->app->router = $this->router;
+        //$this->app->setDispatcher($this->router->events);
     }
 
     protected function routesRegister()
@@ -38,13 +41,14 @@ class WebRoutes extends Routes
         $this->router->group($second, function ($router){
             $this->subRoutes($router);
             $router->get('/webbanch', function (Request $request){
-                $test = $request->getSession()->get('test1', 0);
+                $session = app('session');
+                $test = $session->get('test1', null);
                 if($test > 0){
                     $test ++;
                 }else{
                     $test = 1;
                 }
-                $request->getSession()->put('test1', $test);
+                app('session.store')->put('test1', $test);
                 return "webbanch {$test}";
             });
         });
@@ -52,7 +56,6 @@ class WebRoutes extends Routes
 
     protected function subRoutes($router)
     {
-        Log::debug("web routes\n");
-       $router->any('/wechat/serve', 'Wechat/MessageServerController@serve');
+        $router->addRoute(['GET', 'POST'], '/wechat/serve', 'Wechat/MessageServerController@serve');
     }
 }
