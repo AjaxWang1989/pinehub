@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use EasyWeChat\OfficialAccount\Server\Guard;
+use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
 
 class WechatService
 {
@@ -103,7 +104,7 @@ class WechatService
     public function officeAccountServerHandle()
     {
         $this->officeAccountServer()->push(function ($message) {
-            $this->serverMessageHandle($this->officeAccountServer(), $message);
+            return $this->serverMessageHandle($this->officeAccountServer(), $message);
         });
         return $this->officeAccountServer()->serve();
     }
@@ -122,22 +123,23 @@ class WechatService
     {
         switch ($message['MsgType']) {
             case WECHAT_TEXT_MESSAGE: {
-                $server->dispatch();
+                return $server->dispatch();
                 break;
             }
             case WECHAT_IMAGE_MESSAGE: {
-                $server->dispatch();
+                return $server->dispatch();
                 break;
             }
             case WECHAT_VOICE_MESSAGE: {
-                $server->dispatch();
+                return $server->dispatch();
                 break;
             }
             case WECHAT_EVENT_MESSAGE: {
-                $server->dispatch($message['Event'], $message);
+                return $server->dispatch($message['Event'], $message);
                 break;
             }
             default:
+                return app(EchoStrHandler::class)->handle($message);
                 break;
         }
     }

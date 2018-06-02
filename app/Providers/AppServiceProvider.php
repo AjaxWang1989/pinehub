@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\{
     DB, Log
 };
 use Illuminate\Support\ServiceProvider;
+use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
 use Prettus\Repository\Providers\RepositoryServiceProvider;
 use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
@@ -45,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(WechatLumenServiceProvider::class);
         $this->app->register(SpatialServiceProvider::class);
         $this->app->register(AliOauthServiceProvider::class);
+        $this->app->register(AliOssServiceProvider::class);
         $this->app->singleton('uid.generator', function () {
             return new UIDGeneratorService();
         });

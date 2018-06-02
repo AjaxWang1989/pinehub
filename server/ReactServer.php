@@ -20,11 +20,13 @@ class ReactServer
 
     protected $port = '';
 
+
     public function __construct(string $host, string $port, \Laravel\Lumen\Application $app)
     {
         $this->loop = \React\EventLoop\Factory::create();
         $this->socket = new \React\Socket\Server($this->loop);
         $this->http = new \React\Http\Server($this->socket);
+        $this->socket->master;
         $this->app = $app;
     }
 
