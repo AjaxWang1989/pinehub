@@ -53,6 +53,6 @@ class WebRoutes extends Routes
     protected function subRoutes($router)
     {
         Log::debug("web routes\n");
-       $router->any('/{server}/serve', 'Wechat/MessageServerController@serve');
+       $router->any('/wechat/serve', 'Wechat/MessageServerController@serve');
     }
 }
