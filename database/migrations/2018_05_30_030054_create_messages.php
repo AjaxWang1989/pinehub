@@ -16,7 +16,7 @@ class CreateMessages extends Migration
         //
         Schema::create('messages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('template_id')->comment('模版消息ID');
+            $table->string('template_id')->nullable()->default(null)->comment('模版消息ID');
             $table->string('to_user_id')->comment('推送对象');
             $table->string('from_user_id')->comment('消息发送对象');
             $table->string('msg_type')->comment('消息类型');

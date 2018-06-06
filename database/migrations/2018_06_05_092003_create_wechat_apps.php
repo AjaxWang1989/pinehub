@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateWecahtApps extends Migration
+class CreateWechatApps extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,9 @@ class CreateWecahtApps extends Migration
     {
         //
         Schema::create('wechat_apps', function (Blueprint $table) {
-            $table->string('id')->primary()->comment('微信应用');
+            $table->string('wechat_app_id')->comment('微信应用');
+            $table->string('app_slug')->comment('系统程序标示');
+            $table->unique(['wechat_app_id', 'app_slug']);
         });
     }
 
@@ -27,5 +29,6 @@ class CreateWecahtApps extends Migration
     public function down()
     {
         //
+        Schema::drop('wechat_apps');
     }
 }

@@ -18,9 +18,10 @@ class CreateCategoriesTable extends Migration
             $table->string('icon')->default(null)->comment('图标');
             $table->string('name')->unique()->comment('分类名称');
             $table->unsignedInteger('parent_id')->default(null)->comment('分类父级');
-            $table->string('type')->comment('微信');
+            $table->string('app')->comment('程序类型');
             $table->timestamps();
             $table->softDeletes();
+            $table->index('app');
         });
     }
 

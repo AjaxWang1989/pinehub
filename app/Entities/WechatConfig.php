@@ -15,6 +15,9 @@ class WechatConfig extends Model implements Transformable
 {
     use TransformableTrait;
 
+    const GREEN_KEY_APP = 'GREEN_KEY';
+    const TAKE_OUT_APP = 'TAKE_OUT';
+
     /**
      * The attributes that are mass assignable.
      *

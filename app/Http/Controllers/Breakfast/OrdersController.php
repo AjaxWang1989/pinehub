@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Mall;
+namespace App\Http\Controllers\Breakfast;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class SettingsController extends Controller
+class OrdersController extends Controller
 {
     //
 }

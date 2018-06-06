@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Mall;
+namespace App\Http\Controllers\Admin\GreenKey;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;

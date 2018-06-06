@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Mall;
+namespace App\Http\Controllers\TakeOut;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class ProductsController extends Controller
+class MemberCardController extends Controller
 {
     //
 }

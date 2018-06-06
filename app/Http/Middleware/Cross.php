@@ -3,8 +3,6 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class Cross
 {
@@ -23,9 +21,7 @@ class Cross
     }
 
     private function setHeader( &$response ) {
-        $reflection = new \ReflectionClass($response);
-        $class = $reflection->getName();
-        if(property_exists($class, 'header')) {
+        if(method_exists($response, 'header')) {
             $response->header('Access-Control-Allow-Origin', '*');
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
             $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');

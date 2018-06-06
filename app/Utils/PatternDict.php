@@ -69,3 +69,16 @@ define('WECHAT_IMAGE_MESSAGE', 'image');
 define('WECHAT_VOICE_MESSAGE', 'voice');
 
 define('WECHAT_EVENT_MESSAGE', 'event');
+
+define('WECHAT_NEWS_MESSAGE', 'news');
+
+define('WECHAT_VIDEO_MESSAGE', 'video');
+
+define('WECHAT_MUSIC_MESSAGE', 'music');
+
+define('VIEW_BUTTON', 'view');
+
+define('CLICK_BUTTON', 'click');
+
+define('MP_BUTTON', 'miniprogram');
+

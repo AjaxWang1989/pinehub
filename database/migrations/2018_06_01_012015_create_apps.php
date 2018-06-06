@@ -19,8 +19,10 @@ class CreateApps extends Migration
             $table->string('secret')->comment('应用secret');
             $table->string('name')->comment('应用名称');
             $table->string('logo')->comment('应用logo');
+            $table->string('slug')->comment('系统标示');
             $table->timestamps();
             $table->softDeletes();
+            $table->unique('slug');
         });
     }
 

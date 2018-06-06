@@ -23,8 +23,10 @@ class CreateWechatConfigsTable extends Migration
             $table->string('aes_key')->nullable()->default(null)->comment('微信EncodingAESKey');
             $table->string('type')->default('OFFICE_ACCOUNT')->comment('OFFICE_ACCOUNT 公众平台， 
             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序');
+            $table->string('wechat_bind_app')->nullable()->default(null)->comment('微信公众号绑定的应用程序或者小程序绑定的应用');
             $table->timestamps();
             $table->index('app_id');
+            $table->index('wechat_bind_app');
 
 		});
 	}

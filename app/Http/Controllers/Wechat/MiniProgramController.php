@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\MiniProgram;
+namespace App\Http\Controllers\Wechat;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class RefundController extends Controller
+class MiniProgramController extends Controller
 {
     //
 }

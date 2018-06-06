@@ -6,7 +6,7 @@
  * Time: 下午2:28
  */
 
-namespace App\Services;
+namespace App\Services\Wechat;
 
 
 use EasyWeChat\OfficialAccount\Server\Guard;
