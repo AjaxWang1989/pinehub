@@ -17,13 +17,14 @@ class CreateWechatConfigsTable extends Migration
 	{
 		Schema::create('wechat_configs', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('app_id')->comment('微信公众好app ID');
-            $table->string('app_secret')->comment('微信公众号secret');
-            $table->string('token')->nullable()->default(null)->comment('微信token');
-            $table->string('aes_key')->nullable()->default(null)->comment('微信EncodingAESKey');
-            $table->string('type')->default('OFFICE_ACCOUNT')->comment('OFFICE_ACCOUNT 公众平台， 
+            $table->string('app_id', 18)->comment('微信公众好app ID');
+            $table->string('app_secret', 32)->comment('微信公众号secret');
+            $table->string('token', 32)->nullable()->default(null)->comment('微信token');
+            $table->string('aes_key', 43)->nullable()->default(null)->comment('微信EncodingAESKey');
+            $table->string('type', 21)->default(WECHAT_OFFICE_ACCOUNT)->comment('OFFICE_ACCOUNT 公众平台， 
             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序');
-            $table->string('wechat_bind_app')->nullable()->default(null)->comment('微信公众号绑定的应用程序或者小程序绑定的应用');
+            $table->string('mode', 9)->default(WECHAT_EDITOR_MODE)->comment('公众号模式');
+            $table->string('wechat_bind_app', 64)->nullable()->default(null)->comment('微信公众号绑定的应用程序或者小程序绑定的应用');
             $table->timestamps();
             $table->index('app_id');
             $table->index('wechat_bind_app');

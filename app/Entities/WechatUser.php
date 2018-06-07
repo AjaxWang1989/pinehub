@@ -27,6 +27,29 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property string|null $app 程序类型：青食、自提
+ * @property string|null $appId 微信公众平台、小程序、开放app id
+ * @property string $type OFFICE_ACCOUNT 公众平台，
+ *             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序
+ * @property string|null $unionId union id
+ * @property string|null $avatar 头像
+ * @property string|null $country 国家
+ * @property string|null $province 省份
+ * @property string|null $city 城市
+ * @property string|null $nickname 用户昵称
+ * @property string $sex 性别
+ * @property string|null $privilege 微信特权信息
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereApp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereCountry($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereNickname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser wherePrivilege($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereProvince($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereSex($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereUnionId($value)
  */
 class WechatUser extends Model implements Transformable
 {

@@ -82,3 +82,33 @@ define('CLICK_BUTTON', 'click');
 
 define('MP_BUTTON', 'miniprogram');
 
+define('WECHAT_APP_ID', '/^(wx)[0-9a-fA-F]{16}/');
+
+define('WECHAT_APP_SECRET', '/[0-9a-fA-F]{32}/');
+
+define('WECHAT_AES_KEY', '/[0-9A-Za-z]{32,64}/');
+
+define('WECHAT_DEVELOPER_MODE', 'developer');
+define('WECHAT_EDITOR_MODE', 'editor');
+define('WECHAT_MODE', [
+    WECHAT_DEVELOPER_MODE,
+    WECHAT_EDITOR_MODE
+]);
+
+define('GK_APP_NAME', 'greenKey');
+define('TO_APP_NAME', 'takeOut');
+define('APP_NAME_ARRAY', [
+    GK_APP_NAME,
+    TO_APP_NAME
+]);
+
+define('WECHAT_OFFICE_ACCOUNT', 'wechat_office_account');
+define('WECHAT_OPEN_PLATFORM', 'wechat_open_platform');
+define('WECHAT_MINI_PROGRAM', 'wechat_mini_program');
+
+define('WECHAT_APP_TYPE', [
+    WECHAT_OFFICE_ACCOUNT,
+    WECHAT_OPEN_PLATFORM,
+    WECHAT_MINI_PROGRAM
+]);
+

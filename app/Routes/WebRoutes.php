@@ -20,8 +20,6 @@ class WebRoutes extends Routes
     {
         parent::__construct($app, $version, $namespace, $prefix, $domain);
         $this->router = $this->app->router;
-        //$this->app->router = $this->router;
-        //$this->app->setDispatcher($this->router->events);
     }
 
     protected function routesRegister()

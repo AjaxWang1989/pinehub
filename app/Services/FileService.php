@@ -9,7 +9,7 @@
 namespace App\Services;
 
 
-use Symfony\Component\HttpFoundation\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class FileService implements InterfaceServiceHandler
@@ -20,7 +20,6 @@ class FileService implements InterfaceServiceHandler
         $method = $args[0];
         $args = array_shift($args);
         if($method === 'upload') {
-
             list($request, $path, $disk) = $args;
             return $this->upload($request, $path, $disk);
         }else if($method === 'delete') {
@@ -33,16 +32,15 @@ class FileService implements InterfaceServiceHandler
 
     protected function upload(Request $request, string $path, string  $disk = 'oss')
     {
-        $disk = Storage::disk($disk);
-        $file = $request->file('file');
-        $realPath = $file->getRealPath();
-        $ext = $file->getExtension();
-        $name = $file->getClientOriginalName();
-        $newName = md5($name);
         $path = ends_with('/', $path)? $path : $path.'/';
-        $filePath = $path.$newName.'.'.$ext;
-        $content = file_get_contents($realPath);
-        return $disk->put($filePath, $content);
+        $file = $request->file('file');
+        $result = $file->store($path);
+        $path = Storage::url($result);
+        if($path) {
+            return $path;
+        }else{
+            return false;
+        }
     }
 
     protected function delete(string $file, string $disk = 'oss')

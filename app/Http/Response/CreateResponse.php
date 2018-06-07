@@ -15,7 +15,7 @@ class CreateResponse
 
     public function __construct($content)
     {
-        $this->content = ['message' => $content];
+        $this->content['data'] = ['message' => $content];
     }
 
     public function content()

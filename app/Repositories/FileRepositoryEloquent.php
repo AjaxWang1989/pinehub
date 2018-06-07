@@ -4,16 +4,16 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\WechatUserRepository;
-use App\Entities\WechatUser;
-use App\Validators\WechatUserValidator;
+use App\Repositories\FileRepository;
+use App\Entities\File;
+use App\Validators\FileValidator;
 
 /**
- * Class WechatUserRepositoryEloquent.
+ * Class FileRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserRepository
+class FileRepositoryEloquent extends BaseRepository implements FileRepository
 {
     /**
      * Specify Model class name
@@ -22,7 +22,7 @@ class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserR
      */
     public function model()
     {
-        return WechatUser::class;
+        return File::class;
     }
 
     

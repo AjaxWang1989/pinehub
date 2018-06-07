@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Ali\Oauth\AliOauthServiceProvider;
 use App\Http\Middleware\Cross;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
+use App\Services\FileService;
 use App\Services\UIDGeneratorService;
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Illuminate\Database\Events\QueryExecuted;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\{
 };
 use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
+use Laravel\Lumen\Application;
+use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
 use Prettus\Repository\Providers\RepositoryServiceProvider;
 use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
@@ -30,6 +33,10 @@ class AppServiceProvider extends ServiceProvider
                 Log::debug($event->time.':'.$event->sql, $event->bindings);
             });
         }
+
+        $this->app->singleton('file',function (Application $app) {
+            return $app->make(FileService::class);
+        });
     }
     /**
      * Register any application services.
@@ -54,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
         });
         if ($this->app->environment() !== 'production') {
             $this->app->register(IdeHelperServiceProvider::class);
+            $this->app->register(ApiDocGeneratorServiceProvider::class);
         }
     }
 }

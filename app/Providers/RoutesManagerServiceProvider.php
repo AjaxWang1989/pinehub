@@ -16,6 +16,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Session\SessionManager;
 use Illuminate\Session\SessionServiceProvider;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
 use Illuminate\Http\Request;
@@ -117,6 +118,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 return new SessionManager($app);
             });
             $this->app->alias('session', SessionManager::class);
+            //$this->app->alias('Session', Session::class);
             $this->app->configure('session');
             $this->app->middleware([
                 StartSession::class,

@@ -10,6 +10,7 @@ namespace App\Services\Wechat;
 
 
 use App\Services\Wechat\Messages\TextMessage;
+use App\Services\InterfaceServiceHandler;
 
 class WechatTextMessageService implements InterfaceServiceHandler
 {

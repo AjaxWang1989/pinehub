@@ -2,20 +2,6 @@
 
 namespace App\Providers;
 
-use App\Repositories\CityRepository;
-use App\Repositories\CityRepositoryEloquent;
-use App\Repositories\CountryRepository;
-use App\Repositories\CountryRepositoryEloquent;
-use App\Repositories\CountyRepository;
-use App\Repositories\CountyRepositoryEloquent;
-use App\Repositories\OrderRepository;
-use App\Repositories\OrderRepositoryEloquent;
-use App\Repositories\ProvinceRepository;
-use App\Repositories\ProvinceRepositoryEloquent;
-use App\Repositories\ShopRepository;
-use App\Repositories\ShopRepositoryEloquent;
-use App\Repositories\UserRepository;
-use App\Repositories\UserRepositoryEloquent;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -37,13 +23,16 @@ class RepositoryServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
-        $this->app->bind(UserRepository::class, UserRepositoryEloquent::class);
-        $this->app->bind(ShopRepository::class, ShopRepositoryEloquent::class);
-        $this->app->bind(OrderRepository::class, OrderRepositoryEloquent::class);
-        $this->app->bind(CountryRepository::class, CountryRepositoryEloquent::class);
-        $this->app->bind(ProvinceRepository::class, ProvinceRepositoryEloquent::class);
-        $this->app->bind(CityRepository::class, CityRepositoryEloquent::class);
-        $this->app->bind(CountyRepository::class, CountyRepositoryEloquent::class);
+        //:begin-bindings:
+        $this->app->bind(\App\Repositories\UserRepository::class, \App\Repositories\UserRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ShopRepository::class, \App\Repositories\ShopRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\OrderRepository::class, \App\Repositories\OrderRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CountryRepository::class, \App\Repositories\CountryRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ProvinceRepository::class, \App\Repositories\ProvinceRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CityRepository::class, \App\Repositories\CityRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CountyRepository::class, \App\Repositories\CountyRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\FileRepository::class, \App\Repositories\FileRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WechatConfigRepository::class, \App\Repositories\WechatConfigRepositoryEloquent::class);
+        //:end-bindings:
     }
 }

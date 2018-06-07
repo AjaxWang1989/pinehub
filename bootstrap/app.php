@@ -78,6 +78,7 @@ $app->bind('path.config', function (){
 $app->alias('cache', 'Illuminate\Cache\CacheManager');
 $app->alias('auth', 'Illuminate\Auth\AuthManager');
 $app->alias('tymon.jwt', \Tymon\JWTAuth\JWTAuth::class);
+$app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
 /*
 |--------------------------------------------------------------------------
 | Register Service Providers
@@ -95,7 +96,7 @@ $app->alias('tymon.jwt', \Tymon\JWTAuth\JWTAuth::class);
  $app->register(App\Providers\EventServiceProvider::class);
  $app->register(\App\Providers\PaymentServiceProvider::class);
  $app->register(\App\Providers\OrderServiceProvider::class);
- $app->register(\Illuminate\Routing\RoutingServiceProvider::class);
+// $app->register(\Illuminate\Routing\RoutingServiceProvider::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
  $app->register(\App\Providers\WechatServiceProvider::class);
 

@@ -94,6 +94,14 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDescription($value)
  * @property string|null $code 餐车编号
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCode($value)
+ * @property string|null $app 程序类型
+ * @property string|null $wechatAppId 微信app ID
+ * @property string|null $aliAppId 支付宝app ID
+ * @property string|null $mtAppId 美团app id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAliAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereApp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereMtAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatAppId($value)
  */
 class Shop extends Model implements Transformable
 {
