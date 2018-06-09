@@ -9,6 +9,7 @@
 namespace App\Services\Wechat;
 
 
+use EasyWeChat\Factory;
 use EasyWeChat\OfficialAccount\Server\Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
 
@@ -29,25 +30,23 @@ class WechatService
 
     public function officeAccount()
     {
+
         if(!$this->officeAccount)
-            $this->officeAccount= app('wechat.official_account.default');
-        $this->officeAccount->config->merge($this->config);
+            $this->officeAccount= Factory::officialAccount($this->config['office_account']);
         return ($this->officeAccount);
     }
 
     public function payment()
     {
         if(!$this->payment)
-            $this->payment = app('wechat.payment.default');
-        $this->payment->config->merge($this->config);
+            $this->payment = Factory::payment($this->config['payment']);
         return $this->payment;
     }
 
     public function miniProgram()
     {
         if(!$this->miniProgram)
-            $this->miniProgram = app('wechat.mini_program.default');
-        $this->miniProgram->config->merge($this->config);
+            $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
         return $this->miniProgram;
     }
 

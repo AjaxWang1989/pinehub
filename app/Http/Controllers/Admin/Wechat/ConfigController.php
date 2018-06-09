@@ -32,12 +32,11 @@ class ConfigController extends Controller
 
     /**
      * Display a listing of the resource.
-     * @param Request $request
      * @return Response|DingoResponse
      */
-    public function index(Request $request)
+    public function index()
     {
-        $materials = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
+        $materials = $this->repository->paginate();
 
         if (request()->wantsJson()) {
 

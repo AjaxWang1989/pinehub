@@ -18,7 +18,7 @@ use App\Http\Controllers\Controller;
  *
  * @package namespace App\Http\Controllers\Admin\Wechat;
  */
-class MaterialsController extends Controller
+class MaterialController extends Controller
 {
     /**
      * @var MaterialsRepository

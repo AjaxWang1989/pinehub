@@ -19,11 +19,33 @@ class WechatServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-        $currentWechat = $this->app['current_wechat'];
-        $config = config('wechat');
+        $currentWechat = app('current_wechat');
+        $officeAccountConfig = config('wechat.office_account.default');
+        $openPlatformConfig = config('wechat.open_platform.default');
+        $miniProgramConfig = config('wechat.mini_program.default');
+        $currentConfig = $currentWechat->only(['app_id', 'app_secret', 'token', 'aes_key']);
         if ($currentWechat) {
-            $config = array_merge($config, $currentWechat->toArray());
+            switch ($currentWechat->type){
+                case WECHAT_OFFICE_ACCOUNT:{
+                    $officeAccountConfig = array_merge($officeAccountConfig, $currentConfig);
+                    break;
+                }
+                case WECHAT_OPEN_PLATFORM:{
+                    $openPlatformConfig = array_merge($openPlatformConfig, $currentConfig);
+                    break;
+                }
+                case WECHAT_MINI_PROGRAM:{
+                    $miniProgramConfig = array_merge($openPlatformConfig, $currentConfig);
+                    break;
+                }
+            }
         }
+        $config = [
+            'office_account' => $officeAccountConfig,
+            'open_platform'  => $openPlatformConfig,
+            'mini_program'   => $miniProgramConfig,
+            'payment'        => config('wechat.payment.default')
+        ];
         $this->app->singleton('wechat', function () use($config){
             return new WechatService($config);
         });
@@ -43,7 +65,7 @@ class WechatServiceProvider extends ServiceProvider
             $wechatBindApp = Request::input('bind_app');
             if($wechatBindApp)
                 return WechatConfig::whereWechatBindApp($wechatBindApp)->first();
-            return null;
+            return new WechatConfig();
         });
     }
 }

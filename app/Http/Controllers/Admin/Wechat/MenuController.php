@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
+use App\Entities\WechatMenu;
+use App\Http\Response\JsonResponse;
 use App\Transformers\WechatMenuTransformer;
 use Dingo\Api\Exception\ValidationHttpException;
 use App\Http\Requests;
@@ -15,7 +17,7 @@ use App\Http\Controllers\Controller;
  *
  * @package namespace App\Http\Controllers\Admin\Wechat;
  */
-class MenusesController extends Controller
+class MenuController extends Controller
 {
     /**
      * @var MenusRepository
@@ -42,7 +44,6 @@ class MenusesController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(app('Prettus\Repository\Criteria\RequestCriteria'));
         $menuses = $this->repository->paginate();
         if (request()->wantsJson()) {
             return response()->json([
@@ -64,22 +65,13 @@ class MenusesController extends Controller
     public function store(MenuCreateRequest $request)
     {
         try {
-            $result = app('wechat')->officeAccount()->menu->create($request->all());
-            if($result['errcode'] === 0){
-                $menu = $this->repository->updateOrCreate(['app_id' => $this->currentWechat->appId], [ 'menus'  => $request->all()]);
+            $menu = $this->repository->create(['app_id' => $this->currentWechat->appId, 'menus'  => $request->all()]);
 
-                if ($request->wantsJson()) {
-                    return $this->response()->item($menu, new WechatMenuTransformer());
-                }
-
-                return redirect()->back()->with('message', $result['errmsg']);
-            }else{
-                if ($request->wantsJson()) {
-                    return $this->response()->error($result['errmsg']);
-                }
-
-                return redirect()->back()->with('message', $result['errmsg']);
+            if ($request->wantsJson()) {
+                return $this->response()->item($menu, new WechatMenuTransformer());
             }
+
+            return redirect()->back()->with('message', '菜单保存成功');
 
         } catch (ValidationHttpException $e) {
             if ($request->wantsJson()) {
@@ -102,8 +94,10 @@ class MenusesController extends Controller
      */
     public function show($id = null)
     {
-        $menus = $this->repository->findWhere(['app_id' => $this->currentWechat->appId]);
-        $menu = $menus->first();
+        $menu = $this->currentWechat->menu;
+        if($id !== null && $menu->id !== $id) {
+            $this->response()->error('不存在');
+        }
         if (request()->wantsJson()) {
 
             return $this->response()->item($menu);
@@ -147,5 +141,20 @@ class MenusesController extends Controller
         }
 
         return redirect()->back()->with('message', 'Menus deleted.');
+    }
+
+    public function sync($id)
+    {
+        $menu = $this->repository->find($id);
+
+        tap($menu, function (WechatMenu $menu) {
+            $buttons = $menu->menus;
+            $result = app('wechat')->officeAccount()->menu->create($buttons);
+            if($result['errcode'] !== 0) {
+                $this->response()->error($result['errmsg']);
+            }
+        });
+
+        return $this->response(new JsonResponse(['message' => '数据与微信同步成功！']));
     }
 }

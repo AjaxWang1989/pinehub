@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -35,6 +36,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereMode($value)
  * @property string|null $appName 应用名称
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAppName($value)
+ * @property-read \App\Entities\WechatMenu $menu
  */
 class WechatConfig extends Model implements Transformable
 {
@@ -48,5 +50,10 @@ class WechatConfig extends Model implements Transformable
     protected $fillable = [
         'app_id', 'app_secret', 'token', 'aes_key', 'type', 'mode', 'wechat_bind_app', 'app_name'
     ];
+
+    public function menu() : HasOne
+    {
+        return $this->hasOne(WechatMenu::class, 'app_id', 'app_id');
+    }
 
 }

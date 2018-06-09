@@ -44,6 +44,13 @@ class WebApiRoutes extends ApiRoutes
             $router->get("configs", ['as' => 'wechat.config.list', 'uses' => 'ConfigController@index']);
             $router->get("config/{id}", ['as' => 'wechat.config.show', 'uses' => 'ConfigController@show']);
             $router->put("config/{id}", ['as' => 'wechat.config.update', 'uses' => 'ConfigController@update']);
+
+            //menus
+            $router->post("menu", ['as' => 'wechat.menu.create', 'uses' => 'MenuController@store']);
+            $router->get("menus", ['as' => 'wechat.menu.list', 'uses' => 'MenuController@index']);
+            $router->get("menu/{id}", ['as' => 'wechat.menu.show', 'uses' => 'MenuController@show']);
+            $router->put("menu/{id}", ['as' => 'wechat.menu.update', 'uses' => 'MenuController@update']);
+            $router->get("menu/{id}/sync", ['as' => 'wechat.menu.sync', 'uses' => 'MenuController@sync']);
         });
         $router->get('/countries', ['as' => 'country.list', 'uses' => 'CountryController@getCountries']);
         $router->get('/country/{id}', ['as' => 'country.detail', 'uses' => 'CountryController@getCountryDetail']);
