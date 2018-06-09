@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Database\Eloquent\Builder as City;
 use App\Http\Controllers\Controller;
-use App\Repositories\CityRepositoryEloquent;
+use App\Repositories\CityRepository;
 use App\Transformers\CitiesItemTransformer;
 use App\Transformers\CityDetailTransformer;
 use Dingo\Api\Http\Request;
@@ -13,15 +13,15 @@ use Prettus\Repository\Criteria\RequestCriteria;
 class CityController extends Controller
 {
     //
-    private $cityModel = null;
-    public function __construct(CityRepositoryEloquent $cityRepositoryEloquent )
+    private $repository = null;
+    public function __construct(CityRepository $CityRepository )
     {
-        $this->cityModel = $cityRepositoryEloquent;
+        $this->repository = $CityRepository;
     }
 
     public function getCities(Request $request, int $countryId = null, int $provinceId =null){
-        $this->cityModel->pushCriteria(app(RequestCriteria::class));
-        $this->cityModel->scopeQuery(function (City $city)use($countryId, $provinceId){
+        $this->repository->pushCriteria(app(RequestCriteria::class));
+        $this->repository->scopeQuery(function (City $city)use($countryId, $provinceId){
             if($countryId){
                 $city->whereCountryId($countryId);
             }
@@ -30,18 +30,18 @@ class CityController extends Controller
             }
             return $city;
         });
-        $result = $this->cityModel->with(['country', 'province'])->withCount('counties')->paginate($request->input('limit',
+        $result = $this->repository->with(['country', 'province'])->withCount('counties')->paginate($request->input('limit',
             PAGE_LIMIT));
         return $this->response()->paginator($result, new CitiesItemTransformer());
     }
 
     public function getCityDetail($id){
-        $item = $this->cityModel->with(['country', 'province', 'counties'])->withCount(['counties'])->find($id);
+        $item = $this->repository->with(['country', 'province', 'counties'])->withCount(['counties'])->find($id);
         return $this->response()->item($item, new CityDetailTransformer());
     }
 
     public function store(Request $request){
-        $item = $this->cityModel->create($request->all(['code', 'name']));
+        $item = $this->repository->create($request->all(['code', 'name']));
         if($item){
             return $this->response()->item($item, new CityDetailTransformer());
         }else{

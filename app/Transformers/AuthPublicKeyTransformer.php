@@ -22,7 +22,7 @@ class AuthPublicKeyTransformer extends TransformerAbstract
     public function transform(AuthSecretKey $model)
     {
         return [
-            'public_key' => $model->publicKey
+            'public_key' => $model->publicKey,
         ];
     }
 }

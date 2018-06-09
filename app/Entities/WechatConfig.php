@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -32,16 +33,20 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @mixin \Eloquent
  * @property string|null $mode 微信模式
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereMode($value)
+ * @property string|null $appName 应用名称
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAppName($value)
  */
 class WechatConfig extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'app_id', 'app_secret', 'token', 'aes_key', 'type', 'mode', 'wechat_bind_app', 'app_name'
+    ];
 
 }

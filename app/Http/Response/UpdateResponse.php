@@ -15,7 +15,7 @@ class UpdateResponse
 
     public function __construct($content)
     {
-        $this->content['data'] = ['message' => $content];
+        $this->content['data'] = $content;
     }
 
     public function content()

@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Entities\WechatConfig;
 use App\Repositories\WechatConfigRepositoryEloquent;
 use App\Services\Wechat\WechatService;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Lumen\Application;
 
 class WechatServiceProvider extends ServiceProvider
 {
@@ -16,14 +19,10 @@ class WechatServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-        $bindApp = isset($this->app['wechat_bind_app']) ? $this->app['wechat_bind_app'] : null;
+        $currentWechat = $this->app['current_wechat'];
         $config = config('wechat');
-        if ($bindApp) {
-            $wechatConfig = app(WechatConfigRepositoryEloquent::class);
-            $wechatConfigData = $wechatConfig->findWhere(['wechat_bind_app' => $bindApp])->first();
-            if ($wechatConfigData) {
-                $config = array_merge($config, $wechatConfigData->toArray());
-            }
+        if ($currentWechat) {
+            $config = array_merge($config, $currentWechat->toArray());
         }
         $this->app->singleton('wechat', function () use($config){
             return new WechatService($config);
@@ -37,6 +36,14 @@ class WechatServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
+        $this->app->singleton('current_wechat', function(Application $app) {
+            $appId = Request::input('app_id');
+            if($appId)
+                return WechatConfig::whereAppId($appId)->first();
+            $wechatBindApp = Request::input('bind_app');
+            if($wechatBindApp)
+                return WechatConfig::whereWechatBindApp($wechatBindApp)->first();
+            return null;
+        });
     }
 }

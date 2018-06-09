@@ -15,8 +15,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Session\SessionManager;
 use Illuminate\Session\SessionServiceProvider;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
 use Illuminate\Http\Request;

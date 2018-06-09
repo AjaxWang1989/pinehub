@@ -4,22 +4,16 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\WechatConfig;
-use App\Validators\Admin\WechatConfigValidator;
+use App\Entities\WechatMaterial;
+use App\Validators\WechatMaterialValidator;
 
 /**
- * Class WechatConfigRepositoryEloquent.
+ * Class WechatMaterialRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class WechatConfigRepositoryEloquent extends BaseRepository implements WechatConfigRepository
+class WechatMaterialRepositoryEloquent extends BaseRepository implements WechatMaterialRepository
 {
-    protected $fieldSearchable = [
-        'app_id' => 'like',
-        'mode' => '=',
-        'type' => '=',
-        'wechat_bind_app' => '='
-    ];
     /**
      * Specify Model class name
      *
@@ -27,7 +21,7 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
      */
     public function model()
     {
-        return WechatConfig::class;
+        return WechatMaterial::class;
     }
 
     
@@ -39,5 +33,5 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-
+    
 }

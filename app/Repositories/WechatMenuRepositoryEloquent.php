@@ -4,22 +4,17 @@ namespace App\Repositories;
 
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\WechatConfig;
-use App\Validators\Admin\WechatConfigValidator;
+use App\Repositories\WechatMenuRepository;
+use App\Entities\WechatMenu;
+use App\Validators\WechatMenuValidator;
 
 /**
- * Class WechatConfigRepositoryEloquent.
+ * Class WechatMenuRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class WechatConfigRepositoryEloquent extends BaseRepository implements WechatConfigRepository
+class WechatMenuRepositoryEloquent extends BaseRepository implements WechatMenuRepository
 {
-    protected $fieldSearchable = [
-        'app_id' => 'like',
-        'mode' => '=',
-        'type' => '=',
-        'wechat_bind_app' => '='
-    ];
     /**
      * Specify Model class name
      *
@@ -27,10 +22,20 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
      */
     public function model()
     {
-        return WechatConfig::class;
+        return WechatMenu::class;
     }
 
-    
+    /**
+    * Specify Validator class name
+    *
+    * @return mixed
+    */
+    public function validator()
+    {
+
+        return WechatMenuValidator::class;
+    }
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -39,5 +44,5 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-
+    
 }

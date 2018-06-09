@@ -11,18 +11,18 @@ use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Filesystem\FilesystemServiceProvider;
 use Illuminate\Redis\RedisServiceProvider;
-use Illuminate\Routing\RoutingServiceProvider;
 use Illuminate\Support\Facades\{
-    DB, Log
+    DB, Log, Validator
 };
 use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
-use Prettus\Repository\Providers\RepositoryServiceProvider;
+use Prettus\Repository\Providers\RepositoryServiceProvider as PRepositoryServiceProvider;
 use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
 use Overtrue\LaravelWeChat\ServiceProvider as WechatLumenServiceProvider;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -36,6 +36,12 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('file',function (Application $app) {
             return $app->make(FileService::class);
+        });
+        Validator::extend('not_exists', function($attribute, $value, $parameters)
+        {
+            return DB::table($parameters[0])
+                    ->where($attribute, '=', $value)
+                    ->count()<1;
         });
     }
     /**
@@ -56,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(AliOauthServiceProvider::class);
         $this->app->register(FilesystemServiceProvider::class);
         $this->app->register(AliOssServiceProvider::class);
+        $this->app->register(PRepositoryServiceProvider::class);
         $this->app->singleton('uid.generator', function () {
             return new UIDGeneratorService();
         });

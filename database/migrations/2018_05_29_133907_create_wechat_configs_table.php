@@ -19,6 +19,7 @@ class CreateWechatConfigsTable extends Migration
             $table->increments('id');
             $table->string('app_id', 18)->comment('微信公众好app ID');
             $table->string('app_secret', 32)->comment('微信公众号secret');
+            $table->string('app_name', 255)->comment('微信公众号或者小程序名称');
             $table->string('token', 32)->nullable()->default(null)->comment('微信token');
             $table->string('aes_key', 43)->nullable()->default(null)->comment('微信EncodingAESKey');
             $table->string('type', 21)->default(WECHAT_OFFICE_ACCOUNT)->comment('OFFICE_ACCOUNT 公众平台， 

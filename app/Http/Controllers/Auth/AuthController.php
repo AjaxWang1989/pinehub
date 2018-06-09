@@ -44,6 +44,7 @@ class AuthController extends Controller
     public function getPublicKey()
     {
         $item = new AuthSecretKey();
+
         return $this->response()->item($item, new AuthPublicKeyTransformer());
     }
 
@@ -64,13 +65,16 @@ class AuthController extends Controller
                     $this->response()->error('登录密码与手机不匹配无法登录！', HTTP_STATUS_NOT_FOUND);
                 }
                 $user = JWTAuth::toUser($token);
-                if(toUserModel($user)->status === User::FREEZE_ACCOUNT){
-                    $this->response()->error('该用户已经冻结账号无法登录', HTTP_STATUS_FORBIDDEN);
-                }else if(toUserModel($user)->status === User::WAIT_AUTH_ACCOUNT){
-                    $this->response()->error('该用户账号尚未激活无法登录', HTTP_STATUS_FORBIDDEN);
-                }
-                $user->lastLoginAt = date('Y-m-d h:m:s');
-                $user->save();
+                tap($user, function ( User $user) {
+                    if($user->status === User::FREEZE_ACCOUNT){
+                        $this->response()->error('该用户已经冻结账号无法登录', HTTP_STATUS_FORBIDDEN);
+                    }else if(toUserModel($user)->status === User::WAIT_AUTH_ACCOUNT){
+                        $this->response()->error('该用户账号尚未激活无法登录', HTTP_STATUS_FORBIDDEN);
+                    }
+                    $user->lastLoginAt = date('Y-m-d h:m:s');
+                    $user->save();
+                });
+
                 return $this->response()->item($user, new AuthenticateTransformer)->addMeta('token', $token);
             }
         }

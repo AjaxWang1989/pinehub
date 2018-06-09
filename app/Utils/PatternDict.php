@@ -82,6 +82,36 @@ define('CLICK_BUTTON', 'click');
 
 define('MP_BUTTON', 'miniprogram');
 
+define('SCAN_CODE_PUSH_BUTTON', 'scancode_push');
+
+define('SCAN_CODE_WAIT_MSG_BUTTON', 'scancode_waitmsg');
+
+define('PIC_SYS_PHOTO_BUTTON', 'pic_sysphoto');
+
+define('PIC_PHOTO_OR_ALBUM_BUTTON', 'pic_photo_or_album');
+
+define('PIC_WEI_XIN_BUTTON', 'pic_weixin');
+
+define('LOCATION_SELECT_BUTTON', 'location_select');
+
+define('MEDIA_ID_BUTTON', 'media_id');
+
+define('VIEW_LIMITED_BUTTON', 'view_limited');
+
+define('WECHAT_MENU_TYPE', [
+    VIEW_BUTTON,
+    CLICK_BUTTON,
+    MP_BUTTON,
+    SCAN_CODE_PUSH_BUTTON,
+    SCAN_CODE_WAIT_MSG_BUTTON,
+    PIC_SYS_PHOTO_BUTTON,
+    PIC_PHOTO_OR_ALBUM_BUTTON,
+    PIC_WEI_XIN_BUTTON,
+    LOCATION_SELECT_BUTTON,
+    MEDIA_ID_BUTTON,
+    VIEW_LIMITED_BUTTON
+]);
+
 define('WECHAT_APP_ID', '/^(wx)[0-9a-fA-F]{16}/');
 
 define('WECHAT_APP_SECRET', '/[0-9a-fA-F]{32}/');

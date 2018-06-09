@@ -2,12 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Tymon\JWTAuth\Exceptions\JWTException;
-use Tymon\JWTAuth\Exceptions\TokenExpiredException;
-use Illuminate\Support\Facades\Log;
+
 
 class ApiExceptionHandlerServiceProvider extends ServiceProvider
 {
@@ -20,11 +19,23 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
     {
         //
         if($this->app->has('api.exception')){
-            $this->app->make('api.exception')->register(function (\Exception $exception){
-
-                $response['status_code'] = $exception->getStatusCode();
+            $this->app->make('api.exception')->register(function (\Exception $exception) {
+                $responseSender = new Response();
+                $responseSender->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
+                    ->header('Access-Control-Allow-Credentials', 'true');
+                if(Request::method() === HTTP_METHOD_OPTIONS) {
+                    return $responseSender->send();
+                }
+                $response['status_code'] = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
                 $response['message'] = $exception->getMessage();
-                switch($exception->getStatusCode()){
+                $response['errors'] = method_exists($exception, 'getErrors') ? $exception->getErrors() : null;
+                $response['errors'] = method_exists($exception, 'errors') ? $exception->errors() : null;
+                if($exception instanceof AuthorizationException) {
+                    $response['status_code'] = 401;
+                }
+                switch($response['status_code']){
                     case HTTP_STATUS_BAD_REQUEST:{
                         if(!$response['message'] ){
                             $response['message']  = "客户端请求有误";
@@ -56,14 +67,9 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                         break;
                     }
                 }
-                (new Response( $response))->header('Access-Control-Allow-Origin', '*')
-                    ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept')
-                    ->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
-                    ->header('Access-Control-Allow-Credentials', 'true')
-                    ->send();
+                return $responseSender->setContent($response)->send();
             });
         }
-
     }
 
     /**
