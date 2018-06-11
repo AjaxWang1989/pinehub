@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
+use App\Entities\WechatConfig;
 use App\Http\Requests\Admin\Wechat\ConfigCreateRequest;
 use App\Http\Requests\Admin\Wechat\ConfigUpdateRequest;
 use App\Http\Response\JsonResponse;
 use App\Repositories\WechatConfigRepository;
 use App\Transformers\WechatConfigItemTransformer;
 use App\Transformers\WechatConfigTransformer;
-use Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
+use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\Collection;
 
 class ConfigController extends Controller
 {
@@ -57,27 +59,18 @@ class ConfigController extends Controller
      */
     public function store(ConfigCreateRequest $request)
     {
-        try {
+        $material = $this->repository->create($request->all());
 
-            $material = $this->repository->create($request->all());
+        $response = [
+            'message' => '成功创建小程序或者公众号配置信息.',
+        ];
 
-            $response = [
-                'message' => '成功创建小程序或者公众号配置信息.',
-            ];
+        if ($request->wantsJson()) {
 
-            if ($request->wantsJson()) {
-
-                return $this->response()->item($material, new WechatConfigTransformer());
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidationHttpException $e) {
-            if ($request->wantsJson()) {
-                return $this->response()->error($e->getMessageBag());
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return $this->response()->item($material, new WechatConfigTransformer());
         }
+
+        return redirect()->back()->with('message', $response['message']);
     }
 
     /**
@@ -125,42 +118,47 @@ class ConfigController extends Controller
      */
     public function update(ConfigUpdateRequest $request, $id)
     {
-        try {
+        $material = $this->repository->update($request->all(), $id);
 
-            $material = $this->repository->update($request->all(), $id);
+        $response = [
+            'message' => '小程序或者公众号信息修改成功.',
+        ];
 
-            $response = [
-                'message' => '小程序或者公众号信息修改成功.',
-            ];
+        if ($request->wantsJson()) {
 
-            if ($request->wantsJson()) {
-
-                return $this->response()->item($material, new WechatConfigTransformer());
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidationHttpException $e) {
-
-            if ($request->wantsJson()) {
-
-                return $this->response()->error($e->getMessageBag());
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+            return $this->response()->item($material, new WechatConfigTransformer());
         }
+
+        return redirect()->back()->with('message', $response['message']);
     }
 
 
     /**
      * Remove the specified resource from storage.
-     *
-     * @param  int $id
+     * @param Request $request
+     * @param  int|array $id
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id = null)
     {
-        $deleted = $this->repository->delete($id);
+        $count = 0;
+        if($id === null) {
+            $id = $request->input('ids');
+        }
+        if(is_array($id)){
+            $deleted = $this->repository->findWhereIn('id', $id);
+            tap($deleted, function (Collection $deleted) use( &$count ){
+                $deleted->map(function (WechatConfig $config) use ( &$count ){
+                    $config->delete();
+                    $count ++;
+                });
+            });
+            $deleted = $count;
+        }else {
+            $deleted = $this->repository->delete($id);
+        }
+
         $message = "删除指定配置信息。";
         if (request()->wantsJson()) {
 

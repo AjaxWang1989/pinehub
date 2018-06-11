@@ -314,3 +314,61 @@
         }
     }
     ```
+    
+ 5. 删除配置信息
+ 
+     + url: host + /wechat/config/{id}
+     + http方法: DELETE
+     + 参数:
+     
+        | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+        | :------: | :-------: | :------: | :----:| 
+        | ids | array | Y | id数组 | 
+         
+     + http返回: 
+     
+         | 数据名称 | 数据类型 | 说明 |
+         | :-------: | :------: | :---: |
+         | deleted   |   int | 删除数量 |
+         | message | string | 错误说明 ,出现错误才会出现 |
+         | status_code | string | 错误码（一般是http标准码） |
+         
+         注释：
+         
+             1. json实例
+     ```json
+     {
+         "data": {
+             "deleted": 1,
+             "message": "XXXX"
+         }
+     }
+     ```
+     
+   6. 批量删除配置信息
+   
+       + url: host + /wechat/configs
+       + http方法: DELETE
+       + 参数:
+       
+          无参数 
+           
+       + http返回: 
+       
+           | 数据名称 | 数据类型 | 说明 |
+           | :-------: | :------: | :---: |
+           | deleted   |   int | 删除数量 |
+           | message | string | 错误说明 ,出现错误才会出现 |
+           | status_code | string | 错误码（一般是http标准码） |
+           
+           注释：
+           
+               1. json实例
+       ```json
+       {
+           "data": {
+               "deleted": 1,
+               "message": "XXXX"
+           }
+       }
+       ```

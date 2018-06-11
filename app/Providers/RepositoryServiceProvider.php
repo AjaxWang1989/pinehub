@@ -36,6 +36,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\WechatConfigRepository::class, \App\Repositories\WechatConfigRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\WechatMenuRepository::class, \App\Repositories\WechatMenuRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\WechatMaterialRepository::class, \App\Repositories\WechatMaterialRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WechatAutoReplyMessageRepository::class, \App\Repositories\WechatAutoReplyMessageRepositoryEloquent::class);
         //:end-bindings:
         Log::debug("repository bindings\n");
     }

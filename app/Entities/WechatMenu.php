@@ -20,13 +20,14 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereMenus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $isPublic 是否发布
+ * @property string|null $name 菜单名称
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereIsPublic($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereName($value)
  */
 class WechatMenu extends Model implements Transformable
 {
     use TransformableTrait;
-    protected $casts = [
-        'menus' => 'array'
-    ];
 
     /**
      * The attributes that are mass assignable.
@@ -34,7 +35,7 @@ class WechatMenu extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'app_id','menus'
+        'app_id','menus', 'name', 'is_public'
     ];
 
 }

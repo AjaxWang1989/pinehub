@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
+use App\Http\Response\JsonResponse;
 use App\Repositories\WechatMaterialRepository;
 use App\Transformers\WechatMaterialItemTransformer;
 use App\Transformers\WechatMaterialTransformer;
+use Carbon\Carbon;
 use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Http\Response as DingoResponse;
+use EasyWeChat\Kernel\Messages\Article;
+use Illuminate\Http\RedirectResponse;
 use \Illuminate\Http\Response;
-use Illuminate\Http\Request;
+use Dingo\Api\Http\Request;
 use App\Http\Requests\Admin\Wechat\MaterialsCreateRequest;
 use App\Http\Requests\Admin\Wechat\MaterialsUpdateRequest;
 use App\Http\Controllers\Controller;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class MaterialsController.
@@ -33,149 +38,120 @@ class MaterialController extends Controller
     public function __construct(WechatMaterialRepository $repository)
     {
         $this->repository = $repository;
+
+        parent::__construct();
     }
 
     /**
-     * Display a listing of the resource.
+     * create new temporary material
      * @param Request $request
-     * @return Response|DingoResponse
-     */
-    public function index(Request $request)
-    {
-        $materials = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($materials, new WechatMaterialItemTransformer());
-        }
-
-        return view('materials.index', compact('materials'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  MaterialsCreateRequest $request
-     *
-     * @return \Illuminate\Http\Response
-     *
+     * @return Response|DingoResponse|RedirectResponse
      * @throws
-     */
-    public function store(MaterialsCreateRequest $request)
+     * */
+    public function storeTemporaryMaterial(Request $request)
     {
-        try {
+        $field = $request->input('file_field', 'file');
+        $mediaId = $this->currentWechat->uploadMedia($request->input('type'), $request->file($field)->getPath());
+        $material = [
+            'is_temp' => true,
+            'type' => $request->input('type'),
+            'media_id' => $mediaId,
+            'content' => [
+                'expires'  => Carbon::now()->next(3)->timestamp,
+                'status'   => 1
+            ]
+        ];
 
-            $material = $this->repository->create($request->all());
-
-            $response = [
-                'message' => 'Materials created.',
-            ];
-
-            if ($request->wantsJson()) {
-
-                return $this->response()->item($material, new WechatMaterialTransformer());
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidationHttpException $e) {
-            if ($request->wantsJson()) {
-                return $this->response()->error($e->getMessageBag());
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $material = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($material, new WechatMaterialTransformer());
+        if($request->wantsJson()) {
+            return $this->response($material);
         }
 
-        return view('materials.show', compact('material'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        $material = $this->repository->find($id);
-
-        return view('materials.edit', compact('material'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  MaterialsUpdateRequest $request
-     * @param  string            $id
-     *
-     * @return Response
-     *
-     * @throws
-     */
-    public function update(MaterialsUpdateRequest $request, $id)
-    {
-        try {
-
-            $material = $this->repository->update($request->all(), $id);
-
-            $response = [
-                'message' => 'Materials updated.',
-            ];
-
-            if ($request->wantsJson()) {
-
-                return $this->response()->item($material, new WechatMaterialTransformer());
-            }
-
-            return redirect()->back()->with('message', $response['message']);
-        } catch (ValidationHttpException $e) {
-
-            if ($request->wantsJson()) {
-
-                return $this->response()->error($e->getMessageBag());
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
-        }
+        return redirect()->back()->with('message', '临时素材创建成功');
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function storeForeverNews(Request $request)
     {
-        $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->json([
-                'message' => 'Materials deleted.',
-                'deleted' => $deleted,
-            ]);
+        $article =new Article($request->all());
+        $mediaId = $this->currentWechat->uploadArticle($article);
+        $attributes['content'] = $request->all();
+        $attributes['app_id'] = $this->currentWechat->appId;
+        $attributes['is_temp'] = false;
+        $attributes['type'] = WECHAT_NEWS_MESSAGE;
+        $attributes['media_id'] = $mediaId;
+        if($request->wantsJson()) {
+            return $this->response($attributes);
         }
 
-        return redirect()->back()->with('message', 'Materials deleted.');
+        return redirect()->back()->with('message', '图文素材创建成功');
+
+    }
+
+    public function uploadForeverMaterial(Request $request)
+    {
+        $field = $request->input('file_field', 'file');
+        $url = $this->currentWechat->uploadMaterial($request->input('type'), $request->file($field)->getPath());
+
+        if($request->wantsJson()) {
+            return $this->response(new JsonResponse(['url' => $url]));
+        }
+
+        return redirect()->back()->with('message', '临时素材创建成功');
+    }
+
+
+    public function materialStats(Request $request) {
+        $stats = $this->currentWechat->materialstats();
+        if($request->wantsJson()) {
+            return $this->response(new JsonResponse($stats));
+        }
+
+        return redirect()->back()->with($stats);
+    }
+
+    public function materialList(Request $request) {
+        $limit = $request->input('limit', PAGE_LIMIT);
+        $offset = $request->input('page', 1) * $limit;
+        $result = $this->currentWechat->materialList($request->input('type'), $offset, $limit);
+        if ($request->wantsJson()) {
+            return $this->response(new JsonResponse($result));
+        }
+        return redirect()->back()->with($result);
+    }
+
+    public function materialNewsUpdate(Request $request, string $mediaId)
+    {
+        $attributes = $request->input('article');
+        $index = $request->input('index');
+        $this->currentWechat->updateArticle($mediaId, new Article($attributes), $index);
+        if($request->wantsJson()) {
+            return $this->response(new JsonResponse(['message' => '更新成功']));
+        }
+
+        return redirect()->back()->with('message', '更新成功');
+    }
+
+    public function deleteMaterial(Request $request, string $mediaId)
+    {
+        $this->currentWechat->deleteMaterial($mediaId);
+        if($request->wantsJson()) {
+            return $this->response(new JsonResponse(['message' => '删除成功']));
+        }
+
+        return redirect()->back()->with('message', '删除成功');
+    }
+
+    public function material(Request $request, string $mediaId, string $type = null)
+    {
+        if($type === null || $type === 'temporary') {
+            $result = $this->currentWechat->temporaryMaterial($mediaId, $type === 'temporary');
+            if($request->wantsJson()) {
+                return $this->response(new JsonResponse($result));
+            }
+
+            return redirect()->back()->with($result);
+        } else {
+            throw new NotFoundHttpException('');
+        }
     }
 }

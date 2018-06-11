@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Wechat\WechatService;
 use Dingo\Api\Routing\Helpers;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -11,6 +12,9 @@ class Controller extends BaseController
     use Helpers;
     protected $session = null;
 
+    /**
+     * @var WechatService
+     * */
     protected $currentWechat = null;
 
     public function __construct()

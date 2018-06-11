@@ -64,25 +64,13 @@ class MenuController extends Controller
      */
     public function store(MenuCreateRequest $request)
     {
-        try {
-            $menu = $this->repository->create(['app_id' => $this->currentWechat->appId, 'menus'  => $request->all()]);
+        $menu = $this->repository->create(['app_id' => $this->currentWechat->appId, 'menus'  => $request->all()]);
 
-            if ($request->wantsJson()) {
-                return $this->response()->item($menu, new WechatMenuTransformer());
-            }
-
-            return redirect()->back()->with('message', '菜单保存成功');
-
-        } catch (ValidationHttpException $e) {
-            if ($request->wantsJson()) {
-                return response()->json([
-                    'error'   => true,
-                    'message' => $e->getMessageBag()
-                ]);
-            }
-
-            return redirect()->back()->withErrors($e->getMessageBag())->withInput();
+        if ($request->wantsJson()) {
+            return $this->response()->item($menu, new WechatMenuTransformer());
         }
+
+        return redirect()->back()->with('message', '菜单保存成功');
     }
 
     /**
@@ -121,27 +109,6 @@ class MenuController extends Controller
     }
 
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return response()->json([
-                'message' => 'Menus deleted.',
-                'deleted' => $deleted,
-            ]);
-        }
-
-        return redirect()->back()->with('message', 'Menus deleted.');
-    }
 
     public function sync($id)
     {

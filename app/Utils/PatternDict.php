@@ -62,6 +62,10 @@ define('COUPON_CARD', 'coupon_card');
 define('GROUPON_CARD', 'groupon');
 define('DISCOUNT_CARD', 'discount');
 
+define('WECHAT_THUMB_MESSAGE', 'thumb');
+
+define('WECHAT_NEWS_IMAGE_MESSAGE', 'news_image');
+
 define('WECHAT_TEXT_MESSAGE', 'text');
 
 define('WECHAT_IMAGE_MESSAGE', 'image');

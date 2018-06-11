@@ -1,4 +1,4 @@
-# 微信菜单接口
+# 微信素材管理接口
 1. 添加菜单
     + url: host + /wechat/menu
     + http方法: POST

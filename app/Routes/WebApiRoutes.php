@@ -44,6 +44,8 @@ class WebApiRoutes extends ApiRoutes
             $router->get("configs", ['as' => 'wechat.config.list', 'uses' => 'ConfigController@index']);
             $router->get("config/{id}", ['as' => 'wechat.config.show', 'uses' => 'ConfigController@show']);
             $router->put("config/{id}", ['as' => 'wechat.config.update', 'uses' => 'ConfigController@update']);
+            $router->delete("config", ['as' => 'wechat.config.delete.bat', 'uses' => 'ConfigController@delete']);
+            $router->delete("config/{id}", ['as' => 'wechat.config.delete', 'uses' => 'ConfigController@delete']);
 
             //menus
             $router->post("menu", ['as' => 'wechat.menu.create', 'uses' => 'MenuController@store']);
