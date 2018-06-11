@@ -43,12 +43,12 @@ class MaterialController extends Controller
     }
 
     /**
-     * create new temporary material
+     * create new temporary media
      * @param Request $request
      * @return Response|DingoResponse|RedirectResponse
      * @throws
      * */
-    public function storeTemporaryMaterial(Request $request)
+    public function storeTemporaryMedia(Request $request)
     {
         $field = $request->input('file_field', 'file');
         $mediaId = $this->currentWechat->uploadMedia($request->input('type'), $request->file($field)->getPath());
@@ -87,10 +87,10 @@ class MaterialController extends Controller
 
     }
 
-    public function uploadForeverMaterial(Request $request)
+    public function uploadForeverMaterial(Request $request, string $type = 'image')
     {
         $field = $request->input('file_field', 'file');
-        $url = $this->currentWechat->uploadMaterial($request->input('type'), $request->file($field)->getPath());
+        $url = $this->currentWechat->uploadMaterial($type, $request->file($field)->getPath());
 
         if($request->wantsJson()) {
             return $this->response(new JsonResponse(['url' => $url]));
@@ -144,7 +144,7 @@ class MaterialController extends Controller
     public function material(Request $request, string $mediaId, string $type = null)
     {
         if($type === null || $type === 'temporary') {
-            $result = $this->currentWechat->temporaryMaterial($mediaId, $type === 'temporary');
+            $result = $this->currentWechat->material($mediaId, $type === 'temporary');
             if($request->wantsJson()) {
                 return $this->response(new JsonResponse($result));
             }

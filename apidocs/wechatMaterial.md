@@ -1,6 +1,6 @@
 # 微信素材管理接口
 1. 添加菜单
-    + url: host + /wechat/menu
+    + url: host + /wechat/media/temporary?app_id={appid}
     + http方法: POST
     + 参数:
     

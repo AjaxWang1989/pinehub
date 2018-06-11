@@ -50,11 +50,32 @@ class WebApiRoutes extends ApiRoutes
             //menus
             $router->post("menu", ['as' => 'wechat.menu.create', 'uses' => 'MenuController@store']);
             $router->get("menus", ['as' => 'wechat.menu.list', 'uses' => 'MenuController@index']);
+            $router->get("{appId}/menus", ['as' => 'wechat.app.menus', 'uses' => 'MenuController@index']);
             $router->get("menu/{id}", ['as' => 'wechat.menu.show', 'uses' => 'MenuController@show']);
             $router->put("menu/{id}", ['as' => 'wechat.menu.update', 'uses' => 'MenuController@update']);
             $router->delete("menu/{id}", ['as' => 'wechat.menu.delete', 'uses' => 'MenuController@destroy']);
             $router->delete("menus", ['as' => 'wechat.menu.delete.bat', 'uses' => 'MenuController@destroy']);
             $router->get("menu/{id}/sync", ['as' => 'wechat.menu.sync', 'uses' => 'MenuController@sync']);
+
+            //material api
+
+            $router->post("media/temporary", ['as' => 'wechat.temporary.media.create', 'uses' => 'MaterialController@storeTemporaryMedia']);
+            $router->post("material/article", ['as' => 'wechat.article.create', 'uses' => 'MaterialController@storeForeverNews']);
+            $router->post("{type}/material", ['as' => 'wechat.material.create', 'uses' => 'MaterialController@uploadForeverMaterial']);
+            $router->get("material/stats", ['as' => 'wechat.material.stats', 'uses' => 'MaterialController@materialStats']);
+            $router->get("materials", ['as' => 'wechat.materials', 'uses' => 'MaterialController@materialList']);
+            $router->get("material/{mediaId}", ['as' => 'wechat.material.forever.detail', 'uses' => 'MaterialController@material']);
+            $router->get("material/{mediaId}/{type}", ['as' => 'wechat.material.temporary.detail', 'uses' => 'MaterialController@material']);
+            $router->put("material/article/{mediaId}", ['as' => 'wechat.article.update', 'uses' => 'MaterialController@materialNewsUpdate']);
+            $router->delete("material/{mediaId}", ['as' => 'wechat.material.delete', 'uses' => 'MenuController@deleteMaterial']);
+
+            //auto reply message
+            $router->post("auto_reply_message", ['as' => 'wechat.auto_reply_message.create', 'uses' => 'AutoReplyMessagesController@store']);
+            $router->get("auto_reply_messages", ['as' => 'wechat.auto_reply_message.list', 'uses' => 'AutoReplyMessagesController@index']);
+            $router->get("auto_reply_message/{id}", ['as' => 'wechat.auto_reply_message.show', 'uses' => 'AutoReplyMessagesController@show']);
+            $router->put("auto_reply_message/{id}", ['as' => 'wechat.auto_reply_message.update', 'uses' => 'AutoReplyMessagesController@update']);
+            $router->delete("auto_reply_message/{id}", ['as' => 'wechat.auto_reply_message.delete', 'uses' => 'AutoReplyMessagesController@destroy']);
+            $router->delete("auto_reply_messages", ['as' => 'wechat.auto_reply_message.delete.bat', 'uses' => 'AutoReplyMessagesController@destroy']);
         });
         $router->get('/countries', ['as' => 'country.list', 'uses' => 'CountryController@getCountries']);
         $router->get('/country/{id}', ['as' => 'country.detail', 'uses' => 'CountryController@getCountryDetail']);

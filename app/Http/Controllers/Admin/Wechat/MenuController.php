@@ -6,11 +6,8 @@ use App\Entities\WechatMenu;
 use App\Exceptions\WechatMenuDeleteException;
 use App\Http\Response\JsonResponse;
 use App\Transformers\WechatMenuTransformer;
-use Dingo\Api\Exception\ValidationHttpException;
-use App\Http\Requests;
-use Prettus\Validator\Contracts\ValidatorInterface;
+use Illuminate\Database\Eloquent\Builder;
 use App\Http\Requests\Admin\Wechat\MenuCreateRequest;
-use App\Http\Requests\Admin\Wechat\MenuUpdateRequest;
 use App\Repositories\WechatMenuRepository;
 use App\Http\Controllers\Controller;
 /**
@@ -40,11 +37,16 @@ class MenuController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
+     * @param string $appId
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(string $appId = null)
     {
+        if($appId){
+            $this->repository->scopeQuery(function (Builder $query) use ($appId) {
+                return $query->where('app_id', $appId);
+            });
+        }
         $menuses = $this->repository->paginate();
         if (request()->wantsJson()) {
             return response()->json([
@@ -81,14 +83,10 @@ class MenuController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id = null)
+    public function show($id)
     {
-        $menu = $this->currentWechat->menu;
-        if($id !== null && $menu->id !== $id) {
-            $this->response()->error('不存在');
-        }
+        $menu = $this->repository->find($id);
         if (request()->wantsJson()) {
-
             return $this->response()->item($menu);
         }
 
