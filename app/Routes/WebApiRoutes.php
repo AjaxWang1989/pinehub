@@ -44,14 +44,16 @@ class WebApiRoutes extends ApiRoutes
             $router->get("configs", ['as' => 'wechat.config.list', 'uses' => 'ConfigController@index']);
             $router->get("config/{id}", ['as' => 'wechat.config.show', 'uses' => 'ConfigController@show']);
             $router->put("config/{id}", ['as' => 'wechat.config.update', 'uses' => 'ConfigController@update']);
-            $router->delete("config", ['as' => 'wechat.config.delete.bat', 'uses' => 'ConfigController@delete']);
-            $router->delete("config/{id}", ['as' => 'wechat.config.delete', 'uses' => 'ConfigController@delete']);
+            $router->delete("configs", ['as' => 'wechat.config.delete.bat', 'uses' => 'ConfigController@destroy']);
+            $router->delete("config/{id}", ['as' => 'wechat.config.delete', 'uses' => 'ConfigController@destroy']);
 
             //menus
             $router->post("menu", ['as' => 'wechat.menu.create', 'uses' => 'MenuController@store']);
             $router->get("menus", ['as' => 'wechat.menu.list', 'uses' => 'MenuController@index']);
             $router->get("menu/{id}", ['as' => 'wechat.menu.show', 'uses' => 'MenuController@show']);
             $router->put("menu/{id}", ['as' => 'wechat.menu.update', 'uses' => 'MenuController@update']);
+            $router->delete("menu/{id}", ['as' => 'wechat.menu.delete', 'uses' => 'MenuController@destroy']);
+            $router->delete("menus", ['as' => 'wechat.menu.delete.bat', 'uses' => 'MenuController@destroy']);
             $router->get("menu/{id}/sync", ['as' => 'wechat.menu.sync', 'uses' => 'MenuController@sync']);
         });
         $router->get('/countries', ['as' => 'country.list', 'uses' => 'CountryController@getCountries']);

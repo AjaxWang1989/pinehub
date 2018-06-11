@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Wechat;
 
 use App\Entities\WechatMenu;
+use App\Exceptions\WechatMenuDeleteException;
 use App\Http\Response\JsonResponse;
 use App\Transformers\WechatMenuTransformer;
 use Dingo\Api\Exception\ValidationHttpException;
@@ -123,5 +124,44 @@ class MenuController extends Controller
         });
 
         return $this->response(new JsonResponse(['message' => '数据与微信同步成功！']));
+    }
+
+    public function destroy(Request $request, $id = null)
+    {
+        $count = 0;
+        if($id === null) {
+            $id = $request->input('ids');
+        }
+        if(is_array($id)){
+            $deleted = $this->repository->findWhere([
+                'is_publish' => false,
+                ['id' , 'in', $id]
+            ]);
+            $idCount = count($id);
+            $deletedCount = $deleted->count();
+            if($idCount === $deletedCount) {
+                throw new WechatMenuDeleteException('批量删除的菜单中有发布过的菜单不能删除，请确定后再操作');
+            }
+            tap($deleted, function (Collection $deleted) use( &$count ){
+                $deleted->map(function (WechatMenu $config) use ( &$count ){
+                    $config->delete();
+                    $count ++;
+                });
+            });
+            $deleted = $count;
+        }else {
+            $deleted = $this->repository->delete($id);
+        }
+
+        $message = "删除指定配置信息。";
+        if (request()->wantsJson()) {
+
+            return $this->response(new JsonResponse([
+                'message' => $message,
+                'deleted' => $deleted,
+            ]));
+        }
+
+        return redirect()->back()->with('message', $message);
     }
 }

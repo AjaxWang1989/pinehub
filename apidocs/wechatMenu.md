@@ -361,7 +361,7 @@
     
 5. 菜单数据发布到微信公众号
 
-+ url: host + /wechat/menu/{id}/sync
+    + url: host + /wechat/menu/{id}/sync
     + http方法: GET
     + 参数:
         
@@ -384,4 +384,61 @@
         }
     }
     ```
-    
+ 
+ 6. 删除微信菜单
+ 
+     + url: host + /wechat/menu/{id}
+     + http方法: DELETE
+     + 参数:
+     
+        无参数
+         
+     + http返回: 
+     
+         | 数据名称 | 数据类型 | 说明 |
+         | :-------: | :------: | :---: |
+         | deleted   |   int | 删除数量 |
+         | message | string | 错误说明 ,出现错误才会出现 |
+         | status_code | string | 错误码（一般是http标准码） |
+         
+         注释：
+         
+             1. json实例
+     ```json
+     {
+         "data": {
+             "deleted": 1,
+             "message": "XXXX"
+         }
+     }
+     ```
+     
+7. 批量删除微信菜单
+   
+       + url: host + /wechat/menus
+       + http方法: DELETE
+       + 参数:
+       
+          | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+          | :------: | :-------: | :------: | :----:| 
+          | ids | array | Y | id数组 | 
+           
+       + http返回: 
+       
+           | 数据名称 | 数据类型 | 说明 |
+           | :-------: | :------: | :---: |
+           | deleted   |   int | 删除数量 |
+           | message | string | 错误说明 ,出现错误才会出现 |
+           | status_code | string | 错误码（一般是http标准码） |
+           
+           注释：
+           
+               1. json实例
+       ```json
+       {
+           "data": {
+               "deleted": 1,
+               "message": "XXXX"
+           }
+       }
+       ```
