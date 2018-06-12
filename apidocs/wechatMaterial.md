@@ -224,17 +224,17 @@
        
        注释：article数据结构
             
-          | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
-          | :-----: | :-----: | :---------: | :---: |
-          | title	| string | Y |	标题 |
-          | thumb_media_id | string | Y | 图文消息的封面图片素材id（必须是永久mediaID）|
-          | author | string | N | 作者 |
-          | digest | string | N | 图文消息的摘要，仅有单图<br>文消息才有摘要，多图文此处为空。如果<br>本字段为没有填写，则默认抓取正文前64个字。
-          | show_cover_pic |	boolean | Y | 是否显示封面，0为false，<br>即不显示，1为true，即显示|
-          | content | string | Y | 图文消息的具体内容，支持HTML标签，<br>必须少于2万字符，小于1M，且此处会去除JS,<br>涉及图片url必须来源 "上传图文消息内的图片获<br>取URL"接口获取。外部图片url将被过滤。
-          | content_source_url | string | Y | 图文消息的原文地址，即点击“阅读原文”后的URL
-          | need_open_comment（新增字段）| boolean/int | N | 是否打开评论，0不打开，1打开 |
-          | only_fans_can_comment（新增字段）| boolean/int | N |		是否粉丝才可评论，0所有人可评论，1粉丝才可评论 |
+      | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+      | :-----: | :-----: | :---------: | :---: |
+      | title	| string | Y |	标题 |
+      | thumb_media_id | string | Y | 图文消息的封面图片素材id（必须是永久mediaID）|
+      | author | string | N | 作者 |
+      | digest | string | N | 图文消息的摘要，仅有单图<br>文消息才有摘要，多图文此处为空。如果<br>本字段为没有填写，则默认抓取正文前64个字。
+      | show_cover_pic |	boolean | Y | 是否显示封面，0为false，<br>即不显示，1为true，即显示|
+      | content | string | Y | 图文消息的具体内容，支持HTML标签，<br>必须少于2万字符，小于1M，且此处会去除JS,<br>涉及图片url必须来源 "上传图文消息内的图片获<br>取URL"接口获取。外部图片url将被过滤。
+      | content_source_url | string | Y | 图文消息的原文地址，即点击“阅读原文”后的URL
+      | need_open_comment（新增字段）| boolean/int | N | 是否打开评论，0不打开，1打开 |
+      | only_fans_can_comment（新增字段）| boolean/int | N |		是否粉丝才可评论，0所有人可评论，1粉丝才可评论 |
  
     + http返回: 
     
