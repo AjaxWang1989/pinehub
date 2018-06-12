@@ -318,7 +318,7 @@
     }
     ```
 
-9. 删除指定临时性素材
+9. 删除指定素材
 
     + url: host + /wechat/material/{mediaId}?app_id={appid}
     + http方法: DELETE
