@@ -74,9 +74,7 @@ class MaterialController extends Controller
     {
         $article =new Article($request->all());
         $mediaId = $this->currentWechat->uploadArticle($article);
-        $attributes['content'] = $request->all();
         $attributes['app_id'] = $this->currentWechat->appId;
-        $attributes['is_temp'] = false;
         $attributes['type'] = WECHAT_NEWS_MESSAGE;
         $attributes['media_id'] = $mediaId;
         if($request->wantsJson()) {

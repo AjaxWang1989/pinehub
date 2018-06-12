@@ -1,5 +1,5 @@
 # 微信素材管理接口
-1. 添加菜单
+1. 添加临时素材
     + url: host + /wechat/media/temporary?app_id={appid}
     + http方法: POST
     + 参数:
@@ -7,13 +7,14 @@
         | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
         | :------: | :-------: | :------: | :----:|
         | app_id | string | Y | 微信公众号appid或者小程序appid，wx开头的十八字符串|
-        | menus | array | Y | 菜单数据 |
+        | file_field | string | Y | 文件字段的名称（input的name字段） |
+        | input的name字段 | stream(文件流) | http文件上传数据流 |
         
     + http返回: 
     
         | 数据名称 | 数据类型 | 说明 |
         | :-------: | :------: | :---: |
-        | data   |   array | {app_id,menus } |
+        | data   |   array | {"type":"TYPE","media_id":"MEDIA_ID","created_at":123456789} |
         | message | string | 错误说明 ,出现错误才会出现 |
         | status_code | string | 错误码（一般是http标准码） |
         
@@ -23,102 +24,29 @@
     ```json
     {
         "data": {
-            "id": 1,
-            "app_id": "wx1231234567891230",
-            "menus":{
-                 "button":[
-                   {    
-                       "type":"click",
-                       "name":"今日歌曲",
-                       "key":"V1001_TODAY_MUSIC"
-                    },
-                    {
-                       "name":"菜单",
-                       "sub_button":[
-                    {    
-                        "type":"view",
-                        "name":"搜索",
-                        "url":"http://www.soso.com/"
-                     },
-                     {
-                          "type":"miniprogram",
-                          "name":"wxa",
-                          "url":"http://mp.weixin.qq.com",
-                          "appid":"wx286b93c14bbf93aa",
-                          "pagepath":"pages/lunar/index"
-                      },
-                     {
-                        "type":"click",
-                        "name":"赞一下我们",
-                        "key":"V1001_GOOD"
-                     }]
-                }]
-            }, 
-            "created_at": {
-                "date": "2018-06-08 09:38:35.000000",
-                "timezone_type": 3,
-                "timezone": "UTC"
-            },
-            "updated_at": {
-                "date": "2018-06-09 02:16:23.000000",
-                "timezone_type": 3,
-                "timezone": "UTC"
-            }
+             "type":"TYPE",
+             "media_id":"MEDIA_ID",
+             "created_at":123456789
         }
     }
     ```
-        2. menus
-    ```json
-    {
-         "button":[
-           {    
-               "type":"click",
-               "name":"今日歌曲",
-               "key":"V1001_TODAY_MUSIC"
-            },
-            {
-               "name":"菜单",
-               "sub_button":[
-            {    
-                "type":"view",
-                "name":"搜索",
-                "url":"http://www.soso.com/"
-             },
-             {
-                  "type":"miniprogram",
-                  "name":"wxa",
-                  "url":"http://mp.weixin.qq.com",
-                  "appid":"wx286b93c14bbf93aa",
-                  "pagepath":"pages/lunar/index"
-              },
-             {
-                "type":"click",
-                "name":"赞一下我们",
-                "key":"V1001_GOOD"
-             }]
-        }]
-    }
-    ```
-        
-2. 获取菜单列表
-    + url: host + /wechat/menus
-    + http方法: GET
+          
+2.  永久图文素材
+    + url: host + /wechat/material/article?app_id={appid}
+    + http方法: POST
     + 参数:
     
         | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
         | :-----: | :-----: | :---------: | :---: |
-        | page  | int | N | 页数默认1 |
-        | limit | int | N | 每一页数据条数 默认15 |
-        | search | string | N | 查询字段search=John或者search=name:John Doe;<br>email:john@gmail.com，第二种是表示多字段多值查询 |
-        | searchField | string | N| 查询字段以及匹配方式,与search配合使用。<br>search=John&searchField=name:=;nickname:like;|
-        | searchJoin | string | N | 查询条件是and还是or查询 |
-        | sortedBy | string | N | 排序字段，取值desc 降序，asc 升序|
-        | orderBy | string | N | 1、orderBy=id按id排<br>2、orderBy=posts&#124;title,posts关联title作为排序字段<br>3、orderBy=posts:custom_id&#124;posts.title，<br>关联字段posts的custom_id,排序字段posts的title|
-        
-        注释：
-        
-            1. 可搜索字段app_id(like) 
-            2. like表示模糊匹配 = 表示全匹配
+        | title	| string | Y |	标题 |
+        | thumb_media_id | string |	Y	| 图文消息的封面图片素材id（必须是永久mediaID）|
+        | author | string | N | 作者 |
+        | digest | string |	N | 图文消息的摘要，仅有单图<br>文消息才有摘要，多图文此处为空。如果<br>本字段为没有填写，则默认抓取正文前64个字。
+        | show_cover_pic |	boolean | Y | 是否显示封面，0为false，<br>即不显示，1为true，即显示|
+        | content | string | Y | 图文消息的具体内容，支持HTML标签，<br>必须少于2万字符，小于1M，且此处会去除JS,<br>涉及图片url必须来源 "上传图文消息内的图片获<br>取URL"接口获取。外部图片url将被过滤。
+        | content_source_url | string | Y | 图文消息的原文地址，即点击“阅读原文”后的URL
+        | need_open_comment（新增字段）| boolean/int | Y | 是否打开评论，0不打开，1打开 |
+        | only_fans_can_comment（新增字段）| boolean/int | Y |		是否粉丝才可评论，0所有人可评论，1粉丝才可评论 |
             
     + http返回: 
         
@@ -136,93 +64,57 @@
    | 数据名称 | 类型 | 说明 |
    | :----:| :---: | :---: |
    | app_id | string | 微信公众号或者小程序appid |
-   | menus | array |   菜单信息 |
+   | type | string |   素材类型 |
+   | media_id | string | 素材id |
    
-        2. meta附加信息
-         
-   ```json
-     {
-        "meta":{
-           "pagination":{
-                "total": 5,
-                "count": 5,
-                "per_page": 15,
-                "current_page": 1,
-                "total_pages": 1,
-                "links":[]
-           }
-         }
-      }
-   ```
-   
-        3. json 实例：
+        2. json 实例：
         
    ```json
    {
-       "data": [
-           {
-               "id": 1,
+       "data":{
+               "type": "news",
                "app_id": "wx1231234567891230",
-               "menus": {
-                     "button":[
-                       {    
-                           "type":"click",
-                           "name":"今日歌曲",
-                           "key":"V1001_TODAY_MUSIC"
-                        },
-                        {
-                           "name":"菜单",
-                           "sub_button":[
-                               {    
-                                  "type":"view",
-                                  "name":"搜索",
-                                   "url":"http://www.soso.com/"
-                                },
-                                {
-                                   "type":"miniprogram",
-                                   "name":"wxa",
-                                   "url":"http://mp.weixin.qq.com",
-                                   "appid":"wx286b93c14bbf93aa",
-                                   "pagepath":"pages/lunar/index"
-                                },
-                               {
-                                    "type":"click",
-                                    "name":"赞一下我们",
-                                    "key":"V1001_GOOD"
-                               }
-                            ]
-                        }
-                     ]
-                }, 
-               "created_at": {
-                   "date": "2018-06-08 09:38:35.000000",
-                   "timezone_type": 3,
-                   "timezone": "UTC"
-               },
-               "updated_at": {
-                   "date": "2018-06-09 02:16:23.000000",
-                   "timezone_type": 3,
-                   "timezone": "UTC"
-               }
+               "media_id": "1324234"
+               
            }
-       ],
-       "meta": {
-           "pagination": {
-               "total": 5,
-               "count": 5,
-               "per_page": 15,
-               "current_page": 1,
-               "total_pages": 1,
-               "links": [
-               ]
-           }
-       }
    }
    ```
             
-3. 获取指定微信菜单信息
+3. 上传永久性图片、视频、音频素材
 
-    + url: host + /wechat/menu/{id}?app_id={appId}
+    + url: host + /wechat/{type}/material?app_id={appId}
+    + http方法: POST
+    + 参数:
+    
+        type: image、video、voice
+        
+       | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+       | :------: | :-------: | :------: | :----:|
+       | app_id | string | Y | 微信公众号appid或者小程序appid，wx开头的十八字符串|
+       | file_field | string | Y | 文件字段的名称（input的name字段） |
+       | input的name字段 | stream(文件流) | http文件上传数据流 |
+        
+    + http返回: 
+    
+        | 数据名称 | 数据类型 | 说明 |
+        | :-------: | :------: | :---: |
+        | data   |   array | {url} |
+        | message | string | 错误说明 ,出现错误才会出现 |
+        | status_code | string | 错误码（一般是http标准码） |
+        
+        注释：
+        
+            1. json实例
+    ```json
+    {
+        "data": {
+             "url": "xxxxx"
+           } 
+    }
+    ```
+4. 统计素材
+ 
+    + url: host + /wechat/material/stats?app_id={app_id}
     + http方法: GET
     + 参数:
     
@@ -232,9 +124,10 @@
     
         | 数据名称 | 数据类型 | 说明 |
         | :-------: | :------: | :---: |
-        | data   |   array | {app_id, menus, create_ad, update_at} |
-        | message | string | 错误说明 ,出现错误才会出现 |
-        | status_code | string | 错误码（一般是http标准码） |
+        | voice_count | int | 语音总数量|
+        | video_count | int | 视频总数量 |
+        | image_count |	int | 图片总数量 |
+        | news_count |	int | 图文总数量 |
         
         注释：
         
@@ -242,137 +135,113 @@
     ```json
     {
         "data": {
-            "id": 1,
-            "app_id": "wx1231234567891230",
-            "menus": {
-                "button":[
-                    {    
-                        "type":"click",
-                        "name":"今日歌曲",
-                        "key":"V1001_TODAY_MUSIC"
-                     },
-                     {
-                        "name":"菜单",
-                        "sub_button":[
-                            {    
-                               "type":"view",
-                               "name":"搜索",
-                                "url":"http://www.soso.com/"
-                             },
-                             {
-                                "type":"miniprogram",
-                                "name":"wxa",
-                                "url":"http://mp.weixin.qq.com",
-                                "appid":"wx286b93c14bbf93aa",
-                                "pagepath":"pages/lunar/index"
-                             },
-                            {
-                                 "type":"click",
-                                 "name":"赞一下我们",
-                                 "key":"V1001_GOOD"
-                            }
-                         ]
-                     }
-                 ]
-            },
-            "created_at": {
-                "date": "2018-06-08 09:38:35.000000",
-                "timezone_type": 3,
-                "timezone": "UTC"
-            },
-            "updated_at": {
-                "date": "2018-06-09 02:16:23.000000",
-                "timezone_type": 3,
-                "timezone": "UTC"
-            }
-        }
-    }
-    ```
-4. 修改指定微信菜单
- 
-    + url: host + /wechat/menu/{id}
-    + http方法: PUT
-    + 参数:
-    
-        | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
-        | :------: | :-------: | :------: | :----:| 
-        | menus | array | N | 菜单数据 |
-        
-    + http返回: 
-    
-        | 数据名称 | 数据类型 | 说明 |
-        | :-------: | :------: | :---: |
-        | data   |   array | {app_id, menus, create_ad, update_at} |
-        | message | string | 错误说明 ,出现错误才会出现 |
-        | status_code | string | 错误码（一般是http标准码） |
-        
-        注释：
-        
-            1. json实例
-    ```json
-    {
-        "data": {
-            "id": 1,
-            "app_id": "wx1231234567891230",
-            "menus": {
-                "button":[
-                    {    
-                        "type":"click",
-                        "name":"今日歌曲",
-                        "key":"V1001_TODAY_MUSIC"
-                     },
-                     {
-                        "name":"菜单",
-                        "sub_button":[
-                            {    
-                               "type":"view",
-                               "name":"搜索",
-                                "url":"http://www.soso.com/"
-                             },
-                             {
-                                "type":"miniprogram",
-                                "name":"wxa",
-                                "url":"http://mp.weixin.qq.com",
-                                "appid":"wx286b93c14bbf93aa",
-                                "pagepath":"pages/lunar/index"
-                             },
-                            {
-                                 "type":"click",
-                                 "name":"赞一下我们",
-                                 "key":"V1001_GOOD"
-                            }
-                         ]
-                     }
-                 ]
-            },
-            "created_at": {
-                "date": "2018-06-08 09:38:35.000000",
-                "timezone_type": 3,
-                "timezone": "UTC"
-            },
-            "updated_at": {
-                "date": "2018-06-09 02:16:23.000000",
-                "timezone_type": 3,
-                "timezone": "UTC"
-            }
+            "voice_count": 10,
+             "video_count": 10,
+             "image_count": 10,
+             "news_count": 10
         }
     }
     ```
     
-5. 菜单数据发布到微信公众号
+5. 获取素材列表
 
-+ url: host + /wechat/menu/{id}/sync
+    + url: host + /wechat/materials?app_id={appid}
     + http方法: GET
     + 参数:
         
-        无参数
+       | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+       | :------: | :-------: | :------: | :----:|
+       | type | string | Y | 素材类型 image、video、voice、news |
+       | page | int | N | 分页数据页码（默认第一页） |
+       | limit | int | N | 分页数据每一页数据条数（默认15）|
         
     + http返回: 
     
         | 数据名称 | 数据类型 | 说明 |
         | :-------: | :------: | :---: |
-        | message | string | 同步结果 |
-        | status_code | string | 错误码（一般是http标准码） |
+        | total_count | int | 素材总数 |
+        | item_count | int | 当前页素材数量 |
+        | item | array | 素材数据 |
+        
+        注释：
+        
+            1. json实例 图文
+    ```json 
+    {
+       "total_count": TOTAL_COUNT,
+       "item_count": ITEM_COUNT,
+       "item": [{
+           "media_id": MEDIA_ID,
+           "content": {
+               "news_item": [{
+                   "title": TITLE,
+                   "thumb_media_id": THUMB_MEDIA_ID,
+                   "show_cover_pic": SHOW_COVER_PIC(0 / 1),
+                   "author": AUTHOR,
+                   "digest": DIGEST,
+                   "content": CONTENT,
+                   "url": URL,
+                   "content_source_url": CONTETN_SOURCE_URL
+               },
+               //多图文消息会在此处有多篇文章
+               ]
+            },
+            "update_time": UPDATE_TIME
+        },
+        //可能有多个图文消息item结构
+      ]
+    }
+
+    ```
+        2. 图片、视频、音频
+    ```json 
+    {
+       "total_count": TOTAL_COUNT,
+       "item_count": ITEM_COUNT,
+       "item": [{
+           "media_id": MEDIA_ID,
+           "name": NAME,
+           "update_time": UPDATE_TIME,
+           "url":URL
+       },
+       //可能会有多个素材
+       ]
+    }
+    ```
+    
+6. 图文素材修改
+ 
+    + url: host + /wechat/material/article/{mediaId}?app_id={app_id}
+    + http方法: PUT
+    + 参数:
+    
+       mediaId:素材id
+       
+       | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+       | :-----: | :-----: | :---------: | :---: |
+       | article | array | Y | 图文素材数据 |
+       | index | int | N | 要更新的文章在图文消息中的位置（多图文消息时，此字段才有意义），第一篇为0 |
+       
+       注释：article数据结构
+            
+          | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+          | :-----: | :-----: | :---------: | :---: |
+          | title	| string | Y |	标题 |
+          | thumb_media_id | string | Y | 图文消息的封面图片素材id（必须是永久mediaID）|
+          | author | string | N | 作者 |
+          | digest | string | N | 图文消息的摘要，仅有单图<br>文消息才有摘要，多图文此处为空。如果<br>本字段为没有填写，则默认抓取正文前64个字。
+          | show_cover_pic |	boolean | Y | 是否显示封面，0为false，<br>即不显示，1为true，即显示|
+          | content | string | Y | 图文消息的具体内容，支持HTML标签，<br>必须少于2万字符，小于1M，且此处会去除JS,<br>涉及图片url必须来源 "上传图文消息内的图片获<br>取URL"接口获取。外部图片url将被过滤。
+          | content_source_url | string | Y | 图文消息的原文地址，即点击“阅读原文”后的URL
+          | need_open_comment（新增字段）| boolean/int | N | 是否打开评论，0不打开，1打开 |
+          | only_fans_can_comment（新增字段）| boolean/int | N |		是否粉丝才可评论，0所有人可评论，1粉丝才可评论 |
+ 
+    + http返回: 
+    
+        | 数据名称 | 数据类型 | 说明 |
+        | :-------: | :------: | :---: |
+        | message | string | 操作说明或者错误说明 |
+        | status_code | int | 错误码 |
         
         注释：
         
@@ -380,8 +249,98 @@
     ```json
     {
         "data": {
-            "message": "XXXXX"
+            "messages": "xxxx",
+            "status_code": "xxxx"
         }
     }
     ```
+
+7. 获取指定永久性素材
+
+    + url: host + /wechat/material/{mediaId}?app_id={appid}
+    + http方法: GET
+    + 参数:
+        
+        mediaId:素材id 
+        
+    + http返回: 
     
+        参考[微信开发文档](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738730 ) 
+        
+        注释：
+        
+            1. json实例 图文
+    ```json 
+    {
+     "news_item":
+     [
+         {
+         "title":TITLE,
+         "thumb_media_id"::THUMB_MEDIA_ID,
+         "show_cover_pic":SHOW_COVER_PIC(0/1),
+         "author":AUTHOR,
+         "digest":DIGEST,
+         "content":CONTENT,
+         "url":URL,
+         "content_source_url":CONTENT_SOURCE_URL
+         },
+         //多图文消息有多篇文章
+      ]
+    }
+    ```
+        2. 图片、视频、音频
+    ```json 
+    {
+      "title":TITLE,
+      "description":DESCRIPTION,
+      "down_url":DOWN_URL,
+    }
+    ```
+    
+8. 获取指定临时性素材
+
+    + url: host + /wechat/material/{mediaId}/temporary?app_id={appid}
+    + http方法: GET
+    + 参数:
+        
+        mediaId:素材id 
+        
+    + http返回: 
+    
+        参考[微信开发文档](https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738727) 
+        
+        注释：
+        
+            1. json实例 视频
+    ```json 
+    {
+     "video_url":DOWN_URL
+    }
+    ```
+
+9. 删除指定临时性素材
+
+    + url: host + /wechat/material/{mediaId}?app_id={appid}
+    + http方法: DELETE
+    + 参数:
+        
+        mediaId:素材id 
+        
+    + http返回: 
+    
+         | 数据名称 | 数据类型 | 说明 |
+         | :-------: | :------: | :---: |
+         | message | string | 操作说明或者错误说明 |
+         | status_code | int | 错误码 |
+        
+        注释：
+        
+            1. json实例
+    ```json
+    {
+        "data": {
+            "messages": "xxxx",
+            "status_code": "xxxx"
+        }
+    }
+    ```
