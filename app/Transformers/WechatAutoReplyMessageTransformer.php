@@ -23,11 +23,15 @@ class WechatAutoReplyMessageTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
             /* place your other model properties here */
-
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'app_id' => $model->appId,
+            'type' => $model->type,
+            'focus_reply' => $model->focusReply,
+            'prefect_match_keywords' => $model->prefectMatchKeywords,
+            'semi_match_keywords' => $model->semiMatchKeywords,
+            'content' => $model->content,
+            'created_at' => $model->createdAt,
+            'updated_at' => $model->updatedAt
         ];
     }
 }

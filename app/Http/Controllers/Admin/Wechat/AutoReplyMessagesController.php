@@ -8,6 +8,8 @@ use App\Repositories\WechatAutoReplyMessageRepository;
 use App\Http\Controllers\Controller;
 use App\Transformers\WechatAutoReplyMessageItemTransformer;
 use App\Transformers\WechatAutoReplyMessageTransformer;
+use Dingo\Api\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 
 class AutoReplyMessagesController extends Controller
 {
@@ -31,11 +33,15 @@ class AutoReplyMessagesController extends Controller
 
     /**
      * Display a listing of the resource.
+     * @param Request $request
      * @return Response|DingoResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        $autoReplyMessages = $this->repository->paginate();
+        $appId = $request->input('app_id');
+        $autoReplyMessages = $this->repository->scopeQuery(function (Builder $query) use( $appId) {
+            return $query->where('app_id', $appId);
+        })->paginate();
 
         if (request()->wantsJson()) {
 
