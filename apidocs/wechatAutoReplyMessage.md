@@ -132,4 +132,49 @@
            }
        }
    }
-   ``` 
+   ```
+ 3. 修改微信公众号自动回复数据
+     + url: host + /wechat/auto_reply_message/{id}
+     + http方法: PUT
+     + 参数:
+     
+         | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+         | :------: | :-------: | :------: | :----:| 
+         | type | string | Y | ('text','image','video','news','voice') '类型'|
+         | prefect_match_keywords | array | N |  '全匹配关键字数组' |
+         | semi_match_keywords | array | N | 半匹配关键字数组 |
+         | content | string | Y | 回复消息内容 |
+         
+     + http返回: 
+     
+         | 数据名称 | 数据类型 | 说明 |
+         | :-------: | :------: | :---: |
+         | data   |   array | {app_id,app_name,app_secret,token, aes_key, type, <br>mode, wechat_bind_app, create_ad, update_at} |
+         | message | string | 错误说明 ,出现错误才会出现 |
+         | status_code | string | 错误码（一般是http标准码） |
+         
+         注释：
+         
+             1. json实例
+     ```json
+     {
+         "data": {
+             "id": 1,
+             "app_id": "wx1231234567891230",
+             "type": "news",
+             "prefect_match_keywords": [],
+             "semi_match_keywords": [],
+             "content": "",
+             "created_at": {
+                 "date": "2018-06-08 09:38:35.000000",
+                 "timezone_type": 3,
+                 "timezone": "UTC"
+             },
+             "updated_at": {
+                 "date": "2018-06-09 02:16:23.000000",
+                 "timezone_type": 3,
+                 "timezone": "UTC"
+             }
+         }
+     }
+     ``` 
