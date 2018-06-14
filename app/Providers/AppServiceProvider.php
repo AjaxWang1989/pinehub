@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(JwtAuthGuardServiceProvider::class);
         $this->app->register(RepositoryServiceProvider::class);
         $this->app->register(WechatLumenServiceProvider::class);
-        $this->app->register(SpatialServiceProvider::class);
+        //$this->app->register(SpatialServiceProvider::class);
         $this->app->register(AliOauthServiceProvider::class);
         $this->app->register(FilesystemServiceProvider::class);
         $this->app->register(AliOssServiceProvider::class);
