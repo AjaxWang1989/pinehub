@@ -121,6 +121,9 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems = $this->buildOrderItems($orderItems);
             $this->checkOrder($orderItems, $order);
         }
+        /**
+         *@var Order
+         * */
         $orderModel = null;
         DB::transaction(function () use($order, $orderItems, &$orderModel){
             $orderModel = $this->order->create($order->toArray());

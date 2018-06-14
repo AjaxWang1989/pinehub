@@ -66,9 +66,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $openId 微信open id或支付宝user ID
  * @property string $app 发起购买的app类型
  * @property string|null $appId 微信app id或者支付宝app id
- * @property string|null $receiverCity 收货城市
- * @property string|null $receiverDistrict 收货人所在城市区县
- * @property string|null $receiverAddress 收货地址
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereApp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereOpenId($value)

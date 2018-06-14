@@ -15,6 +15,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Session\SessionManager;
 use Illuminate\Session\SessionServiceProvider;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
 use Illuminate\Http\Request;
@@ -80,6 +81,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
     {
         $this->request = Request::capture();
         $this->host = $this->request->getHost();
+        Log::debug('url '. $this->request->fullUrl());
         list( $domain, $prefix) = domainAndPrefix($this->request);
         $this->prefix = $prefix;
         $this->domain = $domain;
