@@ -40,7 +40,7 @@ class WechatService
     {
 
         if(!$this->officeAccount)
-            $this->officeAccount= Factory::officialAccount($this->config['office_account']);
+            $this->officeAccount= Factory::officialAccount($this->config['official_account']);
         return ($this->officeAccount);
     }
 
