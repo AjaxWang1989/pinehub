@@ -24,7 +24,7 @@ class WechatConfigValidator extends LaravelValidator
             'app_secret' => ['required', 'regex:'.WECHAT_APP_SECRET],
             'token' => ['regex:'.WECHAT_APP_SECRET],
             'aes_key' => ['regex:'.WECHAT_AES_KEY],
-            'type' => ['required', 'in:'.WECHAT_OFFICE_ACCOUNT.','.WECHAT_OPEN_PLATFORM.','.WECHAT_MINI_PROGRAM],
+            'type' => ['required', 'in:'.WECHAT_OFFICIAL_ACCOUNT.','.WECHAT_OPEN_PLATFORM.','.WECHAT_MINI_PROGRAM],
             'mode' => ['required', 'in:'.WECHAT_EDITOR_MODE.','.WECHAT_DEVELOPER_MODE],
             'wechat_bind_app' => ['in:'.GK_APP_NAME.','.TO_APP_NAME]
         ],
@@ -32,7 +32,7 @@ class WechatConfigValidator extends LaravelValidator
             'app_secret' => ['required', 'regex:'.WECHAT_APP_SECRET],
             'token' => ['regex:'.WECHAT_APP_SECRET],
             'aes_key' => ['regex:'.WECHAT_AES_KEY],
-            'type' => ['required', 'in:'.WECHAT_OFFICE_ACCOUNT.','.WECHAT_OPEN_PLATFORM.','.WECHAT_MINI_PROGRAM],
+            'type' => ['required', 'in:'.WECHAT_OFFICIAL_ACCOUNT.','.WECHAT_OPEN_PLATFORM.','.WECHAT_MINI_PROGRAM],
             'mode' => ['required', 'in:'.WECHAT_EDITOR_MODE.','.WECHAT_DEVELOPER_MODE],
             'wechat_bind_app' => ['in:'.GK_APP_NAME.','.TO_APP_NAME]
         ],

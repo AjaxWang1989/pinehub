@@ -22,7 +22,7 @@ class CreateWechatConfigsTable extends Migration
             $table->string('app_name', 255)->comment('微信公众号或者小程序名称');
             $table->string('token', 32)->nullable()->default(null)->comment('微信token');
             $table->string('aes_key', 43)->nullable()->default(null)->comment('微信EncodingAESKey');
-            $table->string('type', 21)->default(WECHAT_OFFICE_ACCOUNT)->comment('OFFICE_ACCOUNT 公众平台， 
+            $table->string('type', 21)->default(WECHAT_OFFICIAL_ACCOUNT)->comment('OFFICE_ACCOUNT 公众平台， 
             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序');
             $table->string('mode', 9)->default(WECHAT_EDITOR_MODE)->comment('公众号模式');
             $table->string('wechat_bind_app', 64)->nullable()->default(null)->comment('微信公众号绑定的应用程序或者小程序绑定的应用');

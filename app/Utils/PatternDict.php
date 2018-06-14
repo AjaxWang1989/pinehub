@@ -136,12 +136,12 @@ define('APP_NAME_ARRAY', [
     TO_APP_NAME
 ]);
 
-define('WECHAT_OFFICE_ACCOUNT', 'wechat_office_account');
+define('WECHAT_OFFICIAL_ACCOUNT', 'wechat_official_account');
 define('WECHAT_OPEN_PLATFORM', 'wechat_open_platform');
 define('WECHAT_MINI_PROGRAM', 'wechat_mini_program');
 
 define('WECHAT_APP_TYPE', [
-    WECHAT_OFFICE_ACCOUNT,
+    WECHAT_OFFICIAL_ACCOUNT,
     WECHAT_OPEN_PLATFORM,
     WECHAT_MINI_PROGRAM
 ]);

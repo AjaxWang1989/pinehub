@@ -10,7 +10,7 @@
         | app_name | string | Y | 小程序或者公众号名称 长度限制255位|
         | app_secret | string | Y | 微信公众号或者小程序secret，32位字符串 |
         | mode | string | Y | 微信公众号模式，取之位editor，developer|
-        | type | string | Y | app类型，小程序，公众号，三方应用，<br>取值wechat_mini_program,wechat_office_account,<br>wechat_open_platform|
+        | type | string | Y | app类型，小程序，公众号，三方应用，<br>取值wechat_mini_program,wechat_official_account,<br>wechat_open_platform|
         | token | string | N | 公众号开发者token,32位字符串，<br>mode为developer时必填|
         | aes_key | string | N | 微信开发者aes key，43位字符串，<br>mode为developer时必填|
         | wechat_bind_app | string | N | 微信绑定程序，取值greenKey，takeOut |
@@ -138,7 +138,7 @@
                "app_id": "wx1231234567891230",
                "app_name": "kjlaklsfd",
                "mode": "editor",
-               "type": "wechat_office_account",
+               "type": "wechat_official_account",
                "wechat_bind_app": "greenKey",
                "created_at": {
                    "date": "2018-06-08 09:55:05.000000",
@@ -156,7 +156,7 @@
                "app_id": "wx1231234567891230",
                "app_name": null,
                "mode": "developer",
-               "type": "wechat_office_account",
+               "type": "wechat_official_account",
                "wechat_bind_app": "greenKey",
                "created_at": {
                    "date": "2018-06-08 09:56:28.000000",
@@ -174,7 +174,7 @@
                "app_id": "wx1231234567891230",
                "app_name": null,
                "mode": "developer",
-               "type": "wechat_office_account",
+               "type": "wechat_official_account",
                "wechat_bind_app": "greenKey",
                "created_at": {
                    "date": "2018-06-08 09:56:55.000000",
@@ -192,7 +192,7 @@
                "app_id": "wx1111111111111111",
                "app_name": null,
                "mode": "editor",
-               "type": "wechat_office_account",
+               "type": "wechat_official_account",
                "wechat_bind_app": "takeOut",
                "created_at": {
                    "date": "2018-06-08 10:43:36.000000",
@@ -274,7 +274,7 @@
         | app_name | string | N | 小程序或者公众号名称 长度限制255位|
         | app_secret | string | N | 微信公众号或者小程序secret，32位字符串 |
         | mode | string | N | 微信公众号模式，取之位editor，developer|
-        | type | string | N | app类型，小程序，公众号，三方应用，<br>取值wechat_mini_program,wechat_office_account,<br>wechat_open_platform|
+        | type | string | N | app类型，小程序，公众号，三方应用，<br>取值wechat_mini_program,wechat_official_account,<br>wechat_open_platform|
         | token | string | N | 公众号开发者token,32位字符串，<br>mode为developer时必填|
         | aes_key | string | N | 微信开发者aes key，43位字符串，<br>mode为developer时必填|
         | wechat_bind_app | string | N | 微信绑定程序，取值greenKey，takeOut |

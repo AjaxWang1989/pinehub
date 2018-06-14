@@ -29,7 +29,7 @@ class ConfigCreateRequest extends FormRequest
             'app_name' => ['required', 'string'],
             'token' => ['required_if:mode,'.WECHAT_DEVELOPER_MODE, 'regex:'.WECHAT_APP_SECRET],
             'aes_key' => ['required_if:mode,'.WECHAT_DEVELOPER_MODE, 'regex:'.WECHAT_AES_KEY],
-            'type' => ['required', 'in:'.WECHAT_OFFICE_ACCOUNT.','.WECHAT_OPEN_PLATFORM.','.WECHAT_MINI_PROGRAM],
+            'type' => ['required', 'in:'.WECHAT_OFFICIAL_ACCOUNT.','.WECHAT_OPEN_PLATFORM.','.WECHAT_MINI_PROGRAM],
             'mode' => ['required', 'in:'.WECHAT_EDITOR_MODE.','.WECHAT_DEVELOPER_MODE],
             'wechat_bind_app' => ['in:'.GK_APP_NAME.','.TO_APP_NAME, "not_exists:wechat_configs"]
         ];

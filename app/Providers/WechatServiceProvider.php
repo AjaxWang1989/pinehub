@@ -21,15 +21,15 @@ class WechatServiceProvider extends ServiceProvider
     {
         //
         $currentWechat = app('current_wechat');
-        $officeAccountConfig = config('wechat.office_account.default');
+        $officialAccountConfig = config('wechat.official_account.default');
         $openPlatformConfig = config('wechat.open_platform.default');
         $miniProgramConfig = config('wechat.mini_program.default');
-        Log::debug('wechat config ', [$officeAccountConfig, $openPlatformConfig, $miniProgramConfig, config('wechat')]);
+        Log::debug('wechat config ', [$officialAccountConfig, $openPlatformConfig, $miniProgramConfig, config('wechat')]);
         $currentConfig = $currentWechat ? $currentWechat->only(['app_id', 'app_secret', 'token', 'aes_key']) : null;
         if ($currentWechat) {
             switch ($currentWechat->type){
-                case WECHAT_OFFICE_ACCOUNT:{
-                    $officeAccountConfig = array_merge($officeAccountConfig, $currentConfig);
+                case WECHAT_OFFICIAL_ACCOUNT:{
+                    $officialAccountConfig = array_merge($officialAccountConfig, $currentConfig);
                     break;
                 }
                 case WECHAT_OPEN_PLATFORM:{
@@ -43,7 +43,7 @@ class WechatServiceProvider extends ServiceProvider
             }
         }
         $config = [
-            'office_account' => $officeAccountConfig,
+            'official_account' => $officialAccountConfig,
             'open_platform'  => $openPlatformConfig,
             'mini_program'   => $miniProgramConfig,
             'payment'        => config('wechat.payment.default')
