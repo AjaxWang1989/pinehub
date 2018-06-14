@@ -53,7 +53,7 @@ class OauthChargeContext extends ChargeContext
     public function redirect($redirectUri) {
         $this->responseData['redirect_uri'] = $redirectUri;
         $this->charge($this->responseData);
-        Log::debug('redirect ', $this->responseData);
+        Log::debug('redirect ', [$this->responseData]);
         return redirect($this->responseData);
     }
 
