@@ -108,7 +108,7 @@ class PaymentController extends Controller
 
             $redirect = config('ali.payment.redirect_url');
             $redirect = "{$redirect}?redirect_uri={$uri}";
-
+            Log::debug('redirect '. $redirect);
             return app('ali.user.oauth')
                 ->defaultOAuth()
                 ->setRequest($request)
