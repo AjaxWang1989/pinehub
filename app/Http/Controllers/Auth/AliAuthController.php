@@ -24,7 +24,7 @@ class AliAuthController extends Controller
         }else{
             $authCode = $request->input('auth_code', null);
             $token = app('ali.oauth.token')->charge(['grant_type' => 'authorization_code', 'code' => $authCode])->getToken();
-            $this->session()->put('ali.oauth.token', $token);
+            $this->session->put('ali.oauth.token', $token);
         }
 
         if($redirect) {
