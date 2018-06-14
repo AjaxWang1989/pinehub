@@ -51,7 +51,7 @@ class PaymentController extends Controller
         $this->orderModel = $orderRepositoryEloquent;
         $this->shopModel = $shopRepositoryEloquent;
         $this->app = $app;
-        $this->session = app('session');
+        $this->session = $app->has('session') ?  app('session') : null;
     }
 
     /**
