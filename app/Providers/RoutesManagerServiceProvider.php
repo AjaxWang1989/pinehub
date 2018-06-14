@@ -80,8 +80,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->request = Request::capture();
-        $this->host = $this->request->getHost();
         Log::debug('url '. $this->request->fullUrl());
+        $this->host = $this->request->getHost();
         list( $domain, $prefix) = domainAndPrefix($this->request);
         $this->prefix = $prefix;
         $this->domain = $domain;
