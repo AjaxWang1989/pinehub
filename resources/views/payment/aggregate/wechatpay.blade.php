@@ -281,7 +281,7 @@
             }, 200)
         })
 
-        $('.form_edit').on('click', '.num', function(){
+        $('.form_edit').on('click', '.num', function() {
             var oDiv = $(".input-money")[0];
 //					var oDiv = document.getElementsByClassName("input-money")[0];
             var arr=[];

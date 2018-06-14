@@ -28,11 +28,12 @@ class WechatAuthController extends Controller
         $openId = null;
         $accessToken = $session->get('access_token', null);
         $scope = $request->get('scope', 'user_base');
-        if(!$accessToken && $scope === USER_AUTH_BASE){
+        if(!$accessToken && $scope === USER_AUTH_BASE) {
+            app('wechat')->officeAccount()->access_token->getToken();
             $accessToken = app('wechat')
                 ->officeAccount()
                 ->oauth->setRequest($request)
-                ->getAccessToken();
+                ->getAccessToken($request->input('code'));
             $session->put('access_token', $accessToken->toArray());
         }
         if ($accessToken) {
