@@ -30,10 +30,6 @@ class WechatPaymentController extends Controller
 
     public function aggregatePage(LumenRequest $request)
     {
-        $count = $request->getSession()->get('count', 0);
-        if($count){
-            $request->getSession()->put('count', ++ $count);
-        }
         $openId= null;
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
