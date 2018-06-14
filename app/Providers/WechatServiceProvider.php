@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Entities\WechatConfig;
 use App\Repositories\WechatConfigRepositoryEloquent;
 use App\Services\Wechat\WechatService;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application;
@@ -23,6 +24,7 @@ class WechatServiceProvider extends ServiceProvider
         $officeAccountConfig = config('wechat.office_account.default');
         $openPlatformConfig = config('wechat.open_platform.default');
         $miniProgramConfig = config('wechat.mini_program.default');
+        Log::debug('wechat config ', [$officeAccountConfig, $openPlatformConfig, $miniProgramConfig, config('wechat')]);
         $currentConfig = $currentWechat ? $currentWechat->only(['app_id', 'app_secret', 'token', 'aes_key']) : null;
         if ($currentWechat) {
             switch ($currentWechat->type){
