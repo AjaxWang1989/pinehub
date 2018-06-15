@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Wechat;
 
 use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Request as DingoRequest;
+use EasyWeChat\Factory;
 
 class OfficialAccountController extends Controller
 {
@@ -18,5 +19,6 @@ class OfficialAccountController extends Controller
     public function create(DingoRequest $request)
     {
         $this->officialAccount->oauth;
+        Factory::openPlatform()->createPreAuthorizationCode();
     }
 }
