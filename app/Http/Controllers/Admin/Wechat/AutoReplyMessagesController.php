@@ -70,7 +70,7 @@ class AutoReplyMessagesController extends Controller
 
         if ($request->wantsJson()) {
 
-            return $this->response()->item($autoReplyMessage, new WechatAutoRelpyMessageTransformer());
+            return $this->response()->item($autoReplyMessage, new WechatAutoReplyMessageTransformer());
         }
 
         return redirect()->back()->with('message', $response['message']);

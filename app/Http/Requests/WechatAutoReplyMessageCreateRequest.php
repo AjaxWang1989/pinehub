@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class WechatAutoReplyMessageCreateRequest extends FormRequest
 {
@@ -13,7 +14,7 @@ class WechatAutoReplyMessageCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +26,12 @@ class WechatAutoReplyMessageCreateRequest extends FormRequest
     {
         return [
             //
+            'app_id' => ['required', 'exists:wechat_configs,app_id'],
+            'type'   => ['required', Rule::in(WECHAT_AUTO_REPLY_MESSAGE)],
+            'content' => ['required', 'string'],
+            'prefect_match_keywords' => ['array'],
+            'semi_match_keywords' => ['array'],
+            'focus_reply' => ['boolean']
         ];
     }
 }

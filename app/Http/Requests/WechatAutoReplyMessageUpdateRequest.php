@@ -13,7 +13,7 @@ class WechatAutoReplyMessageUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,10 @@ class WechatAutoReplyMessageUpdateRequest extends FormRequest
     {
         return [
             //
+            'type'   => [ Rule::in(WECHAT_AUTO_REPLY_MESSAGE)],
+            'content' => [ 'string'],
+            'prefect_match_keywords' => ['array'],
+            'semi_match_keywords' => ['array'],
         ];
     }
 }

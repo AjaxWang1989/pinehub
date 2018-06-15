@@ -11,6 +11,7 @@
         | prefect_match_keywords | array | N |  '全匹配关键字数组' |
         | semi_match_keywords | array | N | 半匹配关键字数组 |
         | content | string | Y | 回复消息内容 |
+        | focus_reply | boolean | N | 关注回复，默认false|
         
     + http返回: 
     
@@ -32,6 +33,7 @@
             "prefect_match_keywords": [],
             "semi_match_keywords": [],
             "content": "",
+            "focus_reply": false,
             "created_at": {
                 "date": "2018-06-08 09:38:35.000000",
                 "timezone_type": 3,
@@ -165,6 +167,7 @@
              "prefect_match_keywords": [],
              "semi_match_keywords": [],
              "content": "",
+             "focus_reply": false,
              "created_at": {
                  "date": "2018-06-08 09:38:35.000000",
                  "timezone_type": 3,
