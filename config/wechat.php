@@ -44,14 +44,14 @@ return [
         /*
          * 开放平台第三方平台路由配置
          */
-        // 'open_platform' => [
-        //     'uri' => 'serve',
-        //     'action' => Overtrue\LaravelWeChat\Controllers\OpenPlatformController::class,
-        //     'attributes' => [
-        //         'prefix' => 'open-platform',
-        //         'middleware' => null,
-        //     ],
-        // ],
+         'open_platform' => [
+             'uri' => 'serve',
+             'action' => Overtrue\LaravelWeChat\Controllers\OpenPlatformController::class,
+             'attributes' => [
+                 'prefix' => 'open-platform',
+                 'middleware' => null,
+             ],
+         ],
     ],
 
     /*
@@ -80,14 +80,14 @@ return [
     /*
      * 开放平台第三方平台
      */
-    // 'open_platform' => [
-    //     'default' => [
-    //         'app_id'  => env('WECHAT_OPEN_PLATFORM_APPID', ''),
-    //         'secret'  => env('WECHAT_OPEN_PLATFORM_SECRET', ''),
-    //         'token'   => env('WECHAT_OPEN_PLATFORM_TOKEN', ''),
-    //         'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
-    //     ],
-    // ],
+     'open_platform' => [
+         'default' => [
+             'app_id'  => env('WECHAT_OPEN_PLATFORM_APPID', ''),
+             'secret'  => env('WECHAT_OPEN_PLATFORM_SECRET', ''),
+             'token'   => env('WECHAT_OPEN_PLATFORM_TOKEN', ''),
+             'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
+         ],
+     ],
 
     /*
      * 小程序
