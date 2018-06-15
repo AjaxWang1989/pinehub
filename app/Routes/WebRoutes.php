@@ -38,16 +38,8 @@ class WebRoutes extends Routes
         }
         $this->router->group($second, function ($router){
             $this->subRoutes($router);
-            $router->get('/webbanch', function (Request $request){
-                $session = app('session');
-                $test = $session->get('test1', null);
-                if($test > 0){
-                    $test ++;
-                }else{
-                    $test = 1;
-                }
-                app('session.store')->put('test1', $test);
-                return "webbanch {$test}";
+            $router->get('/', function (Request $request){
+                return "pinehub official service";
             });
         });
     }
