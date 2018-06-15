@@ -2,19 +2,17 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
+use App\Http\Requests\Admin\Wechat\ArticleCreateRequest;
+use App\Http\Requests\Admin\Wechat\ArticleUpdateRequest;
+use App\Http\Requests\Admin\Wechat\ForeverMaterialCreateRequest;
+use App\Http\Requests\Admin\Wechat\TemporaryMediaCreateRequest;
 use App\Http\Response\JsonResponse;
-use App\Repositories\WechatMaterialRepository;
-use App\Transformers\WechatMaterialItemTransformer;
-use App\Transformers\WechatMaterialTransformer;
 use Carbon\Carbon;
-use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Http\Response as DingoResponse;
 use EasyWeChat\Kernel\Messages\Article;
 use Illuminate\Http\RedirectResponse;
 use \Illuminate\Http\Response;
 use Dingo\Api\Http\Request;
-use App\Http\Requests\Admin\Wechat\MaterialsCreateRequest;
-use App\Http\Requests\Admin\Wechat\MaterialsUpdateRequest;
 use App\Http\Controllers\Controller;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -26,29 +24,21 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class MaterialController extends Controller
 {
     /**
-     * @var MaterialsRepository
-     */
-    protected $repository;
-
-    /**
      * MaterialsController constructor.
      *
-     * @param WechatMaterialRepository $repository
      */
-    public function __construct(WechatMaterialRepository $repository)
+    public function __construct()
     {
-        $this->repository = $repository;
-
         parent::__construct();
     }
 
     /**
      * create new temporary media
-     * @param Request $request
+     * @param TemporaryMediaCreateRequest $request
      * @return Response|DingoResponse|RedirectResponse
      * @throws
      * */
-    public function storeTemporaryMedia(Request $request)
+    public function storeTemporaryMedia(TemporaryMediaCreateRequest $request)
     {
         $field = $request->input('file_field', 'file');
         $mediaId = $this->currentWechat->uploadMedia($request->input('type'), $request->file($field)->getPath());
@@ -70,7 +60,7 @@ class MaterialController extends Controller
     }
 
 
-    public function storeForeverNews(Request $request)
+    public function storeForeverNews(ArticleCreateRequest $request)
     {
         $article =new Article($request->all());
         $mediaId = $this->currentWechat->uploadArticle($article);
@@ -85,7 +75,7 @@ class MaterialController extends Controller
 
     }
 
-    public function uploadForeverMaterial(Request $request, string $type = 'image')
+    public function uploadForeverMaterial(ForeverMaterialCreateRequest $request, string $type = 'image')
     {
         $field = $request->input('file_field', 'file');
         $url = $this->currentWechat->uploadMaterial($type, $request->file($field)->getPath());
@@ -117,10 +107,10 @@ class MaterialController extends Controller
         return redirect()->back()->with($result);
     }
 
-    public function materialNewsUpdate(Request $request, string $mediaId)
+    public function materialNewsUpdate(ArticleUpdateRequest $request, string $mediaId)
     {
         $attributes = $request->input('article');
-        $index = $request->input('index');
+        $index = $request->input('index', 0);
         $this->currentWechat->updateArticle($mediaId, new Article($attributes), $index);
         if($request->wantsJson()) {
             return $this->response(new JsonResponse(['message' => '更新成功']));

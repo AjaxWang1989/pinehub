@@ -8,7 +8,7 @@
         | :------: | :-------: | :------: | :----:|
         | app_id | string | Y | 微信公众号appid或者小程序appid，wx开头的十八字符串|
         | file_field | string | Y | 文件字段的名称（input的name字段） |
-        | input的name字段 | stream(文件流) | http文件上传数据流 |
+        | input的name字段 | stream(文件流) | Y | http文件上传数据流 |
         
     + http返回: 
     
