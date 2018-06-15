@@ -27,16 +27,17 @@ class MenuCreateRequest extends FormRequest
         return [
             //
             "name" => ['string'],
-            "button" => ['required', 'array'],
-            "button.*.name" => ['required', 'string'],
-            "button.*.type" => ["required", Rule::in(WECHAT_MENU_TYPE)],
-            "button.*.url" => ["url"],
-            "button.*.key" => ["string"],
-            "button.*.sub_button" => ['array'],
-            "button.*.sub_button.*.name" => ['string'],
-            "button.*.sub_button.*.type" => [ Rule::in(WECHAT_MENU_TYPE)],
-            "button.*.sub_button.*.url" => ["url"],
-            "button.*.sub_button.*.key" => ["string"],
+            "menus" => ['json'],
+            "menus.button" => ['required', 'array'],
+            "menus.button.*.name" => ['required', 'string'],
+            "menus.button.*.type" => ["required", Rule::in(WECHAT_MENU_TYPE)],
+            "menus.button.*.url" => ["url"],
+            "menus.button.*.key" => ["string"],
+            "menus.button.*.sub_button" => ['array'],
+            "menus.button.*.sub_button.*.name" => ['string'],
+            "menus.button.*.sub_button.*.type" => [ Rule::in(WECHAT_MENU_TYPE)],
+            "menus.button.*.sub_button.*.url" => ["url"],
+            "menus.button.*.sub_button.*.key" => ["string"],
         ];
     }
 }

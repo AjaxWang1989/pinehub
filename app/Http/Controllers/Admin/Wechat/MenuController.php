@@ -68,7 +68,7 @@ class MenuController extends Controller
      */
     public function store(MenuCreateRequest $request)
     {
-        $menus = $request->except(['name']);
+        $menus = $request->input('menus');
         $name = $request->input('name');
         $menu = $this->repository->create(['app_id' => $this->currentWechat->appId, 'menus'  => $menus, 'name' => $name]);
 
