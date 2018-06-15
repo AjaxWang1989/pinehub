@@ -26,6 +26,7 @@
         "data": {
             "id": 1,
             "app_id": "wx1231234567891230",
+            "is_public": false,
             "menus":{
                  "button":[
                    {    
@@ -164,6 +165,7 @@
            {
                "id": 1,
                "app_id": "wx1231234567891230",
+               "is_public": false,
                "menus": {
                      "button":[
                        {    
@@ -245,6 +247,7 @@
         "data": {
             "id": 1,
             "app_id": "wx1231234567891230",
+            "is_public": false,
             "menus": {
                 "button":[
                     {    
@@ -316,6 +319,7 @@
         "data": {
             "id": 1,
             "app_id": "wx1231234567891230",
+            "is_public": false,
             "menus": {
                 "button":[
                     {    
