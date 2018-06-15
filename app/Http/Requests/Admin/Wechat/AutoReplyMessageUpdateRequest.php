@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin\Wechat;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class MenusCreateRequest extends FormRequest
+class AutoReplyMessageUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class MenusCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,10 @@ class MenusCreateRequest extends FormRequest
     {
         return [
             //
+            'type'   => [ Rule::in(WECHAT_AUTO_REPLY_MESSAGE)],
+            'content' => [ 'string'],
+            'prefect_match_keywords' => ['array'],
+            'semi_match_keywords' => ['array'],
         ];
     }
 }

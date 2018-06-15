@@ -14,7 +14,7 @@ class MenuCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -26,6 +26,7 @@ class MenuCreateRequest extends FormRequest
     {
         return [
             //
+            "name" => ['string'],
             "button" => ['required', 'array'],
             "button.*.name" => ['required', 'string'],
             "button.*.type" => ["required", Rule::in(WECHAT_MENU_TYPE)],

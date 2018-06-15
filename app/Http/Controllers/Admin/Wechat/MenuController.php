@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Wechat;
 
 use App\Entities\WechatMenu;
 use App\Exceptions\WechatMenuDeleteException;
+use App\Http\Requests\Admin\Wechat\MenuUpdateRequest;
 use App\Http\Response\JsonResponse;
 use App\Transformers\WechatMenuTransformer;
 use Illuminate\Database\Eloquent\Builder;
@@ -67,7 +68,9 @@ class MenuController extends Controller
      */
     public function store(MenuCreateRequest $request)
     {
-        $menu = $this->repository->create(['app_id' => $this->currentWechat->appId, 'menus'  => $request->all()]);
+        $menus = $request->except(['name']);
+        $name = $request->input('name');
+        $menu = $this->repository->create(['app_id' => $this->currentWechat->appId, 'menus'  => $menus, 'name' => $name]);
 
         if ($request->wantsJson()) {
             return $this->response()->item($menu, new WechatMenuTransformer());
@@ -107,6 +110,33 @@ class MenuController extends Controller
         return view('menuses.edit', compact('menu'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  MenuUpdateRequest $request
+     * @param  string            $id
+     *
+     * @return Response
+     *
+     * @throws
+     */
+    public function update(MenuUpdateRequest $request, $id)
+    {
+        $menu = $this->repository->update($request->all(), $id);
+        $response = [
+            'message' => '菜单修改成功.',
+        ];
+        tap($menu, function (WechatMenu $menu) {
+            $menu->isPublic = false;
+            $menu->save();
+        });
+        if ($request->wantsJson()) {
+
+            return $this->response()->item($menu, new WechatMenuTransformer());
+        }
+
+        return redirect()->back()->with('message', $response['message']);
+    }
 
 
     public function sync($id)
@@ -115,10 +145,13 @@ class MenuController extends Controller
 
         tap($menu, function (WechatMenu $menu) {
             $buttons = $menu->menus;
+            $menu->isPublic = true;
+            $menu->save();
             $result = app('wechat')->officeAccount()->menu->create($buttons);
             if($result['errcode'] !== 0) {
                 $this->response()->error($result['errmsg']);
             }
+
         });
 
         return $this->response(new JsonResponse(['message' => '数据与微信同步成功！']));

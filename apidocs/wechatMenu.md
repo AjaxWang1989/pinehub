@@ -8,6 +8,7 @@
         | :------: | :-------: | :------: | :----:|
         | app_id | string | Y | 微信公众号appid或者小程序appid，wx开头的十八字符串|
         | menus | array | Y | 菜单数据 |
+        | name  | string | N | 菜单名称 |
         
     + http返回: 
     
@@ -89,7 +90,7 @@
                   "name":"wxa",
                   "url":"http://mp.weixin.qq.com",
                   "appid":"wx286b93c14bbf93aa",
-                  "pagepath":"pages/lunar/index"
+                  "pagepath": "pages/lunar/index"
               },
              {
                 "type":"click",
@@ -297,6 +298,7 @@
         | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
         | :------: | :-------: | :------: | :----:| 
         | menus | array | N | 菜单数据 |
+        | name | string | N | 菜单名称 |
         
     + http返回: 
     

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
-use App\Http\Requests\WechatAutoReplyMessageCreateRequest;
-use App\Http\Requests\WechatAutoReplyMessageUpdateRequest;
+use App\Http\Requests\Admin\Wechat\AutoReplyMessageCreateRequest;
+use App\Http\Requests\Admin\Wechat\AutoReplyMessageUpdateRequest;
 use App\Repositories\WechatAutoReplyMessageRepository;
 use App\Http\Controllers\Controller;
 use App\Transformers\WechatAutoReplyMessageItemTransformer;
@@ -54,13 +54,13 @@ class AutoReplyMessagesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  WechatAutoReplyMessageCreateRequest $request
+     * @param  AutoReplyMessageCreateRequest $request
      *
      * @return \Illuminate\Http\Response
      *
      * @throws
      */
-    public function store(WechatAutoReplyMessageCreateRequest $request)
+    public function store(AutoReplyMessageCreateRequest $request)
     {
         $autoReplyMessage = $this->repository->create($request->all());
 
@@ -112,14 +112,14 @@ class AutoReplyMessagesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  WechatAutoReplyMessageUpdateRequest $request
+     * @param  AutoReplyMessageUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws
      */
-    public function update(WechatAutoReplyMessageUpdateRequest $request, $id)
+    public function update(AutoReplyMessageUpdateRequest $request, $id)
     {
         $material = $this->repository->update($request->all(), $id);
 

@@ -13,7 +13,7 @@ class MenuUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,18 @@ class MenuUpdateRequest extends FormRequest
     {
         return [
             //
+            "name" => ['string'],
+            "menus" => ['json'],
+            "menus.button" => ['required', 'array'],
+            "menus.button.*.name" => ['required', 'string'],
+            "menus.button.*.type" => ["required", Rule::in(WECHAT_MENU_TYPE)],
+            "menus.button.*.url" => ["url"],
+            "menus.button.*.key" => ["string"],
+            "menus.button.*.sub_button" => ['array'],
+            "menus.button.*.sub_button.*.name" => ['string'],
+            "menus.button.*.sub_button.*.type" => [ Rule::in(WECHAT_MENU_TYPE)],
+            "menus.button.*.sub_button.*.url" => ["url"],
+            "menus.button.*.sub_button.*.key" => ["string"]
         ];
     }
 }

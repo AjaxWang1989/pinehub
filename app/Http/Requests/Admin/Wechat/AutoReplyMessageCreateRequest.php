@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin\Wechat;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class WechatAutoReplyMessageUpdateRequest extends FormRequest
+class AutoReplyMessageCreateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,10 +26,12 @@ class WechatAutoReplyMessageUpdateRequest extends FormRequest
     {
         return [
             //
-            'type'   => [ Rule::in(WECHAT_AUTO_REPLY_MESSAGE)],
-            'content' => [ 'string'],
+            'app_id' => ['required', 'exists:wechat_configs,app_id'],
+            'type'   => ['required', Rule::in(WECHAT_AUTO_REPLY_MESSAGE)],
+            'content' => ['required', 'string'],
             'prefect_match_keywords' => ['array'],
             'semi_match_keywords' => ['array'],
+            'focus_reply' => ['boolean']
         ];
     }
 }
