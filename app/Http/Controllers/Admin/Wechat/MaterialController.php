@@ -158,4 +158,10 @@ class MaterialController extends Controller
             throw new NotFoundHttpException('');
         }
     }
+
+    public function materialView(Request $request)
+    {
+        $response = app('wechat')->officeAccount()->material->getHttpClient()->get($request->input('material_src'));
+        exit($response->getBody());
+    }
 }

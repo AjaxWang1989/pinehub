@@ -27,12 +27,6 @@ class CreateCards extends Migration
             $table->index('app_id');
             $table->index('card_type');
         });
-
-        Schema::create('card_extends', function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
-            $table->softDeletes();
-        });
     }
 
     /**

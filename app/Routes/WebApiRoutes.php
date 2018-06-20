@@ -64,6 +64,7 @@ class WebApiRoutes extends ApiRoutes
             $router->post("{type}/material", ['as' => 'wechat.material.create', 'uses' => 'MaterialController@uploadForeverMaterial']);
             $router->get("material/stats", ['as' => 'wechat.material.stats', 'uses' => 'MaterialController@materialStats']);
             $router->get("materials", ['as' => 'wechat.materials', 'uses' => 'MaterialController@materialList']);
+            $router->get("material", ['as' => 'wechat.material.view', 'uses' => 'MaterialController@materialView']);
             $router->get("material/{mediaId}", ['as' => 'wechat.material.forever.detail', 'uses' => 'MaterialController@material']);
             $router->get("material/{mediaId}/{type}", ['as' => 'wechat.material.temporary.detail', 'uses' => 'MaterialController@material']);
             $router->put("material/article/{mediaId}", ['as' => 'wechat.article.update', 'uses' => 'MaterialController@materialNewsUpdate']);
