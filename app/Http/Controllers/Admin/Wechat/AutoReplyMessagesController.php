@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
+use App\Entities\WechatAutoReplyMessage;
 use App\Http\Requests\Admin\Wechat\AutoReplyMessageCreateRequest;
 use App\Http\Requests\Admin\Wechat\AutoReplyMessageUpdateRequest;
 use App\Repositories\WechatAutoReplyMessageRepository;
@@ -39,7 +40,7 @@ class AutoReplyMessagesController extends Controller
     public function index(Request $request)
     {
         $appId = $request->input('app_id');
-        $autoReplyMessages = $this->repository->scopeQuery(function (Builder $query) use( $appId) {
+        $autoReplyMessages = $this->repository->scopeQuery(function (WechatAutoReplyMessage $query) use( $appId) {
             return $query->where('app_id', $appId);
         })->paginate();
 

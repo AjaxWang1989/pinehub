@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
+use App\Entities\WechatConfig;
 use App\Http\Requests\Admin\Wechat\ArticleCreateRequest;
 use App\Http\Requests\Admin\Wechat\ArticleUpdateRequest;
 use App\Http\Requests\Admin\Wechat\ForeverMaterialCreateRequest;
@@ -41,7 +42,7 @@ class MaterialController extends Controller
     public function storeTemporaryMedia(TemporaryMediaCreateRequest $request)
     {
         $field = $request->input('file_field', 'file');
-        $mediaId = $this->currentWechat->uploadMedia($request->input('type'), $request->file($field)->getPath());
+        $mediaId = app('wechat')->uploadMedia($request->input('type'), $request->file($field)->getPath());
         $material = [
             'is_temp' => true,
             'type' => $request->input('type'),
@@ -63,7 +64,7 @@ class MaterialController extends Controller
     public function storeForeverNews(ArticleCreateRequest $request)
     {
         $article =new Article($request->all());
-        $mediaId = $this->currentWechat->uploadArticle($article);
+        $mediaId = app('wechat')->uploadArticle($article);
         $attributes['app_id'] = $this->currentWechat->appId;
         $attributes['type'] = WECHAT_NEWS_MESSAGE;
         $attributes['media_id'] = $mediaId;
@@ -78,8 +79,23 @@ class MaterialController extends Controller
     public function uploadForeverMaterial(ForeverMaterialCreateRequest $request, string $type = 'image')
     {
         $field = $request->input('file_field', 'file');
-        $url = $this->currentWechat->uploadMaterial($type, $request->file($field)->getPath());
+        $url = null;
+        $title = $request->input('title', null);
+        $description = $request->input('description', null);
+        $file = $request->file($field);
+        $fileName = str_random().'.'.$file->getClientOriginalExtension();
 
+        $result = $file->move('temp', $fileName);
+        if(!$result) {
+            if($request->wantsJson()) {
+                return $this->response()->error('上传失败');
+            }
+
+            return redirect()->back()->withErrors('message', '上传失败');
+        }
+//        dd([$request->file($field), $request->file($field)->getRealPath(), file_get_contents($request->file($field)->getRealPath())]);
+        $url = app('wechat')->uploadMaterial($type, $result, $title, $description);
+        unlink($result);
         if($request->wantsJson()) {
             return $this->response(new JsonResponse(['url' => $url]));
         }
@@ -89,7 +105,7 @@ class MaterialController extends Controller
 
 
     public function materialStats(Request $request) {
-        $stats = $this->currentWechat->materialstats();
+        $stats = app('wechat')->materialstats();
         if($request->wantsJson()) {
             return $this->response(new JsonResponse($stats));
         }
@@ -100,7 +116,7 @@ class MaterialController extends Controller
     public function materialList(Request $request) {
         $limit = $request->input('limit', PAGE_LIMIT);
         $offset = $request->input('page', 1) * $limit;
-        $result = $this->currentWechat->materialList($request->input('type'), $offset, $limit);
+        $result = app('wechat')->materialList($request->input('type'), $offset, $limit);
         if ($request->wantsJson()) {
             return $this->response(new JsonResponse($result));
         }
@@ -111,7 +127,7 @@ class MaterialController extends Controller
     {
         $attributes = $request->input('article');
         $index = $request->input('index', 0);
-        $this->currentWechat->updateArticle($mediaId, new Article($attributes), $index);
+        app('wechat')->updateArticle($mediaId, new Article($attributes), $index);
         if($request->wantsJson()) {
             return $this->response(new JsonResponse(['message' => '更新成功']));
         }
@@ -121,7 +137,7 @@ class MaterialController extends Controller
 
     public function deleteMaterial(Request $request, string $mediaId)
     {
-        $this->currentWechat->deleteMaterial($mediaId);
+        app('wechat')->deleteMaterial($mediaId);
         if($request->wantsJson()) {
             return $this->response(new JsonResponse(['message' => '删除成功']));
         }
@@ -132,7 +148,7 @@ class MaterialController extends Controller
     public function material(Request $request, string $mediaId, string $type = null)
     {
         if($type === null || $type === 'temporary') {
-            $result = $this->currentWechat->material($mediaId, $type === 'temporary');
+            $result = app('wechat')->material($mediaId, $type === 'temporary');
             if($request->wantsJson()) {
                 return $this->response(new JsonResponse($result));
             }

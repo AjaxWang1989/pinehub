@@ -24,7 +24,6 @@ class WechatServiceProvider extends ServiceProvider
         $officialAccountConfig = config('wechat.official_account.default');
         $openPlatformConfig = config('wechat.open_platform.default');
         $miniProgramConfig = config('wechat.mini_program.default');
-        Log::debug('wechat config ', [$officialAccountConfig, $openPlatformConfig, $miniProgramConfig, config('wechat')]);
         $currentConfig = $currentWechat ? $currentWechat->only(['app_id', 'app_secret', 'token', 'aes_key']) : null;
         if ($currentWechat) {
             switch ($currentWechat->type){

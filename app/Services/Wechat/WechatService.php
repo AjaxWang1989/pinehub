@@ -16,6 +16,7 @@ use App\Exceptions\WechatMaterialShowException;
 use App\Exceptions\WechatMaterialStatsException;
 use App\Exceptions\WechatMaterialUploadException;
 use App\Exceptions\WechatMaterialUploadTypeException;
+use App\Services\Wechat\Components\Authorizer;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\OfficialAccount\Server\Guard;
@@ -31,6 +32,8 @@ class WechatService
 
     protected $payment = null;
 
+    protected $openPlatform = null;
+
     public function __construct(array  $config)
     {
         $this->config = $config;
@@ -42,6 +45,49 @@ class WechatService
         if(!$this->officeAccount)
             $this->officeAccount= Factory::officialAccount($this->config['official_account']);
         return ($this->officeAccount);
+    }
+
+    public function openPlatform()
+    {
+        if(!$this->openPlatform)
+            $this->openPlatform= Factory::openPlatform($this->config['open_platform']);
+        return ($this->openPlatform);
+    }
+
+    public function openPlatformAuthorizer(string  $authCode)
+    {
+        $authorizer = $this->openPlatform()->handleAuthorize($authCode);
+        return new Authorizer($authorizer['authorization_info']);
+    }
+
+    public function openPlatformComponentLoginPage(string $type = 'all', string $appId = null)
+    {
+        $redirect = $this->openPlatform->config['oauth']['callback'];
+        $redirect .= $appId ? "?app_id={$appId}" : "";
+        $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
+        if($type) {
+            switch ($type) {
+                case 'official_account': {
+                    $type = 1;
+                    break;
+                }
+                case 'mini_program': {
+                    $type = 2;
+                    break;
+                }
+                case 'all': {
+                    $type = 3;
+                    break;
+                }
+            }
+        }
+        if($type) {
+            $url .="&auth_type={$type}";
+        }
+        if($appId) {
+            $url .= "&biz_appid={$appId}";
+        }
+        return redirect($url);
     }
 
     public function materialStats()
@@ -56,7 +102,7 @@ class WechatService
 
     public function materialList(string $type, int $offset, int $limit)
     {
-        $result = $this->currentWechat->materialList($type, $offset, $limit);
+        $result = $this->officeAccount()->material->list($type, $offset, $limit);
         if(isset($result['errcode'])) {
             throw new WechatMaterialListException($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
         }
@@ -98,7 +144,7 @@ class WechatService
         return true;
     }
 
-    public function uploadMaterial(string $type, string $path)
+    public function uploadMaterial(string $type, string $path, string $title = null, string  $des = null)
     {
         $result = null;
         switch ($type) {
@@ -107,7 +153,7 @@ class WechatService
                 break;
             }
             case WECHAT_VIDEO_MESSAGE: {
-                $result = $this->officeAccount()->material->uploadVideo($path);
+                $result = $this->officeAccount()->material->uploadVideo($path, $title, $des);
                 break;
             }
             case WECHAT_IMAGE_MESSAGE: {
@@ -129,7 +175,7 @@ class WechatService
         }
 
         if(isset($result['errcode'])) {
-            throw new WechatMaterialUploadException($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
+            throw new WechatMaterialUploadException($result['errmsg'].' '.$result['errcode'], $result['errcode']);
         }
 
         return $result['url'];
@@ -226,6 +272,11 @@ class WechatService
         return $this->officeAccount()->server;
     }
 
+    public function openPlatformServer()
+    {
+        return $this->openPlatform()->server;
+    }
+
     public function officeAccountServerHandle()
     {
         $this->officeAccountServer()->push(function ($message) {
@@ -244,6 +295,15 @@ class WechatService
         return $this->miniProgramServer()->serve();
     }
 
+    public function openPlatformServerHandle()
+    {
+        $this->openPlatformServer()->push(function ($message) {
+            $this->serverMessageHandle($this->openPlatformServer(), $message);
+        });
+
+        return $this->openPlatformServer()->serve();
+    }
+
     protected function serverMessageHandle(Guard $server, $message)
     {
         switch ($message['MsgType']) {
@@ -260,6 +320,10 @@ class WechatService
                 break;
             }
             case WECHAT_EVENT_MESSAGE: {
+                return $server->dispatch($message['Event'], $message);
+                break;
+            }
+            case OPEN_PLATFORM_COMPONENT_VERIFY_TICKET: {
                 return $server->dispatch($message['Event'], $message);
                 break;
             }

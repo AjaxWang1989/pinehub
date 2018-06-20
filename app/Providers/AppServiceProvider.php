@@ -8,7 +8,9 @@ use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
 use App\Services\FileService;
 use App\Services\UIDGeneratorService;
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
+use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Events\QueryExecuted;
+use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Filesystem\FilesystemServiceProvider;
 use Illuminate\Redis\RedisServiceProvider;
 use Illuminate\Support\Facades\{
@@ -36,6 +38,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton('file',function (Application $app) {
             return $app->make(FileService::class);
+        });
+
+        $this->app->bind(Factory::class, function () {
+            return $this->app['filesystem'];
         });
         Validator::extend('not_exists', function($attribute, $value, $parameters)
         {

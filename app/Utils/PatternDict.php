@@ -80,6 +80,8 @@ define('WECHAT_VIDEO_MESSAGE', 'video');
 
 define('WECHAT_MUSIC_MESSAGE', 'music');
 
+define('OPEN_PLATFORM_COMPONENT_VERIFY_TICKET', 'component_verify_ticket');
+
 define('VIEW_BUTTON', 'view');
 
 define('CLICK_BUTTON', 'click');

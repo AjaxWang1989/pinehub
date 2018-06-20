@@ -39,6 +39,13 @@ class WechatAutoReplyMessage extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'app_id',
+        'type',
+        'prefect_match_keywords',
+        'semi_match_keywords',
+        'focus_reply',
+        'content'
+    ];
 
 }

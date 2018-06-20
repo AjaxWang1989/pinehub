@@ -67,10 +67,7 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                         break;
                     }
                 }
-                if (Request::wantsJson()) {
-                    return $responseSender->setContent($response)->send();
-                }
-                return redirect()->back()->withErrors($response)->withInput()->send();
+                return $responseSender->setContent($response)->send();
             });
         }
     }
