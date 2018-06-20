@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Routes\AuthApiRoutes;
+use App\Routes\ImageRoutes;
 use App\Routes\MiniProgramApiRoutes;
 use App\Routes\OauthRoutes;
 use App\Routes\PaymentApiRoutes;
@@ -168,6 +169,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 ];
                 break;
             }
+            case env('IMAGE_DOMAIN'):{
+                $this->config = [
+                    'domain' => $this->host,
+                    'version' => env('IMAGE_VERSION'),
+                    'prefix'  => env('IMAGE_PREFIX')
+                ];
+                break;
+            }
             case env('WEB_DOMAIN') : {
                 switch ($this->prefix) {
                     case env('WEB_PAYMENT_PREFIX'):{
@@ -253,6 +262,13 @@ class RoutesManagerServiceProvider extends ServiceProvider
             case env('PAYMENT_API_DOMAIN') : {
                 $this->app->singleton('app.routes',function (){
                     return new PaymentApiRoutes($this->app, $this->config['version'], 'Payment',
+                        $this->config['prefix'], $this->config['domain']);
+                });
+                break;
+            }
+            case env('PAYMENT_API_DOMAIN') : {
+                $this->app->singleton('app.routes',function (){
+                    return new ImageRoutes($this->app, $this->config['version'], null,
                         $this->config['prefix'], $this->config['domain']);
                 });
                 break;
