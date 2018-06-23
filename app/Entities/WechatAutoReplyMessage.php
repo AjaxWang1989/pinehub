@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -12,6 +13,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @package namespace App\Entities;
  * @property int $id
  * @property string $appId 微信app ID
+ * @property string|null $name 规则名称
  * @property string $type 类型
  * @property mixed|null $prefectMatchKeywords 全匹配关键字数组
  * @property mixed|null $semiMatchKeywords 半匹配关键字数组
@@ -32,7 +34,12 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class WechatAutoReplyMessage extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
+
+    protected $casts = [
+        'prefect_match_keywords' => 'array',
+        'semi_match_keywords' => 'array',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +48,7 @@ class WechatAutoReplyMessage extends Model implements Transformable
      */
     protected $fillable = [
         'app_id',
+        'name',
         'type',
         'prefect_match_keywords',
         'semi_match_keywords',

@@ -10,11 +10,15 @@ use App\Http\Requests\Admin\Wechat\TemporaryMediaCreateRequest;
 use App\Http\Response\JsonResponse;
 use Carbon\Carbon;
 use Dingo\Api\Http\Response as DingoResponse;
+use EasyWeChat\Kernel\Http\StreamResponse;
 use EasyWeChat\Kernel\Messages\Article;
 use Illuminate\Http\RedirectResponse;
 use \Illuminate\Http\Response;
 use Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -83,21 +87,37 @@ class MaterialController extends Controller
         $title = $request->input('title', null);
         $description = $request->input('description', null);
         $file = $request->file($field);
-        $fileName = str_random().'.'.$file->getClientOriginalExtension();
+        if($file) {
+            $fileName = str_random().'.'.$file->getClientOriginalExtension();
+            $dir = 'temp';
+            $result = $file->move($dir, $fileName);
+            if(!$result) {
+                if($request->wantsJson()) {
+                    return $this->response()->error('上传失败');
+                }
 
-        $result = $file->move('temp', $fileName);
-        if(!$result) {
-            if($request->wantsJson()) {
-                return $this->response()->error('上传失败');
+                return redirect()->back()->withErrors('message', '上传失败');
+            }
+            if($type !== WECHAT_IMAGE_MESSAGE) {
+                return $this->response(new JsonResponse(['file_path' => "{$dir}/{$fileName}"]));
             }
 
-            return redirect()->back()->withErrors('message', '上传失败');
+        }else{
+            $result = $request->input('file_path');
         }
-//        dd([$request->file($field), $request->file($field)->getRealPath(), file_get_contents($request->file($field)->getRealPath())]);
-        $url = app('wechat')->uploadMaterial($type, $result, $title, $description);
+
+        if(!$result) {
+            if($request->wantsJson()) {
+                return $this->response()->error('缺少文件路径');
+            }
+
+            return redirect()->back()->withErrors('message', '缺少文件路径');
+        }
+
+        $retData = app('wechat')->uploadMaterial($type, $result, $title, $description);
         unlink($result);
         if($request->wantsJson()) {
-            return $this->response(new JsonResponse(['url' => $url]));
+            return $this->response(new JsonResponse($retData));
         }
 
         return redirect()->back()->with('message', '临时素材创建成功');
@@ -115,7 +135,7 @@ class MaterialController extends Controller
 
     public function materialList(Request $request) {
         $limit = $request->input('limit', PAGE_LIMIT);
-        $offset = $request->input('page', 1) * $limit;
+        $offset = ($request->input('page', 1) - 1) * $limit;
         $result = app('wechat')->materialList($request->input('type'), $offset, $limit);
         if ($request->wantsJson()) {
             return $this->response(new JsonResponse($result));
@@ -149,6 +169,9 @@ class MaterialController extends Controller
     {
         if($type === null || $type === 'temporary') {
             $result = app('wechat')->material($mediaId, $type === 'temporary');
+            if($result instanceof  StreamResponse) {
+                return $result;
+            }
             if($request->wantsJson()) {
                 return $this->response(new JsonResponse($result));
             }
@@ -161,7 +184,8 @@ class MaterialController extends Controller
 
     public function materialView(Request $request)
     {
-        $response = app('wechat')->officeAccount()->material->getHttpClient()->get($request->input('material_src'));
-        exit($response->getBody());
+        $httpClient = new Client();
+        $response = $httpClient->get($request->input('material_src'));
+        return $response;
     }
 }

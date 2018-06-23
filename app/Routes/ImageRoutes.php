@@ -13,6 +13,7 @@ class ImageRoutes extends WebRoutes
 {
     protected function subRoutes($router)
     {
-        $router->get('/material/view', ['as' => 'material.view', 'uses' => 'Admin/Wechat/MaterialController@materialView']);
+        $router->get('/material/view', ['as' => 'material.view', 'uses' => 'Admin\Wechat\MaterialController@materialView']);
+        $router->get('/material/{mediaId}', ['as' => 'material.view.byId', 'uses' => 'Admin\Wechat\MaterialController@material']);
     }
 }

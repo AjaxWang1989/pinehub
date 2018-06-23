@@ -7,6 +7,7 @@ use App\Http\Middleware\Cross;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
 use App\Services\FileService;
 use App\Services\UIDGeneratorService;
+use Dingo\Api\Http\Request;
 use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Events\QueryExecuted;
@@ -49,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
                     ->where($attribute, '=', $value)
                     ->count()<1;
         });
+
+        Validator::extend('file_exist', function ($attribute, $value, $parameters) {
+            return file_exists($value);
+        });
     }
     /**
      * Register any application services.
@@ -58,6 +63,9 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        $this->app->singleton(Request::class, function (){
+            return Request::capture();
+        });
         laravelToLumen($this->app)->middleware(Cross::class);
         $this->app->register(RedisServiceProvider::class);
         $this->app->register(JWTAuthServiceProvider::class);

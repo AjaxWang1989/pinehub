@@ -23,11 +23,20 @@ class ForeverMaterialCreateRequest extends FormRequest
      */
     public function rules()
     {
-        $file = $this->input('file_field');
-        return [
-            //
-            'file_field' => ['required', 'string'],
-            $file => ['required', 'file']
-        ];
+        $fileField = $this->input('file_field');
+        if($this->file($fileField)) {
+            return [
+                //
+                'file_field' => ['required', 'string'],
+                $fileField => ['required', 'file']
+            ];
+        }else {
+            return [
+                //
+                'file_field' => ['required', 'string'],
+                'file_path' => ['required', 'file_exist']
+            ];
+        }
+
     }
 }

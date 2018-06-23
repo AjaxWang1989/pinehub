@@ -11,6 +11,7 @@ use App\Transformers\WechatAutoReplyMessageItemTransformer;
 use App\Transformers\WechatAutoReplyMessageTransformer;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class AutoReplyMessagesController extends Controller
 {
@@ -43,7 +44,7 @@ class AutoReplyMessagesController extends Controller
         $autoReplyMessages = $this->repository->scopeQuery(function (WechatAutoReplyMessage $query) use( $appId) {
             return $query->where('app_id', $appId);
         })->paginate();
-
+Log::debug('items', $autoReplyMessages->toArray());
         if (request()->wantsJson()) {
 
             return $this->response()->paginator($autoReplyMessages, new WechatAutoReplyMessageItemTransformer());

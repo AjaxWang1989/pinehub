@@ -266,7 +266,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 });
                 break;
             }
-            case env('PAYMENT_API_DOMAIN') : {
+            case env('IMAGE_DOMAIN') : {
                 $this->app->singleton('app.routes',function (){
                     return new ImageRoutes($this->app, $this->config['version'], null,
                         $this->config['prefix'], $this->config['domain']);

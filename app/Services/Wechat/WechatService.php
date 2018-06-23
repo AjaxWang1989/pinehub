@@ -18,9 +18,11 @@ use App\Exceptions\WechatMaterialUploadException;
 use App\Exceptions\WechatMaterialUploadTypeException;
 use App\Services\Wechat\Components\Authorizer;
 use EasyWeChat\Factory;
+use EasyWeChat\Kernel\Http\StreamResponse;
 use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\OfficialAccount\Server\Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
+use Illuminate\Support\Facades\Log;
 
 class WechatService
 {
@@ -177,8 +179,7 @@ class WechatService
         if(isset($result['errcode'])) {
             throw new WechatMaterialUploadException($result['errmsg'].' '.$result['errcode'], $result['errcode']);
         }
-
-        return $result['url'];
+        return $result;
     }
 
     public function deleteMaterial(string  $mediaId)
@@ -192,12 +193,13 @@ class WechatService
 
     public function material(string  $mediaId, bool $isTemp = false)
     {
+        Log::debug('is template '.($isTemp ? 'yes' : 'no'));
         if($isTemp) {
             $result = $this->officeAccount()->media->get($mediaId);
         } else {
             $result = $this->officeAccount()->material->get($mediaId);
         }
-        if($result['errcode'] !== 0) {
+        if(is_array($result) && $result['errcode'] !== 0) {
             throw new WechatMaterialShowException($result['errmsg']);
         }
         return $result;

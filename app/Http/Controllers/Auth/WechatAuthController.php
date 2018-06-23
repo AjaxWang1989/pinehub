@@ -6,6 +6,7 @@ use App\Repositories\WechatUserRepositoryEloquent;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 class WechatAuthController extends Controller
 {
@@ -39,11 +40,12 @@ class WechatAuthController extends Controller
         if ($accessToken) {
             $openId = $accessToken['openid'];
         }
-
+        Log::debug('wechat user', app('wechat')->officeAccount()->user->get($openId));
         $user = $session->get('wx_user', null);
         if(!$user && $scope === USER_AUTH_INFO) {
             $user = app('wechat')->officeAccount()
                 ->oauth->setRequest($request)->user();
+
             $wxUser = $this->wechatUser->findWhere(['openid' => $user->getId()]);
             if($wxUser && $wxUser->count() > 0) {
                 $wxUser = $wxUser->first();

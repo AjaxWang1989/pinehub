@@ -25,6 +25,7 @@ class WechatAutoReplyMessageItemTransformer extends TransformerAbstract
             'id'         => (int) $model->id,
             /* place your other model properties here */
             'app_id' => $model->appId,
+            'name' => $model->name,
             'type' => $model->type,
             'focus_reply' => $model->focusReply,
             'prefect_match_keywords' => $model->prefectMatchKeywords,

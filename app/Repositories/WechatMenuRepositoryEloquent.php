@@ -25,16 +25,7 @@ class WechatMenuRepositoryEloquent extends BaseRepository implements WechatMenuR
         return WechatMenu::class;
     }
 
-    /**
-    * Specify Validator class name
-    *
-    * @return mixed
-    */
-    public function validator()
-    {
 
-        return WechatMenuValidator::class;
-    }
 
 
     /**
