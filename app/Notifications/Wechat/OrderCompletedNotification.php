@@ -7,9 +7,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompletedNotification extends Notification
+class OrderCompletedNotification extends Notification implements ShouldQueue, WechatTemplateMessageInterface
 {
     use Queueable;
 

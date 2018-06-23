@@ -3,18 +3,15 @@
  * Created by PhpStorm.
  * User: wangzaron
  * Date: 2018/6/23
- * Time: 下午4:30
+ * Time: 下午7:12
  */
 
 namespace App\Notifications\Channels;
 
 
-use App\Notifications\Wechat\WechatTemplateMessageInterface;
-use EasyWeChat\OfficialAccount\TemplateMessage\Client as TemplateMessageClient;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Notifications\Notification;
+use App\Notifications\Sms\SmsTemplateMessageInterface;
 
-class WechatTemplateChannel
+class SmsTemplateMessageChannel
 {
     /**
      * The wechat template service client instance
@@ -26,7 +23,7 @@ class WechatTemplateChannel
      * the wechat template message channel construct
      * @param TemplateMessageClient $client
      * */
-    public function __construct(TemplateMessageClient $client)
+    public function __construct($client)
     {
         $this->client = $client;
     }
@@ -44,10 +41,9 @@ class WechatTemplateChannel
         if (! $to = $notifiable->routeNotificationFor('Wechat', $notification)) {
             return;
         }
-        return with($notification, function (WechatTemplateMessageInterface $notification) use($notifiable) {
-            $message = $notification->toWechatTemplateMessage( $notifiable );
+        return with($notification, function (SmsTemplateMessageInterface $notification) use($notifiable) {
+            $message = $notification->toSmsTemplateMessage( $notifiable );
             return $this->client->send($message);
         });
     }
-
 }
