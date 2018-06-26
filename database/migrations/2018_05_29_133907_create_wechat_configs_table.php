@@ -25,7 +25,7 @@ class CreateWechatConfigsTable extends Migration
             $table->string('type', 32)->default(WECHAT_OFFICIAL_ACCOUNT)->comment('OFFICIAL_ACCOUNT 公众平台， 
             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序');
             $table->string('mode', 9)->default(WECHAT_EDITOR_MODE)->comment('公众号模式');
-            $table->string('wechat_bind_app', 64)->nullable()->default(null)->comment('微信公众号绑定的应用程序或者小程序绑定的应用');
+            $table->string('wechat_bind_app')->nullable()->default(null)->comment('微信公众号绑定的应用程序或者小程序绑定的应用');
             $table->timestamps();
             $table->index('app_id');
             $table->index('wechat_bind_app');

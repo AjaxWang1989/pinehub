@@ -109,7 +109,7 @@ class Order extends Model implements Transformable
     protected $fillable = [
         'code', 'buyer_user_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
-        'receiver_district', 'receiver_address', 'type'
+        'receiver_district', 'receiver_address', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id'
     ];
 
     public function buyer() : BelongsTo

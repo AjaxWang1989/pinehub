@@ -17,7 +17,7 @@ class CreateOrderItemsTable extends Migration
 	{
 		Schema::create('order_items', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('app')->nullable()->default(null)->comment('程序类型：青食、自提');
+            $table->string('app_id')->nullable()->default(null)->comment('程序类型：青食、自提');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
             $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家ID');
             $table->unsignedInteger('order_id')->comment('订单id');

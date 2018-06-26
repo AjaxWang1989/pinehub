@@ -17,8 +17,9 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->string('code', 16)->comment('订单编号');
             $table->string('open_id')->nullable()->default(null)->comment('微信open id或支付宝user ID');
-            $table->string('app')->comment('发起购买的app类型');
-            $table->string('app_id')->nullable()->default(null)->comment('微信app id或者支付宝app id');
+            $table->string('wechat_app_id')->nullable()->default(null)->comment('维系app id');
+            $table->string('ali_app_id')->nullable()->default(null)->comment('支付宝app id');
+            $table->string('app_id')->nullable()->default(null)->comment('系统app id');
             $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家');
             $table->float('total_amount')->default(0)->comment('应付款');
             $table->float('payment_amount')->default('0')->comment('实际付款');

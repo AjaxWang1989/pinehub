@@ -22,13 +22,13 @@ class CreateVisitorsTable extends Migration
             $table->string('position_hash')->nullable()->default(null)->comment('位置编码');
             $table->unsignedInteger('user_id')->nullable()->comment('用户id');
             $table->point('position')->nullable()->comment('访问者所在经纬度');
-            $table->string('app')->nullable()->default(null)->comment('程序类型');
+            $table->string('app_id')->nullable()->default(null)->comment('系统app id');
             $table->timestamps();
             $table->softDeletes();
             $table->index('os');
             $table->index('brand');
             $table->index('user_id');
-            $table->index('app');
+            $table->index('app_id');
             $table->index('position_hash');
         });
     }

@@ -86,6 +86,10 @@ class OrderBuilder implements InterfaceServiceHandler
         $this->orderItemMerchandise = $orderItemMerchandise;
     }
 
+    /**
+     * @return Order
+     * @throws
+     * */
     public function handle()
     {
         // TODO: Implement handle() method.
@@ -124,8 +128,7 @@ class OrderBuilder implements InterfaceServiceHandler
         /**
          *@var Order
          * */
-        $orderModel = null;
-        DB::transaction(function () use($order, $orderItems, &$orderModel){
+        return DB::transaction(function () use($order, $orderItems){
             $orderModel = $this->order->create($order->toArray());
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
@@ -140,9 +143,8 @@ class OrderBuilder implements InterfaceServiceHandler
                     }
                 });
             }
+            return $orderModel;
         });
-
-        return $orderModel;
     }
 
     protected function buildOrderItems (Collection $orderItems)

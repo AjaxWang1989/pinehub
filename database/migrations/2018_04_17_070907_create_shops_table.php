@@ -45,7 +45,7 @@ class CreateShopsTable extends Migration
             $table->unsignedInteger('today_order_write_off_num')->default(0)->comment('今日核销订单数量');
             $table->unsignedInteger('total_order_write_off_num')->default(0)->comment('店铺自提系统一共核销单数');
             $table->unsignedTinyInteger('status')->default(0)->comment('状态：0-等待授权 1-营业中 2-休业 3-封锁店铺');
-            $table->string('app')->nullable()->default(null)->comment('程序类型');
+            $table->string('app_id')->nullable()->default(null)->comment('系统app id');
             $table->string('wechat_app_id')->nullable()->default(null)->comment('微信app ID');
             $table->string('ali_app_id')->nullable()->default(null)->comment('支付宝app ID');
             $table->string('mt_app_id')->nullable()->default(null)->comment('美团app id');
