@@ -26,7 +26,7 @@ class MenuUpdateRequest extends FormRequest
         return [
             //
             "name" => ['string'],
-            "menus" => ['json'],
+            //"menus" => ['json'],
             "menus.button" => ['required', 'array'],
             "menus.button.*.name" => ['required', 'string'],
             "menus.button.*.type" => ["required", Rule::in(WECHAT_MENU_TYPE)],

@@ -37,6 +37,41 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $appName 应用名称
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAppName($value)
  * @property-read \App\Entities\WechatMenu $menu
+ * @property string $appId 微信公众好app ID
+ * @property string $appSecret 微信公众号secret
+ * @property string $appName 微信公众号或者小程序名称
+ * @property string|null $aesKey 微信EncodingAESKey
+ * @property string|null $wechatBindApp 微信公众号绑定的应用程序或者小程序绑定的应用
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string $appId 微信公众好app ID
+ * @property string $appSecret 微信公众号secret
+ * @property string $appName 微信公众号或者小程序名称
+ * @property string|null $aesKey 微信EncodingAESKey
+ * @property string|null $wechatBindApp 微信公众号绑定的应用程序或者小程序绑定的应用
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string $appId 微信公众好app ID
+ * @property string $appSecret 微信公众号secret
+ * @property string $appName 微信公众号或者小程序名称
+ * @property string|null $aesKey 微信EncodingAESKey
+ * @property string|null $wechatBindApp 微信公众号绑定的应用程序或者小程序绑定的应用
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string $appId 微信公众好app ID
+ * @property string $appSecret 微信公众号secret
+ * @property string $appName 微信公众号或者小程序名称
+ * @property string|null $aesKey 微信EncodingAESKey
+ * @property string|null $wechatBindApp 微信公众号绑定的应用程序或者小程序绑定的应用
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string $appId 微信公众好app ID
+ * @property string $appSecret 微信公众号secret
+ * @property string $appName 微信公众号或者小程序名称
+ * @property string|null $aesKey 微信EncodingAESKey
+ * @property string|null $wechatBindApp 微信公众号绑定的应用程序或者小程序绑定的应用
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class WechatConfig extends Model implements Transformable
 {

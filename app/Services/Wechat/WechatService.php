@@ -9,6 +9,7 @@
 namespace App\Services\Wechat;
 
 
+use App\Entities\WechatUser;
 use App\Exceptions\WechatMaterialArticleUpdateException;
 use App\Exceptions\WechatMaterialDeleteException;
 use App\Exceptions\WechatMaterialListException;
@@ -17,6 +18,7 @@ use App\Exceptions\WechatMaterialStatsException;
 use App\Exceptions\WechatMaterialUploadException;
 use App\Exceptions\WechatMaterialUploadTypeException;
 use App\Services\Wechat\Components\Authorizer;
+use App\Services\Wechat\OfficialAccount\AccessToken;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Http\StreamResponse;
 use EasyWeChat\Kernel\Messages\Article;
@@ -333,6 +335,88 @@ class WechatService
                 return app(EchoStrHandler::class)->handle($message);
                 break;
         }
+    }
+
+    public function officialAccountAccessToken()
+    {
+        $accessToken = $this->officeAccount()->access_token->getToken();
+        return (new AccessToken($accessToken));
+    }
+
+    public function officialAccountUser($openId)
+    {
+        $user = $this->officeAccount()->user->get($openId);
+        $wechatUser = new WechatUser();
+        $wechatUser->wechatAppId = $this->officeAccount()->config->get('app_id');
+        $wechatUser->appId = app('currentApp') ? app('currentApp')->appId : null;
+        $wechatUser->openId = $user['openid'];
+        if(isset($user['unionid'])) {
+            $wechatUser->unionId = $user['unionid'];
+        }
+
+        if(isset($user['nickname'])){
+            $wechatUser->nickname = $user['nickname'];
+        }
+
+        if(isset($user['province'])){
+            $wechatUser->province = $user['province'];
+        }
+
+        if(isset($user['city'])){
+            $wechatUser->city = $user['city'];
+        }
+
+        if(isset($user['country'])){
+            $wechatUser->country = $user['country'];
+        }
+
+        if(isset($user['headimgurl'])) {
+            $wechatUser->avatar = $user['headimgurl'];
+        }
+
+        if(isset($user['privilege'])) {
+            $wechatUser->privilege = $user['privilege'];
+        }
+
+        if(isset($user['subscribe'])) {
+            $wechatUser->subscribe = $user['subscribe'];
+        }
+
+        if(isset($user['subscribeScene'])) {
+            $wechatUser->subscribeScene = $user['subscribe_scene'];
+        }
+
+        if(isset($user['subscribe_time'])) {
+            $wechatUser->subscribeTime = date('Y-m-d h:i:s', $user['subscribe_time']);
+        }
+
+        if(isset($user['remark'])) {
+            $wechatUser->remark = $user['remark'];
+        }
+
+        if(isset($user['groupid'])) {
+            $wechatUser->groupId = $user['groupid'];
+        }
+
+        if(isset($user['tagid_list'])) {
+            $wechatUser->tagidList = $user['tagid_list'];
+        }
+
+        if(isset($user['qr_scene'])) {
+            $wechatUser->qrScene = $user['qr_scene'];
+        }
+
+        if(isset($user['qr_scene_str'])) {
+            $wechatUser->qrSceneStr = $user['qr_scene_str'];
+        }
+
+        return $wechatUser;
+    }
+
+    public function openPlatformOfficialAccountAccessToken(string   $appId)
+    {
+        $accessToken = $this->openPlatform()->officialAccount($appId)->access_token->getToken();
+        return (new AccessToken($accessToken));
     }
 
 }

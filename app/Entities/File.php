@@ -31,6 +31,26 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $encryptKey 密钥
+ * @property string|null $encryptMethod 加密算法
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $encryptKey 密钥
+ * @property string|null $encryptMethod 加密算法
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $encryptKey 密钥
+ * @property string|null $encryptMethod 加密算法
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $encryptKey 密钥
+ * @property string|null $encryptMethod 加密算法
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $encryptKey 密钥
+ * @property string|null $encryptMethod 加密算法
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class File extends Model implements Transformable
 {

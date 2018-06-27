@@ -31,7 +31,7 @@ class ArticleUpdateRequest extends FormRequest
             'article.thumb_media_id' => ['required', 'string'],
             'article.author' => ['string'],
             'article.digest' => ['string'],
-            'article.show_cover_pic' => ['required', 'boolean'],
+            'article.show_cover' => ['required', 'boolean'],
             'article.content' => ['required', 'string', 'max:20000'],
             'article.content_source_url' => ['required', 'string'],
             'article.need_open_comment' => ['required', 'boolean'],

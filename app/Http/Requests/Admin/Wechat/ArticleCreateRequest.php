@@ -30,7 +30,7 @@ class ArticleCreateRequest extends FormRequest
             'thumb_media_id' => ['required', 'string'],
             'author' => ['string'],
             'digest' => ['string'],
-            'show_cover_pic' => ['required', 'boolean'],
+            'show_cover' => ['required', 'boolean'],
             'content' => ['required', 'string', 'max:20000'],
             'content_source_url' => ['required', 'string'],
             'need_open_comment' => ['required', 'boolean'],

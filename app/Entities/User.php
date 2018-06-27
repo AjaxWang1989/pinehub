@@ -59,6 +59,46 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $realName 真实姓名
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereRealName($value)
  * @property string $realName 真实姓名
+ * @property string $userName 用户名称
+ * @property string $realName 真实姓名
+ * @property int $vipLevel VIP等级
+ * @property \Carbon\Carbon|null $lastLoginAt 最后登录时间
+ * @property string $mobileCompany 手机号码所属公司
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property string $userName 用户名称
+ * @property string $realName 真实姓名
+ * @property int $vipLevel VIP等级
+ * @property \Carbon\Carbon|null $lastLoginAt 最后登录时间
+ * @property string $mobileCompany 手机号码所属公司
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property string $userName 用户名称
+ * @property string $realName 真实姓名
+ * @property int $vipLevel VIP等级
+ * @property \Carbon\Carbon|null $lastLoginAt 最后登录时间
+ * @property string $mobileCompany 手机号码所属公司
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property string $userName 用户名称
+ * @property string $realName 真实姓名
+ * @property int $vipLevel VIP等级
+ * @property \Carbon\Carbon|null $lastLoginAt 最后登录时间
+ * @property string $mobileCompany 手机号码所属公司
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property string $userName 用户名称
+ * @property string $realName 真实姓名
+ * @property int $vipLevel VIP等级
+ * @property \Carbon\Carbon|null $lastLoginAt 最后登录时间
+ * @property string $mobileCompany 手机号码所属公司
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {

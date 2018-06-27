@@ -156,3 +156,10 @@ define('WECHAT_AUTO_REPLY_MESSAGE', [
     WECHAT_TEXT_MESSAGE
 ]);
 
+
+define('SEND_FOCUS_CARD_EVENT', 'send_focus_card_event');
+
+define('SEND_CARD_EVENTS', [
+    SEND_FOCUS_CARD_EVENT
+]);
+

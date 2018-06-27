@@ -24,11 +24,15 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $name 菜单名称
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereIsPublic($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereName($value)
+ * @property string $appId app id
  */
 class WechatMenu extends Model implements Transformable
 {
     use TransformableTrait;
 
+    protected $casts = [
+        'menus' => 'array'
+    ];
     /**
      * The attributes that are mass assignable.
      *

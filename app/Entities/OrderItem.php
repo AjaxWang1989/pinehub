@@ -67,6 +67,61 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $app 程序类型：青食、自提
  * @property int|null $buyerUserId 买家ID
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereApp($value)
+ * @property int|null $shopId 店铺ID
+ * @property int|null $buyerUserId 买家ID
+ * @property int $orderId 订单id
+ * @property float $totalAmount 应付
+ * @property float $discountAmount 优惠
+ * @property float $paymentAmount 实付
+ * @property \Carbon\Carbon|null $signedAt 签收时间
+ * @property \Carbon\Carbon|null $consignedAt 发货时间
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property int|null $shopId 店铺ID
+ * @property int|null $buyerUserId 买家ID
+ * @property int $orderId 订单id
+ * @property float $totalAmount 应付
+ * @property float $discountAmount 优惠
+ * @property float $paymentAmount 实付
+ * @property \Carbon\Carbon|null $signedAt 签收时间
+ * @property \Carbon\Carbon|null $consignedAt 发货时间
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property int|null $shopId 店铺ID
+ * @property int|null $buyerUserId 买家ID
+ * @property int $orderId 订单id
+ * @property float $totalAmount 应付
+ * @property float $discountAmount 优惠
+ * @property float $paymentAmount 实付
+ * @property \Carbon\Carbon|null $signedAt 签收时间
+ * @property \Carbon\Carbon|null $consignedAt 发货时间
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property int|null $shopId 店铺ID
+ * @property int|null $buyerUserId 买家ID
+ * @property int $orderId 订单id
+ * @property float $totalAmount 应付
+ * @property float $discountAmount 优惠
+ * @property float $paymentAmount 实付
+ * @property \Carbon\Carbon|null $signedAt 签收时间
+ * @property \Carbon\Carbon|null $consignedAt 发货时间
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property int|null $shopId 店铺ID
+ * @property int|null $buyerUserId 买家ID
+ * @property int $orderId 订单id
+ * @property float $totalAmount 应付
+ * @property float $discountAmount 优惠
+ * @property float $paymentAmount 实付
+ * @property \Carbon\Carbon|null $signedAt 签收时间
+ * @property \Carbon\Carbon|null $consignedAt 发货时间
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
  */
 class OrderItem extends Model implements Transformable
 {

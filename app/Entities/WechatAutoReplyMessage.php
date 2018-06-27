@@ -31,6 +31,37 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @mixin \Eloquent
  * @property int|null $focusReply 关注回复
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereFocusReply($value)
+ * @property string|null $appId 微信app ID
+ * @property int $focusReply 关注回复
+ * @property array $prefectMatchKeywords 全匹配关键字数组
+ * @property array $semiMatchKeywords 半匹配关键字数组
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereName($value)
+ * @property string|null $appId 微信app ID
+ * @property int $focusReply 关注回复
+ * @property array $prefectMatchKeywords 全匹配关键字数组
+ * @property array $semiMatchKeywords 半匹配关键字数组
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $appId 微信app ID
+ * @property int $focusReply 关注回复
+ * @property array $prefectMatchKeywords 全匹配关键字数组
+ * @property array $semiMatchKeywords 半匹配关键字数组
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $appId 微信app ID
+ * @property int $focusReply 关注回复
+ * @property array $prefectMatchKeywords 全匹配关键字数组
+ * @property array $semiMatchKeywords 半匹配关键字数组
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $appId 微信app ID
+ * @property int $focusReply 关注回复
+ * @property array $prefectMatchKeywords 全匹配关键字数组
+ * @property array $semiMatchKeywords 半匹配关键字数组
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class WechatAutoReplyMessage extends Model implements Transformable
 {
