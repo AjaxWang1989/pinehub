@@ -11,6 +11,7 @@ use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
 use App\Routes\WebRoutes;
+use App\Routes\WechatRoutes;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -195,6 +196,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         ];
                         break;
                     }
+                    case env('WEB_OPEN_PLATFORM_PREFIX'):{
+                        $this->config = [
+                            'domain' => $this->host,
+                            'version' => env('WEB_VERSION'),
+                            'prefix'  => env('WEB_OPEN_PLATFORM_PREFIX')
+                        ];
+                        break;
+                    }
                     default:{
                         $this->config = [
                             'domain' => $this->host,
@@ -290,7 +299,13 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         });
                         break;
                     }
-
+                    case env('WEB_OPEN_PLATFORM_PREFIX'):{
+                        $this->app->singleton('app.routes',function (){
+                            return new WechatRoutes($this->app, $this->config['version'], 'Wechat',
+                                $this->config['prefix'], $this->config['domain']);
+                        });
+                        break;
+                    }
                     default: {
                         $this->app->singleton('app.routes',function (){
                             return new WebRoutes($this->app, $this->config['version'] , null,

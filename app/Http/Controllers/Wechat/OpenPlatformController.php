@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Wechat;
 use App\Entities\App;
 use App\Entities\WechatConfig;
 use App\Events\WechatSubscribeEvent;
-use App\Http\Response\JsonResponse;
 use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
 use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
