@@ -72,7 +72,7 @@ return [
              */
              'oauth' => [
                  'scopes'   => array_map('trim', explode(',', env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_SCOPES', 'snsapi_userinfo'))),
-                 'callback' => env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_CALLBACK', '/examples/oauth_callback.php'),
+                 'callback' => webUriGenerator(env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '/examples/oauth_callback.php')),
              ],
         ],
     ],
