@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\Wechat\ConfigCreateRequest;
 use App\Http\Requests\Admin\Wechat\ConfigUpdateRequest;
 use App\Http\Response\JsonResponse;
 use App\Repositories\WechatConfigRepository;
+use App\Services\AppManager;
 use App\Transformers\WechatConfigItemTransformer;
 use App\Transformers\WechatConfigTransformer;
 use App\Http\Controllers\Controller;
@@ -21,15 +22,21 @@ class ConfigController extends Controller
      */
     protected $repository;
 
+    /**
+     * @var AppManager
+     * */
+    protected $appManager;
+
 
     /**
      * MaterialsController constructor.
      *
      * @param WechatConfigRepository $repository
      */
-    public function __construct(WechatConfigRepository $repository)
+    public function __construct(WechatConfigRepository $repository, AppManager $appManager)
     {
         $this->repository = $repository;
+        $this->appManager = $appManager;
     }
 
     /**

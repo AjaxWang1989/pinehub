@@ -83,7 +83,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->request = Request::capture();
-        //Log::debug('url '. $this->request->fullUrl());
+        Log::debug('url '. $this->request->fullUrl());
         $this->host = $this->request->getHost();
         if(preg_match(IP_REGEX, $this->host)) {
             exit('不能直接使用ip访问本站的！');

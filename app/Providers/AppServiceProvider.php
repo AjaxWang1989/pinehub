@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Ali\Oauth\AliOauthServiceProvider;
 use App\Http\Middleware\Cross;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
+use App\Services\AppManager;
 use App\Services\FileService;
 use App\Services\UIDGeneratorService;
 use Dingo\Api\Http\Request;
@@ -84,5 +85,8 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(IdeHelperServiceProvider::class);
             $this->app->register(ApiDocGeneratorServiceProvider::class);
         }
+        $this->app->singleton(AppManager::class, function (Application $app) {
+            return new AppManager($app);
+        });
     }
 }

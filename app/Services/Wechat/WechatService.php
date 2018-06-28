@@ -17,6 +17,7 @@ use App\Exceptions\WechatMaterialShowException;
 use App\Exceptions\WechatMaterialStatsException;
 use App\Exceptions\WechatMaterialUploadException;
 use App\Exceptions\WechatMaterialUploadTypeException;
+use App\Services\AppManager;
 use App\Services\Wechat\Components\Authorizer;
 use App\Services\Wechat\Components\ComponentAccessToken;
 use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
@@ -49,8 +50,16 @@ class WechatService
     public function officeAccount()
     {
 
-        if(!$this->officeAccount)
-            $this->officeAccount= Factory::officialAccount($this->config['official_account']);
+        if(!$this->officeAccount) {
+            if($this->config['official_account']['app_secret']) {
+                $this->officeAccount= Factory::officialAccount($this->config['official_account']);
+            }else{
+                $appManager = app(AppManager::class);
+                $appId = $appManager->officialAccount->appId;
+                $this->officeAccount = $this->openPlatform()->officialAccount($appId);
+            }
+        }
+
         return ($this->officeAccount);
     }
 
@@ -83,7 +92,7 @@ class WechatService
         }
     }
 
-    public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all')
+    public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
     {
         $redirect = $this->openPlatform->config['oauth']['callback'];
         $redirect = str_replace('{appId}', $appId, $redirect);
@@ -108,8 +117,9 @@ class WechatService
         if($type) {
             $url .="&auth_type={$type}";
         }
-        if($appId) {
-            $url .= "&biz_appid={$appId}";
+
+        if($bizAppid) {
+            $url .= "&biz_appid={$bizAppid}";
         }
         return redirect($url);
     }
@@ -151,7 +161,6 @@ class WechatService
     public function uploadMedia(string $type, string $path)
     {
         $result  = $this->officeAccount()->media->upload($type, $path);
-
         if(isset($result['errcode'])) {
             throw new WechatMaterialUploadException($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
         }
@@ -235,8 +244,15 @@ class WechatService
 
     public function miniProgram()
     {
-        if(!$this->miniProgram)
-            $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
+        if(!$this->miniProgram){
+            if($this->config['mini_program']['app_secret']) {
+                $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
+            }else{
+                $appManager = app(AppManager::class);
+                $appId = $appManager->miniProgram->appId;
+                $this->miniProgram = $this->openPlatform()->miniProgram($appId);
+            }
+        }
         return $this->miniProgram;
     }
 
