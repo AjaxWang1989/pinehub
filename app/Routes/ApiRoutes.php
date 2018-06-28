@@ -33,7 +33,7 @@ class ApiRoutes extends Routes
             $second['domain'] = $this->domain;
         }
         Log::debug('set cross');
-        $second['middleware'] = ['cross'];
+        $second['middleware'] = ['cross', 'auth.meta'];
         $this->router->version($this->version, $second, function ($router){
             $self = $this;
             $router->get('/version', function (Request $request) use ($self){

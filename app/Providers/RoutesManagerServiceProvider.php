@@ -12,6 +12,7 @@ use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
 use App\Routes\WebRoutes;
 use App\Routes\WechatRoutes;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -84,6 +85,9 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $this->request = Request::capture();
         Log::debug('url '. $this->request->fullUrl());
         $this->host = $this->request->getHost();
+        if(preg_match(IP_REGEX, $this->host)) {
+            return Response::create(['message' => '不能直接使用ip访问本站的！'])->send();
+        }
         list( $domain, $prefix) = domainAndPrefix($this->request);
         $this->prefix = $prefix;
         $this->domain = $domain;
