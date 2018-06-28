@@ -8,7 +8,7 @@
          | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
          | :------: | :-------: | :------: | :----:|
          | file_filed | string | N | 前端上传文件时文件数据对应的key值，即html input上传时name对应的数据，默认是file |
-         | file_field的取值 | stream | N | 文件流数据 | 
+         | file_field的取值 | stream | N | 文件流数据(文件长宽比1/1，大小小于2M) | 
          
      + http返回: 
      
@@ -32,7 +32,7 @@
                 "bucket" : "XXXXX",
                 "extension" : "XXXX",
                 "src" : "XXXXXX",
-                "encrypt": fasle,
+                "encrypt": 0,
                 "encrypt_key" : null,
                 "encrypt_method": null,
                 "driver": "oss"
