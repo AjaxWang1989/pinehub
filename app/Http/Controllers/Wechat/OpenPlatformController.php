@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Wechat;
 use App\Entities\App;
 use App\Entities\WechatConfig;
 use App\Events\WechatSubscribeEvent;
+use App\Http\Response\JsonResponse;
 use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
 use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
@@ -113,6 +114,7 @@ class OpenPlatformController extends Controller
     {
         $appId = $request->input('app_id', null);
         $token = $request->input('token', app('api.auth')->getToken());
+        Cache::set('auth.success.'.$request->input('token'), $appId);
         return $this->wechat->openPlatformComponentLoginPage($appId, $token);
     }
 
@@ -126,7 +128,7 @@ class OpenPlatformController extends Controller
             Cache::set('app.auth.'.$authCode, with($app, function (App $app) {
                 return $app->id;
             }), $expiresIn);
-            Cache::set('auth.success.'.$request->input('token'), $appId, $expiresIn);
+            Cache::set('auth.success.'.$request->input('token'), [$appId, $authCode], $expiresIn);
             return redirect('');
         }
         return redirect();
@@ -134,10 +136,10 @@ class OpenPlatformController extends Controller
 
     public function openPlatformAuthMakeSure(Request $request)
     {
-        $authOk = Cache::get('auth.success.'.$request->input('token'), false);
-        if($authOk) {
+        $auth = Cache::get('auth.success.'.$request->input('token'), false);
+        if($auth) {
             $app = $this->appRepository->find($request->input('app_id'));
-            return $this->response()->item($app, new AppTransformer());
+            return $this->response(new JsonResponse($auth));
         }
         $this->response()->error('未完成授权，请等待');
     }
