@@ -18,6 +18,9 @@ use App\Exceptions\WechatMaterialStatsException;
 use App\Exceptions\WechatMaterialUploadException;
 use App\Exceptions\WechatMaterialUploadTypeException;
 use App\Services\Wechat\Components\Authorizer;
+use App\Services\Wechat\Components\ComponentAccessToken;
+use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
+use App\Services\Wechat\Components\OfficialAccountAuthorizerInfo;
 use App\Services\Wechat\OfficialAccount\AccessToken;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Http\StreamResponse;
@@ -64,10 +67,27 @@ class WechatService
         return new Authorizer($authorizer['authorization_info']);
     }
 
-    public function openPlatformComponentLoginPage(string $type = 'all', string $appId = null)
+    public function openPlatformComponentAccess()
+    {
+        $token = $this->openPlatform()->access_token->getToken();
+        return new ComponentAccessToken($token);
+    }
+
+    public function getOpenPlatformAuthorizer(string $appId)
+    {
+        $info = $this->openPlatform()->getAuthorizer($appId);
+        if(isset($info['MiniProgramInfo'])) {
+            return new MiniProgramAuthorizerInfo($info);
+        }else{
+            return new OfficialAccountAuthorizerInfo($info);
+        }
+    }
+
+    public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all')
     {
         $redirect = $this->openPlatform->config['oauth']['callback'];
-        $redirect .= $appId ? "?app_id={$appId}" : "";
+        $redirect = str_replace('{appId}', $appId, $redirect);
+        $redirect .= "?token={$token}";
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
         if($type) {
             switch ($type) {
@@ -195,7 +215,6 @@ class WechatService
 
     public function material(string  $mediaId, bool $isTemp = false)
     {
-        Log::debug('is template '.($isTemp ? 'yes' : 'no'));
         if($isTemp) {
             $result = $this->officeAccount()->media->get($mediaId);
         } else {

@@ -42,56 +42,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $merchandiseId 产品id
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property int $merchandiseId 产品id
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property int $merchandiseId 产品id
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property int $merchandiseId 产品id
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property int $merchandiseId 产品id
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class SKUProduct extends Model implements Transformable
 {

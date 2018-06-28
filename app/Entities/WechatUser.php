@@ -14,7 +14,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int|null $userId 用户ID
  * @property string|null $wechatAppId 微信公众平台、小程序、开放app id
  * @property string|null $appId
- * @property string $type OFFICE_ACCOUNT 公众平台，
+ * @property string $type OFFICE_ACCOUNT 公众平台， 
  *             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序
  * @property string|null $unionId union id
  * @property string $openId open id

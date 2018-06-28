@@ -18,6 +18,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\Shop
  *
  * @property int $id
+ * @property string|null $code 餐车编号
  * @property int $userId 店铺老板用户id
  * @property int $countryId 国家id
  * @property int $provinceId 省份id
@@ -25,6 +26,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $countyId 所属区县id
  * @property string|null $address 详细地址
  * @property mixed|null $position 店铺定位
+ * @property string|null $description 店铺描述
  * @property string|null $geoHash 位置hash编码
  * @property float $totalAmount 店铺总计营业额
  * @property float $todayAmount 今日营业额
@@ -39,6 +41,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $todayOrderWriteOffNum 今日核销订单数量
  * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
  * @property int $status 状态：0-等待授权 1-营业中 2-休业 3-封锁店铺
+ * @property string|null $appId 程序类型
+ * @property string|null $wechatAppId 微信app ID
+ * @property string|null $aliAppId 支付宝app ID
+ * @property string|null $mtAppId 美团app id
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -46,6 +52,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Country $country
  * @property-read \App\Entities\County $county
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \App\Entities\Province $province
  * @property-read \App\Entities\User $shopManager
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop comparison($geometryColumn, $geometry, $relationship)
@@ -63,13 +70,18 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop intersects($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop overlaps($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAliAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCityId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCountyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereGeoHash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereMtAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop wherePosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereProvinceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereStatus($value)
@@ -87,147 +99,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereTotalOrderingNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop within($geometryColumn, $polygon)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
- * @property string|null $description 描述
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDescription($value)
- * @property string|null $code 餐车编号
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCode($value)
- * @property string|null $app 程序类型
- * @property string|null $wechatAppId 微信app ID
- * @property string|null $aliAppId 支付宝app ID
- * @property string|null $mtAppId 美团app id
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAliAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereApp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereMtAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatAppId($value)
- * @property int $userId 店铺老板用户id
- * @property int $countryId 国家id
- * @property int $provinceId 省份id
- * @property int $cityId 城市id
- * @property int $countyId 所属区县id
- * @property string|null $geoHash 位置hash编码
- * @property float $totalAmount 店铺总计营业额
- * @property float $todayAmount 今日营业额
- * @property float $totalOffLineAmount 店铺预定总计营业额
- * @property float $todayOffLineAmount 今日线下营业额
- * @property float $totalOrderingAmount 店铺总计营业额
- * @property float $todayOrderingAmount 今日预定营业额
- * @property int $todayOrderingNum 今日预定订单数量
- * @property int $totalOrderingNum 店铺自提系统一共预定单数
- * @property int $todayOrderWriteOffAmount 今日核销订单营业额
- * @property int $totalOrderWriteOffAmount 店铺自提系统一共核营业额
- * @property int $todayOrderWriteOffNum 今日核销订单数量
- * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
- * @property string|null $appId 程序类型
- * @property string|null $wechatAppId 微信app ID
- * @property string|null $aliAppId 支付宝app ID
- * @property string|null $mtAppId 美团app id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAppId($value)
- * @property int $userId 店铺老板用户id
- * @property int $countryId 国家id
- * @property int $provinceId 省份id
- * @property int $cityId 城市id
- * @property int $countyId 所属区县id
- * @property string|null $geoHash 位置hash编码
- * @property float $totalAmount 店铺总计营业额
- * @property float $todayAmount 今日营业额
- * @property float $totalOffLineAmount 店铺预定总计营业额
- * @property float $todayOffLineAmount 今日线下营业额
- * @property float $totalOrderingAmount 店铺总计营业额
- * @property float $todayOrderingAmount 今日预定营业额
- * @property int $todayOrderingNum 今日预定订单数量
- * @property int $totalOrderingNum 店铺自提系统一共预定单数
- * @property int $todayOrderWriteOffAmount 今日核销订单营业额
- * @property int $totalOrderWriteOffAmount 店铺自提系统一共核营业额
- * @property int $todayOrderWriteOffNum 今日核销订单数量
- * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
- * @property string|null $appId 程序类型
- * @property string|null $wechatAppId 微信app ID
- * @property string|null $aliAppId 支付宝app ID
- * @property string|null $mtAppId 美团app id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property int $userId 店铺老板用户id
- * @property int $countryId 国家id
- * @property int $provinceId 省份id
- * @property int $cityId 城市id
- * @property int $countyId 所属区县id
- * @property string|null $geoHash 位置hash编码
- * @property float $totalAmount 店铺总计营业额
- * @property float $todayAmount 今日营业额
- * @property float $totalOffLineAmount 店铺预定总计营业额
- * @property float $todayOffLineAmount 今日线下营业额
- * @property float $totalOrderingAmount 店铺总计营业额
- * @property float $todayOrderingAmount 今日预定营业额
- * @property int $todayOrderingNum 今日预定订单数量
- * @property int $totalOrderingNum 店铺自提系统一共预定单数
- * @property int $todayOrderWriteOffAmount 今日核销订单营业额
- * @property int $totalOrderWriteOffAmount 店铺自提系统一共核营业额
- * @property int $todayOrderWriteOffNum 今日核销订单数量
- * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
- * @property string|null $appId 程序类型
- * @property string|null $wechatAppId 微信app ID
- * @property string|null $aliAppId 支付宝app ID
- * @property string|null $mtAppId 美团app id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property int $userId 店铺老板用户id
- * @property int $countryId 国家id
- * @property int $provinceId 省份id
- * @property int $cityId 城市id
- * @property int $countyId 所属区县id
- * @property string|null $geoHash 位置hash编码
- * @property float $totalAmount 店铺总计营业额
- * @property float $todayAmount 今日营业额
- * @property float $totalOffLineAmount 店铺预定总计营业额
- * @property float $todayOffLineAmount 今日线下营业额
- * @property float $totalOrderingAmount 店铺总计营业额
- * @property float $todayOrderingAmount 今日预定营业额
- * @property int $todayOrderingNum 今日预定订单数量
- * @property int $totalOrderingNum 店铺自提系统一共预定单数
- * @property int $todayOrderWriteOffAmount 今日核销订单营业额
- * @property int $totalOrderWriteOffAmount 店铺自提系统一共核营业额
- * @property int $todayOrderWriteOffNum 今日核销订单数量
- * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
- * @property string|null $appId 程序类型
- * @property string|null $wechatAppId 微信app ID
- * @property string|null $aliAppId 支付宝app ID
- * @property string|null $mtAppId 美团app id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property int $userId 店铺老板用户id
- * @property int $countryId 国家id
- * @property int $provinceId 省份id
- * @property int $cityId 城市id
- * @property int $countyId 所属区县id
- * @property string|null $geoHash 位置hash编码
- * @property float $totalAmount 店铺总计营业额
- * @property float $todayAmount 今日营业额
- * @property float $totalOffLineAmount 店铺预定总计营业额
- * @property float $todayOffLineAmount 今日线下营业额
- * @property float $totalOrderingAmount 店铺总计营业额
- * @property float $todayOrderingAmount 今日预定营业额
- * @property int $todayOrderingNum 今日预定订单数量
- * @property int $totalOrderingNum 店铺自提系统一共预定单数
- * @property int $todayOrderWriteOffAmount 今日核销订单营业额
- * @property int $totalOrderWriteOffAmount 店铺自提系统一共核营业额
- * @property int $todayOrderWriteOffNum 今日核销订单数量
- * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
- * @property string|null $appId 程序类型
- * @property string|null $wechatAppId 微信app ID
- * @property string|null $aliAppId 支付宝app ID
- * @property string|null $mtAppId 美团app id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class Shop extends Model implements Transformable
 {

@@ -7,9 +7,8 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class TakeOutCar.
+ * App\Entities\TakeOutCar
  *
- * @package namespace App\Entities;
  * @mixin \Eloquent
  */
 class TakeOutCar extends Model implements Transformable

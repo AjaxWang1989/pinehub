@@ -10,21 +10,20 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\WechatMenu
  *
  * @property int $id
- * @property array $menus 	菜单的响应动作类型，view表示网页类型，click表示点击类型，miniprogram表示小程序类型
- * @property string|null $appid 小程序的appid（仅认证公众号可配置）
+ * @property string $appId app id
+ * @property string|null $name 菜单名称
+ * @property int $isPublic 菜单是否发布
+ * @property array $menus menus
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereAppid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereIsPublic($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereMenus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $isPublic 是否发布
- * @property string|null $name 菜单名称
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereIsPublic($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereName($value)
- * @property string $appId app id
  */
 class WechatMenu extends Model implements Transformable
 {

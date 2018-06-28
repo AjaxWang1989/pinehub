@@ -34,10 +34,10 @@ class FileService implements InterfaceServiceHandler
     {
         $path = ends_with('/', $path)? $path : $path.'/';
         $file = $request->file('file');
-        $result = $file->store($path);
-        $path = Storage::url($result);
-        if($path) {
-            return $path;
+        $result = $file->store($path, ['disk' => $disk]);
+        //$path = Storage::url($result);
+        if($result) {
+            return $result;
         }else{
             return false;
         }

@@ -2,12 +2,14 @@
 
 namespace App\Http\Middleware;
 
+use Carbon\Carbon;
 use Closure;
+use Dingo\Api\Http\Response;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
 
-class Authenticate
+class ResponseMetaAddToken
 {
     /**
      * The authentication guard factory instance.
@@ -32,14 +34,22 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string|null  $guard
+     * @param string $guard
      * @return mixed
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if ($this->auth->guard($guard)->guest()) {
-            return response('Unauthorized.', HTTP_STATUS_UNAUTHORIZED);
+        $token = $this->auth->guard($guard)->getToken();
+        if(!$token) {
+            return $next($request);
         }
-        return $next($request);
+        $token = Cache::get($token);
+        if(!$token) {
+            return $next($request);
+        }
+        return with($next($request), function (Response $response) use ($token){
+            $response->addMeta('token', $token);
+            return $response;
+        });
     }
 }

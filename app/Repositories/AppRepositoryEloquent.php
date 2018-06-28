@@ -33,6 +33,9 @@ class AppRepositoryEloquent extends BaseRepository implements AppRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        App::creating(function (App &$app) {
+            $app->secret = str_random(32);
+        });
     }
     
 }

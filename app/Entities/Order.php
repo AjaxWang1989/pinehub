@@ -16,6 +16,10 @@ use App\Entities\Traits\ModelAttributesAccess;
  *
  * @property int $id
  * @property string $code 订单编号
+ * @property string|null $openId 微信open id或支付宝user ID
+ * @property string|null $wechatAppId 微信appid
+ * @property string|null $aliAppId 支付宝 appid
+ * @property string|null $appId 系统appid
  * @property int|null $buyerUserId 买家
  * @property float $totalAmount 应付款
  * @property float $paymentAmount 实际付款
@@ -25,18 +29,19 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int $status 订单状态：0-订单取消 10-已确定 20-已支付 30-已发货 40-已完成
  * @property int $cancellation 取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消
  * @property \Carbon\Carbon|null $signedAt 签收时间
- * @property string $receiverCity 收货城市
- * @property string $receiverDistrict 收货人所在城市区县
- * @property string $receiverAddress 收货地址
+ * @property string|null $receiverCity 收货城市
+ * @property string|null $receiverDistrict 收货人所在城市区县
+ * @property string|null $receiverAddress 收货地址
  * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property string $postNo 物流订单号
- * @property string $postCode 收货地址邮编
- * @property string $postName 物流公司名称
  * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单
+ * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\User|null $buyer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereBuyerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCancellation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCode($value)
@@ -45,12 +50,11 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDiscountAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereOpenId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaidAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePayType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaymentAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverDistrict($value)
@@ -59,113 +63,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
- * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
- * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostType($value)
- * @property string|null $openId 微信open id或支付宝user ID
- * @property string $app 发起购买的app类型
- * @property string|null $appId 微信app id或者支付宝app id
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereApp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereOpenId($value)
- * @property string|null $openId 微信open id或支付宝user ID
- * @property string|null $wechatAppId 微信appid
- * @property string|null $aliAppId 支付宝 appid
- * @property string|null $appId 系统appid
- * @property int|null $buyerUserId 买家
- * @property float $totalAmount 应付款
- * @property float $paymentAmount 实际付款
- * @property float $discountAmount 优惠价格
- * @property \Carbon\Carbon|null $paidAt 支付时间
- * @property string $payType 支付方式默认微信支付
- * @property \Carbon\Carbon|null $signedAt 签收时间
- * @property string|null $receiverCity 收货城市
- * @property string|null $receiverDistrict 收货人所在城市区县
- * @property string|null $receiverAddress 收货地址
- * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWechatAppId($value)
- * @property string|null $openId 微信open id或支付宝user ID
- * @property string|null $wechatAppId 微信appid
- * @property string|null $aliAppId 支付宝 appid
- * @property string|null $appId 系统appid
- * @property int|null $buyerUserId 买家
- * @property float $totalAmount 应付款
- * @property float $paymentAmount 实际付款
- * @property float $discountAmount 优惠价格
- * @property \Carbon\Carbon|null $paidAt 支付时间
- * @property string $payType 支付方式默认微信支付
- * @property \Carbon\Carbon|null $signedAt 签收时间
- * @property string|null $receiverCity 收货城市
- * @property string|null $receiverDistrict 收货人所在城市区县
- * @property string|null $receiverAddress 收货地址
- * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property string|null $openId 微信open id或支付宝user ID
- * @property string|null $wechatAppId 微信appid
- * @property string|null $aliAppId 支付宝 appid
- * @property string|null $appId 系统appid
- * @property int|null $buyerUserId 买家
- * @property float $totalAmount 应付款
- * @property float $paymentAmount 实际付款
- * @property float $discountAmount 优惠价格
- * @property \Carbon\Carbon|null $paidAt 支付时间
- * @property string $payType 支付方式默认微信支付
- * @property \Carbon\Carbon|null $signedAt 签收时间
- * @property string|null $receiverCity 收货城市
- * @property string|null $receiverDistrict 收货人所在城市区县
- * @property string|null $receiverAddress 收货地址
- * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property string|null $openId 微信open id或支付宝user ID
- * @property string|null $wechatAppId 微信appid
- * @property string|null $aliAppId 支付宝 appid
- * @property string|null $appId 系统appid
- * @property int|null $buyerUserId 买家
- * @property float $totalAmount 应付款
- * @property float $paymentAmount 实际付款
- * @property float $discountAmount 优惠价格
- * @property \Carbon\Carbon|null $paidAt 支付时间
- * @property string $payType 支付方式默认微信支付
- * @property \Carbon\Carbon|null $signedAt 签收时间
- * @property string|null $receiverCity 收货城市
- * @property string|null $receiverDistrict 收货人所在城市区县
- * @property string|null $receiverAddress 收货地址
- * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property string|null $openId 微信open id或支付宝user ID
- * @property string|null $wechatAppId 微信appid
- * @property string|null $aliAppId 支付宝 appid
- * @property string|null $appId 系统appid
- * @property int|null $buyerUserId 买家
- * @property float $totalAmount 应付款
- * @property float $paymentAmount 实际付款
- * @property float $discountAmount 优惠价格
- * @property \Carbon\Carbon|null $paidAt 支付时间
- * @property string $payType 支付方式默认微信支付
- * @property \Carbon\Carbon|null $signedAt 签收时间
- * @property string|null $receiverCity 收货城市
- * @property string|null $receiverDistrict 收货人所在城市区县
- * @property string|null $receiverAddress 收货地址
- * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
+ * @mixin \Eloquent
  */
 class Order extends Model implements Transformable
 {

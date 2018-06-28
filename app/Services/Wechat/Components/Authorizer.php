@@ -7,8 +7,15 @@
  */
 
 namespace App\Services\Wechat\Components;
+use Carbon\Carbon;
 
-
+/**
+ * @property string $authorizerAppid
+ * @property string $authorizerAccessToken
+ * @property Carbon $expiresIn
+ * @property string $authorizerRefreshToken
+ * @property array $funcInfo
+ * */
 class Authorizer
 {
     protected $authInfo = [];
@@ -31,10 +38,58 @@ class Authorizer
             $this->authInfo = [
                 "authorizer_appid" => $authorizerAppid,
                 "authorizer_access_token" => $authorizerAccessToken,
-                "expires_in" =>  $authorizerExpires,
+                "expires_in" =>  Carbon::now()->addMinute($authorizerExpires),
                 "authorizer_refresh_token" => $authorizerRefreshToken,
                 "func_info"=> $funcInfo
             ];
         }
+    }
+
+    /**
+     * @return array
+     */
+    public function getAuthInfo(): array
+    {
+        return $this->authInfo;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizerAccessToken(): string
+    {
+        return $this->authInfo['authorizer_access_token'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizerAppid(): string
+    {
+        return $this->authInfo['authorizer_appid'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizerRefreshToken(): string
+    {
+        return $this->authInfo['authorizer_refresh_token'];
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getExpiresIn(): Carbon
+    {
+        return $this->authInfo['expires_in'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getFuncInfo(): array
+    {
+        return $this->authInfo['func_info'];
     }
 }

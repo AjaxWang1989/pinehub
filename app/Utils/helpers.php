@@ -67,10 +67,10 @@ if(!function_exists('environmentFilePath')){
 
 
 if(!function_exists('setAliases')){
-    function setAliases(array $aliases)
+    function setAliases(array $aliases, \Laravel\Lumen\Application $app)
     {
-        foreach ($aliases as $key => $alias){
-            app()->alias($key, $alias);
+        foreach ($aliases as $alias => $abstract){
+            $app->alias($abstract, $alias);
         }
     }
 }

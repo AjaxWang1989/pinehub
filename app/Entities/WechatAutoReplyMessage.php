@@ -8,60 +8,29 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class WechatAutoReplyMessage.
+ * App\Entities\WechatAutoReplyMessage
  *
- * @package namespace App\Entities;
  * @property int $id
- * @property string $appId 微信app ID
  * @property string|null $name 规则名称
+ * @property string|null $appId 微信app ID
+ * @property int $focusReply 关注回复
  * @property string $type 类型
- * @property mixed|null $prefectMatchKeywords 全匹配关键字数组
- * @property mixed|null $semiMatchKeywords 半匹配关键字数组
+ * @property array $prefectMatchKeywords 全匹配关键字数组
+ * @property array $semiMatchKeywords 半匹配关键字数组
  * @property string $content 回复消息内容
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereFocusReply($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage wherePrefectMatchKeywords($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereSemiMatchKeywords($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int|null $focusReply 关注回复
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereFocusReply($value)
- * @property string|null $appId 微信app ID
- * @property int $focusReply 关注回复
- * @property array $prefectMatchKeywords 全匹配关键字数组
- * @property array $semiMatchKeywords 半匹配关键字数组
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereName($value)
- * @property string|null $appId 微信app ID
- * @property int $focusReply 关注回复
- * @property array $prefectMatchKeywords 全匹配关键字数组
- * @property array $semiMatchKeywords 半匹配关键字数组
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $appId 微信app ID
- * @property int $focusReply 关注回复
- * @property array $prefectMatchKeywords 全匹配关键字数组
- * @property array $semiMatchKeywords 半匹配关键字数组
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $appId 微信app ID
- * @property int $focusReply 关注回复
- * @property array $prefectMatchKeywords 全匹配关键字数组
- * @property array $semiMatchKeywords 半匹配关键字数组
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $appId 微信app ID
- * @property int $focusReply 关注回复
- * @property array $prefectMatchKeywords 全匹配关键字数组
- * @property array $semiMatchKeywords 半匹配关键字数组
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class WechatAutoReplyMessage extends Model implements Transformable
 {
