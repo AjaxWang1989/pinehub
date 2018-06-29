@@ -63,7 +63,6 @@ class OpenPlatformController extends Controller
     protected function verifyTicketRefresh(VerifyTicketRefreshed $ticketRefreshed)
     {
         $app = $this->wechat->openPlatform();
-        \Log::debug('verify ticket refresh');
         tap($app['verify_ticket'], function (VerifyTicket $ticket) use($ticketRefreshed){
             $ticket->setTicket($ticketRefreshed->getComponentVerifyTicket());
         });
