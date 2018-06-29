@@ -47,7 +47,7 @@ class WebRoutes extends Routes
                 $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request){
                     $count = Cache::get('cache_count', 0);
                     $count ++;
-                    Cache::set('cache_count', $count);
+                    Cache::set('cache_count', $count, 3600);
                     Log::debug('cache count '.$count);
                     return "pinehub official service";
                 });
