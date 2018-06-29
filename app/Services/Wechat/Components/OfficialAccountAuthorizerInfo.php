@@ -38,6 +38,14 @@ class OfficialAccountAuthorizerInfo
     }
 
     /**
+     * @return null
+     */
+    public function getMiniProgramInfo()
+    {
+        return null;
+    }
+
+    /**
      * @return string
      */
     public function getAlias(): string
