@@ -94,7 +94,7 @@ class WechatService
 
     public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
     {
-        $redirect = $this->openPlatform->config['oauth']['callback'];
+        $redirect = $this->openPlatform()->config['oauth']['callback'];
         $redirect = str_replace('{appId}', $appId, $redirect);
         $redirect .= "?token={$token}";
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
