@@ -34,6 +34,7 @@ class AppRepositoryEloquent extends BaseRepository implements AppRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
         App::creating(function (App &$app) {
+            $app->id = uniqid('kdy');
             $app->secret = str_random(32);
         });
     }

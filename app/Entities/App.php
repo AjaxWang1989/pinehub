@@ -11,7 +11,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 /**
  * App\Entities\App
  *
- * @property int $id app id
+ * @property string $id app id
  * @property string $secret 应用secret
  * @property string $name 应用名称
  * @property string $logo 应用logo
@@ -37,12 +37,20 @@ class App extends Model implements Transformable
 {
     use TransformableTrait;
 
+    protected $keyType = 'string';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'name',
+        'secret',
+        'logo',
+        'wechat_app_id',
+        'mini_app_id'
+    ];
 
     public function officialAccount(): BelongsTo
     {

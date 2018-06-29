@@ -21,7 +21,7 @@ class CreateFiles extends Migration
             $table->string('driver')->comment('文件存储驱动');
             $table->string('path')->comment('文件路径');
             $table->string('extension')->nullable()->default(null)->comment('文件拓展名');
-            $table->string('type')->nullable()->default(null)->comment('文件类型');
+            $table->string('mime_type')->nullable()->default(null)->comment('文件类型');
             $table->string('name')->nullable()->default(null)->comment('文件名');
             $table->string('src')->nullable()->default(null)->comment('文件url路径');
             $table->boolean('encrypt')->default(false)->comment('是否加密');

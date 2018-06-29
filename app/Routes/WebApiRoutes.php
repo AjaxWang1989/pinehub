@@ -34,12 +34,12 @@ class WebApiRoutes extends ApiRoutes
                 $router->get('/shops', ['as' => 'shop.list', 'uses' => 'ShopsController@getShops']);
                 $router->get('/shop/{id}', ['as' => 'shop.detail', 'uses' => 'ShopsController@getShopDetail']);
                 $router->put('/shop/{id}', ['as' => 'shop.update', 'uses' => 'ShopsController@update']);
-                $router->post('/app/logo/{driver?}', ['as' => 'app.logo.upload', 'uses' => 'AppController@upload']);
+                $router->post('/app/logo/{driver?}', ['as' => 'app.logo.upload', 'uses' => 'AppController@uploadLogo']);
                 $router->get('/apps', ['as' => 'app.list', 'uses' => 'AppController@index']);
                 $router->post('/app', ['as' => 'app.create', 'uses' => 'AppController@store']);
                 $router->put('/app/{id}', ['as' => 'app.update', 'uses' => 'AppController@update']);
                 $router->get('/app/{id}', ['as' => 'app.show', 'uses' => 'AppController@show']);
-                $router->delete('/app/{id}', ['as' => 'app.delete', 'uses' => 'AppController@destory']);
+                $router->delete('/app/{id}', ['as' => 'app.delete', 'uses' => 'AppController@destroy']);
             });
 
             $router->group(["prefix" => "wechat", "namespace" => "Wechat"], function ($router) {

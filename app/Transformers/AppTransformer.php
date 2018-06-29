@@ -22,7 +22,7 @@ class AppTransformer extends TransformerAbstract
     public function transform(App $model)
     {
         return [
-            'id'         => (int) $model->id,
+            'id'         => $model->id,
             'name' => $model->name,
             'mini_app_id' => $model->miniAppId,
             'wechat_app_id' => $model->wechatAppId,

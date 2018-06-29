@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -15,7 +16,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $driver 文件存储驱动
  * @property string $path 文件路径
  * @property string|null $src
- * @property string|null $type
+ * @property string|null $mimeType
  * @property string|null $name
  * @property string|null $extension 文件拓展名
  * @property int $encrypt 是否加密
@@ -32,16 +33,16 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereEndpoint($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereExtension($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereMimeType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File wherePath($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereSrc($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class File extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.

@@ -24,7 +24,7 @@ class UploadController extends Controller
     {
         $fileField = $request->input('file_field', 'file');
         $uploadFile = $request->file($fileField);
-        $data['type'] = $uploadFile->getType();
+        $data['mime_type'] = $uploadFile->getMimeType();
         $topDir = $request->input('dir', '');
         $data['extension'] = $uploadFile->getClientOriginalExtension();
         $path = Carbon::now()->format('Ymd');

@@ -47,19 +47,19 @@ class AppController extends Controller
         return $this->response()->paginator($items, new AppItemTransformer());
     }
 
-    public function update(int $id, AppUpdateRequest $request)
+    public function update(string $id, AppUpdateRequest $request)
     {
         $result = $this->appRepository->update($request->all(), $id);
         return $this->response()->item($result, new AppTransformer());
     }
 
-    public function show(int $id)
+    public function show(string $id)
     {
         $item = $this->appRepository->find($id);
         return $this->response()->item($item, new AppTransformer());
     }
 
-    public function destroy(int $id)
+    public function destroy(string $id)
     {
         $result = $this->appRepository->delete($id);
         return $this->response(new JsonResponse(['delete_count' => $result]));
