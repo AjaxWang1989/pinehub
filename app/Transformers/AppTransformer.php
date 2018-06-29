@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use App\Entities\App;
 
@@ -21,6 +22,7 @@ class AppTransformer extends TransformerAbstract
      */
     public function transform(App $model)
     {
+        Log::debug('app data', $model->toArray());
         return [
             'id'         => $model->id,
             'name' => $model->name,
