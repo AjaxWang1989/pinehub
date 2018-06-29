@@ -79,13 +79,27 @@ class WechatConfig extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    protected $casts = [
+        'service_type_info' => 'json',
+        'verify_type_info'  => 'json',
+        'business_info' => 'json',
+        'func_info' => 'json',
+        'mini_program_info'  => 'json',
+        'component_access_token_expires_in' => 'date',
+        'authorizer_access_token_expires_in' => 'date'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'app_id', 'app_secret', 'token', 'aes_key', 'type', 'mode', 'wechat_bind_app', 'app_name'
+        'app_id', 'app_secret', 'token', 'aes_key', 'type', 'mode', 'wechat_bind_app', 'app_name',
+        'nickname', 'head_img', 'user_name', 'alias', 'principal_name', 'qrcode_url', 'auth_code',
+        'auth_code_expires_in', 'auth_info_type', 'component_access_token', 'component_access_token_expires_in',
+        'authorizer_refresh_token', 'authorizer_access_token', 'authorizer_access_token_expires_in', 'service_type_info',
+        'verify_type_info', 'business_info', 'func_info', 'mini_program_info'
     ];
 
     public function menu() : HasOne
