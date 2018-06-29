@@ -74,7 +74,7 @@ class OfficialAccountAuthorizerInfo
      */
     public function getHeadImg(): string
     {
-        return $this->authorizerInfo['headImg'];
+        return $this->authorizerInfo['head_img'];
     }
 
     /**
@@ -132,7 +132,7 @@ class OfficialAccountAuthorizerInfo
      */
     public function getFuncInfo(): array
     {
-        return $this->authorizationInfo['funcInfo'];
+        return $this->authorizationInfo['func_info'];
     }
 
     /**
