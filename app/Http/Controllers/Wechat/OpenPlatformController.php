@@ -176,7 +176,7 @@ class OpenPlatformController extends Controller
                 Cache::set(CURRENT_APP_PREFIX.$request->input('token'), [$appId, $authCode], $expiresIn);
             }
         }
-        return redirect('open-platform.auth')->with('success', true);
+        return view('open-platform.auth')->with('success', true);
     }
 
     public function openPlatformAuthMakeSure(Request $request)
