@@ -10,6 +10,7 @@ namespace App\Routes;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Laravel\Lumen\Application;
@@ -44,6 +45,10 @@ class WebRoutes extends Routes
             tap($router, function (Router $router) {
                 $this->subRoutes($router);
                 $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request){
+                    $count = Cache::get('cache_count', 0);
+                    $count ++;
+                    Cache::set('cache_count', $count);
+                    Log::debug('cache count '.$count);
                     return "pinehub official service";
                 });
             });
