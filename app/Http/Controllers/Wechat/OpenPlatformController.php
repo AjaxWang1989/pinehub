@@ -100,7 +100,7 @@ class OpenPlatformController extends Controller
         $authInfo = $this->wechat->getOpenPlatformAuthorizer($authorized->getAuthorizerAppid());
 
         $wechatInfo = $this->wechatRepository->findByField('app_id', $authorized->getAuthorizerAppid())->first();
-        Log::debug('authorizer info', [$authInfo->getAuthorizerInfo(), $authInfo->getAuthorizationInfo()]);
+        Log::debug('authorizer info', [$authInfo->getAuthorizerInfo(), $authInfo->getAuthorizationInfo(), $authorizer->getAuthInfo()]);
         tap($wechatInfo, function (WechatConfig &$config) use($authInfo, $authorized, $authorizer, $appId, $componentAccessToken) {
             $config->alias = $authInfo->getAlias();
             $config->nickname = $authInfo->getNickname();
