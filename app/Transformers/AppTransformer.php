@@ -22,7 +22,6 @@ class AppTransformer extends TransformerAbstract
      */
     public function transform(App $model)
     {
-        Log::debug('app data', $model->toArray());
         return [
             'id'         => $model->id,
             'name' => $model->name,

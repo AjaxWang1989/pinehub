@@ -40,6 +40,9 @@ class App extends Model implements Transformable
 
     protected $keyType = 'string';
 
+    public $incrementing = false;
+
+
     /**
      * The attributes that are mass assignable.
      *
