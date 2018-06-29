@@ -105,4 +105,14 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     {
         return $this->belongsToMany(Order::class, 'order_items', 'buyer_user_id', 'order_id' );
     }
+
+    public function apps() : BelongsToMany
+    {
+        return $this->belongsToMany(App::class, AppUser::getTable(), 'user_id', 'app_id');
+    }
+
+    public function appUsers() : HasMany
+    {
+        return $this->hasMany(AppUser::class, 'user_id', 'id');
+    }
 }

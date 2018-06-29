@@ -2,33 +2,35 @@
 
 namespace App\Transformers;
 
+use App\Entities\County;
 use League\Fractal\TransformerAbstract;
-use App\Entities\Province;
+use App\Entities\City;
 
 /**
- * Class ProvincesItemTransformer.
+ * Class CityTransformer.
  *
  * @package namespace App\Transformers;
  */
-class ProvincesItemTransformer extends TransformerAbstract
+class CityTransformer extends TransformerAbstract
 {
     /**
-     * Transform the ProvincesItem entity.
+     * Transform the City entity.
      *
-     * @param \App\Entities\Province $model
+     * @param \App\Entities\City $model
      *
      * @return array
      */
-    public function transform(Province $model)
+    public function transform(City $model)
     {
         return [
             'id'         => (int) $model->id,
             /* place your other model properties here */
-            'code' => $model->code,
-            'name' => $model->name,
             'country' => $model->country->only(['id', 'code', 'name']),
+            'province' => $model->province->only(['id', 'code', 'name']),
+            'counties'  => $model->counties->map(function (County $county){
+                return $county->only(['id', 'code', 'name']);
+            }),
             'counties_count' => $model->countiesCount,
-            'cities_count' => $model->citiesCount,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];

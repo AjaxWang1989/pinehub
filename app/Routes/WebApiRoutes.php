@@ -84,14 +84,36 @@ class WebApiRoutes extends ApiRoutes
                 $router->delete("auto_reply_message/{id}", ['as' => 'wechat.auto_reply_message.delete', 'uses' => 'AutoReplyMessagesController@destroy']);
                 $router->delete("auto_reply_messages", ['as' => 'wechat.auto_reply_message.delete.bat', 'uses' => 'AutoReplyMessagesController@destroy']);
             });
-            $router->get('/countries', ['as' => 'country.list', 'uses' => 'CountryController@getCountries']);
-            $router->get('/country/{id}', ['as' => 'country.detail', 'uses' => 'CountryController@getCountryDetail']);
-            $router->get('/country/{countryId}/provinces', ['as' => 'province.list', 'uses' => 'ProvinceController@getProvinces']);
-            $router->get('/province/{id}', ['as' => 'province.detail', 'uses' => 'ProvinceController@getProvinceDetail']);
-            $router->get('/country/{countryId}/province/{provinceId}/cities', ['as' => 'city.list', 'uses' => 'CityController@getCities']);
-            $router->get('/city/{id}', ['as' => 'city.detail', 'uses' => 'CityController@getCityDetail']);
-            $router->get('/country/{countryId}/province/{provinceId}/city/{cityId}/counties', ['as' => 'county.list', 'uses' => 'CountyController@getCounties']);
-            $router->get('/county/{id}', ['as' => 'county.detail', 'uses' => 'CountyController@getCountyDetail']);
+
+            $router->get('/countries', ['as' => 'country.list', 'uses' => 'CountriesController@index']);
+            $router->get('/country/{id}', ['as' => 'country.detail', 'uses' => 'CountriesController@show']);
+            $router->post('/country', ['as' => 'country.create', 'uses' => 'CountriesController@store']);
+            $router->put('/country/{id}', ['as' => 'country.update', 'uses' => 'CountriesController@update']);
+            $router->delete('/country/{id}', ['as' =>'country.delete', 'uses' => 'CountriesController@destory']);
+
+            $router->get('/country/{countryId}/provinces', ['as' => 'province.list.country', 'uses' => 'ProvincesController@index']);
+            $router->get('/provinces', ['as' => 'province.list', 'uses' => 'ProvincesController@index']);
+            $router->get('/province/{id}', ['as' => 'province.detail', 'uses' => 'ProvincesController@show']);
+            $router->post('/country/{countryId}/province', ['as' => 'province.create.country', 'uses' => 'ProvincesController@store']);
+            $router->post('/province', ['as' => 'province.create', 'uses' => 'ProvincesController@store']);
+            $router->put('/province/{id}', ['as' => 'province.update', 'uses' => 'ProvincesController@update']);
+
+            $router->get('/country/{countryId}/cities', ['as' => 'city.list.country', 'uses' => 'CitiesController@index']);
+            $router->get('/province/{provinceId}/cities', ['as' => 'city.list.province', 'uses' => 'CitiesController@index']);
+            $router->get('/cities', ['as' => 'city.list.all', 'uses' => 'CitiesController@index']);
+            $router->get('/city/{id}', ['as' => 'city.detail', 'uses' => 'CitiesController@show']);
+            $router->post('/city', ['as' => 'city.create', 'uses' => 'CitiesController@store']);
+            $router->post('/province/{provinceId}/cities', ['as' => 'city.create.province', 'uses' => 'CitiesController@store']);
+            $router->put('/city/{id}', ['as' => 'city.update', 'uses' => 'CitiesController@update']);
+
+            $router->get('/country/{countryId}/counties', ['as' => 'county.list.country', 'uses' => 'CountiesController@index']);
+            $router->get('/province/{provinceId}/counties', ['as' => 'county.list.province', 'uses' => 'CountiesController@index']);
+            $router->get('/city/{cityId}/counties', ['as' => 'county.list.city', 'uses' => 'CountiesController@index']);
+            $router->get('/counties', ['as' => 'county.list', 'uses' => 'CountiesController@index']);
+            $router->get('/county/{id}', ['as' => 'county.show', 'uses' => 'CountiesController@show']);
+            $router->post('/city/{cityId}/county', ['as' => 'county.create.city', 'uses' => 'CountiesController@store']);
+            $router->post('/county', ['as' => 'county.create', 'uses' => 'CountiesController@store']);
+            $router->put('/county/{id}', ['as' => 'county.update', 'uses' => 'CountiesController@update']);
         });
     }
 }
