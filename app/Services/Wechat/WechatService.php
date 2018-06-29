@@ -29,6 +29,7 @@ use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\OfficialAccount\Server\Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
 use Illuminate\Support\Facades\Log;
+use Overtrue\LaravelWeChat\CacheBridge;
 
 class WechatService
 {
@@ -60,6 +61,8 @@ class WechatService
             }
         }
 
+        $this->setWechatApplication($this->officeAccount, app());
+
         return ($this->officeAccount);
     }
 
@@ -67,6 +70,7 @@ class WechatService
     {
         if(!$this->openPlatform)
             $this->openPlatform= Factory::openPlatform($this->config['open_platform']);
+        $this->setWechatApplication($this->openPlatform, app());
         return ($this->openPlatform);
     }
 
@@ -235,6 +239,14 @@ class WechatService
         return $result;
     }
 
+    protected function setWechatApplication($app, $laravelApp)
+    {
+        if (config('wechat.defaults.use_laravel_cache')) {
+            $app['cache'] = new CacheBridge($laravelApp['cache.store']);
+        }
+        $app['request'] = $laravelApp['request'];
+    }
+
     public function payment()
     {
         if(!$this->payment)
@@ -253,6 +265,7 @@ class WechatService
                 $this->miniProgram = $this->openPlatform()->miniProgram($appId);
             }
         }
+        $this->setWechatApplication($this->miniProgram, app());
         return $this->miniProgram;
     }
 
