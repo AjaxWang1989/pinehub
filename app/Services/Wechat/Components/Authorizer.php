@@ -20,35 +20,9 @@ class Authorizer
 {
     protected $authInfo = [];
 
-    public function __construct()
+    public function __construct($authInfo)
     {
-        $authInfo = null;
-        if(func_num_args() === 1 && is_array(func_get_arg(0))) {
-            $authInfo = func_get_arg(0);
-        }elseif (func_num_args() > 1 ) {
-           $authInfo = func_get_args();
-        }
-
-        $authorizerAppid = null;
-        $authorizerAccessToken = null;
-        $authorizerExpires = null;
-        $authorizerRefreshToken = null;
-        $funcInfo = null;
-        if($authInfo){
-            if(count($authInfo) === 5) {
-                list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken, $funcInfo) = $authInfo;
-            }elseif(count($authInfo) === 4){
-                list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken) = $authInfo;
-            }
-        }
-
-        $this->authInfo = [
-            "authorizer_appid" => $authorizerAppid,
-            "authorizer_access_token" => $authorizerAccessToken,
-            "expires_in" =>  Carbon::now()->addMinute($authorizerExpires),
-            "authorizer_refresh_token" => $authorizerRefreshToken,
-            "func_info"=> $funcInfo
-        ];
+        $this->authInfo = $authInfo;
     }
 
     /**
