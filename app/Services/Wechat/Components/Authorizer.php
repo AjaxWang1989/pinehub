@@ -35,9 +35,9 @@ class Authorizer
         $authorizerRefreshToken = null;
         $funcInfo = null;
         if($authInfo){
-            if(func_num_args() === 5) {
+            if(count($authInfo) === 5) {
                 list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken, $funcInfo) = $authInfo;
-            }elseif(func_num_args() === 4){
+            }elseif(count($authInfo) === 4){
                 list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken) = $authInfo;
             }
         }
