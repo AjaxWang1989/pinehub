@@ -43,7 +43,7 @@ class OpenPlatformController extends Controller
         });
 
         Event::listen(VerifyTicketRefreshed::class, function (VerifyTicketRefreshed $ticketRefreshed) {
-
+            $this->verifyTicketRefresh($ticketRefreshed);
         });
         Event::listen(WechatSubscribeEvent::class, function (WechatSubscribeEvent $event) {
            $this->subscribed($event);
