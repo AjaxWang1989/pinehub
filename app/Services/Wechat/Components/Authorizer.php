@@ -23,6 +23,7 @@ class Authorizer
     public function __construct($authInfo)
     {
         $this->authInfo = $authInfo;
+        $this->authInfo['expires_in'] = Carbon::now()->addMinute($this->authInfo['expires_in']);
     }
 
     /**
@@ -62,7 +63,7 @@ class Authorizer
      */
     public function getExpiresIn(): Carbon
     {
-        return $this->authInfo['expires_in'];
+        return  $this->authInfo['expires_in'];
     }
 
     /**

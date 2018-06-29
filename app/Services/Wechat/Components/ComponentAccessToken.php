@@ -17,24 +17,10 @@ class ComponentAccessToken
 {
     protected $authInfo = [];
 
-    public function __construct()
+    public function __construct($authInfo)
     {
-        if(func_num_args() === 0 && is_array(func_get_arg(0))) {
-            $this->authInfo = func_get_arg(0);
-        }elseif (func_num_args() > 1 ) {
-            $componentAppid = null;
-            $componentAccessToken = null;
-            $componentExpires = null;
-            $componentRefreshToken = null;
-            $funcInfo = null;
-            if(func_num_args() === 2) {
-                list($componentAccessToken, $componentExpires) = func_get_args();
-            }
-            $this->authInfo = [
-                "component_access_token" => $componentAccessToken,
-                "expires_in" =>  Carbon::now()->addMinute($componentExpires),
-            ];
-        }
+        $this->authInfo = $authInfo;
+        $this->authInfo['expires_in'] = Carbon::now()->addMinute($authInfo['expires_in']);
     }
 
     /**
