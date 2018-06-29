@@ -19,14 +19,22 @@ namespace App\Services\Wechat\Components;
  * @property array $businessInfo
  * @property string $qrcodeUrl
  * @property array $authorizationInfo
+ * @property string $authorizerAppid
+ * @property string $authorizerRefreshToken
+ * @property array $funcInfo
+ * @property string $signature
  * */
 class OfficialAccountAuthorizerInfo
 {
     protected $authorizerInfo = [];
 
-    public function __construct(array $authorizerInfo)
+    protected $authorizationInfo = [];
+
+    public function __construct(array $info)
     {
-        $this->authorizerInfo = $authorizerInfo;
+        $this->authorizerInfo = $info['authorizer_info'];
+
+        $this->authorizationInfo = $info['authorization_info'];
     }
 
     /**
@@ -118,4 +126,37 @@ class OfficialAccountAuthorizerInfo
     {
         return $this->authorizerInfo['verify_type_info'];
     }
+
+    /**
+     * @return array
+     */
+    public function getFuncInfo(): array
+    {
+        return $this->authorizationInfo['funcInfo'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizerRefreshToken(): string
+    {
+        return $this->authorizationInfo['authorizer_refresh_token'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizerAppid(): string
+    {
+        return $this->authorizationInfo['authorizer_appid'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getSignature(): string
+    {
+        return $this->authorizerInfo['signature'];
+    }
+
 }

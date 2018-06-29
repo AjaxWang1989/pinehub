@@ -21,15 +21,21 @@ namespace App\Services\Wechat\Components;
  * @property array $authorizationInfo
  * @property string $signature
  * @property array $miniProgramInfo
+ * @property string $authorizerAppid
+ * @property string $authorizerRefreshToken
+ * @property array $funcInfo
  * */
 class MiniProgramAuthorizerInfo
 {
 
     protected $authorizerInfo = [];
 
-    public function __construct(array $authorizerInfo)
+    protected $authorizationInfo = [];
+
+    public function __construct(array $info)
     {
-        $this->authorizerInfo = $authorizerInfo;
+        $this->authorizerInfo = $info['authorizer_info'];
+        $this->authorizationInfo = $info['authorization_info'];
     }
 
     /**
@@ -136,5 +142,29 @@ class MiniProgramAuthorizerInfo
     public function getVerifyTypeInfo(): array
     {
         return $this->authorizerInfo['verify_type_info'];
+    }
+
+    /**
+     * @return array
+     */
+    public function getFuncInfo(): array
+    {
+        return $this->authorizationInfo['funcInfo'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizerRefreshToken(): string
+    {
+        return $this->authorizationInfo['authorizer_refresh_token'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getAuthorizerAppid(): string
+    {
+        return $this->authorizationInfo['authorizer_appid'];
     }
 }
