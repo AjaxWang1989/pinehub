@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -35,7 +36,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class App extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     protected $keyType = 'string';
 
@@ -45,6 +46,7 @@ class App extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
+        'id',
         'name',
         'secret',
         'logo',
