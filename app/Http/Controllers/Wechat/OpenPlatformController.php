@@ -80,7 +80,7 @@ class OpenPlatformController extends Controller
     {
         $this->wechatRepository->updateOrCreate(['app_id' => $authorized->getAuthorizerAppid()], [
             'auth_code' => $authorized->getAuthorizationCode(),
-            'auth_code_expires_in' => Carbon::now()->addMinute((int)$authorized->getAuthorizationCodeExpiredTime()),
+            'auth_code_expires_in' => Carbon::createFromTimestamp((int)$authorized->getAuthorizationCodeExpiredTime()),
             'auth_info_type' => $authorized->getInfoType()
         ]);
         $cacheKey = CURRENT_APP_PREFIX.$authorized->getAuthorizationCode();
