@@ -127,7 +127,7 @@ class WechatService
         if($bizAppid) {
             $url .= "&biz_appid={$bizAppid}";
         }
-        return redirect($url);
+        return $url;
     }
 
     public function materialStats()
