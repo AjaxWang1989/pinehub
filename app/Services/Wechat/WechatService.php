@@ -77,6 +77,7 @@ class WechatService
     public function openPlatformAuthorizer(string  $authCode)
     {
         $authorizer = $this->openPlatform()->handleAuthorize($authCode);
+        Log::debug('authorizer data ', $authorizer);
         return new Authorizer($authorizer['authorization_info']);
     }
 

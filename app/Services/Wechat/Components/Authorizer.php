@@ -22,27 +22,33 @@ class Authorizer
 
     public function __construct()
     {
-        if(func_num_args() === 0 && is_array(func_get_arg(0))) {
-            $this->authInfo = func_get_arg(0);
+        $authInfo = null;
+        if(func_num_args() === 1 && is_array(func_get_arg(0))) {
+            $authInfo = func_get_arg(0);
         }elseif (func_num_args() > 1 ) {
-            $authorizerAppid = null;
-            $authorizerAccessToken = null;
-            $authorizerExpires = null;
-            $authorizerRefreshToken = null;
-            $funcInfo = null;
-            if(func_num_args() === 5) {
-                list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken, $funcInfo) = func_get_args();
-            }elseif(func_num_args() === 4){
-                list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken) = func_get_args();
-            }
-            $this->authInfo = [
-                "authorizer_appid" => $authorizerAppid,
-                "authorizer_access_token" => $authorizerAccessToken,
-                "expires_in" =>  Carbon::now()->addMinute($authorizerExpires),
-                "authorizer_refresh_token" => $authorizerRefreshToken,
-                "func_info"=> $funcInfo
-            ];
+           $authInfo = func_get_args();
         }
+
+        $authorizerAppid = null;
+        $authorizerAccessToken = null;
+        $authorizerExpires = null;
+        $authorizerRefreshToken = null;
+        $funcInfo = null;
+        if($authInfo){
+            if(func_num_args() === 5) {
+                list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken, $funcInfo) = $authInfo;
+            }elseif(func_num_args() === 4){
+                list($authorizerAppid, $authorizerAccessToken, $authorizerExpires, $authorizerRefreshToken) = $authInfo;
+            }
+        }
+
+        $this->authInfo = [
+            "authorizer_appid" => $authorizerAppid,
+            "authorizer_access_token" => $authorizerAccessToken,
+            "expires_in" =>  Carbon::now()->addMinute($authorizerExpires),
+            "authorizer_refresh_token" => $authorizerRefreshToken,
+            "func_info"=> $funcInfo
+        ];
     }
 
     /**
