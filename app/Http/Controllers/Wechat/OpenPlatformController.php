@@ -113,7 +113,7 @@ class OpenPlatformController extends Controller
     public function componentLoginAuth(Request $request)
     {
         $appId = $request->input('app_id', null);
-        $token = $request->input('token', app('api.auth')->getToken());
+        $token = $request->input('token', null);
         Cache::set('auth.success.'.$request->input('token'), $appId);
         return $this->wechat->openPlatformComponentLoginPage($appId, $token);
     }
