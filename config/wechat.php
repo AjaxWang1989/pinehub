@@ -87,7 +87,7 @@ return [
              'token'   => env('WECHAT_OPEN_PLATFORM_TOKEN', ''),
              'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
              'oauth' => [
-                 'callback' => webUriGenerator(env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '/examples/oauth_callback.php')),
+                 'callback' => webUriGenerator(env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '/examples/oauth_callback.php'), null, env('WEB_DOMAIN')),
              ],
          ],
      ],
