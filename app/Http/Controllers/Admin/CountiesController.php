@@ -11,6 +11,7 @@ use App\Http\Requests\Admin\CountyUpdateRequest;
 use App\Transformers\CountyTransformer;
 use App\Transformers\CountyItemTransformer;
 use App\Repositories\CountyRepository;
+use App\Http\Controllers\Controller;
 
 /**
  * Class CountiesController.

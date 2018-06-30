@@ -100,8 +100,8 @@ class OpenPlatformController extends Controller
         $authInfo = $this->wechat->getOpenPlatformAuthorizer($authorized->getAuthorizerAppid());
 
         $wechatInfo = $this->wechatRepository->findByField('app_id', $authorized->getAuthorizerAppid())->first();
-        Log::debug('authorizer info', [$authInfo->getAuthorizerInfo(), $authInfo->getAuthorizationInfo(), $authorizer->getAuthInfo()]);
-        tap($wechatInfo, function (WechatConfig &$config) use($authInfo, $authorized, $authorizer, $appId, $componentAccessToken) {
+
+        tap($wechatInfo, function (WechatConfig &$config) use($authInfo, $authorized, $authorizer, $appId, $componentAccessToken, $app) {
             $config->alias = $authInfo->getAlias();
             $config->nickname = $authInfo->getNickname();
             $config->authorizerAccessToken = $authorizer->getAuthorizerAccessToken();
@@ -121,6 +121,21 @@ class OpenPlatformController extends Controller
             $config->miniProgramInfo = $authInfo->getMiniProgramInfo();
             $config->type = $config->miniProgramInfo ? WECHAT_MINI_PROGRAM : WECHAT_OFFICIAL_ACCOUNT;
             $config->save();
+            if($appId) {
+                if($config->type === WECHAT_OFFICIAL_ACCOUNT){
+                    if(!$app->openAppId) {
+                        $account = $this->wechat->openPlatform()->officialAccount($config->appId)->account->create();
+                        $app->openAppId = $account['open _appid'];
+                    }
+                    $this->wechat->openPlatform()->officialAccount($config->appId)->account->bindTo($app->openAppId);
+                }else{
+                    if(!$app->openAppId) {
+                        $account = $this->wechat->openPlatform()->miniProgram($config->appId)->account->create();
+                        $app->openAppId = $account['open _appid'];
+                    }
+                    $this->wechat->openPlatform()->miniProgram($config->appId)->account->bindTo($app->openAppId);
+                }
+            }
         });
         if(isset($app)) {
             if($authInfo instanceof OfficialAccountAuthorizerInfo) {
@@ -161,8 +176,18 @@ class OpenPlatformController extends Controller
                 $wechatMap->map(function (WechatConfig $config) use($app){
                     if($config->type === WECHAT_OFFICIAL_ACCOUNT) {
                         $app->wechatAppId = $config->appId;
+                        if(!$app->openAppId) {
+                            $account = $this->wechat->openPlatform()->officialAccount($config->appId)->account->create();
+                            $app->openAppId = $account['open _appid'];
+                        }
+                        $this->wechat->openPlatform()->officialAccount($config->appId)->account->bindTo($app->openAppId);
                     } else {
                         $app->miniAppId = $config->appId;
+                        if(!$app->openAppId) {
+                            $account = $this->wechat->openPlatform()->miniProgram($config->appId)->account->create();
+                            $app->openAppId = $account['open _appid'];
+                        }
+                        $this->wechat->openPlatform()->miniProgram($config->appId)->account->bindTo($app->openAppId);
                     }
                     $config->wechatBindApp = $app->id;
                     $config->save();

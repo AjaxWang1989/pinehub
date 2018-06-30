@@ -2,12 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Criteria\UserCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\UserRepository;
 use App\Entities\User;
-use App\Validators\UserValidator;
 
 /**
  * Class UserRepositoryEloquent.
@@ -23,7 +19,9 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         'sex' => '=',
         'roles.slug' => '=',
         'roles.display_name' => 'like',
-        'roles.group.display_name' => 'like'
+        'roles.group.display_name' => 'like',
+        'channel' => '=',
+        'register_channel' => '=',
     ];
     /**
      * Specify Model class name
@@ -43,6 +41,6 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
      */
     public function boot()
     {
-        $this->pushCriteria(app(UserCriteria::class));
+
     }
 }

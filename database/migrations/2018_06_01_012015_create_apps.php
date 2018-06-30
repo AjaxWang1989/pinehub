@@ -15,12 +15,13 @@ class CreateApps extends Migration
     {
         //
         Schema::create('apps', function (Blueprint $table) {
-            $table->string('id')->primary()->comment('app id');
-            $table->string('secret')->comment('应用secret');
-            $table->string('name')->comment('应用名称');
+            $table->string('id', 16)->primary()->comment('app id');
+            $table->string('secret', 32)->comment('应用secret');
+            $table->string('name', 16)->comment('应用名称');
             $table->string('logo')->comment('应用logo');
-            $table->string('wechat_app_id')->nullable()->default(null)->comment('微信公众号appid');
-            $table->string('mini_app_id')->nullable()->default(null)->comment('小程序appid');
+            $table->string('wechat_app_id', 28)->nullable()->default(null)->comment('微信公众号appid');
+            $table->string('mini_app_id', 28)->nullable()->default(null)->comment('小程序appid');
+            $table->string('open_app_id', 28)->nullable()->default(null)->comment('api创建open platform appid');
             $table->timestamps();
             $table->softDeletes();
         });

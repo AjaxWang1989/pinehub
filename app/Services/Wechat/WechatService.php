@@ -43,7 +43,12 @@ class WechatService
 
     protected $openPlatform = null;
 
-    public function __construct(array  $config)
+    public function __construct(array  $config = [])
+    {
+        $this->config = $config;
+    }
+
+    public function setConfig(array  $config)
     {
         $this->config = $config;
     }
@@ -77,7 +82,6 @@ class WechatService
     public function openPlatformAuthorizer(string  $authCode)
     {
         $authorizer = $this->openPlatform()->handleAuthorize($authCode);
-        Log::debug('authorizer data ', $authorizer);
         return new Authorizer($authorizer['authorization_info']);
     }
 
@@ -100,10 +104,8 @@ class WechatService
     public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
     {
         $redirect = $this->openPlatform()->config['oauth']['callback'];
-        Log::debug('redirect url1 '.$redirect);
         $redirect = str_replace('{appId}', $appId, $redirect);
         $redirect .= "?token={$token}";
-        Log::debug('redirect url '.$redirect);
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
         if($type) {
             switch ($type) {

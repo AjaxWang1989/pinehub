@@ -19,7 +19,7 @@ class CreateCountiesTable extends Migration
             $table->unsignedInteger('province_id')->comment('省份ID');
             $table->unsignedInteger('city_id')->comment('城市ID');
             $table->string('code', 6)->comment('区县编码');
-            $table->string('name')->comment('区县名称');
+            $table->string('name', 16)->comment('区县名称');
             $table->timestamps();
             $table->index('code');
             $table->index('country_id');

@@ -17,9 +17,9 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int $id
  * @property string $code 订单编号
  * @property string|null $openId 微信open id或支付宝user ID
- * @property string|null $wechatAppId 微信appid
- * @property string|null $aliAppId 支付宝 appid
- * @property string|null $appId 系统appid
+ * @property string|null $wechatAppId 维系app id
+ * @property string|null $aliAppId 支付宝app id
+ * @property string|null $appId 系统app id
  * @property int|null $buyerUserId 买家
  * @property float $totalAmount 应付款
  * @property float $paymentAmount 实际付款
@@ -35,6 +35,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Carbon\Carbon|null $consignedAt 发货时间
  * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
+ * @property int $scoreSettle 积分是否已经结算
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -58,6 +59,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverDistrict($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereScoreSettle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTotalAmount($value)
@@ -105,7 +107,7 @@ class Order extends Model implements Transformable
     protected $fillable = [
         'code', 'buyer_user_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
-        'receiver_district', 'receiver_address', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id'
+        'receiver_district', 'receiver_address', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle'
     ];
 
     public function buyer() : BelongsTo

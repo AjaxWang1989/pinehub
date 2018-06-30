@@ -70,7 +70,7 @@ class MenuController extends Controller
     {
         $menus = $request->input('menus');
         $name = $request->input('name');
-        $menu = $this->repository->create(['app_id' => $this->currentWechat->appId, 'menus'  => $menus, 'name' => $name]);
+        $menu = $this->repository->create(['app_id' => $this->currentOfficialAccount->appId, 'menus'  => $menus, 'name' => $name]);
 
         if ($request->wantsJson()) {
             return $this->response()->item($menu, new WechatMenuTransformer());

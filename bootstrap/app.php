@@ -94,7 +94,10 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
 
  $app->register(\App\Providers\ConfigServiceProvider::class);
  $app->register(\App\Providers\AliasesLoaderServiceProvider::class);
+ $app->register(\Illuminate\Redis\RedisServiceProvider::class);
+ $app->register(\App\Providers\RepositoryServiceProvider::class);
  $app->register(\Illuminate\Foundation\Providers\FoundationServiceProvider::class);
+ $app->register(\App\Providers\WechatServiceProvider::class);
  $app->register(App\Providers\AppServiceProvider::class);
  $app->register(App\Providers\AuthServiceProvider::class);
  $app->register(App\Providers\EventServiceProvider::class);
@@ -102,7 +105,7 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\App\Providers\OrderServiceProvider::class);
 // $app->register(\Illuminate\Routing\RoutingServiceProvider::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
- $app->register(\App\Providers\WechatServiceProvider::class);
+
 
 
 

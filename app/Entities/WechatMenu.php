@@ -10,7 +10,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\WechatMenu
  *
  * @property int $id
- * @property string $appId app id
+ * @property string $appId 微信app id
  * @property string|null $name 菜单名称
  * @property int $isPublic 菜单是否发布
  * @property array $menus menus

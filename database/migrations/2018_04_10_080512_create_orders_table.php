@@ -16,10 +16,10 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code', 16)->comment('订单编号');
-            $table->string('open_id')->nullable()->default(null)->comment('微信open id或支付宝user ID');
-            $table->string('wechat_app_id')->nullable()->default(null)->comment('维系app id');
-            $table->string('ali_app_id')->nullable()->default(null)->comment('支付宝app id');
-            $table->string('app_id')->nullable()->default(null)->comment('系统app id');
+            $table->string('open_id', 32)->nullable()->default(null)->comment('微信open id或支付宝user ID');
+            $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('维系app id');
+            $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app id');
+            $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
             $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家');
             $table->float('total_amount')->default(0)->comment('应付款');
             $table->float('payment_amount')->default('0')->comment('实际付款');
@@ -32,12 +32,13 @@ class CreateOrdersTable extends Migration
             $table->unsignedTinyInteger('cancellation')->default(0)
                 ->comment('取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消 ');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
-            $table->string('receiver_city')->nullable()->default(null)->comment('收货城市');
-            $table->string('receiver_district')->nullable()->default(null)->comment('收货人所在城市区县');
-            $table->string('receiver_address')->nullable()->default(null)->comment('收货地址');
+            $table->string('receiver_city', 16)->nullable()->default(null)->comment('收货城市');
+            $table->string('receiver_district', 16)->nullable()->default(null)->comment('收货人所在城市区县');
+            $table->string('receiver_address', 32)->nullable()->default(null)->comment('收货地址');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
             $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单');
             $table->unsignedTinyInteger('post_type')->default(0)->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
+            $table->boolean('score_settle')->default(false)->comment('积分是否已经结算');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');

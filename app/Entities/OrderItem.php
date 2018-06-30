@@ -12,7 +12,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\OrderItem
  *
  * @property int $id
- * @property string|null $app 程序类型：青食、自提
+ * @property string|null $appId 系统appid
  * @property int|null $shopId 店铺ID
  * @property int|null $buyerUserId 买家ID
  * @property int $orderId 订单id
@@ -31,7 +31,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Order $order
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\SKUProduct $skuProduct
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereApp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereBuyerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereConsignedAt($value)

@@ -21,9 +21,9 @@ class CreateOrderPostsTable extends Migration
             $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家ID');
             $table->unsignedInteger('order_id')->comment('订单id');
             $table->unsignedInteger('order_item_id')->comment('子订单id');
-            $table->string('post_no', 50)->nullable()->default(null)->comment('物流订单号');
-            $table->string('post_code')->nullable()->default(null)->comment('收货地址邮编');
-            $table->string('post_name')->nullable()->default(null)->comment('物流公司名称');
+            $table->string('post_no', 64)->nullable()->default(null)->comment('物流订单号');
+            $table->string('post_code', 6)->nullable()->default(null)->comment('收货地址邮编');
+            $table->string('post_name', 32)->nullable()->default(null)->comment('物流公司名称');
             $table->timestamps();
             $table->index('post_no');
             $table->index('buyer_user_id');

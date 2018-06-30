@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Auth\Authenticatable;
@@ -18,6 +19,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * App\Entities\User
  *
  * @property int $id
+ * @property string|null $appId 系统appid
  * @property string $mobile 用户手机号码
  * @property string $userName 用户名称
  * @property string $nickname 昵称
@@ -28,17 +30,26 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $city 城市
  * @property string|null $province 省份
  * @property string|null $country 国家
+ * @property int $canUseScore 用户可用积分
+ * @property int $score 用户积分
+ * @property int $totalScore 用户总积分
  * @property int $vipLevel VIP等级
- * @property \Carbon\Carbon|null $lastLoginAt 最后登录时间
+ * @property \Carbon\Carbon $lastLoginAt 最后登录时间
  * @property int $status 用户状态0-账户冻结 1-激活状态 2-等待授权
+ * @property array $tags 标签
  * @property string $mobileCompany 手机号码所属公司
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\App[] $apps
+ * @property-read \App\Entities\WechatUser $miniProgramUser
+ * @property-read \App\Entities\WechatUser $officialAccountUser
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCanUseScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCreatedAt($value)
@@ -51,8 +62,11 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereProvince($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereRealName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereSex($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereTags($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereTotalScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereVipLevel($value)
@@ -67,6 +81,11 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     const WAIT_AUTH_ACCOUNT = 2;
 
     protected $table = "users";
+
+    protected $casts = [
+        'last_login_at' => 'date',
+        'tags' => 'json'
+    ];
 
     protected $dates = [
         'last_login_at'
@@ -108,11 +127,23 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function apps() : BelongsToMany
     {
-        return $this->belongsToMany(App::class, AppUser::getTable(), 'user_id', 'app_id');
+        return $this->belongsToMany(App::class, 'app_users', 'user_id', 'app_id');
     }
 
-    public function appUsers() : HasMany
+//    public function appUsers() : HasMany
+//    {
+//        return $this->hasMany(AppUser::class, 'user_id', 'id');
+//    }
+
+    public function officialAccountUser() : HasOne
     {
-        return $this->hasMany(AppUser::class, 'user_id', 'id');
+        return $this->hasOne(WechatUser::class, 'user_id', 'id')->where('type',
+            WECHAT_OFFICIAL_ACCOUNT);
+    }
+
+    public function miniProgramUser() : HasOne
+    {
+        return $this->hasOne(WechatUser::class, 'user_id', 'id')->where('type',
+            WECHAT_MINI_PROGRAM);
     }
 }

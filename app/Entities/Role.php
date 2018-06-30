@@ -38,6 +38,7 @@ class Role extends Model implements Transformable
     const TESTER     = 'tester.administer';
     const CUSTOMER     = 'customer';
     const MEMBER     = 'member';
+    const STRANGER =  'stranger';
     /**
      * The attributes that are mass assignable.
      *

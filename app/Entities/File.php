@@ -15,10 +15,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $bucket 云存储bucket或者本地存储路径
  * @property string $driver 文件存储驱动
  * @property string $path 文件路径
- * @property string|null $src
- * @property string|null $mimeType
- * @property string|null $name
  * @property string|null $extension 文件拓展名
+ * @property string|null $mimeType 文件类型
+ * @property string|null $name 文件名
+ * @property string|null $src 文件url路径
  * @property int $encrypt 是否加密
  * @property string|null $encryptKey 密钥
  * @property string|null $encryptMethod 加密算法

@@ -20,7 +20,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $id
  * @property string|null $code 餐车编号
  * @property int $userId 店铺老板用户id
- * @property int $countryId 国家id
+ * @property string $countryId 国家id
  * @property int $provinceId 省份id
  * @property int $cityId 城市id
  * @property int $countyId 所属区县id
@@ -41,7 +41,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $todayOrderWriteOffNum 今日核销订单数量
  * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
  * @property int $status 状态：0-等待授权 1-营业中 2-休业 3-封锁店铺
- * @property string|null $appId 程序类型
+ * @property string|null $appId 系统app id
  * @property string|null $wechatAppId 微信app ID
  * @property string|null $aliAppId 支付宝app ID
  * @property string|null $mtAppId 美团app id

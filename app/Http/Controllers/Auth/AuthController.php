@@ -64,7 +64,8 @@ class AuthController extends Controller
             $token = Auth::refresh();
             $user = $this->user();
         }else{
-            if($input = $this->validate($request, self::RULES,self::MESSAGES)){
+            if($input = $this->validate($request, self::RULES,self::MESSAGES)) {
+                $input['app_id'] = isset($input['app_id']) ? $input['app_id'] : null;
                 if(!($token = Auth::attempt($input))){;
                     $this->response()->error('登录密码与手机不匹配无法登录！', HTTP_STATUS_NOT_FOUND);
                 }

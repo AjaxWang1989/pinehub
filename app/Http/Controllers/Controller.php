@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Wechat\WechatService;
+use App\Http\Resources\WechatConfig;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Session\SessionManager;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -19,13 +18,20 @@ class Controller extends BaseController
     protected $session ;
 
     /**
-     * @var WechatService
+     * @var WechatConfig
      * */
-    protected $currentWechat = null;
+    protected $currentOfficialAccount = null;
+
+    /**
+     * @var WechatConfig
+     * */
+    protected $currentMiniProgram = null;
+
 
     public function __construct()
     {
-        $this->currentWechat = app('current_wechat');
+        $this->currentOfficialAccount = app('current_official_account');
+        $this->currentMiniProgram = app('current_mini_program');
     }
 
     protected function response($data = null)

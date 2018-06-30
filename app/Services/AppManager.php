@@ -55,7 +55,8 @@ class AppManager
         $repository = $app->make(AppRepository::class);
         $this->openPlatform = $this->app->make('wechat')->openPlatform();
         $request = $app->make('request');
-        $appId = $request->input('selected_appid', null);
+        $appId = $request->header('selected_appid', null);
+        $appId = $appId ? $appId : $request->query('selected_appid', null);
         if($appId) {
             $this->currentApp = $repository->find($appId);
             $this->officialAccount = with($this->currentApp, function (App $app){

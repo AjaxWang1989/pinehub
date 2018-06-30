@@ -11,8 +11,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  *
  * @property int $id
  * @property int|null $userId 用户id
- * @property string|null $aliAppId
- * @property string|null $appId 系统appid
+ * @property string $appId 系统appid
  * @property string $openId 支付宝user_id
  * @property string|null $avatar 头像
  * @property string|null $province 省份
@@ -27,7 +26,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  *              性别（F：女性；M：男性）。
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereCity($value)

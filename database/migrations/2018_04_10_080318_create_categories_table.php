@@ -15,9 +15,9 @@ class CreateCategoriesTable extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('app_id')->nullable()->default(null)->comment('系统app id');
+            $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
             $table->string('icon')->default(null)->comment('图标');
-            $table->string('name')->unique()->comment('分类名称');
+            $table->string('name', 8)->unique()->comment('分类名称');
             $table->unsignedInteger('parent_id')->default(null)->comment('分类父级');
             $table->timestamps();
             $table->softDeletes();

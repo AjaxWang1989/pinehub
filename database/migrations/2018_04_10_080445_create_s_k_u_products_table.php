@@ -17,7 +17,7 @@ class CreateSKUProductsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('merchandise_id')->comment('产品id');
             $table->string('code', 18)->comment('规格产品编码');
-            $table->text('images')->comment('图片数组');
+            $table->json('images')->comment('图片数组');
             $table->float('origin_price')->default(0)->comment('原价');
             $table->float('sell_price')->default(0)->comment('售价');
             $table->float('cost_price')->default(0)->comment('成本价格');

@@ -17,7 +17,7 @@ class CreateWechatConfigsTable extends Migration
 	{
 		Schema::create('wechat_configs', function(Blueprint $table) {
             $table->increments('id');
-            $table->string('app_id', 18)->comment('微信公众好app ID');
+            $table->string('app_id', 28)->comment('微信app ID');
             $table->string('app_secret', 32)->comment('微信公众号secret');
             $table->string('app_name', 255)->comment('微信公众号或者小程序名称');
             $table->string('token', 32)->nullable()->default(null)->comment('微信token');

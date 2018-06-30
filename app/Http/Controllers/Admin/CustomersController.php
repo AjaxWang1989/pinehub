@@ -36,7 +36,6 @@ class CustomersController extends Controller
     public function __construct(CustomerRepository $repository)
     {
         $this->repository = $repository;
-        $this->repository->pushCriteria(CustomerCriteria::class);
     }
 
 
@@ -47,6 +46,7 @@ class CustomersController extends Controller
      */
     public function index()
     {
+        $this->repository->pushCriteria(CustomerCriteria::class);
         $customers = $this->repository->paginate();
 
         if (request()->wantsJson()) {

@@ -38,6 +38,9 @@ class RolesTableSeeder extends Seeder
         ],[
             'slug' => 'member' ,
             'display_name' => '会员'
+        ],[
+            'slug' => 'stranger',
+            'display_name' => '访客'
         ]] as $item){
             factory(\App\Entities\Role::class, 1)->create($item);
         }

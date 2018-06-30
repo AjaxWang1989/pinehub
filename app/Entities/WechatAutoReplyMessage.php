@@ -11,8 +11,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\WechatAutoReplyMessage
  *
  * @property int $id
+ * @property string $appId 微信app ID
  * @property string|null $name 规则名称
- * @property string|null $appId 微信app ID
  * @property int $focusReply 关注回复
  * @property string $type 类型
  * @property array $prefectMatchKeywords 全匹配关键字数组

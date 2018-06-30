@@ -39,7 +39,7 @@ class WechatAuthController extends Controller
         if ($wechatUser) {
             $openId = $wechatUser->openId;
         }
-        $this->wechatUser->updateOrCreate(['open_id' => $wechatUser->openId]);
+        $this->wechatUser->updateOrCreate(['open_id' => $wechatUser->openId], $wechatUser->toArray());
         $redirect = $request->input('redirect_uri', null);
         if($redirect) {
             if(count(parse_query($redirect)) > 0){
