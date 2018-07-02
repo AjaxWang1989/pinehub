@@ -16,6 +16,7 @@ class CreateApps extends Migration
         //
         Schema::create('apps', function (Blueprint $table) {
             $table->string('id', 16)->primary()->comment('app id');
+            $table->unsignedInteger('user_id')->nullable()->default(null)->comment('应用拥有者');
             $table->string('secret', 32)->comment('应用secret');
             $table->string('name', 16)->comment('应用名称');
             $table->string('logo')->comment('应用logo');

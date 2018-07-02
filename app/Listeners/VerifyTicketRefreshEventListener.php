@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use EasyWeChat\OpenPlatform\Auth\VerifyTicket;
 use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\VerifyTicketRefreshed;
 
@@ -27,7 +28,6 @@ class VerifyTicketRefreshEventListener
     {
         //
         $app = app('wechat')->openPlatform();
-        Log::debug('new listener');
         tap($app['verify_ticket'], function (VerifyTicket $ticket) use($event){
             $ticket->setTicket($event->getComponentVerifyTicket());
         });
