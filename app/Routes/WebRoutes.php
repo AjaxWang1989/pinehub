@@ -44,12 +44,7 @@ class WebRoutes extends Routes
              * */
             tap($router, function (Router $router) {
                 $this->subRoutes($router);
-                $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request){
-                    $count = Cache::get('cache_count', 0);
-                    $count ++;
-                    Cache::set('cache_count', $count, 3600);
-                    Log::debug('cache count '.$count.' '.app('wechat')->openPlatform()['verify_ticket']->getTicket());
-                    //$this->app->make('wechat')->miniProgram()['verify_ticket']->getTicket();
+                $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request) {
                     return "pinehub official service";
                 });
             });

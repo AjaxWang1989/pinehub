@@ -2,9 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\Authorized;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use Overtrue\LaravelWeChat\Events\OpenPlatform\VerifyTicketRefreshed;
 
 class VerifyTicketRefreshEventListener
 {
@@ -21,11 +19,15 @@ class VerifyTicketRefreshEventListener
     /**
      * Handle the event.
      *
-     * @param  Authorized  $event
+     * @param  VerifyTicketRefreshed  $event
      * @return void
      */
-    public function handle(Authorized $event)
+    public function handle(VerifyTicketRefreshed $event)
     {
         //
+        $app = app('wechat')->openPlatform();
+        tap($app['verify_ticket'], function (VerifyTicket $ticket) use($event){
+            $ticket->setTicket($event->getComponentVerifyTicket());
+        });
     }
 }

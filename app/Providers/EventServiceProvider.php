@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Events\OrderScoreEvent;
 use App\Listeners\OrderScoreListener;
+use App\Listeners\VerifyTicketRefreshEventListener;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
+use Overtrue\LaravelWeChat\Events\OpenPlatform\VerifyTicketRefreshed;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderScoreEvent::class => [
             OrderScoreListener::class
+        ],
+        VerifyTicketRefreshed::class =>[
+            VerifyTicketRefreshEventListener::class
         ]
     ];
 }
