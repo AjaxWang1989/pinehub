@@ -46,11 +46,18 @@ class WechatPaymentController extends Controller
                 'shop' => $shop,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
-                'accept' => $accept
+                'accept' => $accept,
+                'app_id' => $request->input('selected_appid', null)
             ]);
         }catch (\Exception $exception) {
-            return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId,
-                'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
+            return view('payment.aggregate.wechatpay')->with([
+                'type' => Order::WECHAT_PAY,
+                'openId' => $openId,
+                'paymentApi' => $paymentApi,
+                'config' => $config,
+                'accept' => $accept,
+                'app_id' => $request->input('selected_appid', null)
+            ]);
         }
     }
 

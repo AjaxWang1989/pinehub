@@ -18,6 +18,7 @@ class CreateShopsTable extends Migration
 		Schema::create('shops', function(Blueprint $table) {
             $table->increments('id');
             $table->string('code', 10)->nullable()->comment('餐车编号');
+            $table->string('name', 32)->nullable()->default(null)->comment('店铺名称');
             $table->unsignedInteger('user_id')->comment('店铺老板用户id');
             $table->string('country_id')->comment('国家id');
             $table->unsignedInteger('province_id')->comment('省份id');
@@ -45,6 +46,7 @@ class CreateShopsTable extends Migration
             $table->unsignedInteger('today_order_write_off_num')->default(0)->comment('今日核销订单数量');
             $table->unsignedInteger('total_order_write_off_num')->default(0)->comment('店铺自提系统一共核销单数');
             $table->unsignedTinyInteger('status')->default(0)->comment('状态：0-等待授权 1-营业中 2-休业 3-封锁店铺');
+
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
             $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('微信app ID');
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app ID');

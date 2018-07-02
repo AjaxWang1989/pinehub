@@ -26,9 +26,9 @@ class MemberCriteria implements CriteriaInterface
     {
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
-        $model->where('app_id', $appId)->with(['user.roles' => function ($query) {
+        $model->whereAppId($appId)->with(['user.roles' => function ($query) {
             return $query->where('slug', Role::MEMBER);
-        }])->with(['officialAccountUser', 'miniProgramUser'])->withCount(['orders' => function($query) {
+        }])->with(['customers'])->withCount(['orders' => function($query) {
             return $query->whereNotNull('paid_at');
         }]);
         return $model;

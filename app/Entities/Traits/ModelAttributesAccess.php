@@ -26,4 +26,20 @@ trait ModelAttributesAccess
         // TODO: Implement __set() method.
         $this->setAttribute(upperCaseSplit($name, '_'), $value);
     }
+
+    public function formJson($value)
+    {
+        if(is_string($value)) {
+            return parent::formJson($value);
+        }elseif (is_array($value)) {
+            return $value;
+        }elseif (is_object($value)) {
+            $json = [];
+            foreach ($value as $key => $v) {
+                $json[$key] = $v;
+            }
+            return $json;
+        }
+        return null;
+    }
 }

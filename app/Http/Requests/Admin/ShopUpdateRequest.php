@@ -13,7 +13,7 @@ class ShopUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,19 @@ class ShopUpdateRequest extends FormRequest
     {
         return [
             //
+            'name'           => [ 'string', 'size:32'],
+            'user_id'        => ['integer', 'exist:user,id'],
+            'description'    => ['string'],
+            'country_id'     => ['integer', 'exist:country,id'],
+            'province_id'    => ['integer', 'exist:province,id'],
+            'city_id'        => ['integer', 'exist:city,id'],
+            'county_id'      => ['integer', 'exist:county,id'],
+            'address'        => ['string'],
+            'lng'            => ['numeric'],
+            'lat'            => [ 'numeric'],
+            'manager_mobile' => ['regex:'.MOBILE_PATTERN, 'not_exists:user,mobile'],
+            'manager_name'   => ['string', 'max:16'],
+            'status'         => ['integer', 'in:0,1,2,3']
         ];
     }
 }

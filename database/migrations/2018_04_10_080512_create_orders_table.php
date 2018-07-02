@@ -16,7 +16,7 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code', 16)->comment('订单编号');
-            $table->string('open_id', 32)->nullable()->default(null)->comment('微信open id或支付宝user ID');
+            $table->string('open_id', 64)->nullable()->default(null)->comment('微信open id或支付宝user ID');
             $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('维系app id');
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');

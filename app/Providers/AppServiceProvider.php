@@ -20,6 +20,7 @@ use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
+use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
 use Prettus\Repository\Providers\RepositoryServiceProvider;
 use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
@@ -74,6 +75,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(FilesystemServiceProvider::class);
         $this->app->register(AliOssServiceProvider::class);
         $this->app->register(RepositoryServiceProvider::class);
+        $this->app->register(QrCodeServiceProvider::class);
         $this->app->singleton('uid.generator', function () {
             return new UIDGeneratorService();
         });

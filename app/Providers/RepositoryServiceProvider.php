@@ -42,6 +42,9 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\ScoreRuleRepository::class, \App\Repositories\ScoreRuleRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\ScoreSettleCashRepository::class, \App\Repositories\ScoreSettleCashRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\CustomerRepository::class, \App\Repositories\CustomerRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MemberCardRepository::class, \App\Repositories\MemberCardRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CustomerTicketCardRepository::class, \App\Repositories\CustomerTicketCardRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CardRepository::class, \App\Repositories\CardRepositoryEloquent::class);
         //:end-bindings:
         Log::debug("repository bindings\n");
     }

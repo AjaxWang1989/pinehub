@@ -12,6 +12,7 @@ namespace App\Services;
 use App\Entities\App;
 use App\Entities\WechatConfig;
 use App\Repositories\AppRepository;
+use App\Services\AliPay\AliPayOpenPlatform;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Lumen\Application;
 use EasyWeChat\OpenPlatform\Application as OpenPlatform;
@@ -21,6 +22,7 @@ use EasyWeChat\OpenPlatform\Application as OpenPlatform;
  * @property WechatConfig $officialAccount
  * @property WechatConfig $miniProgram
  * @property OpenPlatform $openPlatform
+ * @property AliPayOpenPlatform $aliPayOpenPlatform
  * */
 class AppManager
 {
@@ -43,6 +45,8 @@ class AppManager
      * @var OpenPlatform|null
      * */
     protected $openPlatform = null;
+
+    protected $aliPayOpenPlatform = null;
 
     /**
      * @var WechatConfig|null
@@ -67,6 +71,7 @@ class AppManager
                 return $app->miniProgram;
             });
         }
+        $this->aliPayOpenPlatform = new AliPayOpenPlatform(config('ali.payment'));
     }
 
     public function __get($name)

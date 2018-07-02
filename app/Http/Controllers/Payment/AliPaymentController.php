@@ -41,11 +41,22 @@ class AliPaymentController extends Controller
         $userId = $request->input('buyer_id', null);
         try{
             $shop = $this->shopModel->find($request->input('shop_id'));
-            return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY, 'shop' => $shop,
-                'paymentApi' => $paymentApi, 'accept' => $accept, 'userId' => $userId]);
+            return view('payment.aggregate.alipay')->with([
+                'type' => Order::ALI_PAY,
+                'shop' => $shop,
+                'paymentApi' => $paymentApi,
+                'accept' => $accept,
+                'userId' => $userId,
+                'app_id' => $request->input('selected_appid', null)
+            ]);
         }catch (\Exception $exception){
-            return view('payment.aggregate.alipay')->with(['type' => Order::ALI_PAY,
-                'paymentApi' => $paymentApi, 'accept' => $accept, 'userId' => $userId]);
+            return view('payment.aggregate.alipay')->with([
+                'type' => Order::ALI_PAY,
+                'paymentApi' => $paymentApi,
+                'accept' => $accept,
+                'userId' => $userId,
+                'app_id' => $request->input('selected_appid', null)
+            ]);
         }
     }
 

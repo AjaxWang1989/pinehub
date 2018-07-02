@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use Dingo\Blueprint\Annotation\Member;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -36,20 +37,24 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int $vipLevel VIP等级
  * @property \Carbon\Carbon $lastLoginAt 最后登录时间
  * @property int $status 用户状态0-账户冻结 1-激活状态 2-等待授权
+ * @property int $orderCount 订单数
+ * @property string|null $channel 渠道来源
+ * @property string|null $registerChannel 注册渠道
  * @property array $tags 标签
  * @property string $mobileCompany 手机号码所属公司
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\App[] $apps
- * @property-read \App\Entities\WechatUser $miniProgramUser
- * @property-read \App\Entities\WechatUser $officialAccountUser
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Customer[] $customers
+ * @property-read \App\Entities\MemberCard $memberCard
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCanUseScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereChannel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCountry($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereCreatedAt($value)
@@ -59,9 +64,11 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereMobileCompany($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereNickname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereOrderCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereProvince($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereRealName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereRegisterChannel($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereSex($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereStatus($value)
@@ -130,20 +137,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->belongsToMany(App::class, 'app_users', 'user_id', 'app_id');
     }
 
-//    public function appUsers() : HasMany
-//    {
-//        return $this->hasMany(AppUser::class, 'user_id', 'id');
-//    }
-
-    public function officialAccountUser() : HasOne
+    public function customers() : HasMany
     {
-        return $this->hasOne(WechatUser::class, 'user_id', 'id')->where('type',
-            WECHAT_OFFICIAL_ACCOUNT);
+        return $this->hasMany(Customer::class, 'user_id', 'id');
     }
 
-    public function miniProgramUser() : HasOne
+    public function officialAccountCustomer() : Customer
     {
-        return $this->hasOne(WechatUser::class, 'user_id', 'id')->where('type',
-            WECHAT_MINI_PROGRAM);
+        return $this->customers ? $this->customers->where('type',
+            WECHAT_OFFICIAL_ACCOUNT)->first( ) : null;
+    }
+
+    public function miniProgramCustomer() : Customer
+    {
+        return $this->customers ? $this->customers->where('type',
+            WECHAT_MINI_PROGRAM)->first( ) : null;
+    }
+
+    public function memberCard(): HasOne
+    {
+        return $this->hasOne(MemberCard::class, 'user_id', 'id');
     }
 }

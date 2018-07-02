@@ -23,7 +23,7 @@ class CreateWechatUsersTable extends Migration
             $table->string('type')->default('OFFICE_ACCOUNT')->comment('OFFICE_ACCOUNT 公众平台， 
             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序');
             $table->string('union_id', 32)->nullable()->default(null)->comment('union id');
-            $table->string('open_id', 28)->comment('open id');
+            $table->string('open_id', 64)->comment('open id');
             $table->string('session_key', 64)->comment('session key');
             $table->timestamp('expires_at')->comment('session 过期');
             $table->string('avatar')->nullable()->default(null)->comment('头像');

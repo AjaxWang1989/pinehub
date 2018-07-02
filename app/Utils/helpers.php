@@ -113,20 +113,20 @@ if(!function_exists('generatorUID')){
 
 if(!function_exists('webUriGenerator')) {
     function webUriGenerator(string $route, string $prefix = '', string $domain = '') {
+        $route = trim($route, '/');
         if(!$prefix){
-            $prefix = (config('app.web_prefix') ? '/'.config('app.web_prefix') : '');
+            $prefix = (config('app.web_prefix') ? config('app.web_prefix') : '');
         }
-        if(substr($prefix, 0, 1) !== '/'){
-            $prefix = '/'.$prefix;
-        }
+        $prefix = trim($prefix, '/');
         if(!$domain) {
             $domain = config('app.web_domain');
         }
+        $domain = trim($domain, '/');
         $protocol = config('app.protocol');
         if(!$protocol){
             $protocol = env('WEB_PROTO');
         }
-        return $protocol.$domain.$prefix.$route;
+        return $protocol.$domain.'/'.$prefix.'/'.$route;
     }
 }
 

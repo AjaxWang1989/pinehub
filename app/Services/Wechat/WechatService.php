@@ -9,6 +9,7 @@
 namespace App\Services\Wechat;
 
 
+use App\Entities\Customer;
 use App\Entities\WechatUser;
 use App\Exceptions\WechatMaterialArticleUpdateException;
 use App\Exceptions\WechatMaterialDeleteException;
@@ -399,10 +400,10 @@ class WechatService
     public function officialAccountUser($openId)
     {
         $user = $this->officeAccount()->user->get($openId);
-        $wechatUser = new WechatUser();
-        $wechatUser->wechatAppId = $this->officeAccount()->config->get('app_id');
+        $wechatUser = new Customer();
+        $wechatUser->platformAppId = $this->officeAccount()->config->get('app_id');
         $wechatUser->appId = app('currentApp') ? app('currentApp')->appId : null;
-        $wechatUser->openId = $user['openid'];
+        $wechatUser->platformOpenId = $user['openid'];
         if(isset($user['unionid'])) {
             $wechatUser->unionId = $user['unionid'];
         }

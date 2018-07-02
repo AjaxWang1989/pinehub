@@ -15,11 +15,12 @@ class CreateScoreSettleCashesTable extends Migration
     {
         Schema::create('score_settle_cashes', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('order_id')->nullable()->default(null)->comment('订单');
+            //$table->unsignedInteger('order_id')->nullable()->default(null)->comment('订单');
             $table->unsignedInteger('score_rule_id')->nullable()->default(null)->comment('积分规则id');
             $table->unsignedTinyInteger('score')->default(0)->comment('积分数');
-            $table->unsignedTinyInteger('type')->default(1)->comment('规则类型：0 - 通用规则， 1 - 特殊规则');
+            $table->unsignedTinyInteger('type')->default(1)->comment('规则类型：0 - 通用规则, type & 8 == true 特殊规则 ');
             $table->string('score_rule_name', 32)->comment('积分规则名称');
+            $table->json('content')->default(null)->comment('积分项目');
             $table->unsignedInteger('user_id')->comment('被积分用户id');
             $table->boolean('settled');
             $table->timestamps();

@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\OrderScoreEvent;
+use App\Listeners\OrderScoreListener;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
@@ -15,5 +17,8 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\ExampleEvent' => [
             'App\Listeners\ExampleListener',
         ],
+        OrderScoreEvent::class => [
+            OrderScoreListener::class
+        ]
     ];
 }

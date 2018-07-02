@@ -93,10 +93,21 @@ class PaymentController extends Controller
         $appId = $request->input('selected_appid', null);
         if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
             $paymentUri = webUriGenerator('/wechat/aggregate.html', env('WEB_PAYMENT_PREFIX'));
-            $uri = urlencode("{$paymentUri}?shop_id={$shopId}&selected_appid={$appId}");
+            if($shopId) {
+                $queryStr = "?shop_id={$shopId}";
+            }
+
+            if($appId) {
+                if(isset($queryStr)) {
+                    $queryStr .= "&selected_appid={$appId}";
+                }else{
+                    $queryStr = "?selected_appid={$appId}";
+                }
+            }
+            $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
 
             $redirect = config('wechat.other_sdk_payment.redirect_url');
-            $redirect = "{$redirect}?redirect_uri={$uri}&selected_appid={$appId}";
+            $redirect = "{$redirect}?redirect_uri={$uri}".($appId ? "&selected_appid={$appId}" : "");
 
             return app('wechat.official_account.default')
                 ->oauth->scopes(['snsapi_base'])
@@ -105,10 +116,21 @@ class PaymentController extends Controller
 
         } elseif (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
             $paymentUri = webUriGenerator('/ali/aggregate.html', env('WEB_PAYMENT_PREFIX'));
-            $uri = urlencode("{$paymentUri}?shop_id={$shopId}&selected_appid={$appId}");
+            if($shopId) {
+                $queryStr = "?shop_id={$shopId}";
+            }
+
+            if($appId) {
+                if(isset($queryStr)) {
+                    $queryStr .= "&selected_appid={$appId}";
+                }else{
+                    $queryStr = "?selected_appid={$appId}";
+                }
+            }
+            $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
 
             $redirect = config('ali.payment.redirect_url');
-            $redirect = "{$redirect}?redirect_uri={$uri}&selected_appid={$appId}";
+            $redirect = "{$redirect}?redirect_uri={$uri}".($appId ? "&selected_appid={$appId}" : "");
 
             return app('ali.user.oauth')
                 ->defaultOAuth()

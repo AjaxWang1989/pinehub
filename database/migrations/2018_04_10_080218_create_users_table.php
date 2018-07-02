@@ -32,7 +32,10 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('vip_level')->default(0)->comment('VIP等级');
             $table->timestamp('last_login_at')->nullable()->comment('最后登录时间');
             $table->unsignedTinyInteger('status')->default(1)->comment('用户状态0-账户冻结 1-激活状态 2-等待授权');
-            $table->text('tags')->default(null)->comment('标签');
+            $table->unsignedInteger('order_count')->default(0)->comment('订单数');
+            $table->string('channel', 32)->nullable()->default('')->comment('渠道来源');
+            $table->string('register_channel', 32)->nullable()->default('')->comment('注册渠道');
+            $table->json('tags')->default(null)->comment('标签');
             $table->enum('mobile_company', ['CT', 'CU', 'CM'])->comment('手机号码所属公司');
             $table->timestamps();
             $table->softDeletes();

@@ -11,7 +11,7 @@ use App\Http\Response\JsonResponse;
 use App\Transformers\CustomerItemTransformer;
 use App\Transformers\CustomerTransformer;
 use Exception;
-use App\Repositories\UserRepository as CustomerRepository;
+use App\Repositories\CustomerRepository;
 use App\Http\Controllers\Controller;
 /**
  * Class CustomersController.

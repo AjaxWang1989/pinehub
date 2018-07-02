@@ -2,9 +2,8 @@
 
 namespace App\Transformers;
 
-use App\Entities\User;
 use League\Fractal\TransformerAbstract;
-use App\Entities\User as Customer;
+use App\Entities\Customer;
 
 /**
  * Class CustomerTransformer.
