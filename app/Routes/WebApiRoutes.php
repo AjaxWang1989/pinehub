@@ -31,9 +31,10 @@ class WebApiRoutes extends ApiRoutes
                 $router->put('/change/password', ['as' => 'change.password', 'uses' => 'MySelfController@changePassword']);
 
                 $router->post('/shop', ['as' => 'shop.create', 'uses' => 'ShopsController@store']);
-                $router->get('/shops', ['as' => 'shop.list', 'uses' => 'ShopsController@getShops']);
-                $router->get('/shop/{id}', ['as' => 'shop.detail', 'uses' => 'ShopsController@getShopDetail']);
+                $router->get('/shops', ['as' => 'shop.list', 'uses' => 'ShopsController@index']);
+                $router->get('/shop/{id}', ['as' => 'shop.detail', 'uses' => 'ShopsController@show']);
                 $router->put('/shop/{id}', ['as' => 'shop.update', 'uses' => 'ShopsController@update']);
+
                 $router->post('/app/logo/{driver?}', ['as' => 'app.logo.upload', 'uses' => 'AppController@uploadLogo']);
                 $router->get('/apps', ['as' => 'app.list', 'uses' => 'AppController@index']);
                 $router->post('/app', ['as' => 'app.create', 'uses' => 'AppController@store']);

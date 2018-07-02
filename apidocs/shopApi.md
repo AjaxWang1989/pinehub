@@ -25,7 +25,7 @@
     
         | 数据名称 | 数据类型 | 说明 |
         | :-------: | :------: | :---: |
-        | data   |   array | {app_id,app_name,app_secret,token, aes_key, type, <br>mode, wechat_bind_app, create_ad, update_at} |
+        | data   |   array |  |
         | message | string | 错误说明 ,出现错误才会出现 |
         | status_code | string | 错误码（一般是http标准码） |
         
@@ -51,6 +51,20 @@
         | orderBy | string | N | 1、orderBy=id按id排<br>2、orderBy=posts&#124;title,posts关联title作为排序字段<br>3、orderBy=posts:custom_id&#124;posts.title，<br>关联字段posts的custom_id,排序字段posts的title|
         
         注释：
+        查询参数
+        ```
+        [
+                'name' => 'like',
+                'status' => '=',
+                'country.name' => 'like',
+                'province.name' => 'like',
+                'city.name' => 'like',
+                'county.name' => 'like',
+                'country_id' => '=',
+                'city_id' => '=',
+                'province_id' => '=',
+         ]
+         ```
             
     + http返回: 
         
@@ -69,3 +83,39 @@
    | :----:| :---: | :---: |
    
         2. meta附加信息
+        
+3. 修改店铺
+   
+    + url: host + /shop/{id}
+    + http方法: PUT
+    + 参数:
+    
+        | 参数名称 | 参数类型 | 是否必选(Y,N) | 说明 |
+        | :------: | :-------: | :------: | :----:|
+        | name | string | N | [ 'string', 'size:32']|
+        | user_id | int | N | ['integer', 'exist:user,id']|
+        | description | string | N | ['string'] | 
+        | country_id | int | N | [ 'integer', 'exist:country,id']|
+        | province_id| int | N | ['integer', 'exist:province,id']|
+        | city_id | int | N | ['integer', 'exist:city,id']|
+        | county_id | int | N | ['integer', 'exist:county,id']|
+        | address | string | N | ['string'] |
+        | lng | float| N |  [ 'numeric']|
+        | lat | float| N |  [ 'numeric']|
+        | manager_mobile | string | N |['regex:'.MOBILE_PATTERN, 'not_exists:user,mobile']与user_id互斥二选一（特殊必填）|
+        | manager_name | string | N | ['string', 'max:16'] 与manager_mobile一起|
+        | status | int | Y | ['integer', 'in:0,1,2,3'] |
+        
+    + http返回: 
+    
+        | 数据名称 | 数据类型 | 说明 |
+        | :-------: | :------: | :---: |
+        | data   |   array |  |
+        | message | string | 错误说明 ,出现错误才会出现 |
+        | status_code | string | 错误码（一般是http标准码） |
+        
+        注释：
+        
+            1. json实例
+    ```json
+    ```

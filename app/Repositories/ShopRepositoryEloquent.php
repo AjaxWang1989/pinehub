@@ -16,10 +16,15 @@ use App\Entities\Shop;
 class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
 {
     protected $fieldSearchable = [
-        'country.name',
-        'province.name',
-        'city.name',
-        'county.name'
+        'name' => 'like',
+        'status' => '=',
+        'country.name' => 'like',
+        'province.name' => 'like',
+        'city.name' => 'like',
+        'county.name' => 'like',
+        'country_id' => '=',
+        'city_id' => '=',
+        'province_id' => '=',
     ];
     /**
      * Specify Model class name
