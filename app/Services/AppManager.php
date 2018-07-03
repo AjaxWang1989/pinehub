@@ -33,7 +33,10 @@ class AppManager
         if($appId) {
             $this->currentApp = $repository->find($appId);
             $this->officialAccount = with($this->currentApp, function (App $app){
-
+                return $app->officialAccount;
+            });
+            $this->miniProgram = with($this->currentApp, function (App $app) {
+                return $app->miniProgram;
             });
         }
     }
