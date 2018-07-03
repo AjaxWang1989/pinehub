@@ -74,7 +74,7 @@ class WechatService
 
     public function openPlatform()
     {
-        \Log::debug('open platform config ', $this->config);
+        \Log::debug('open platform config 0', $this->config);
         if(!$this->openPlatform)
             $this->openPlatform= Factory::openPlatform($this->config['open_platform']);
         $this->setWechatApplication($this->openPlatform, app());
@@ -105,6 +105,7 @@ class WechatService
 
     public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
     {
+        \Log::debug('open platform config ', $this->config);
         $redirect = $this->openPlatform()->config['oauth']['callback'];
 
         $redirect = str_replace('{appId}', $appId, $redirect);
