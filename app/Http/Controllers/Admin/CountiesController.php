@@ -12,6 +12,7 @@ use App\Transformers\CountyTransformer;
 use App\Transformers\CountyItemTransformer;
 use App\Repositories\CountyRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class CountiesController.
@@ -47,20 +48,20 @@ class CountiesController extends Controller
         $routeName = $request->route()[1]['as'];
         switch ($routeName) {
             case 'county.list.country': {
-                $this->repository->scopeQuery(function (County $county) use($id){
-                    return $county->whereCountryId($id);
+                $this->repository->scopeQuery(function (Builder $county) use($id){
+                    return $county->where('country_id', $id);
                 });
                 break;
             }
             case 'county.list.province': {
-                $this->repository->scopeQuery(function (County $county) use($id){
-                    return $county->whereProvinceId($id);
+                $this->repository->scopeQuery(function (Builder $county) use($id){
+                    return $county->where('province_id', $id);
                 });
                 break;
             }
             case 'county.list.county': {
-                $this->repository->scopeQuery(function (County $county) use($id){
-                    return $county->whereCityId($id);
+                $this->repository->scopeQuery(function (Builder $county) use($id){
+                    return $county->where('city_id', $id);
                 });
                 break;
             }

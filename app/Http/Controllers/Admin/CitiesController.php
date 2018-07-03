@@ -16,6 +16,7 @@ use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Router;
 use Exception;
 use App\Repositories\CityRepository;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class CitiesController.
@@ -51,14 +52,14 @@ class CitiesController extends Controller
         $routeName = $request->route()[1]['as'];
         switch ($routeName) {
             case 'city.list.country': {
-                $this->repository->scopeQuery(function (City $city) use($id){
-                    return $city->whereCountryId($id);
+                $this->repository->scopeQuery(function (Builder $city) use($id){
+                    return $city->where('country_id', $id);
                 });
                 break;
             }
             case 'city.list.province': {
-                $this->repository->scopeQuery(function (City $city) use($id){
-                    return $city->whereProvinceId($id);
+                $this->repository->scopeQuery(function (Builder $city) use($id){
+                    return $city->where('province_id', $id);
                 });
                 break;
             }

@@ -13,6 +13,7 @@ use App\Transformers\ProvinceTransformer;
 use App\Transformers\ProvinceItemTransformer;
 use Exception;
 use App\Repositories\ProvinceRepository;
+use Illuminate\Database\Eloquent\Builder;
 
 /**
  * Class ProvincesController.
@@ -46,8 +47,8 @@ class ProvincesController extends Controller
     {
 
         if($countryId) {
-            $this->repository->scopeQuery(function (Province $province) use($countryId) {
-                return $province->whereCountryId($countryId);
+            $this->repository->scopeQuery(function (Builder $province) use($countryId) {
+                return $province->where('country_id', $countryId);
             });
         }
 
