@@ -26,7 +26,7 @@ class ProvinceItemTransformer extends TransformerAbstract
             /* place your other model properties here */
             'code' => $model->code,
             'name' => $model->name,
-            'country' => $model->country->only(['id', 'code', 'name']),
+            'country' => $model->country->name,
             'counties_count' => $model->countiesCount,
             'cities_count' => $model->citiesCount,
             'created_at' => $model->createdAt,

@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Entities\CountyItem;
+use App\Entities\County as CountyItem;
 
 /**
  * Class CountyItemTransformer.
@@ -15,7 +15,7 @@ class CountyItemTransformer extends TransformerAbstract
     /**
      * Transform the CountyItem entity.
      *
-     * @param \App\Entities\CountyItem $model
+     * @param CountyItem $model
      *
      * @return array
      */
@@ -23,11 +23,15 @@ class CountyItemTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
+            'name'       => $model->name,
+            'code'       => $model->code,
+            'city'       => $model->city->name,
+            'province'   => $model->province->name,
+            'country'    => $model->country->name,
             /* place your other model properties here */
 
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'created_at' => $model->createdAt,
+            'updated_at' => $model->updatedAt
         ];
     }
 }

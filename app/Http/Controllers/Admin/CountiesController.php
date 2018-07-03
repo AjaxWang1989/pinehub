@@ -65,7 +65,7 @@ class CountiesController extends Controller
                 break;
             }
         }
-        $counties = $this->repository->paginate();
+        $counties = $this->repository->with(['city', 'province', 'country'])->paginate();
 
         if (request()->wantsJson()) {
 

@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Entities\CountryItem;
+use App\Entities\Country as CountryItem;
 
 /**
  * Class CountryItemTransformer.
@@ -15,7 +15,7 @@ class CountryItemTransformer extends TransformerAbstract
     /**
      * Transform the CountryItem entity.
      *
-     * @param \App\Entities\CountryItem $model
+     * @param CountryItem $model
      *
      * @return array
      */
@@ -23,7 +23,8 @@ class CountryItemTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
+            'name'       => $model->name,
+            'code'       => $model->code,
             /* place your other model properties here */
 
             'created_at' => $model->created_at,

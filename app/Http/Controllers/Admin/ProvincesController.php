@@ -51,7 +51,7 @@ class ProvincesController extends Controller
             });
         }
 
-        $provinces = $this->repository->paginate();
+        $provinces = $this->repository->with(['country'])->paginate();
 
         if (request()->wantsJson()) {
 

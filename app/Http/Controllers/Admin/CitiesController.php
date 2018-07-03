@@ -66,7 +66,7 @@ class CitiesController extends Controller
                 break;
             }
         }
-        $cities = $this->repository->paginate();
+        $cities = $this->repository->with(['province', 'country'])->paginate();
 
         if (request()->wantsJson()) {
 

@@ -22,12 +22,14 @@ class CountyTransformer extends TransformerAbstract
     public function transform(County $model)
     {
         return [
-            'id'         => (int) $model->id,
-
-            /* place your other model properties here */
-
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'id'         => $model->id,
+            'name'       => $model->name,
+            'code'       => $model->code,
+            'city'       => $model->city->only(['id', 'code', 'name']),
+            'province'   => $model->province->only(['id', 'code', 'name']),
+            'country'    => $model->country->only(['id', 'code', 'name']),
+            'created_at' => $model->createdAt,
+            'updated_at' => $model->updatedAt
         ];
     }
 }

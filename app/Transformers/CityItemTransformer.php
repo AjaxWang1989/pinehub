@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Entities\CityItem;
+use App\Entities\City as CityItem;
 
 /**
  * Class CityItemTransformer.
@@ -15,7 +15,7 @@ class CityItemTransformer extends TransformerAbstract
     /**
      * Transform the CityItem entity.
      *
-     * @param \App\Entities\CityItem $model
+     * @param CityItem $model
      *
      * @return array
      */
@@ -23,11 +23,14 @@ class CityItemTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
+            'name'       => $model->name,
+            'code'       => $model->code,
+            'province'   => $model->province->name,
+            'country'    => $model->country->name,
             /* place your other model properties here */
 
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'created_at' => $model->createdAt,
+            'updated_at' => $model->updatedAt
         ];
     }
 }
