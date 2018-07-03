@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\ScoreRuleCriteria;
 use App\Http\Response\JsonResponse;
 
 use Exception;
-use App\Http\Requests\ScoreRuleCreateRequest;
-use App\Http\Requests\ScoreRuleUpdateRequest;
+use App\Http\Requests\Admin\ScoreRuleCreateRequest;
+use App\Http\Requests\Admin\ScoreRuleUpdateRequest;
 use App\Transformers\ScoreRuleTransformer;
 use App\Transformers\ScoreRuleItemTransformer;
 use App\Repositories\ScoreRuleRepository;
@@ -42,6 +43,7 @@ class ScoreRulesController extends Controller
      */
     public function index()
     {
+        $this->repository->pushCriteria(ScoreRuleCriteria::class);
         $scoreRules = $this->repository->paginate();
 
         if (request()->wantsJson()) {

@@ -15,6 +15,16 @@ use App\Entities\County;
 class CountyRepositoryEloquent extends BaseRepository implements CountyRepository
 {
     use Destruct;
+    protected $fieldSearchable = [
+        'code' => '=',
+        'name' => 'like',
+        'city.code' => '=',
+        'city.name' => 'like',
+        'province.code' => '=',
+        'province.name' => 'like',
+        'country.code'  => '=',
+        'country.name'  => 'like'
+    ];
     /**
      * Specify Model class name
      *

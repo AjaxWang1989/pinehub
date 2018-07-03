@@ -13,7 +13,7 @@ class ScoreRuleUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,12 @@ class ScoreRuleUpdateRequest extends FormRequest
     {
         return [
             //
+            'score' => ['integer'],
+            'type' => [Rule::in([ScoreRule::SPECIAL_RULE, ScoreRule::ORDER_AMOUNT_RULE,
+                ScoreRule::ORDER_COUNT_RULE, ScoreRule::SUBSCRIBE_RULE])],
+            'expires_at' => ['date'],
+            'notice_user' => ['boolean'],
+            'rule' => ['json']
         ];
     }
 }

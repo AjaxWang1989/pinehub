@@ -16,6 +16,10 @@ use App\Validators\CountryValidator;
 class CountryRepositoryEloquent extends BaseRepository implements CountryRepository
 {
     use Destruct;
+    protected $fieldSearchable = [
+        'code' => '=',
+        'name' => 'like',
+    ];
     /**
      * Specify Model class name
      *

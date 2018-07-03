@@ -29,6 +29,7 @@ class ScoreRuleItemTransformer extends TransformerAbstract
             'app_id' => $model->appId,
             'score' => $model->score,
             'total_score' => $model->totalScore,
+            'notice_user' => $model->noticeUser,
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,

@@ -15,6 +15,7 @@ class CreateScoreRulesTable extends Migration
     {
         Schema::create('score_rules', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name', 16)->nullable()->default(null)->comment('规则名称');
             $table->string('app_id', 16)->comment('系统应用appid');
             $table->unsignedTinyInteger('score')->comment('增加的积分数');
             $table->unsignedInteger('total_score')->comment('累计积分数');

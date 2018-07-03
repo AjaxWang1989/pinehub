@@ -17,6 +17,12 @@ use App\Validators\ProvinceValidator;
 class ProvinceRepositoryEloquent extends BaseRepository implements ProvinceRepository
 {
     use Destruct;
+    protected $fieldSearchable = [
+        'code' => '=',
+        'name' => 'like',
+        'country.code'  => '=',
+        'country.name'  => 'like'
+    ];
     /**
      * Specify Model class name
      *

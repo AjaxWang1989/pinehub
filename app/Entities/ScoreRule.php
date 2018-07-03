@@ -11,6 +11,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\ScoreRule
  *
  * @property int $id
+ * @property string|null $name
  * @property string $appId 系统应用appid
  * @property int $score 增加的积分数
  * @property int $totalScore 累计积分数
@@ -24,6 +25,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereExpiresAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereNoticeUser($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereRule($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereScore($value)

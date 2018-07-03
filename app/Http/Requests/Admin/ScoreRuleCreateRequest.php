@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Entities\ScoreRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ScoreRuleCreateRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class ScoreRuleCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +27,12 @@ class ScoreRuleCreateRequest extends FormRequest
     {
         return [
             //
+            'score' => ['required', 'integer'],
+            'type' => ['required', Rule::in([ScoreRule::SPECIAL_RULE, ScoreRule::ORDER_AMOUNT_RULE,
+                ScoreRule::ORDER_COUNT_RULE, ScoreRule::SUBSCRIBE_RULE])],
+            'expires_at' => ['date'],
+            'notice_user' => ['required', 'boolean'],
+            'rule' => ['json']
         ];
     }
 }

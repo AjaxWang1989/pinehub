@@ -13,6 +13,7 @@ use App\Entities\App;
 use App\Entities\WechatConfig;
 use App\Repositories\AppRepository;
 use App\Services\AliPay\AliPayOpenPlatform;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Laravel\Lumen\Application;
 use EasyWeChat\OpenPlatform\Application as OpenPlatform;
@@ -58,9 +59,10 @@ class AppManager
         $this->app = $app;
         $repository = $app->make(AppRepository::class);
         $this->openPlatform = $this->app->make('wechat')->openPlatform();
-        $request = $app->make('request');
+        $request = Request::capture();
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);
+
         if($appId) {
             $this->currentApp = $repository->find($appId);
             $this->officialAccount = with($this->currentApp, function (App $app){

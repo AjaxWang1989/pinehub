@@ -17,15 +17,19 @@ class ScoreRuleTransformer extends TransformerAbstract
      *
      * @param \App\Entities\ScoreRule $model
      *
-     * @return array
+     * @return
      */
     public function transform(ScoreRule $model)
     {
         return [
             'id'         => (int) $model->id,
-
-            /* place your other model properties here */
-
+            'type' => $model->type,
+            'rule' => $model->rule,
+            'expires_at' => $model->expiresAt,
+            'app_id' => $model->appId,
+            'score' => $model->score,
+            'total_score' => $model->totalScore,
+            'notice_user' => $model->noticeUser,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];

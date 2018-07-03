@@ -12,4 +12,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface ScoreRuleRepository extends RepositoryInterface
 {
     //
+    public function pushCriteria($class);
 }

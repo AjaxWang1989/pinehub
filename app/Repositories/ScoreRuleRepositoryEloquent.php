@@ -16,6 +16,12 @@ use App\Validators\ScoreRuleValidator;
 class ScoreRuleRepositoryEloquent extends BaseRepository implements ScoreRuleRepository
 {
     use Destruct;
+
+    protected $fieldSearchable = [
+        'type' => '=',
+        'notice_user' => '=',
+        'name' => 'like'
+    ];
     /**
      * Specify Model class name
      *

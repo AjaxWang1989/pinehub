@@ -17,6 +17,14 @@ use App\Validators\CityValidator;
 class CityRepositoryEloquent extends BaseRepository implements CityRepository
 {
     use Destruct;
+    protected $fieldSearchable = [
+        'code' => '=',
+        'name' => 'like',
+        'province.code' => '=',
+        'province.name' => 'like',
+        'country.code'  => '=',
+        'country.name'  => 'like'
+    ];
     /**
      * Specify Model class name
      *
