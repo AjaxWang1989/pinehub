@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\County;
-use App\Validators\Admin\CountyValidator;
 
 /**
  * Class CountyRepositoryEloquent.
@@ -14,6 +14,7 @@ use App\Validators\Admin\CountyValidator;
  */
 class CountyRepositoryEloquent extends BaseRepository implements CountyRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

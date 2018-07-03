@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
+use App\Criteria\Admin\WechatAutoReplyMessageCriteria;
 use App\Entities\WechatAutoReplyMessage;
 use App\Http\Requests\Admin\Wechat\AutoReplyMessageCreateRequest;
 use App\Http\Requests\Admin\Wechat\AutoReplyMessageUpdateRequest;
 use App\Repositories\WechatAutoReplyMessageRepository;
 use App\Http\Controllers\Controller;
+use App\Services\AppManager;
 use App\Transformers\WechatAutoReplyMessageItemTransformer;
 use App\Transformers\WechatAutoReplyMessageTransformer;
 use Dingo\Api\Http\Request;
@@ -30,21 +32,19 @@ class AutoReplyMessagesController extends Controller
     public function __construct(WechatAutoReplyMessageRepository $repository)
     {
         $this->repository = $repository;
+        $this->repository->pushCriteria(WechatAutoReplyMessageCriteria::class);
         parent::__construct();
     }
 
     /**
      * Display a listing of the resource.
-     * @param Request $request
      * @return Response|DingoResponse
+     * @throws
      */
-    public function index(Request $request)
+    public function index()
     {
-        $appId = $request->input('app_id');
-        $autoReplyMessages = $this->repository->scopeQuery(function (WechatAutoReplyMessage $query) use( $appId) {
-            return $query->where('app_id', $appId);
-        })->paginate();
-Log::debug('items', $autoReplyMessages->toArray());
+        $autoReplyMessages = $this->repository->paginate();
+
         if (request()->wantsJson()) {
 
             return $this->response()->paginator($autoReplyMessages, new WechatAutoReplyMessageItemTransformer());

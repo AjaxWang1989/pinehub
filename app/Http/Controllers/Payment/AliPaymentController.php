@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Entities\Order;
+use App\Services\AppManager;
 use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
@@ -39,6 +40,7 @@ class AliPaymentController extends Controller
         $paymentApi = paymentApiUriGenerator('/ali/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $userId = $request->input('buyer_id', null);
+        $appManager = app(AppManager::class);
         try{
             $shop = $this->shopModel->find($request->input('shop_id'));
             return view('payment.aggregate.alipay')->with([
@@ -47,7 +49,7 @@ class AliPaymentController extends Controller
                 'paymentApi' => $paymentApi,
                 'accept' => $accept,
                 'userId' => $userId,
-                'app_id' => $request->input('selected_appid', null)
+                'app_id' => $appManager->currentApp->id
             ]);
         }catch (\Exception $exception){
             return view('payment.aggregate.alipay')->with([
@@ -55,7 +57,7 @@ class AliPaymentController extends Controller
                 'paymentApi' => $paymentApi,
                 'accept' => $accept,
                 'userId' => $userId,
-                'app_id' => $request->input('selected_appid', null)
+                'app_id' => $appManager->currentApp->id
             ]);
         }
     }

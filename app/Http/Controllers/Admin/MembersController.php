@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Criteria\Admin\MemberCriteria;
 use App\Http\Response\JsonResponse;
 
+use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\MemberCreateRequest;
 use App\Http\Requests\Admin\MemberUpdateRequest;
@@ -34,6 +35,8 @@ class MembersController extends Controller
     public function __construct(MemberRepository $repository)
     {
         $this->repository = $repository;
+        $this->repository->pushCriteria(MemberCriteria::class);
+        parent::__construct();
     }
 
     /**
@@ -43,7 +46,6 @@ class MembersController extends Controller
      */
     public function index()
     {
-        $this->repository->pushCriteria(MemberCriteria::class);
         $members = $this->repository->paginate();
 
         if (request()->wantsJson()) {
@@ -161,5 +163,12 @@ class MembersController extends Controller
         }
 
         return redirect()->back()->with('message', 'Member deleted.');
+    }
+
+    public function __destruct()
+    {
+        // TODO: Implement __destruct() method.
+        $this->repository = null;
+        parent::__destruct();
     }
 }

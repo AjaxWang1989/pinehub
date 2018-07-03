@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\WechatConfig;
-use App\Validators\Admin\WechatConfigValidator;
 
 /**
  * Class WechatConfigRepositoryEloquent.
@@ -14,6 +14,7 @@ use App\Validators\Admin\WechatConfigValidator;
  */
 class WechatConfigRepositoryEloquent extends BaseRepository implements WechatConfigRepository
 {
+    use Destruct;
     protected $fieldSearchable = [
         'app_id' => 'like',
         'mode' => '=',

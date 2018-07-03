@@ -23,7 +23,10 @@ class CreateCards extends Migration
             $table->enum('card_type', [MEMBER_CARD, COUPON_CARD, DISCOUNT_CARD,
                 GROUPON_CARD])->default(MEMBER_CARD)->comment('卡券类型');
             $table->json('card_info')->default(null)->comment('卡券信息');
-            $table->boolean('status')->default(false)->comment('0-审核中 1-审核通过 2-审核未通过');
+            $table->unsignedTinyInteger('status')->default(false)->comment('0-审核中 1-审核通过 2-审核未通过');
+            $table->tinyInteger('sync')->default(0)->comment('-1 不需要同步 0 - 同步失败 1-同步中 2-同步成功');
+            $table->timestamp('begin_at')->nullable()->default(null)->comment('开始日期');
+            $table->timestamp('end_at')->nullable()->default(null)->comment('结束时间');
             $table->timestamps();
             $table->softDeletes();
             $table->index('card_id');

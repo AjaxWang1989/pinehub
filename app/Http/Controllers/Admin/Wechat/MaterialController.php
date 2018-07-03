@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
-use App\Entities\WechatConfig;
 use App\Http\Requests\Admin\Wechat\ArticleCreateRequest;
 use App\Http\Requests\Admin\Wechat\ArticleUpdateRequest;
 use App\Http\Requests\Admin\Wechat\ForeverMaterialCreateRequest;
 use App\Http\Requests\Admin\Wechat\TemporaryMediaCreateRequest;
 use App\Http\Response\JsonResponse;
-use App\Services\AppManager;
 use Carbon\Carbon;
 use Dingo\Api\Http\Response as DingoResponse;
 use EasyWeChat\Kernel\Http\StreamResponse;
@@ -18,8 +16,6 @@ use \Illuminate\Http\Response;
 use Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -29,19 +25,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class MaterialController extends Controller
 {
-    /**
-     * @var AppManager|null
-     * */
-    protected $appManager = null;
-    /**
-     * MaterialsController constructor.
-     * @param AppManager $appManager
-     */
-    public function __construct(AppManager $appManager)
-    {
-        $this->appManager = $appManager;
-        parent::__construct();
-    }
 
     /**
      * create new temporary media

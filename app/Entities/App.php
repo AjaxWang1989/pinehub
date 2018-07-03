@@ -15,6 +15,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\App
  *
  * @property string $id app id
+ * @property int|null $userId 应用拥有者
  * @property string $secret 应用secret
  * @property string $name 应用名称
  * @property string $logo 应用logo
@@ -38,6 +39,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOpenAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereWechatAppId($value)
  * @mixin \Eloquent
  */

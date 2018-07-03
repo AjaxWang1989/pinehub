@@ -22,17 +22,20 @@ class MemberItemTransformer extends TransformerAbstract
      */
     public function transform(MemberItem $model)
     {
+        if($model->orderCount !== $model->ordersCount) {
+            $model->orderCount = $model->ordersCount;
+        }
         return array(
             'id'         => (int) $model->id,
             'nickname'   => $model->nickname,
             'mobile'     => $model->mobile,
-            'official_account' => !$model->officialAccountUser ? null : $model->officialAccountUser->only(array('nickname', 'avatar', 'sex', 'country', 'province', 'city')),
-            'mini_program' => !$model->miniProgramUser ? null : $model->miniProgramUser->only(array('nickname', 'avatar', 'sex', 'country', 'province', 'city')),
+            'official_account' => !$model->officialAccountCustomer() ? null : $model->officialAccountCustomer()->only(array('nickname', 'avatar', 'sex', 'country', 'province', 'city')),
+            'mini_program' => !$model->miniProgramCustomer() ? null : $model->miniProgramCustomer()->only(array('nickname', 'avatar', 'sex', 'country', 'province', 'city')),
             /* place your other model properties here */
             'app_id' => $model->appId,
             'channel' => $model->channel,
             'register_channel' => $model->registerChannel,
-            'order_count' => $model->ordersCount,
+            'order_count' => $model->orderCount,
             'tags'  => $model->tags,
             'score' => $model->score,
             'card' => '待开发',

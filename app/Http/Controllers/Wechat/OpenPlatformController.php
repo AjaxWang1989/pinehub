@@ -125,4 +125,20 @@ class OpenPlatformController extends Controller
         $this->response()->error('未完成授权，请等待');
     }
 
+    public function __destruct()
+    {
+        // TODO: Implement __destruct() method.
+        $this->response = null;
+        $this->user = null;
+        $this->wechat = null;
+        $this->wechatRepository = null;
+        $this->auth = null;
+        $this->scopes = null;
+        $this->api = null;
+        $this->rateLimit = null;
+        $this->throttles = null;
+        $this->authenticationProviders = null;
+        $this->appRepository = null;
+    }
+
 }

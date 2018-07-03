@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\MemberCardRepository;
 use App\Entities\MemberCard;
 use App\Validators\MemberCardValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\MemberCardValidator;
  */
 class MemberCardRepositoryEloquent extends BaseRepository implements MemberCardRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

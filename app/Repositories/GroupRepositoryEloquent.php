@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\GroupRepository;
 use App\Entities\Group;
 use App\Validators\GroupValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\GroupValidator;
  */
 class GroupRepositoryEloquent extends BaseRepository implements GroupRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -39,7 +40,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $orderCount 订单数
  * @property string|null $channel 渠道来源
  * @property string|null $registerChannel 注册渠道
- * @property mixed $tags 标签
+ * @property array $tags 标签
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -79,11 +80,12 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Customer extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     protected $casts = [
         'session_key_expires_at' => 'date',
-        'privilege' => 'json'
+        'privilege' => 'json',
+        'tags' => 'array'
     ];
 
     /**
@@ -112,7 +114,11 @@ class Customer extends Model implements Transformable
         'is_certified',
         'can_use_score',
         'score',
-        'total_score'
+        'total_score',
+        'order_count',
+        'channel',
+        'register_channel',
+        'tags'
     ];
 
     public function user() : BelongsTo

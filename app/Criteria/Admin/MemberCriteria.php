@@ -4,6 +4,8 @@ namespace App\Criteria\Admin;
 
 use App\Entities\User;
 use App\Entities\Order;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
@@ -26,9 +28,9 @@ class MemberCriteria implements CriteriaInterface
     {
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
-        $model->whereAppId($appId)->with(['user.roles' => function ($query) {
+        $model->whereAppId($appId)->with(['user.roles' => function (BelongsToMany $query) {
             return $query->where('slug', Role::MEMBER);
-        }])->with(['customers'])->withCount(['orders' => function($query) {
+        }])->with(['customers'])->withCount(['orders' => function(HasMany $query) {
             return $query->whereNotNull('paid_at');
         }]);
         return $model;

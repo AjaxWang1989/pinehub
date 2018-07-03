@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use App\Entities\User;
 
@@ -12,6 +13,7 @@ use App\Entities\User;
  */
 class UserRepositoryEloquent extends BaseRepository implements UserRepository
 {
+    use Destruct;
     protected $fieldSearchable = [
         'user_name' => 'like',
         'nickname'  => 'like',

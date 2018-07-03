@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\CustomerRepository;
 use App\Entities\Customer;
 use App\Validators\CustomerValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\CustomerValidator;
  */
 class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\ScoreRuleRepository;
 use App\Entities\ScoreRule;
 use App\Validators\ScoreRuleValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\ScoreRuleValidator;
  */
 class ScoreRuleRepositoryEloquent extends BaseRepository implements ScoreRuleRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

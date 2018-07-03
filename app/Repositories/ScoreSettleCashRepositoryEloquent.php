@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\ScoreSettleCashRepository;
 use App\Entities\ScoreSettleCash;
 use App\Validators\ScoreSettleCashValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\ScoreSettleCashValidator;
  */
 class ScoreSettleCashRepositoryEloquent extends BaseRepository implements ScoreSettleCashRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

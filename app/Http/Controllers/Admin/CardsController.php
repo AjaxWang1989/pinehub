@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\CardCriteria;
+use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
+use App\Services\AppManager;
 use Exception;
-use App\Http\Requests\CardCreateRequest;
-use App\Http\Requests\CardUpdateRequest;
+use App\Http\Requests\Admin\CardCreateRequest;
+use App\Http\Requests\Admin\CardUpdateRequest;
 use App\Transformers\CardTransformer;
 use App\Transformers\CardItemTransformer;
-use App\Repositories\Admin\CardRepository;
+use App\Repositories\CardRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Event;
 
 /**
  * Class CardsController.
@@ -33,6 +37,18 @@ class CardsController extends Controller
     public function __construct(CardRepository $repository)
     {
         $this->repository = $repository;
+        parent::__construct();
+        $this->repository->pushCriteria(CardCriteria::class);
+    }
+
+    public function colors()
+    {
+        return $this->wechat->officeAccount()->card->colors();
+    }
+
+    public function  categories()
+    {
+        return $this->wechat->officeAccount()->card->categories();
     }
 
     /**
@@ -63,8 +79,13 @@ class CardsController extends Controller
      */
     public function store(CardCreateRequest $request)
     {
+        $appManager = app(AppManager::class);
+        $data = $request->except(['sync']);
+        $data['app_id'] = $appManager->currentApp->id;
         $card = $this->repository->create($request->all());
-
+        if ($request->input('sync', false)) {
+            Event::fire(new SyncTicketCardInfoEvent($card));
+        }
         $response = [
             'message' => 'Card created.',
             'data'    => $card->toArray(),
@@ -123,8 +144,11 @@ class CardsController extends Controller
      */
     public function update(CardUpdateRequest $request, $id)
     {
-       $card = $this->repository->update($request->all(), $id);
-
+       $data = $request->except(['sync']);
+       $card = $this->repository->update($data, $id);
+       if($request->input('sync', false)) {
+           Event::fire(new SyncTicketCardInfoEvent($card));
+       }
        $response = [
            'message' => 'Card updated.',
            'data'    => $card->toArray(),

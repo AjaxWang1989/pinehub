@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\MerchandiseRepository;
 use App\Entities\Merchandise;
 use App\Validators\MerchandiseValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\MerchandiseValidator;
  */
 class MerchandiseRepositoryEloquent extends BaseRepository implements MerchandiseRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

@@ -19,6 +19,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  *
  * @property int $id
  * @property string|null $code 餐车编号
+ * @property string|null $name 店铺名称
  * @property int $userId 店铺老板用户id
  * @property string $countryId 国家id
  * @property int $provinceId 省份id
@@ -82,6 +83,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereGeoHash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereMtAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop wherePosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereProvinceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereStatus($value)

@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\CountryRepository;
 use App\Entities\Country;
 use App\Validators\CountryValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\CountryValidator;
  */
 class CountryRepositoryEloquent extends BaseRepository implements CountryRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

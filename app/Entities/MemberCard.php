@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Prettus\Repository\Contracts\Transformable;
@@ -17,6 +18,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $userId 用户id
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
+ * @property-read \App\Entities\App $app
  * @property-read \App\Entities\Card $card
  * @property-read \App\Entities\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereAppId($value)
@@ -30,14 +32,19 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class MemberCard extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'card_id',
+        'card_code',
+        'app_id',
+        'user_id'
+    ];
 
     public function user(): BelongsTo
     {
@@ -47,6 +54,11 @@ class MemberCard extends Model implements Transformable
     public function card() : BelongsTo
     {
         return $this->belongsTo(Card::class, 'card_id', 'id');
+    }
+
+    public function app() : BelongsTo
+    {
+        return $this->belongsTo(App::class, 'app_id', 'id');
     }
 
 }

@@ -3,23 +3,23 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Entities\Card as MemberCardItem;
+use App\Entities\Card as CardItem;
 
 /**
- * Class MemberCardItemTransformer.
+ * Class CardItemTransformer.
  *
  * @package namespace App\Transformers;
  */
-class MemberCardItemTransformer extends TransformerAbstract
+class CardItemTransformer extends TransformerAbstract
 {
     /**
-     * Transform the MemberCardItem entity.
+     * Transform the CardItem entity.
      *
-     * @param MemberCardItem $model
+     * @param CardItem $model
      *
      * @return array
      */
-    public function transform(MemberCardItem $model)
+    public function transform(CardItem $model)
     {
         return [
             'id'         => (int) $model->id,
@@ -36,6 +36,8 @@ class MemberCardItemTransformer extends TransformerAbstract
             'ali_app_id' => $model->aliAppId,
             'status' => $model->status,
             'sync' => $model->sync,
+            'begin_at' => $model->beginAt,
+            'end_at' => $model->endAt,
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,
