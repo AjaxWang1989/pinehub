@@ -78,7 +78,7 @@ class WechatService
             $this->openPlatform= Factory::openPlatform([]);
         if(empty($this->config['open_platform'])) {
             $this->openPlatform->config->merge($this->config['open_platform']);
-            \Log::debug('openPlatform ', $this->openPlatform->config->toArray());
+            \Log::debug('openPlatform ', [$this->config['open_platform'], $this->openPlatform->config->toArray()]);
         }
 
         $this->setWechatApplication($this->openPlatform, app());
