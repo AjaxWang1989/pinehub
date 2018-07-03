@@ -76,7 +76,7 @@ class WechatService
     {
         \Log::debug('open platform config 0', $this->config);
         if(!$this->openPlatform)
-            $this->openPlatform= Factory::openPlatform();
+            $this->openPlatform= Factory::openPlatform([]);
         if(empty($this->config['open_platform'])) {
             $this->openPlatform->config->merge($this->config['open_platform']);
         }
