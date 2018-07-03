@@ -28,11 +28,8 @@ class ProvinceTransformer extends TransformerAbstract
             'country' => $model->country->only(['id', 'code', 'name']),
             'code' => $model->code,
             'name' => $model->name,
-            'cities' => $model->cities->map(function (City $city){
-                return $city->only(['id', 'code', 'name']);
-            }),
-            'cities_count' => $model->citiesCount,
-            'counties_count' => $model->countiesCount,
+            'cities_count' => $model->citiesCount ? $model->citiesCount : 0,
+            'counties_count' => $model->countiesCount ? $model->citiesCount : 0,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];

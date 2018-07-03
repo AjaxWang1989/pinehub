@@ -27,10 +27,7 @@ class CityTransformer extends TransformerAbstract
             /* place your other model properties here */
             'country' => $model->country->only(['id', 'code', 'name']),
             'province' => $model->province->only(['id', 'code', 'name']),
-            'counties'  => $model->counties->map(function (County $county){
-                return $county->only(['id', 'code', 'name']);
-            }),
-            'counties_count' => $model->countiesCount,
+            'counties_count' => $model->countiesCount ? $model->countiesCount : 0,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];

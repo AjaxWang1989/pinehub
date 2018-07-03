@@ -13,7 +13,7 @@ class CountyCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,11 @@ class CountyCreateRequest extends FormRequest
     {
         return [
             //
+            'name' => ['required'],
+            'code' => ['required'],
+            'country_id' => ['exist:country,id'],
+            'province_id' => ['exist:province,id'],
+            'city_id' => ['exist:city,id']
         ];
     }
 }

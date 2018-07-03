@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entities\County;
+use App\Repositories\CityRepository;
 use Dingo\Api\Http\Request;
 use App\Http\Response\JsonResponse;
 use Exception;
@@ -26,15 +27,18 @@ class CountiesController extends Controller
      */
     protected $repository;
 
+    protected $cityRepository;
+
 
     /**
      * CountiesController constructor.
      *
      * @param CountyRepository $repository
      */
-    public function __construct(CountyRepository $repository)
+    public function __construct(CountyRepository $repository,CityRepository $cityRepository)
     {
         $this->repository = $repository;
+        $this->cityRepository = $cityRepository;
     }
 
     /**
@@ -43,7 +47,7 @@ class CountiesController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, int $id)
+    public function index(Request $request, int $id = null)
     {
         $routeName = $request->route()[1]['as'];
         switch ($routeName) {
@@ -80,14 +84,21 @@ class CountiesController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  CountyCreateRequest $request
-     *
+     * @param int $cityId
      * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
-    public function store(CountyCreateRequest $request)
+    public function store(CountyCreateRequest $request, int $cityId = null)
     {
-        $county = $this->repository->create($request->all());
+        $data = $request->all();
+        if($cityId) {
+            $city = $this->cityRepository->find($cityId);
+            $data['city_id'] = $city->id;
+            $data['country_id'] = $city->countryId;
+            $data['province_id'] = $city->provinceId;
+        }
+        $county = $this->repository->create($data);
 
         $response = [
             'message' => 'County created.',

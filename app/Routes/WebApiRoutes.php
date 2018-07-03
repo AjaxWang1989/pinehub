@@ -99,6 +99,7 @@ class WebApiRoutes extends ApiRoutes
             $router->post('/province', ['as' => 'province.create', 'uses' => 'ProvincesController@store']);
             $router->put('/province/{id}', ['as' => 'province.update', 'uses' => 'ProvincesController@update']);
 
+            //$router->get('/country/{countryId}/cities', ['as' => 'city.list.country', 'uses' => 'CitiesController@index']);
             $router->get('/country/{countryId}/cities', ['as' => 'city.list.country', 'uses' => 'CitiesController@index']);
             $router->get('/province/{provinceId}/cities', ['as' => 'city.list.province', 'uses' => 'CitiesController@index']);
             $router->get('/cities', ['as' => 'city.list.all', 'uses' => 'CitiesController@index']);

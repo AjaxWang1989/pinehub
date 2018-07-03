@@ -13,7 +13,7 @@ class ProvinceCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,9 @@ class ProvinceCreateRequest extends FormRequest
     {
         return [
             //
+            'code' => ['required'],
+            'name' => ['required'],
+            'country_id' => ['exist:countries,id']
         ];
     }
 }

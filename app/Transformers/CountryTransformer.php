@@ -23,11 +23,12 @@ class CountryTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
+            'name'       => $model->name,
+            'code'       => $model->code,
             /* place your other model properties here */
 
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'created_at' => $model->createdAt,
+            'updated_at' => $model->updatedAt
         ];
     }
 }

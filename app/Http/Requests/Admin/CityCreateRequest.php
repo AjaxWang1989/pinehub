@@ -13,7 +13,7 @@ class CityCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,10 @@ class CityCreateRequest extends FormRequest
     {
         return [
             //
+            'code' => ['required'],
+            'name' => ['required'],
+            'country_id' => ['exist:countries,id'],
+            'province_id' => ['exist:province,id']
         ];
     }
 }

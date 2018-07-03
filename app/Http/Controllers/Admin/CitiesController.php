@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entities\City;
+use App\Entities\Province;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\Admin\{
     CityCreateRequest, CityUpdateRequest
 };
 use App\Http\Response\JsonResponse;
+use App\Repositories\ProvinceRepository;
 use App\Transformers\CityTransformer;
 use App\Transformers\CityItemTransformer;
 use Dingo\Api\Facade\Route;
@@ -30,15 +32,18 @@ class CitiesController extends Controller
      */
     protected $repository;
 
+    protected $provinceRepository;
+
 
     /**
      * CitiesController constructor.
      *
      * @param CityRepository $repository
      */
-    public function __construct(CityRepository $repository)
+    public function __construct(CityRepository $repository, ProvinceRepository $provinceRepository)
     {
         $this->repository = $repository;
+        $this->provinceRepository = $provinceRepository;
     }
 
     /**
@@ -47,7 +52,7 @@ class CitiesController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, int $id)
+    public function index(Request $request, int $id = null)
     {
         $routeName = $request->route()[1]['as'];
         switch ($routeName) {
@@ -67,7 +72,7 @@ class CitiesController extends Controller
                 break;
             }
         }
-        $cities = $this->repository->with(['province', 'country'])->paginate();
+        $cities = $this->repository->with(['province', 'country'])->withCount('counties')->paginate();
 
         if (request()->wantsJson()) {
 
@@ -82,13 +87,20 @@ class CitiesController extends Controller
      *
      * @param  CityCreateRequest $request
      *
+     * @param int $provinceId
      * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
-    public function store(CityCreateRequest $request)
+    public function store(CityCreateRequest $request, int $provinceId = null)
     {
-        $city = $this->repository->create($request->all());
+        $data = $request->all();
+        if($provinceId) {
+            $province = $this->provinceRepository->find($provinceId);
+            $data['province_id'] = $province->id;
+            $data['country_id'] = $province->countryId;
+        }
+        $city = $this->repository->create($data);
 
         $response = [
             'message' => 'City created.',
@@ -112,7 +124,7 @@ class CitiesController extends Controller
      */
     public function show($id)
     {
-        $city = $this->repository->find($id);
+        $city = $this->repository->withCount('counties')->find($id);
 
         if (request()->wantsJson()) {
 

@@ -52,7 +52,7 @@ class ProvincesController extends Controller
             });
         }
 
-        $provinces = $this->repository->with(['country'])->paginate();
+        $provinces = $this->repository->withCount(['counties', 'cities'])->with('country')->paginate();
 
         if (request()->wantsJson()) {
 
@@ -66,13 +66,15 @@ class ProvincesController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  ProvinceCreateRequest $request
-     *
+     * @param int $countryId
      * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
-    public function store(ProvinceCreateRequest $request)
+    public function store(ProvinceCreateRequest $request, int $countryId = null)
     {
+        $data = $request->all();
+        $data['country_id'] = isset($data['country_id']) && $data['country_id'] ? $data['country_id'] : $countryId;
         $province = $this->repository->create($request->all());
 
         $response = [
@@ -97,7 +99,7 @@ class ProvincesController extends Controller
      */
     public function show($id)
     {
-        $province = $this->repository->find($id);
+        $province = $this->repository->with('country')->withCount(['cities', 'counties'])->find($id);
 
         if (request()->wantsJson()) {
 
@@ -133,7 +135,7 @@ class ProvincesController extends Controller
      */
     public function update(ProvinceUpdateRequest $request, $id)
     {
-       $province = $this->repository->update($request->all(), $id);
+       $province = $this->repository->with('country')->withCount(['cities', 'counties'])->update($request->all(), $id);
 
        $response = [
            'message' => 'Province updated.',
