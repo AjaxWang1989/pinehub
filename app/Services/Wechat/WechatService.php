@@ -76,7 +76,11 @@ class WechatService
     {
         \Log::debug('open platform config 0', $this->config);
         if(!$this->openPlatform)
-            $this->openPlatform= Factory::openPlatform($this->config['open_platform']);
+            $this->openPlatform= Factory::openPlatform();
+        if(empty($this->config['open_platform'])) {
+            $this->openPlatform->config->merge($this->config['open_platform']);
+        }
+
         $this->setWechatApplication($this->openPlatform, app());
         return ($this->openPlatform);
     }
@@ -107,7 +111,7 @@ class WechatService
     {
         \Log::debug('open platform config ', $this->config);
         $redirect = $this->openPlatform()->config['oauth']['callback'];
-
+        \Log::debug('open platform config '.$redirect);
         $redirect = str_replace('{appId}', $appId, $redirect);
         $redirect .= "?token={$token}";
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
