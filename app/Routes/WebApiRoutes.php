@@ -129,6 +129,7 @@ class WebApiRoutes extends ApiRoutes
             $router->put('/county/{id}', ['as' => 'county.update', 'uses' => 'CountiesController@update']);
 
             $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
+            $router->get('/{type}/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
             $router->get('/score-rule/{id}', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@show']);
         });
     }

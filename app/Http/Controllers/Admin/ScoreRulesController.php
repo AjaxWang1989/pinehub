@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\ScoreRuleCriteria;
+use App\Entities\ScoreRule;
 use App\Http\Response\JsonResponse;
 
 use Exception;
@@ -38,12 +39,17 @@ class ScoreRulesController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
+     * @param string $type
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(string $type = 'general')
     {
         $this->repository->pushCriteria(ScoreRuleCriteria::class);
+        if($type === 'general') {
+            $this->repository->findWhere(['type'=> ScoreRule::GENERAL_RULE]);
+        }elseif ($type === 'special') {
+            $this->repository->findWhere(['type' => ['>', ScoreRule::SPECIAL_RULE]]);
+        }
         $scoreRules = $this->repository->paginate();
 
         if (request()->wantsJson()) {
