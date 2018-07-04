@@ -55,6 +55,12 @@ class WebApiRoutes extends ApiRoutes
 
                 $router->get('/members', ['as'=> 'members', 'uses' => 'MembersController@index']);
 
+                $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
+                $router->get('/{type}/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
+                $router->get('/score-rule/{id}', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@show']);
+                $router->post('/score-rule', ['as' => 'score-rule.create', 'uses' => 'ScoreRulesController@store']);
+                $router->put('/score-rule/{id}', ['as' => 'score-rule.update', 'uses' => 'ScoreRulesController@store']);
+
                 $router->group(["prefix" => "wechat", "namespace" => "Wechat"], function ($router) {
                     /**
                      * @var LumenRouter|DingoRouter $router
@@ -131,12 +137,6 @@ class WebApiRoutes extends ApiRoutes
             $router->post('/city/{cityId}/county', ['as' => 'county.create.city', 'uses' => 'CountiesController@store']);
             $router->post('/county', ['as' => 'county.create', 'uses' => 'CountiesController@store']);
             $router->put('/county/{id}', ['as' => 'county.update', 'uses' => 'CountiesController@update']);
-
-            $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
-            $router->get('/{type}/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
-            $router->get('/score-rule/{id}', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@show']);
-            $router->post('/score-rule', ['as' => 'score-rule.create', 'uses' => 'ScoreRulesController@store']);
-            $router->put('/score-rule/{id}', ['as' => 'score-rule.update', 'uses' => 'ScoreRulesController@store']);
 
         });
     }
