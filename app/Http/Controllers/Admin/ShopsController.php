@@ -131,7 +131,7 @@ class ShopsController extends Controller
            $url .= "?shop_id={$shop->id}";
            $url .= "&selected_appid={$appManager->currentApp->id}";
            $qrCode = QrCode::format('png')->size($size)->generate($url);
-            if($request->wantsJson()) {
+           if($request->wantsJson()) {
                 $qrCode = base64_encode($qrCode);
                 return $this->response(new JsonResponse([
                     'qr_code' => 'data:image/png;base64, '.$qrCode
@@ -139,11 +139,14 @@ class ShopsController extends Controller
             }else{
                 return Response::create($qrCode)->header('Content-Type', 'image/png');
             }
-           return $this->response(new JsonResponse([
-               'qr_code' => 'data:image/png;base64, '.$qrCode
-           ]));
         }else{
-            return $this->response()->error('参数错误');
+            if($request->wantsJson()) {
+                return $this->response(new JsonResponse([
+                    'message' => '失败 '
+                ]));
+            }else{
+                return Response::create(['message' => '失败 ']);
+            }
         }
     }
 
@@ -157,14 +160,15 @@ class ShopsController extends Controller
                 'app_id': {$shop->appId},
                 'shop_id': {$shop->id}
             \}";
-            $qrCode = app('wechat')->openPlatform()->officialAccount($shop->wechatAppId)->qrcode->url(base64_encode($data));
+            $qrCode = app('wechat')->openPlatform()->officialAccount($appManager->currentApp->wechatAppId)->qrcode->forever(base64_encode($data));
             if($request->wantsJson()) {
                 $qrCode = base64_encode($qrCode);
                 return $this->response(new JsonResponse([
                     'qr_code' => 'data:image/png;base64, '.$qrCode
                 ]));
             }else{
-                return Response::create($qrCode)->header('Content-Type', 'image/png');
+                //return redirect($qrCode);
+                return Response::create($qrCode);//->header('Content-Type', 'image/png');
             }
 
         }else{

@@ -14,18 +14,30 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $id
  * @property int $cardId 卡券card id
  * @property string $cardCode 核销码
+ * @property int|null $isGiveByFriend
  * @property string $appId 应用id
  * @property int $userId 用户id
+ * @property string|null $openId
+ * @property string|null $friendOpenId
+ * @property string|null $unionId
+ * @property int|null $active
+ * @property string|null $outerStr
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property-read \App\Entities\App $app
  * @property-read \App\Entities\Card $card
  * @property-read \App\Entities\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCardCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereFriendOpenId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereIsGiveByFriend($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereOpenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereOuterStr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereUnionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereUserId($value)
  * @mixin \Eloquent

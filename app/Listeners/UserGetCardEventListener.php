@@ -40,9 +40,14 @@ class UserGetCardEventListener
                     if($customer->user) {
                         $memberCard = new MemberCard();
                         $memberCard->cardId = $card->id;
-                        $memberCard->userId = $customer->user->id;
+                        $memberCard->userId = $customer->userId;
                         $memberCard->appId = $customer->appId;
                         $memberCard->cardCode = $payload['UserCardCode'];
+                        $memberCard->unionId = $payload['UnionId'];
+                        $memberCard->outerStr = $payload['OuterStr'];
+                        $memberCard->isGiveByFriend = $payload['IsGiveByFriend'];
+                        $memberCard->friendOpenId = $payload['FriendUserName'];
+                        $memberCard->active = false;
                         $memberCard->save();
                     }
 

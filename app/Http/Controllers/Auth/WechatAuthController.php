@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Repositories\CustomerRepository;
+use App\Services\AppManager;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -39,6 +40,7 @@ class WechatAuthController extends Controller
         if ($customer) {
             $openId = $customer->platformOpenId;
         }
+        $customer->appId = app(AppManager::class)->currentApp->id;
 
         $this->customerRepository->updateOrCreate(['platform_open_id' => $customer->openId], $customer->toArray());
         $redirect = $request->input('redirect_uri', null);
