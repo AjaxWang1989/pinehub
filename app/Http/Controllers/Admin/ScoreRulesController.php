@@ -6,6 +6,7 @@ use App\Criteria\Admin\ScoreRuleCriteria;
 use App\Entities\ScoreRule;
 use App\Http\Response\JsonResponse;
 
+use App\Services\AppManager;
 use Exception;
 use App\Http\Requests\Admin\ScoreRuleCreateRequest;
 use App\Http\Requests\Admin\ScoreRuleUpdateRequest;
@@ -71,7 +72,9 @@ class ScoreRulesController extends Controller
      */
     public function store(ScoreRuleCreateRequest $request)
     {
-        $scoreRule = $this->repository->create($request->all());
+        $data = $request->all();
+        $data['app_id'] = app(AppManager::class)->currentApp->id;
+        $scoreRule = $this->repository->create($data);
 
         $response = [
             'message' => 'ScoreRule created.',
