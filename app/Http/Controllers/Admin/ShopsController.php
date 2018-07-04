@@ -127,7 +127,7 @@ class ShopsController extends Controller
         $appManager = app(AppManager::class);
         $size = $request->input('size', null);
         if($shop && $appManager->currentApp && $size !== null && $size > 0) {
-           $url = webUriGenerator('/payment/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
+           $url = webUriGenerator('/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
            $url .= "?shop_id={$shop->id}";
            $url .= "&selected_appid={$appManager->currentApp->id}";
            $qrCode = QrCode::format('png')->size($size)->generate($url);
