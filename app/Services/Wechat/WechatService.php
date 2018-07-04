@@ -58,7 +58,7 @@ class WechatService
     {
 
         if(!$this->officeAccount) {
-            if($this->config['official_account']['app_secret']) {
+            if(isset($this->config['official_account']['app_secret'])) {
                 $this->officeAccount= Factory::officialAccount($this->config['official_account']);
             }else{
                 $appManager = app(AppManager::class);
@@ -266,7 +266,7 @@ class WechatService
     public function miniProgram()
     {
         if(!$this->miniProgram){
-            if($this->config['mini_program']['app_secret']) {
+            if(isset($this->config['mini_program']['app_secret'])) {
                 $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
             }else{
                 $appManager = app(AppManager::class);
