@@ -48,7 +48,7 @@ class ScoreRulesController extends Controller
         if($type === 'general') {
             $this->repository->findWhere(['type'=> ScoreRule::GENERAL_RULE]);
         }elseif ($type === 'special') {
-            $this->repository->findWhere(['type' => ['>', ScoreRule::SPECIAL_RULE]]);
+            $this->repository->findWhere([['type', '>', ScoreRule::SPECIAL_RULE]]);
         }
         $scoreRules = $this->repository->paginate();
 
