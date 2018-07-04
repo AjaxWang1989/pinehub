@@ -42,7 +42,7 @@ class ScoreRulesController extends Controller
      * @param string $type
      * @return \Illuminate\Http\Response
      */
-    public function index(string $type = 'general')
+    public function index(string $type = null)
     {
         $this->repository->pushCriteria(ScoreRuleCriteria::class);
         if($type === 'general') {
