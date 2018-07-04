@@ -5,6 +5,7 @@ namespace App\Entities;
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -27,10 +28,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\User|null $buyer
- * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Order $order
+ * @property-read \App\Entities\OrderItemMerchandise $orderMerchandise
  * @property-read \App\Entities\Shop|null $shop
- * @property-read \App\Entities\SKUProduct $skuProduct
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereBuyerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCode($value)
@@ -64,9 +64,8 @@ class OrderItem extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'buyer_user_id', 'total_amount', 'payment_amount', 'discount_amount', 'main_image', 'origin_price', 'sell_price',
-        'status', 'shop_id', 'signed_at', 'merchandise_id', 'sku_product_id', 'consigned_at', 'post_no', 'post_name', 'quality',
-        'cost_price', 'order_id'
+        'code', 'buyer_user_id', 'total_amount', 'payment_amount', 'discount_amount',
+        'status', 'shop_id', 'signed_at', 'consigned_at', 'order_id', 'app_id'
     ];
 
     public function buyer() : BelongsTo
@@ -84,13 +83,8 @@ class OrderItem extends Model implements Transformable
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 
-    public function merchandise() : BelongsTo
+    public function orderMerchandise(): HasOne
     {
-        return $this->belongsTo(Merchandise::class, 'merchandise_id', 'id');
-    }
-
-    public function skuProduct() : BelongsTo
-    {
-        return $this->belongsTo(SKUProduct::class, 'sku_product_id', 'id');
+        return $this->hasOne(OrderItemMerchandise::class, 'order_item_id', 'id');
     }
 }

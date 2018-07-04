@@ -16,6 +16,14 @@ use App\Validators\Api\OrderValidator;
 class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 {
     use Destruct;
+    protected $fieldSearchable = [
+        'type' => '=',
+        'pay_type' => '=',
+        'status' => '=',
+        'buyer_user_id' => '=',
+        'buyer.mobile' => '=',
+        'code' => '='
+    ];
     /**
      * Specify Model class name
      *

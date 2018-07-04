@@ -39,6 +39,10 @@ class CreateOrdersTable extends Migration
             $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单');
             $table->unsignedTinyInteger('post_type')->default(0)->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
             $table->boolean('score_settle')->default(false)->comment('积分是否已经结算');
+            $table->string('post_no', 32)->nullable()->default(null)->comment('快递编号');
+            $table->string('post_code', 6)->nullable()->default(null)->comment('邮编');
+            $table->string('post_name', 64)->nullable()->default(null)->comment('快递公司名称');
+            $table->string('transaction_id', 32)->nullable()->default(null)->comment('支付交易流水');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');

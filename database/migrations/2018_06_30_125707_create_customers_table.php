@@ -16,6 +16,7 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统应用appid');
+            $table->string('mobile', 11)->nullable()->default(null)->comment('手机号码');
             $table->unsignedInteger('user_id')->nullable()->default(null)->comment('会员id');
             $table->string('platform_app_id', 32)->nullable()->default(null)->comment('微信公众平台、小程序、开放app id');
             $table->string('type')->default('WECHAT_OFFICIAL_ACCOUNT')->comment('WECHAT_OFFICE_ACCOUNT 公众平台，

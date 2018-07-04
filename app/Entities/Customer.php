@@ -14,6 +14,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  *
  * @property int $id
  * @property string|null $appId 系统应用appid
+ * @property string|null $mobile
  * @property int|null $userId 会员id
  * @property string|null $platformAppId 微信公众平台、小程序、开放app id
  * @property string $type WECHAT_OFFICE_ACCOUNT 公众平台，
@@ -57,6 +58,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereIsCertified($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereIsStudentCertified($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereNickname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereOrderCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer wherePlatformAppId($value)

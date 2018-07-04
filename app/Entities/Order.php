@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,6 +17,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  *
  * @property int $id
  * @property string $code 订单编号
+ * @property string|null $transactionId
  * @property string|null $openId 微信open id或支付宝user ID
  * @property string|null $wechatAppId 维系app id
  * @property string|null $aliAppId 支付宝app id
@@ -35,11 +37,14 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Carbon\Carbon|null $consignedAt 发货时间
  * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
+ * @property string|null $postNo
+ * @property string|null $postCode
+ * @property string|null $postName
  * @property int $scoreSettle 积分是否已经结算
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\User|null $buyer
+ * @property-read \App\Entities\Customer|null $buyer
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
@@ -55,14 +60,19 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaidAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePayType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaymentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverDistrict($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereScoreSettle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereShopId($shopId)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWechatAppId($value)
@@ -112,7 +122,7 @@ class Order extends Model implements Transformable
 
     public function buyer() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'buyer_user_id', 'id');
+        return $this->belongsTo(Customer::class, 'buyer_user_id', 'id');
     }
 
     public function orderItems() : HasMany
@@ -194,5 +204,12 @@ class Order extends Model implements Transformable
             'client_ip' => $clientIp,// 客户地址
             'openid' => $openId,
         ];
+    }
+
+    public function scopeWhereShopId(Builder $query, int $shopId)
+    {
+        return $query->whereHas('orderItems', function (Builder $query) use($shopId) {
+            return $query->where('shop_id', $shopId);
+        });
     }
 }

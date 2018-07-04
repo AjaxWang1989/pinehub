@@ -23,6 +23,7 @@ class CreateOrderItemMerchandisesTable extends Migration
             $table->unsignedInteger('order_item_id')->comment('子订单id');
             $table->unsignedInteger('merchandise_id')->nullable()->default(null)->comment('产品id');
             $table->unsignedInteger('sku_product_id')->nullable()->default(null)->comment('规格产品ID');
+            $table->string('name', 64)->nullable()->default(null)->comment('产品名称');
             $table->string('main_image')->nullable()->default(null)->comment('产品主图');
             $table->float('origin_price')->default(0)->comment('原价');
             $table->float('sell_price')->default(0)->comment('售价');
