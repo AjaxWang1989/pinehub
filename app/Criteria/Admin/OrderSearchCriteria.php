@@ -27,11 +27,11 @@ class OrderSearchCriteria implements CriteriaInterface
         $beginAt = Request::input('begin_at', null);
         $endAt = Request::input('end_at', null);
         if($beginAt) {
-            $model->where('paid_at', '>', $beginAt);
+            $model = $model->where('paid_at', '>', $beginAt);
         }
 
         if($endAt) {
-            $model->where('paid_at', '<', $endAt);
+            $model = $model->where('paid_at', '<', $endAt);
         }
         return $model;
     }

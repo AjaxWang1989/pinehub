@@ -24,7 +24,6 @@ class WechatAutoReplyMessageCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appId = app(AppManager::class)->officialAccount->appId;
-        $model->whereAppId($appId);
-        return $model;
+        return $model->whereAppId($appId);
     }
 }

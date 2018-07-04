@@ -51,6 +51,10 @@ class WebApiRoutes extends ApiRoutes
                 $router->get('/app/{id}', ['as' => 'app.show', 'uses' => 'AppController@show']);
                 $router->delete('/app/{id}', ['as' => 'app.delete', 'uses' => 'AppController@destroy']);
 
+                $router->get('/customers', ['as'=> 'customers', 'uses' => 'CustomersController@index']);
+
+                $router->get('/members', ['as'=> 'members', 'uses' => 'MembersController@index']);
+
                 $router->group(["prefix" => "wechat", "namespace" => "Wechat"], function ($router) {
                     /**
                      * @var LumenRouter|DingoRouter $router

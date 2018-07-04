@@ -27,9 +27,9 @@ class OrderCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appManager = app(AppManager::class);
-        $model->whereAppId($appManager->currentApp->id);
+        $model = $model->whereAppId($appManager->currentApp->id);
         if(($shopId = Request::input('shop_id', null))) {
-            $model->whereShopId($shopId);
+            $model = $model->whereShopId($shopId);
         }
         return $model;
     }

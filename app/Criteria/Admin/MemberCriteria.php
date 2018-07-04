@@ -2,8 +2,11 @@
 
 namespace App\Criteria\Admin;
 
+use App\Entities\Role;
 use App\Entities\User;
 use App\Entities\Order;
+use App\Services\AppManager;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\CriteriaInterface;
@@ -28,10 +31,10 @@ class MemberCriteria implements CriteriaInterface
     {
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
-        $model->whereAppId($appId)->with(['user.roles' => function (BelongsToMany $query) {
+        $model = $model->where('app_id', $appId)->with(['roles' => function (BelongsToMany $query) {
             return $query->where('slug', Role::MEMBER);
-        }])->with(['customers'])->withCount(['orders' => function(HasMany $query) {
-            return $query->whereNotNull('paid_at');
+        }])->with(['customers.orders' => function(HasMany $query) {
+            $query->whereNotNull('paid_at');
         }]);
         return $model;
     }

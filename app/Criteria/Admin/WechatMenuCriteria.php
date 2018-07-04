@@ -25,7 +25,6 @@ class WechatMenuCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appManager = app(AppManager::class);
-        $model->whereAppId($appManager->officialAccount->id);
-        return $model;
+        return $model->whereAppId($appManager->officialAccount->appId);
     }
 }

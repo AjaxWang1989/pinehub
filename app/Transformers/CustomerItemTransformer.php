@@ -33,7 +33,6 @@ class CustomerItemTransformer extends TransformerAbstract
             'order_count' => $model->ordersCount,
             'tags'  => $model->tags,
             /* place your other model properties here */
-            'status' => $model->status,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         );

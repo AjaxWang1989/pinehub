@@ -35,7 +35,7 @@ class MemberItemTransformer extends TransformerAbstract
             'app_id' => $model->appId,
             'channel' => $model->channel,
             'register_channel' => $model->registerChannel,
-            'order_count' => $model->orderCount,
+            'orders_count' => $model->ordersNum(),
             'tags'  => $model->tags,
             'score' => $model->score,
             'card' => '待开发',
