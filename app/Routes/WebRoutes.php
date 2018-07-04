@@ -45,7 +45,7 @@ class WebRoutes extends Routes
             tap($router, function (Router $router) {
                 $this->subRoutes($router);
                 $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request) {
-                    return "pinehub official service";
+                    exit( phpinfo() );
                 });
             });
 
