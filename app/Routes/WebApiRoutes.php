@@ -135,6 +135,9 @@ class WebApiRoutes extends ApiRoutes
             $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
             $router->get('/{type}/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
             $router->get('/score-rule/{id}', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@show']);
+            $router->post('/score-rule', ['as' => 'score-rule.create', 'uses' => 'ScoreRulesController@store']);
+            $router->put('/score-rule/{id}', ['as' => 'score-rule.update', 'uses' => 'ScoreRulesController@store']);
+
         });
     }
 }
