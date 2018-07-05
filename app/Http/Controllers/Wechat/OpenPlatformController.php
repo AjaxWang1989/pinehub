@@ -121,7 +121,6 @@ class OpenPlatformController extends Controller
     {
         $auth = Cache::get(CURRENT_APP_PREFIX.$request->input('token'), false);
         if($auth) {
-            //$app = $this->appRepository->find($request->input('app_id'));
             return new Response(['wechat_app_id' => $auth]);
         }
         $this->response()->error('未完成授权，请等待', HTTP_STATUS_NO_RESPONSE);

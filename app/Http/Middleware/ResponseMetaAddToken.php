@@ -61,7 +61,7 @@ class ResponseMetaAddToken
                 $content = json_encode($data);
                 $response->setContent($content);
             }
-            return Response::create($response->getContent());
+            return $response;
         });
     }
 }
