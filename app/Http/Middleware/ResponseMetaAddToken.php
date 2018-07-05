@@ -51,7 +51,7 @@ class ResponseMetaAddToken
         if(!$token) {
             return $next($request);
         }
-        return with($next($request), function (Response $response) use ($token){
+        return with($next($request), function ($response) use ($token){
             $response->addMeta('token', $token);
             return $response;
         });
