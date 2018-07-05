@@ -67,7 +67,8 @@ class OpenPlatformController extends Controller
         $appId = $request->input('app_id', null);
         $token = $request->input('token', null);
         Cache::set(CURRENT_APP_PREFIX.$request->input('token'), $appId, 3600);
-        return view('open-platform.auth')->with('authUrl', $this->wechat->openPlatformComponentLoginPage($appId, $token))->with('success', false);
+        return redirect($this->wechat->openPlatformComponentLoginPage($appId, $token));
+        //return view('open-platform.auth')->with('authUrl', $this->wechat->openPlatformComponentLoginPage($appId, $token))->with('success', false);
     }
 
 
