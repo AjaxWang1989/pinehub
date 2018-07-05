@@ -21,7 +21,7 @@
         <script>
             $(function () {
                 @if(!$success)
-                    console.log('{{$authUrl}}')
+                    console.log('{!! $authUrl !!}')
                     //window.location.href="{{ $authUrl }}";
                 @endif
             });
