@@ -117,8 +117,8 @@ class OpenPlatformController extends Controller
 
     public function openPlatformAuthMakeSure(Request $request)
     {
-        return $this->response(new JsonResponse(['dd' => 'dd']));
         $auth = Cache::get(CURRENT_APP_PREFIX.$request->input('token'), false);
+        dd($auth);
         if($auth) {
             //$app = $this->appRepository->find($request->input('app_id'));
             return $this->response(new JsonResponse($auth));
