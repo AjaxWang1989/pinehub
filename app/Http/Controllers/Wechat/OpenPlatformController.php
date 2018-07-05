@@ -13,6 +13,7 @@ use App\Repositories\WechatConfigRepository;
 
 use App\Services\Wechat\OpenPlatform\Guard;
 
+use Dingo\Api\Http\Response;
 use Dingo\Api\Routing\Helpers;
 use EasyWeChat\OpenPlatform\Application;
 
@@ -66,7 +67,7 @@ class OpenPlatformController extends Controller
     {
         $appId = $request->input('app_id', null);
         $token = $request->input('token', null);
-        Cache::set(CURRENT_APP_PREFIX.$request->input('token'), $appId, 3600);
+        //Cache::set(CURRENT_APP_PREFIX.$request->input('token'), $appId, 3600);
         return view('open-platform.auth')->with('authUrl', $this->wechat->openPlatformComponentLoginPage($appId, $token))->with('success', false);
     }
 
@@ -77,7 +78,8 @@ class OpenPlatformController extends Controller
         $authCode = $request->input('auth_code', null);
         $expiresIn = $request->input('expires_in', null);
         $cacheAuthCodeKey = CURRENT_APP_PREFIX.$authCode;
-        $cacheTokenKey = CURRENT_APP_PREFIX.$request->input('token', null);
+        $token = $request->input('token', null);
+        $cacheTokenKey = CURRENT_APP_PREFIX.$token;
         $wechatAppid = Cache::get($cacheAuthCodeKey, null);
         if($wechatAppid) {
             Cache::delete($cacheAuthCodeKey);
@@ -107,8 +109,8 @@ class OpenPlatformController extends Controller
             Cache::set($cacheTokenKey, $wechatAppid, $expiresIn);
         }else{
             if($app && $authCode && $expiresIn) {
-                Cache::set($cacheAuthCodeKey, with($app, function (App $app) use($request) {
-                    return ['app_id' => $app->id, 'token' => $request->input('token', null)];
+                Cache::set($cacheAuthCodeKey, with($app, function (App $app) use($request, $token) {
+                    return ['app_id' => $app->id, 'token' => $token];
                 }), $expiresIn);
             }
         }
@@ -118,12 +120,11 @@ class OpenPlatformController extends Controller
     public function openPlatformAuthMakeSure(Request $request)
     {
         $auth = Cache::get(CURRENT_APP_PREFIX.$request->input('token'), false);
-        dd($auth);
         if($auth) {
             //$app = $this->appRepository->find($request->input('app_id'));
-            return $this->response(new JsonResponse($auth));
+            return new Response(['wechat_app_id' => $auth]);
         }
-        $this->response()->error('未完成授权，请等待', HTTP_STATUS_INTERNAL_SERVER_ERROR);
+        $this->response()->error('未完成授权，请等待', HTTP_STATUS_NO_RESPONSE);
     }
 
     public function __destruct()
