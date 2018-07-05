@@ -112,7 +112,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
             });
 
             $this->app->register(LumenServiceProvider::class);
-            $this->app->register(ApiExceptionHandlerServiceProvider::class);
+            //$this->app->register(ApiExceptionHandlerServiceProvider::class);
             $this->app->register(ApiAuthServiceProvider::class);
             $this->app->routeMiddleware([
                 'cross' => \App\Http\Middleware\Cross::class,
