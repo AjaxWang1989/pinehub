@@ -22,7 +22,7 @@
             $(function () {
                 @if(!$success)
                     console.log('{!! $authUrl !!}')
-                    window.location.href="{{ $authUrl }}";
+                    window.location.href="{!! $authUrl !!}";
                 @endif
             });
         </script>
