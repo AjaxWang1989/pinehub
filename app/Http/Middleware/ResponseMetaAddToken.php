@@ -61,7 +61,7 @@ class ResponseMetaAddToken
                 $response->setContent($content);
             }
 
-            return $response;
+            return Response::create($response->getContent());
         });
     }
 }
