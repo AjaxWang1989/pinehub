@@ -17,6 +17,9 @@ use App\Validators\CardValidator;
 class CardRepositoryEloquent extends BaseRepository implements CardRepository
 {
     use Destruct;
+    protected $fieldSearchable = [
+        'card_type' => '='
+    ];
     /**
      * Specify Model class name
      *

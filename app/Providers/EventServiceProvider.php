@@ -20,6 +20,9 @@ use App\Listeners\CardCheckEventListener;
 use App\Listeners\CardPayOrderEventListener;
 use App\Listeners\CardSKURemindEventListener;
 use App\Listeners\MemberCardActiveEventListener;
+use App\Listeners\OpenPlatformAuthorized;
+use App\Listeners\OpenPlatformUnauthorized;
+use App\Listeners\OpenPlatformUpdateAuthorized;
 use App\Listeners\OrderScoreListener;
 use App\Listeners\SyncMemberCardInfoEventListener;
 use App\Listeners\UserConsumeCardEventListener;
@@ -31,6 +34,9 @@ use App\Listeners\UserUseCardToPayEventListener;
 use App\Listeners\UserViewMemberCardEventListener;
 use App\Listeners\VerifyTicketRefreshEventListener;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
+use Overtrue\LaravelWeChat\Events\OpenPlatform\Authorized;
+use Overtrue\LaravelWeChat\Events\OpenPlatform\Unauthorized;
+use Overtrue\LaravelWeChat\Events\OpenPlatform\UpdateAuthorized;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\VerifyTicketRefreshed;
 
 class EventServiceProvider extends ServiceProvider
@@ -43,6 +49,15 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         OrderScoreEvent::class => [
             OrderScoreListener::class
+        ],
+        Authorized::class => [
+            OpenPlatformAuthorized::class
+        ],
+        Unauthorized::class => [
+            OpenPlatformUnauthorized::class
+        ],
+        UpdateAuthorized::class => [
+            OpenPlatformUpdateAuthorized::class
         ],
         VerifyTicketRefreshed::class =>[
             VerifyTicketRefreshEventListener::class

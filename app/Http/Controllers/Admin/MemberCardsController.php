@@ -73,8 +73,6 @@ class MemberCardsController extends Controller
         $appManager = app(AppManager::class);
         $data['card_type'] = Card::MEMBER_CARD;
         $data['app_id'] = $appManager->currentApp->id;
-//        $data['wechat_app_id'] = $appManager->officialAccount->appId;
-//        $data['ali_app_id'] = $appManager->aliPayOpenPlatform->config['app_id'];
         $data['status'] = Card::CHECK_ING;
         $data['sync'] = $request->input('sync', false) ? Card::SYNC_NO_NEED : Card::SYNC_ING;
         $data['card_info'] = $request->input('member_info');

@@ -55,6 +55,12 @@ class WebApiRoutes extends ApiRoutes
 
                 $router->get('/members', ['as'=> 'members', 'uses' => 'MembersController@index']);
 
+                $router->get('/member/cards',['as' => 'member.cards', 'uses' => 'MemberCardsController@index']);
+                $router->post('/member/card', ['as' => 'member.card.create', 'uses' => 'MemberCardsController@store']);
+                $router->get('/member/card/{id}', ['as' => 'member.card.show', 'uses' => 'MemberCardsController@show']);
+                $router->put('/member/card/{id}', ['as' => 'member.card.update', 'uses' => 'MemberCardsController@update']);
+                $router->delete('/member/card/{id}', ['as' => 'member.card.delete', 'uses' => 'MemberCardsController@destory']);
+
                 $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
                 $router->get('/{type}/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
                 $router->get('/score-rule/{id}', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@show']);
