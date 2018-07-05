@@ -151,3 +151,11 @@ if(!function_exists('domainAndPrefix')) {
         return [$domain, $prefix];
     }
 }
+
+if(!function_exists('jsonResponse')) {
+    function jsonResponse($content) {
+        $response = app(\Dingo\Api\Http\Response\Factory::class)->created();
+        $response->setContent(['data' =>$content]);
+        return $response;
+    }
+}
