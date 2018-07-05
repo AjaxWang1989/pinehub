@@ -22,7 +22,7 @@ class Cross
     }
 
     private function setHeader( &$response ) {
-        Log::debug('response ', [$response]);
+
         if(method_exists($response, 'header')) {
             $response->header('Access-Control-Allow-Origin', '*');
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
