@@ -55,7 +55,7 @@ class ApiRoutes extends Routes
             });
 
             $namespace = $this->namespace;
-            $router->group(['namespace' => $namespace], function () use($router){
+            $router->group(['namespace' => $namespace], function () use($router) {
                 $this->routes($router);
             });
         });
