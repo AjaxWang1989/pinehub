@@ -47,7 +47,7 @@ class ResponseMetaAddToken
         if(is_object($token)) {
             $token = $token->get();
         }
-        $token = Cache::get($token);
+        $token = Cache::get($token, null);
         Log::debug('token ', [$token]);
         if(!$token) {
             return $next($request);
