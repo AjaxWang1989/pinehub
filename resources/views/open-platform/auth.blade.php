@@ -20,9 +20,9 @@
         <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
         <script>
             $(function () {
-                @@if(!$success)
+                @if(!$success)
                     window.location.href="{{ $authUrl }}";
-                @@endif
+                @endif
             });
         </script>
     </body>
