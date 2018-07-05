@@ -52,6 +52,7 @@ class ResponseMetaAddToken
             return $next($request);
         }
         return with($next($request), function ($response) use ($token){
+            dd(xdebug_get_function_stack());
             $response->addMeta('token', $token);
             return $response;
         });
