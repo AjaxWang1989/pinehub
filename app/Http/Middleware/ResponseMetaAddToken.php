@@ -52,7 +52,7 @@ class ResponseMetaAddToken
         if(!$token) {
             return $next($request);
         }
-        return $next($request);
+        //return $next($request);
         return with($next($request), function ($response) use ($token){
             Log::debug('response type', [$response]);
             $data = json_decode($response->getContent(), true);
