@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
+use Dingo\Api\Http\Response\Factory;
 use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
 
@@ -20,7 +20,7 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
         //
         if($this->app->has('api.exception')){
             $this->app->make('api.exception')->register(function (\Exception $exception) {
-                $responseSender = new Response();
+                $responseSender = app(Factory::class)->created();
                 $responseSender->header('Access-Control-Allow-Origin', '*')
                     ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept')
                     ->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
