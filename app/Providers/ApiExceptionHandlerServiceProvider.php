@@ -21,14 +21,12 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
         if($this->app->has('api.exception')){
             $this->app->make('api.exception')->register(function (\Exception $exception) {
                 $responseSender = new Response();
-                //header(sprintf('HTTP/%s %s %s', $responseSender->getProtocolVersion(), $this->, $this->statusText), true, $this->statusCode);
-                header('Access-Control-Allow-Origin:*');
-                header('Access-Control-Allow-Headers:Origin, Content-Type, Cookie, Accept');
-                header('Access-Control-Allow-Methods:GET, POST, PATCH, PUT, DELETE, OPTIONS');
-                header('Access-Control-Allow-Credentials:true');
-                header('', '');
+                $responseSender->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
+                    ->header('Access-Control-Allow-Credentials', 'true');
                 if(Request::method() === HTTP_METHOD_OPTIONS) {
-                    exit();
+                    return $responseSender->send();
                 }
                 $response['status_code'] = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
                 $response['message'] = $exception->getMessage();
@@ -70,8 +68,8 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                     }
                 }
 
-                exit(json_encode($response));
-                //return $responseSender->setContent($response)->send();
+                exit($responseSender->getContent());
+                return $responseSender->setContent($response)->send();
             });
         }
     }
