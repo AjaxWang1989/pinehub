@@ -8,11 +8,8 @@
     </head>
     <body>
         <div class="warp">
-            {{--@if($success)--}}
-                {{--<a href="#" class="weui-btn weui-btn_primary">授  权 成 功</a>--}}
-            {{--@else--}}
-                {{--<a href="{{ $authUrl }}" class="weui-btn weui-btn_primary">授  权</a>--}}
-            {{--@endif--}}
+            @if($success)
+            @endif
 
         </div>
         <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
