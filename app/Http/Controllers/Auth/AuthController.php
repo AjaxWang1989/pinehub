@@ -67,7 +67,7 @@ class AuthController extends Controller
             if($input = $this->validate($request, self::RULES,self::MESSAGES)) {
                 $input['app_id'] = isset($input['app_id']) ? $input['app_id'] : null;
                 if(!($token = Auth::attempt($input))){;
-                    $this->response()->error('登录密码与手机不匹配无法登录！', HTTP_STATUS_NOT_FOUND);
+                    $this->response()->error('登录密码与手机不匹配无法登录！ password md5 value '.md5($input['mobile'].env('APP_PUBLIC_KEY')), HTTP_STATUS_NOT_FOUND);
                 }
                 $user = JWTAuth::toUser($token);
                 tap($user, function ( User $user) {
