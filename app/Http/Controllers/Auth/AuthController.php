@@ -72,7 +72,6 @@ class AuthController extends Controller
                     isset($input['app_id']);
                 }
                 if(!($token = Auth::attempt($input))){
-                    Log::debug('debug auth', DB::getQueryLog());
                     $this->response()->error('登录密码与手机不匹配无法登录!', HTTP_STATUS_NOT_FOUND);
                 }
                 $user = JWTAuth::toUser($token);
