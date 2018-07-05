@@ -42,7 +42,7 @@ class ResponseMetaAddToken
 
         $token = $this->auth->guard($guard)->getToken();
         if(!$token) {
-            dd($token);
+            //dd($token);
             return $next($request);
         }
         $token = Cache::get($token);
