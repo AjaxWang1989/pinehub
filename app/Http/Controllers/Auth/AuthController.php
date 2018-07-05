@@ -15,6 +15,8 @@ use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -69,7 +71,8 @@ class AuthController extends Controller
                 if(!$input['app_id']) {
                     isset($input['app_id']);
                 }
-                if(!($token = Auth::attempt($input))){;
+                if(!($token = Auth::attempt($input))){
+                    Log::debug('debug auth', DB::getQueryLog());
                     $this->response()->error('登录密码与手机不匹配无法登录!', HTTP_STATUS_NOT_FOUND);
                 }
                 $user = JWTAuth::toUser($token);
