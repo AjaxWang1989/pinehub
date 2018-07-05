@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Entities\Card;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CardUpdateRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class CardUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +27,11 @@ class CardUpdateRequest extends FormRequest
     {
         return [
             //
+            'ticket_type' => ['required', Rule::in([Card::COUPON_CARD, Card::GROUPON, Card::GIFT, Card::DISCOUNT])],
+            'ticket_info' => ['required', 'array'],
+            'sync' => ['required', 'boolean'],
+            'begin_at' => ['required', 'date'],
+            'end_at'   => ['required', 'date']
         ];
     }
 }

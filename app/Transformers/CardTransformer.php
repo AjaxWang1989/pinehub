@@ -21,6 +21,20 @@ class CardTransformer extends TransformerAbstract
      */
     public function transform(Card $model)
     {
-        return $model->toArray();
+        return [
+            'id' => (int)$model->id,
+            'ticket_type' => $model->cardType,
+            'ticket_info' => $model->cardInfo,
+            'ticket_id'   => $model->cardId,
+            'app_id'      => $model->appId,
+            'wechat_app_id' => $model->wechatAppId,
+            'ali_app_id'  => $model->aliAppId,
+            'sync'        => $model->sync,
+            'status'      => $model->status,
+            'begin_at'    => $model->beginAt,
+            'end_at'      => $model->endAt,
+            'created_at'  => $model->createdAt,
+            'updated_at'  => $model->updatedAt
+        ];
     }
 }

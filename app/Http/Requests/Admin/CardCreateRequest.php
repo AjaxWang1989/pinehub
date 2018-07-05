@@ -13,7 +13,7 @@ class CardCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,10 @@ class CardCreateRequest extends FormRequest
     {
         return [
             //
+            'ticket_info' => ['required', 'array'],
+            'sync' => ['required', 'boolean'],
+            'begin_at' => ['required', 'date'],
+            'end_at'   => ['required', 'date']
         ];
     }
 }

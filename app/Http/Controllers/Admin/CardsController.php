@@ -80,9 +80,11 @@ class CardsController extends Controller
     public function store(CardCreateRequest $request)
     {
         $appManager = app(AppManager::class);
-        $data = $request->except(['sync']);
+        $data['card_info'] = $request->input('ticket_info');
         $data['app_id'] = $appManager->currentApp->id;
-        $card = $this->repository->create($request->all());
+        $data['begin_at'] = $request->input('begin_at');
+        $data['end_at'] = $request->input('end_at');
+        $card = $this->repository->create($data);
         if ($request->input('sync', false)) {
             Event::fire(new SyncTicketCardInfoEvent($card));
         }
@@ -144,7 +146,10 @@ class CardsController extends Controller
      */
     public function update(CardUpdateRequest $request, $id)
     {
-       $data = $request->except(['sync']);
+       $data['card_type'] = $request->input('ticket_type');
+       $data['card_info'] = $request->input('ticket_info');
+       $data['begin_at'] = $request->input('begin_at');
+       $data['end_at'] = $request->input('end_at');
        $card = $this->repository->update($data, $id);
        if($request->input('sync', false)) {
            Event::fire(new SyncTicketCardInfoEvent($card));

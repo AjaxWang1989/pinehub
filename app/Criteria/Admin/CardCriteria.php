@@ -25,8 +25,9 @@ class CardCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appManager = app(AppManager::class);
-        return $model->whereAppId($appManager->currentApp->id)
-            ->whereWechatAppId($appManager->officialAccount->appId)
-            ->whereIn('card_type', [Card::GROUPON, Card::DISCOUNT, Card::COUPON_CARD, Card::GIFT]);
+        $model = $model->whereAppId($appManager->currentApp->id);
+        if($appManager->officialAccount)
+            $model = $model->whereWechatAppId($appManager->officialAccount->appId);
+        return $model->whereIn('card_type', [Card::GROUPON, Card::DISCOUNT, Card::COUPON_CARD, Card::GIFT]);
     }
 }
