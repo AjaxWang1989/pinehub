@@ -39,8 +39,10 @@ class ResponseMetaAddToken
      */
     public function handle($request, Closure $next, $guard = null)
     {
+
         $token = $this->auth->guard($guard)->getToken();
         if(!$token) {
+            dd($token);
             return $next($request);
         }
         $token = Cache::get($token);
