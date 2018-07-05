@@ -54,7 +54,10 @@ class ResponseMetaAddToken
         }
         return with($next($request), function ($response) use ($token){
             Log::debug('response type', [$response]);
-            $response->addMeta('token', $token);
+            if($response instanceof Response) {
+                $response->addMeta('token', $token);
+            }
+
             return $response;
         });
     }
