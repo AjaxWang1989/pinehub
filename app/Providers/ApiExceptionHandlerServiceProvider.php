@@ -20,8 +20,8 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
         //
         if($this->app->has('api.exception')){
             $this->app->make('api.exception')->register(function (\Exception $exception) {
-                //$responseSender = new Response();
-                header(sprintf('HTTP/%s %s %s', $responseSender->getProtocolVersion(), $this->, $this->statusText), true, $this->statusCode);
+                $responseSender = new Response();
+                //header(sprintf('HTTP/%s %s %s', $responseSender->getProtocolVersion(), $this->, $this->statusText), true, $this->statusCode);
                 header('Access-Control-Allow-Origin:*');
                 header('Access-Control-Allow-Headers:Origin, Content-Type, Cookie, Accept');
                 header('Access-Control-Allow-Methods:GET, POST, PATCH, PUT, DELETE, OPTIONS');
