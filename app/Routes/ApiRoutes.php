@@ -34,7 +34,7 @@ class ApiRoutes extends Routes
             $second['domain'] = $this->domain;
         }
 
-        $second['middleware'] = ['cross' ];
+        $second['middleware'] = ['cross', 'auth.meta:api'];
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
             $router->any('/', function (Request $request) use ($self){
