@@ -106,7 +106,11 @@ class RoutesManagerServiceProvider extends ServiceProvider
     {
         $this->app['isApiServer'] = in_array($this->domain, [env('WEB_API_DOMAIN'), env('AUTH_API_DOMAIN'),
             env('MP_API_DOMAIN'), env('PAYMENT_API_DOMAIN')]) ;
-        if($this->app['isApiServer'] || $this->app->runningInConsole()){
+        if($this->app['isApiServer'] || $this->app->runningInConsole()) {
+            $this->app->singleton('request', function (){
+                return \Dingo\Api\Http\Request::createFrom($this->request);
+            });
+
             $this->app->register(LumenServiceProvider::class);
             $this->app->register(ApiExceptionHandlerServiceProvider::class);
             $this->app->register(ApiAuthServiceProvider::class);
@@ -115,9 +119,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 'jwt.auth' => \Tymon\JWTAuth\Middleware\GetUserFromToken::class,
                 'jwt.refresh' => \Tymon\JWTAuth\Middleware\RefreshToken::class
             ]);
-            $this->app->singleton('request', function (){
-                return \Dingo\Api\Http\Request::createFrom($this->request);
-            });
+
         }
 
         if(!$this->app['isApiServer'] || $this->app->runningInConsole()){
