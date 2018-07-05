@@ -47,11 +47,17 @@ class OpenPlatformAuthorized
             'auth_info_type' => $authorized->getInfoType()
         ]);
         $cacheKey = CURRENT_APP_PREFIX.$authorized->getAuthorizationCode();
-        $appId = Cache::get($cacheKey, null);
+        $data = Cache::get($cacheKey, null);
+        if($data) {
+            $appId = $data['app_id'];
+            $token = $data['token'];
+        }
+
         $app = null;
-        if($appId) {
+        if(isset($appId)) {
             $app = $this->appRepository->find($appId);
             Cache::delete($cacheKey);
+            Cache::set(CURRENT_APP_PREFIX.$token, $authorized->getAuthorizerAppid(), $authorized->getAuthorizationCodeExpiredTime());
         }else{
             Cache::set($cacheKey, $authorized->getAuthorizationAppid(), (int)$authorized->getAuthorizationCodeExpiredTime());
         }

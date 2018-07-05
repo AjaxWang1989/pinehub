@@ -77,6 +77,7 @@ class OpenPlatformController extends Controller
         $authCode = $request->input('auth_code', null);
         $expiresIn = $request->input('expires_in', null);
         $cacheAuthCodeKey = CURRENT_APP_PREFIX.$authCode;
+        $cacheTokenKey = CURRENT_APP_PREFIX.$request->input('token', null);
         $wechatAppid = Cache::get($cacheAuthCodeKey, null);
         if($wechatAppid) {
             Cache::delete($cacheAuthCodeKey);
@@ -103,13 +104,12 @@ class OpenPlatformController extends Controller
                     $app->save();
                 });
             });
+            Cache::set($cacheTokenKey, $wechatAppid, $expiresIn);
         }else{
             if($app && $authCode && $expiresIn) {
-                Cache::set($cacheAuthCodeKey, with($app, function (App $app) {
-                    return $app->id;
+                Cache::set($cacheAuthCodeKey, with($app, function (App $app) use($request) {
+                    return ['app_id' => $app->id, 'token' => $request->input('token', null)];
                 }), $expiresIn);
-
-                Cache::set(CURRENT_APP_PREFIX.$request->input('token'), [$appId, $authCode], $expiresIn);
             }
         }
         return view('open-platform.auth')->with('success', true);
