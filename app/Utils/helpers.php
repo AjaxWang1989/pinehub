@@ -153,9 +153,10 @@ if(!function_exists('domainAndPrefix')) {
 }
 
 if(!function_exists('jsonResponse')) {
-    function jsonResponse($content) {
+    function jsonResponse($content, $statusCode = 200) {
         $response = app(\Dingo\Api\Http\Response\Factory::class)->created();
         $response->setContent(['data' =>$content]);
+        $response->setStatusCode($statusCode);
         return $response;
     }
 }
