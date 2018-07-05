@@ -70,7 +70,7 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                     }
                 }
 
-                exit($responseSender->getContent());
+                exit(json_encode($response));
                 //return $responseSender->setContent($response)->send();
             });
         }
