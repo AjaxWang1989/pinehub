@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Entities\Role;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 
-use App\Entities\User as Member;
+use App\Entities\Member;
 
 /**
  * Class MemberRepositoryEloquent.
@@ -32,6 +33,9 @@ class MemberRepositoryEloquent extends BaseRepository implements MemberRepositor
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        Member::created(function (Member $member) {
+            $role = Role::whereSlug(Role::MEMBER)->first();
+            $member->roles()->attach($role->id);
+        });
     }
-    
 }

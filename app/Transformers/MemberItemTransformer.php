@@ -2,9 +2,8 @@
 
 namespace App\Transformers;
 
-use App\Entities\WechatUser;
 use League\Fractal\TransformerAbstract;
-use App\Entities\User as MemberItem;
+use App\Entities\Member as MemberItem;
 
 /**
  * Class MemberItemTransformer.
