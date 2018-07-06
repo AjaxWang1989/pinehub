@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Carbon\Carbon;
 use Closure;
+use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Support\Facades\Cache;
@@ -57,8 +58,8 @@ class ResponseMetaAddToken
                     $data['token'] = $token;
                     $content = json_encode($data);
                     $response->setContent($content);
-                }else{
-                    $response->setMeta('token', $token);
+                }elseif($response instanceof Response){
+                    $response->meta('token', $token);
                 }
                 return $response;
             });
