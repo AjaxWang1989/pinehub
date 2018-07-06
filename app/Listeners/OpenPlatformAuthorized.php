@@ -41,9 +41,10 @@ class OpenPlatformAuthorized
 
     protected function componentAuthorized(Authorized $authorized)
     {
+        $expiresIn = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
         $this->wechatRepository->updateOrCreate(['app_id' => $authorized->getAuthorizerAppid()], [
             'auth_code' => $authorized->getAuthorizationCode(),
-            'auth_code_expires_in' => Carbon::createFromTimestamp((int)$authorized->getAuthorizationCodeExpiredTime()),
+            'auth_code_expires_in' => $expiresIn,
             'auth_info_type' => $authorized->getInfoType()
         ]);
         $cacheKey = CURRENT_APP_PREFIX.$authorized->getAuthorizationCode();
@@ -57,9 +58,9 @@ class OpenPlatformAuthorized
         if(isset($appId)) {
             $app = $this->appRepository->find($appId);
             Cache::delete($cacheKey);
-            Cache::set(CURRENT_APP_PREFIX.$token, $authorized->getAuthorizerAppid(), $authorized->getAuthorizationCodeExpiredTime());
+            Cache::set(CURRENT_APP_PREFIX.$token, $authorized->getAuthorizerAppid(), $expiresIn->diffInMinutes(Carbon::now()));
         }else{
-            Cache::set($cacheKey, $authorized->getAuthorizationAppid(), (int)$authorized->getAuthorizationCodeExpiredTime());
+            Cache::set($cacheKey, $authorized->getAuthorizationAppid(), $expiresIn->diffInMinutes(Carbon::now()));
         }
 
         $authorizer = $this->wechat->openPlatformAuthorizer($authorized->getAuthorizationCode());

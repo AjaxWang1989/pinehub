@@ -21,9 +21,12 @@ class WechatSubscribeEventListener
      *
      * @param  WechatSubscribeEvent  $event
      * @return void
+     * @throws
      */
     public function handle(WechatSubscribeEvent $event)
     {
         //
+        $cardId = null;
+        app('wechat')->openPlatform()->officialAccount($event->getAuthorizerAppid())->broadcasting->sendCard($cardId, $event->getOpenId());
     }
 }

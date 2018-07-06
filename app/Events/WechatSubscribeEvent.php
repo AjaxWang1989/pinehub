@@ -11,6 +11,15 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\OpenPlatformEvent;
 
+/**
+ * @method string getAppId()
+ * @method string getCreateTime()
+ * @method string getInfoType()
+ * @method string getAuthorizerAppid()
+ * @method string getAuthorizationCode()
+ * @method string getAuthorizationCodeExpiredTime()
+ * @method string getPreAuthCode()
+ */
 class WechatSubscribeEvent extends OpenPlatformEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
@@ -23,5 +32,13 @@ class WechatSubscribeEvent extends OpenPlatformEvent
     public function broadcastOn()
     {
         return new PrivateChannel('channel-name');
+    }
+
+    /**
+     * @return string
+     * */
+    public function getOpenId()
+    {
+        return $this->payload['FromUserName'];
     }
 }
