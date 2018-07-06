@@ -69,7 +69,7 @@ class OpenPlatformAuthorized
 
         \Log::debug('payload', [$where, $attributes]);
 
-        $this->wechatRepository->updateOrCreate($where,$attributes);
+        $wechatInfo = $this->wechatRepository->updateOrCreate($where,$attributes);
 
         $app = $appId ? $this->appRepository->find($appId) : null;
 
@@ -79,8 +79,6 @@ class OpenPlatformAuthorized
          * @var OfficialAccountAuthorizerInfo|MiniProgramAuthorizerInfo
          * */
         $authInfo = $this->wechat->getOpenPlatformAuthorizer($where['app_id']);
-
-        $wechatInfo = $this->wechatRepository->findByField('app_id', $authorized->getAuthorizerAppid())->first();
 
         tap($wechatInfo, function (WechatConfig &$config) use($authInfo, $authorized, $authorizer, $appId, $componentAccessToken, $app) {
             $config->alias = $authInfo->getAlias();
