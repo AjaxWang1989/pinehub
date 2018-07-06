@@ -33,6 +33,7 @@ class OpenPlatformUpdateAuthorized
     {
         //
         $wechatAppid = $event->getAuthorizerAppid();
+        \Log::debug('update auth', $event->payload);
         try{
             $wechat = WechatConfig::whereAppId($wechatAppid)->first();
             $wechat->authCode = $event->getAuthorizationCode();

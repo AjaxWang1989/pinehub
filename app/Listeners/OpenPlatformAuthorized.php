@@ -41,6 +41,7 @@ class OpenPlatformAuthorized
 
     protected function componentAuthorized(Authorized $authorized)
     {
+        \Log::debug('auth', $authorized->payload);
         $expiresIn = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
         $this->wechatRepository->updateOrCreate(['app_id' => $authorized->getAuthorizerAppid()], [
             'auth_code' => $authorized->getAuthorizationCode(),

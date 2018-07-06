@@ -81,6 +81,8 @@ class OpenPlatformController extends Controller
         $token = $request->input('token', null);
         $cacheTokenKey = CURRENT_APP_PREFIX.$token;
         $wechatAppid = Cache::get($cacheAuthCodeKey, null);
+        \Log::debug('auth callback', ['token' =>$token, 'wechat_app_id' =>$wechatAppid,
+            'app_id'=>$appId, 'expires_in' => $expiresIn, 'auth_code' =>$authCode]);
         if($wechatAppid) {
             Cache::delete($cacheAuthCodeKey);
             $wechatMap = $this->wechatRepository->findByField('app_id', $wechatAppid);
