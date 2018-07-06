@@ -46,12 +46,12 @@ class ResponseMetaAddToken
             $token = $token->get();
             $token = Cache::get($token, null);
         }
+        Log::debug('response ', [$response->getContent()]);
         return $response;
         if(!$token) {
             return $response;
         }else{
             return tap($response, function (&$response) use ($token){
-                Log::debug('response ', [$response->getContent()]);
                 $data = json_decode($response->getContent(), true);
                 if($data) {
                     $data['token'] = $token;
