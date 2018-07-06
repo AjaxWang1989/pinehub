@@ -113,7 +113,7 @@ class OpenPlatformController extends Controller
         }else{
             if($app && $authCode && $expiresIn) {
                 $authInfo = $this->wechat->openPlatform()->handleAuthorize($authCode);
-                $payload = $authInfo[0]['authorization_info'];
+                $payload = $authInfo['authorization_info'];
                 $payload['app_id'] = $appId;
                 $payload['auth_code'] = $authCode;
                 $payload['auth_code_expires_in'] = $expiresIn;
