@@ -46,7 +46,7 @@ class ResponseMetaAddToken
             $token = $token->get();
             $token = Cache::get($token, null);
         }
-
+        return $response;
         if(!$token) {
             return $response;
         }else{
