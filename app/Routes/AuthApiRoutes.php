@@ -24,5 +24,6 @@ class AuthApiRoutes extends ApiRoutes
         $router->get('/auth', ['as' => 'user.login', 'uses' => 'AuthController@authenticate']);
         $router->get('/logout', ['as' => 'user.logout', 'uses' => 'AuthController@logout']);
         $router->post('/register', ['as' => 'user.register', 'uses' => 'AuthController@register']);
+        $router->post('/token-refresh', ['as' => 'token.refresh', 'uses' => 'AuthController@refreshToken']);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Entities\AuthSecretKey;
 use App\Entities\User;
+use App\Http\Response\JsonResponse;
 use App\Http\Response\UpdateResponse;
 use App\Repositories\UserRepositoryEloquent;
 use App\Transformers\Api\UpdateResponseTransformer;
@@ -50,6 +51,21 @@ class AuthController extends Controller
         $item = new AuthSecretKey();
 
         return $this->response()->item($item, new AuthPublicKeyTransformer());
+    }
+
+    public function refreshToken()
+    {
+        if($this->auth()->check()){
+            $token = Auth::refresh();
+            $tokenMeta =  [
+                'token' =>$token,
+                'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
+                'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
+            ];
+            return $this->response(new JsonResponse($tokenMeta));
+        }else{
+            $this->response()->error('用户未登录', 400);
+        }
     }
 
     /**
