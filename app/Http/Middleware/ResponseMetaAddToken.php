@@ -7,6 +7,7 @@ use Closure;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -47,22 +48,21 @@ class ResponseMetaAddToken
             $token = $token->get();
             $token = Cache::get($token, null);
         }
-        Log::debug('response ', [$response->getContent()]);
-        //return $response;
-        if(!$token) {
-            return $response;
-        }else{
+        if($token) {
             return tap($response, function (&$response) use ($token){
-                $data = json_decode($response->getContent(), true);
-                if($data && isset($data['meta'])) {
-                    $data['token'] = $token;
-                    $content = json_encode($data);
-                    $response->setContent($content);
-                }elseif($response instanceof Response){
+                if($response instanceof Response){
                     $response->meta('token', $token);
+                }else{
+                    $data = $response->getOriginalContent();
+                    $data = $data->toArray();
+                    $data['token'] = $token;
+                    $response->setContent($data);
                 }
                 return $response;
             });
+        }else{
+            return $response;
         }
+
     }
 }
