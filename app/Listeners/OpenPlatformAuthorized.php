@@ -56,6 +56,7 @@ class OpenPlatformAuthorized
             $where['app_id'] = $payload['authorizer_appid'];
             $attributes['auth_code'] = $payload['auth_code'];
             $attributes['auth_code_expires_in'] = $now->addMinute($payload['auth_code_expires_in']);
+            $attributes['auth_info_type'] = 'authorized';
         }else{
             $where = ['app_id' => $authorized->getAuthorizerAppid()];
             $expiresIn = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
