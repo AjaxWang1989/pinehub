@@ -20,7 +20,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $nickname 用户昵称
  * @property int $isStudentCertified 是否是学生
  * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户
  *             B代表被冻结账户 W代表已注册，未激活的账户
  * @property string $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
  * @property string $gender 【注意】只有is_certified为T的时候才有意义，否则不保证准确性.
@@ -43,6 +43,16 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserType($value)
  * @mixin \Eloquent
+ * @property int|null $userId 用户id
+ * @property string $appId 系统appid
+ * @property string $openId 支付宝user_id
+ * @property int $isStudentCertified 是否是学生
+ * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
+ *             B代表被冻结账户 W代表已注册，未激活的账户
+ * @property string $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class AliUser extends Model implements Transformable
 {

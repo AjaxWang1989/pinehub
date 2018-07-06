@@ -63,7 +63,8 @@ class App extends Model implements Transformable
         'secret',
         'logo',
         'wechat_app_id',
-        'mini_app_id'
+        'mini_app_id',
+        'open_app_id'
     ];
 
     public function officialAccount(): BelongsTo

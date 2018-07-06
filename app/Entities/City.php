@@ -31,6 +31,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\City whereProvinceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\City whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $countryId 国家ID
+ * @property int $provinceId 省份ID
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class City extends Model implements Transformable
 {

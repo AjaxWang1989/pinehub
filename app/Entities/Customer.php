@@ -32,7 +32,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $privilege 微信特权信息
  * @property int $isStudentCertified 是否是学生
  * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户
  *             B代表被冻结账户 W代表已注册，未激活的账户
  * @property int $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
  * @property int $canUseScore 用户可用积分
@@ -79,6 +79,25 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserType($value)
  * @mixin \Eloquent
+ * @property string|null $appId 系统应用appid
+ * @property int|null $userId 会员id
+ * @property string|null $platformAppId 微信公众平台、小程序、开放app id
+ * @property string|null $unionId union id
+ * @property string $platformOpenId 三方平台用户唯一标志
+ * @property string|null $sessionKey session key
+ * @property \Carbon\Carbon $sessionKeyExpiresAt session 过期
+ * @property int $isStudentCertified 是否是学生
+ * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
+ *             B代表被冻结账户 W代表已注册，未激活的账户
+ * @property int $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
+ * @property int $canUseScore 用户可用积分
+ * @property int $totalScore 用户总积分
+ * @property int $orderCount 订单数
+ * @property string|null $registerChannel 注册渠道
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
  */
 class Customer extends Model implements Transformable
 {

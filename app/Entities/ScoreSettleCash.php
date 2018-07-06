@@ -33,6 +33,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash whereUserId($value)
  * @mixin \Eloquent
+ * @property int|null $scoreRuleId 积分规则id
+ * @property string $scoreRuleName 积分规则名称
+ * @property int $userId 被积分用户id
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class ScoreSettleCash extends Model implements Transformable
 {

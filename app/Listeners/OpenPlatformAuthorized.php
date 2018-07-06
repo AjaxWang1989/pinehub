@@ -71,6 +71,9 @@ class OpenPlatformAuthorized
 
         $wechatInfo = $this->wechatRepository->updateOrCreate($where,$attributes);
 
+        /**
+         * @var App
+         * */
         $app = $appId ? $this->appRepository->find($appId) : null;
 
         $authorizer = $this->wechat->openPlatformAuthorizer($attributes['auth_code']);

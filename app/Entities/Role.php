@@ -27,6 +27,10 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $displayName 角色显示名称
+ * @property int|null $groupId 部门组织id
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class Role extends Model implements Transformable
 {

@@ -25,6 +25,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $appId 微信app id
+ * @property int $isPublic 菜单是否发布
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class WechatMenu extends Model implements Transformable
 {

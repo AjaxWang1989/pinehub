@@ -31,6 +31,12 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $appId 微信app ID
+ * @property int $focusReply 关注回复
+ * @property array $prefectMatchKeywords 全匹配关键字数组
+ * @property array $semiMatchKeywords 半匹配关键字数组
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
  */
 class WechatAutoReplyMessage extends Model implements Transformable
 {
