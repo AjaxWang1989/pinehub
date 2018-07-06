@@ -77,7 +77,7 @@ class OpenPlatformAuthorized
         /**
          * @var OfficialAccountAuthorizerInfo|MiniProgramAuthorizerInfo
          * */
-        $authInfo = $this->wechat->getOpenPlatformAuthorizer($authorized->getAuthorizerAppid());
+        $authInfo = $this->wechat->getOpenPlatformAuthorizer($where['app_id']);
 
         $wechatInfo = $this->wechatRepository->findByField('app_id', $authorized->getAuthorizerAppid())->first();
 
