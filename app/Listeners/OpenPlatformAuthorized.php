@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Entities\WechatConfig;
+use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\Authorized;
 use Illuminate\Support\Facades\Cache;
@@ -15,14 +16,17 @@ class OpenPlatformAuthorized
     protected $wechatRepository = null;
 
     protected $wechat = null;
+
+    protected $appRepository = null;
     /**
      * Create the event listener.
      * @param WechatConfigRepository $wechatConfigRepository
      * @return void
      */
-    public function __construct(WechatConfigRepository $wechatConfigRepository)
+    public function __construct(WechatConfigRepository $wechatConfigRepository, AppRepository $appRepository)
     {
         //
+        $this->appRepository = $appRepository;
         $this->wechatRepository = $wechatConfigRepository;
         $this->wechat = app('wechat');
     }
