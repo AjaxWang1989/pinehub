@@ -41,31 +41,32 @@ class OpenPlatformAuthorized
 
     protected function componentAuthorized(Authorized $authorized)
     {
-        \Log::debug('auth', $authorized->payload);
-        $expiresIn = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
-        $this->wechatRepository->updateOrCreate(['app_id' => $authorized->getAuthorizerAppid()], [
-            'auth_code' => $authorized->getAuthorizationCode(),
-            'auth_code_expires_in' => $expiresIn,
-            'auth_info_type' => $authorized->getInfoType()
-        ]);
-        $cacheKey = CURRENT_APP_PREFIX.$authorized->getAuthorizationCode();
-        $data = Cache::get($cacheKey, null);
+        $payload = $authorized->payload;
+        $where = [];
+        $attributes = [];
+        $expiresIn = null;
         $appId = null;
-        if($data) {
-            $appId = $data['app_id'];
-            $token = $data['token'];
-        }
-
-        $app = null;
-        if(isset($appId)) {
-            $app = $this->appRepository->find($appId);
-            Cache::delete($cacheKey);
-            Cache::set(CURRENT_APP_PREFIX.$token, $authorized->getAuthorizerAppid(), $expiresIn->diffInMinutes(Carbon::now()));
+        if($payload['app_id']) {
+            $now = Carbon::now();
+            $appId = $payload['app_id'];
+            $where['app_id'] = $payload['authorizer_appid'];
+            $attributes['auth_code'] = $payload['auth_code'];
+            $attributes['auth_code_expires_in'] = $now->addMinute($payload['auth_code_expires_in']);
         }else{
-            Cache::set($cacheKey, $authorized->getAuthorizationAppid(), $expiresIn->diffInMinutes(Carbon::now()));
+            $where = ['app_id' => $authorized->getAuthorizerAppid()];
+            $expiresIn = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
+            $attributes =  [
+                'auth_code' => $authorized->getAuthorizationCode(),
+                'auth_code_expires_in' => $expiresIn,
+                'auth_info_type' => $authorized->getInfoType()
+            ];
         }
 
-        $authorizer = $this->wechat->openPlatformAuthorizer($authorized->getAuthorizationCode());
+        $this->wechatRepository->updateOrCreate($where,$attributes);
+
+        $app = $appId ? $this->appRepository->find($appId) : null;
+
+        $authorizer = $this->wechat->openPlatformAuthorizer($attributes['auth_code']);
         $componentAccessToken = $this->wechat->openPlatformComponentAccess();
         /**
          * @var OfficialAccountAuthorizerInfo|MiniProgramAuthorizerInfo

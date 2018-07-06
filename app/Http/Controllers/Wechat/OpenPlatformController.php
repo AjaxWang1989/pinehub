@@ -21,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Overtrue\LaravelWeChat\Controllers\OpenPlatformController as Controller;
+use Overtrue\LaravelWeChat\Events\OpenPlatform\Authorized;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\UpdateAuthorized;
 
 class OpenPlatformController extends Controller
@@ -112,7 +113,13 @@ class OpenPlatformController extends Controller
         }else{
             if($app && $authCode && $expiresIn) {
                 $authInfo = $this->wechat->openPlatform()->handleAuthorize($authCode);
-                \Log::debug('auth info ', [$authInfo]);
+                $payload = $authInfo[0]['authorization_info'];
+                $payload['app_id'] = $appId;
+                $payload['auth_code'] = $authCode;
+                $payload['auth_code_expires_in'] = $expiresIn;
+
+                Event::fire(new Authorized($payload));
+
                 Cache::set($cacheAuthCodeKey, with($app, function (App $app) use($request, $token) {
                     return ['app_id' => $app->id, 'token' => $token];
                 }), $expiresIn);
