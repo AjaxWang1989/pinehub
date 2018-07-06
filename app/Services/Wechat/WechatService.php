@@ -110,6 +110,7 @@ class WechatService
         $redirect = $this->openPlatform()->config['oauth']['callback'];
         $redirect = str_replace('{appId}', $appId, $redirect);
         $redirect .= "?token={$token}";
+
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
         if($type) {
             switch ($type) {
