@@ -50,13 +50,12 @@ class OpenPlatformAuthorized
         $attributes = [];
         $expiresIn = null;
         $appId = null;
-        if($payload['app_id']) {
+        if(isset($payload['app_id'])) {
             $now = Carbon::now();
             $appId = $payload['app_id'];
             $where['app_id'] = $payload['authorizer_appid'];
             $attributes['auth_code'] = $payload['auth_code'];
             $attributes['auth_code_expires_in'] = $now->addMinute($payload['auth_code_expires_in']);
-            \Log::debug('payload', [$where, $attributes]);
         }else{
             $where = ['app_id' => $authorized->getAuthorizerAppid()];
             $expiresIn = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
@@ -65,8 +64,9 @@ class OpenPlatformAuthorized
                 'auth_code_expires_in' => $expiresIn,
                 'auth_info_type' => $authorized->getInfoType()
             ];
-            \Log::debug('payload', [$where, $attributes]);
         }
+
+        \Log::debug('payload', [$where, $attributes]);
 
         $this->wechatRepository->updateOrCreate($where,$attributes);
 
