@@ -50,6 +50,7 @@ class OpenPlatformAuthorized
         $attributes = [];
         $expiresIn = null;
         $appId = null;
+        \Log::debug('payload', $payload);
         if($payload['app_id']) {
             $now = Carbon::now();
             $appId = $payload['app_id'];

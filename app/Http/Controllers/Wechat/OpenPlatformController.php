@@ -80,50 +80,18 @@ class OpenPlatformController extends Controller
         $expiresIn = $request->input('expires_in', null);
         $cacheAuthCodeKey = CURRENT_APP_PREFIX.$authCode;
         $token = $request->input('token', null);
-        $cacheTokenKey = CURRENT_APP_PREFIX.$token;
-        $wechatAppid = Cache::get($cacheAuthCodeKey, null);
-        \Log::debug('auth callback', ['token' =>$token, 'wechat_app_id' =>$wechatAppid,
-            'app_id'=>$appId, 'expires_in' => $expiresIn, 'auth_code' =>$authCode]);
-        if($wechatAppid) {
-            Cache::delete($cacheAuthCodeKey);
-            $wechatMap = $this->wechatRepository->findByField('app_id', $wechatAppid);
-            tap($app, function (App $app) use($wechatMap){
-                $wechatMap->map(function (WechatConfig $config) use($app){
-                    if($config->type === WECHAT_OFFICIAL_ACCOUNT) {
-                        $app->wechatAppId = $config->appId;
-                        if(!$app->openAppId) {
-                            $account = $this->wechat->openPlatform()->officialAccount($config->appId)->account->create();
-                            $app->openAppId = $account['open _appid'];
-                        }
-                        $this->wechat->openPlatform()->officialAccount($config->appId)->account->bindTo($app->openAppId);
-                    } else {
-                        $app->miniAppId = $config->appId;
-                        if(!$app->openAppId) {
-                            $account = $this->wechat->openPlatform()->miniProgram($config->appId)->account->create();
-                            $app->openAppId = $account['open _appid'];
-                        }
-                        $this->wechat->openPlatform()->miniProgram($config->appId)->account->bindTo($app->openAppId);
-                    }
-                    $config->wechatBindApp = $app->id;
-                    $config->save();
-                    $app->save();
-                });
-            });
-            Cache::set($cacheTokenKey, $wechatAppid, $expiresIn);
-        }else{
-            if($app && $authCode && $expiresIn) {
-                $authInfo = $this->wechat->openPlatform()->handleAuthorize($authCode);
-                $payload = $authInfo['authorization_info'];
-                $payload['app_id'] = $appId;
-                $payload['auth_code'] = $authCode;
-                $payload['auth_code_expires_in'] = $expiresIn;
+        if($app && $authCode && $expiresIn) {
+            $authInfo = $this->wechat->openPlatform()->handleAuthorize($authCode);
+            $payload = $authInfo['authorization_info'];
+            $payload['app_id'] = $appId;
+            $payload['auth_code'] = $authCode;
+            $payload['auth_code_expires_in'] = $expiresIn;
 
-                Event::fire(new Authorized($payload));
+            Event::fire(new Authorized($payload));
 
-                Cache::set($cacheAuthCodeKey, with($app, function (App $app) use($request, $token) {
-                    return ['app_id' => $app->id, 'token' => $token];
-                }), $expiresIn);
-            }
+            Cache::set($cacheAuthCodeKey, with($app, function (App $app) use($request, $token) {
+                return ['app_id' => $app->id, 'token' => $token];
+            }), $expiresIn);
         }
         return view('open-platform.auth')->with('success', true);
     }
