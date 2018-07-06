@@ -40,26 +40,26 @@ class ResponseMetaAddToken
     public function handle($request, Closure $next, $guard = null)
     {
         $token = $this->auth->guard($guard)->getToken();
-        if(!$token) {
-            return $next($request);
+        $response = $next($request);
+
+        if($token && is_object($token)) {
+            $token = $token->get();
+            $token = Cache::get($token, null);
         }
 
-        if(is_object($token)) {
-            $token = $token->get();
-        }
-        $token = Cache::get($token, null);
         if(!$token) {
-            return $next($request);
-        }
-        return with($next($request), function ($response) use ($token){
-            Log::debug('response type', [$response->getContent()]);
-            $data = json_decode($response->getContent(), true);
-            if($data) {
-                $data['meta']['token'] = $token;
-                $content = json_encode($data);
-                $response->setContent($content);
-            }
             return $response;
-        });
+        }else{
+            return with($response, function ($response) use ($token){
+                Log::debug('response ', $response->getContent());
+                $data = json_decode($response->getContent(), true);
+                if($data) {
+                    $data['meta']['token'] = $token;
+                    $content = json_encode($data);
+                    $response->setContent($content);
+                }
+                return $response;
+            });
+        }
     }
 }
