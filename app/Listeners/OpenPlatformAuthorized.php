@@ -107,13 +107,18 @@ class OpenPlatformAuthorized
                 if($config->type === WECHAT_OFFICIAL_ACCOUNT){
                     if(!$app->openAppId) {
                         $account = $this->wechat->openPlatform()->officialAccount($config->appId, $config->authorizerRefreshToken)->account->getBinding();
-                        dd($account);
+                        if($account && $account['errcode'] !== 0) {
+                            $account = $this->wechat->openPlatform()->officialAccount($config->appId, $config->authorizerRefreshToken)->account->create();
+                        }
                         $app->openAppId = $account['open_appid'];
                     }
                     $this->wechat->openPlatform()->officialAccount($config->appId, $config->authorizerRefreshToken)->account->bindTo($app->openAppId);
                 }else{
                     if(!$app->openAppId) {
-                        $account = $this->wechat->openPlatform()->miniProgram($config->appId, $config->authorizerRefreshToken)->account->create();
+                        $account = $this->wechat->openPlatform()->miniProgram($config->appId, $config->authorizerRefreshToken)->account->getBinding();
+                        if($account && $account['errcode'] !== 0) {
+                            $account = $this->wechat->openPlatform()->miniProgram($config->appId, $config->authorizerRefreshToken)->account->create();
+                        }
                         $app->openAppId = $account['open_appid'];
                     }
                     $this->wechat->openPlatform()->miniProgram($config->appId, $config->authorizerRefreshToken)->account->bindTo($app->openAppId);
