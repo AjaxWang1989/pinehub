@@ -50,6 +50,7 @@ class OpenPlatformAuthorized
         ]);
         $cacheKey = CURRENT_APP_PREFIX.$authorized->getAuthorizationCode();
         $data = Cache::get($cacheKey, null);
+        $appId = null;
         if($data) {
             $appId = $data['app_id'];
             $token = $data['token'];
