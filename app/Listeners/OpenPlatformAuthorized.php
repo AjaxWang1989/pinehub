@@ -107,6 +107,7 @@ class OpenPlatformAuthorized
                 if($config->type === WECHAT_OFFICIAL_ACCOUNT){
                     if(!$app->openAppId) {
                         $account = $this->wechat->openPlatform()->officialAccount($config->appId, $config->authorizerRefreshToken)->account->create();
+                        dd($account);
                         $app->openAppId = $account['open_appid'];
                     }
                     $this->wechat->openPlatform()->officialAccount($config->appId, $config->authorizerRefreshToken)->account->bindTo($app->openAppId);
