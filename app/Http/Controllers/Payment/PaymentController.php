@@ -109,7 +109,7 @@ class PaymentController extends Controller
             $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
 
             $redirect = config('wechat.other_sdk_payment.redirect_url');
-            $redirect = "{$redirect}?redirect_uri={$uri}".($appId ? "&selected_appid={$appId}" : "");
+            $redirect = "{$redirect}?redirect_uri={$uri}";
 
             return app('wechat.official_account.default')
                 ->oauth->scopes(['snsapi_base'])
@@ -132,7 +132,7 @@ class PaymentController extends Controller
             $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
 
             $redirect = config('ali.payment.redirect_url');
-            $redirect = "{$redirect}?redirect_uri={$uri}".($appId ? "&selected_appid={$appId}" : "");
+            $redirect = "{$redirect}?redirect_uri={$uri}";
 
             return app('ali.user.oauth')
                 ->defaultOAuth()
