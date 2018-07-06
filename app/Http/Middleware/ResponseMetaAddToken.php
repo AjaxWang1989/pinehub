@@ -50,7 +50,7 @@ class ResponseMetaAddToken
         if(!$token) {
             return $response;
         }else{
-            return with($response, function ($response) use ($token){
+            return tap($response, function (&$response) use ($token){
                 Log::debug('response ', [$response->getContent()]);
                 $data = json_decode($response->getContent(), true);
                 if($data) {
