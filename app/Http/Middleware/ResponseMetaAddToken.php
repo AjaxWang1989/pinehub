@@ -47,16 +47,18 @@ class ResponseMetaAddToken
             $token = Cache::get($token, null);
         }
         Log::debug('response ', [$response->getContent()]);
-        return $response;
+        //return $response;
         if(!$token) {
             return $response;
         }else{
             return tap($response, function (&$response) use ($token){
                 $data = json_decode($response->getContent(), true);
-                if($data) {
+                if($data && isset($data['meta'])) {
                     $data['token'] = $token;
                     $content = json_encode($data);
                     $response->setContent($content);
+                }else{
+                    $response->setMeta('token', $token);
                 }
                 return $response;
             });
