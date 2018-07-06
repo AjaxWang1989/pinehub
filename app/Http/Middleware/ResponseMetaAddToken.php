@@ -54,7 +54,7 @@ class ResponseMetaAddToken
                 Log::debug('response ', [$response->getContent()]);
                 $data = json_decode($response->getContent(), true);
                 if($data) {
-                    $data['meta']['token'] = $token;
+                    $data['token'] = $token;
                     $content = json_encode($data);
                     $response->setContent($content);
                 }
