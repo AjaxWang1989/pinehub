@@ -67,8 +67,6 @@ class OpenPlatformAuthorized
             ];
         }
 
-        \Log::debug('payload', [$where, $attributes]);
-
         $wechatInfo = $this->wechatRepository->updateOrCreate($where,$attributes);
 
         /**
@@ -127,13 +125,13 @@ class OpenPlatformAuthorized
         });
         if(isset($app)) {
             if($authInfo instanceof OfficialAccountAuthorizerInfo) {
-                tap($app, function (App $app) use($authorized){
-                    $app->wechatAppId = $authorized->getAuthorizerAppid();
+                tap($app, function (App $app) use($wechatInfo){
+                    $app->wechatAppId = $wechatInfo->appId;
                     $app->save();
                 });
             }else{
-                tap($app, function (App $app) use($authorized){
-                    $app->miniAppId = $authorized->getAuthorizerAppid();
+                tap($app, function (App $app) use($wechatInfo){
+                    $app->miniAppId = $wechatInfo->appId;
                     $app->save();
                 });
             }

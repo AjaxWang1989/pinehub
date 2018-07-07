@@ -75,34 +75,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member whereVipLevel($value)
  * @mixin \Eloquent
  */
-class Member extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
+class Member extends User
 {
-    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
-
-    const FREEZE_ACCOUNT    = 0;
-    const ACTIVATED_ACCOUNT = 1;
-    const WAIT_AUTH_ACCOUNT = 2;
-
-    protected $table = "users";
-
-    protected $casts = [
-        'last_login_at' => 'date',
-        'tags' => 'json'
-    ];
-
-    protected $dates = [
-        'last_login_at'
-    ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_name', 'mobile', 'password', 'nickname', 'sex', 'avatar', 'city', 'vip_level',
-        'last_login_at', 'status', 'mobile_company'
-    ];
-
     /**
      * The attributes excluded from the model's JSON form.
      *
@@ -118,53 +92,5 @@ class Member extends Model implements AuthenticatableContract, AuthorizableContr
         $this->whereHas('roles', function ($query) {
             $query->where('slug', Role::MEMBER);
         });
-    }
-
-    public function roles() : BelongsToMany
-    {
-        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')
-            ->withTimestamps();
-    }
-
-    public function apps() : BelongsToMany
-    {
-        return $this->belongsToMany(App::class, 'app_users', 'user_id', 'app_id');
-    }
-
-    public function customers() : HasMany
-    {
-        return $this->hasMany(Customer::class, 'user_id', 'id');
-    }
-
-    /**
-     * @return  Customer|null
-     * */
-    public function officialAccountCustomer()
-    {
-        return $this->customers ? $this->customers->where('type',
-            'WECHAT_OFFICIAL_ACCOUNT')->first( ) : null;
-    }
-
-    /**
-     * @return  Customer|null
-     * */
-    public function miniProgramCustomer()
-    {
-        return $this->customers ? $this->customers->where('type',
-            'WECHAT_MINI_PROGRAM')->first( ) : null;
-    }
-
-    public function memberCard(): HasOne
-    {
-        return $this->hasOne(MemberCard::class, 'user_id', 'id');
-    }
-
-    public function ordersNum()
-    {
-        $count = 0;
-        foreach ($this->customers as $customer){
-            $count += $customer->orders->count();
-        }
-        return $count;
     }
 }
