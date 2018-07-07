@@ -25,7 +25,7 @@ class CardItemTransformer extends TransformerAbstract
             'id'         => (int) $model->id,
             'color'      => $model->cardInfo['base_info']['color'],
             //'background_pic_url' => $model->cardInfo['background_pic_url'],
-            'logo_url' => $model->cardInfo['base_info']['logo_url'],
+            //'logo_url' => $model->cardInfo['base_info']['logo_url'],
             'card_type' => $model->cardType,
             'brand_name' => $model->cardInfo['base_info']['brand_name'],
             'code_type'  => $model->cardInfo['base_info']['code_type'],
