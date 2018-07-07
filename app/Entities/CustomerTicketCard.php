@@ -27,12 +27,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUsed($value)
  * @mixin \Eloquent
- * @property int $cardId 卡券card id
- * @property string $cardCode 核销码
- * @property string $appId 应用id
- * @property int $customerId 客户id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class CustomerTicketCard extends Model implements Transformable
 {

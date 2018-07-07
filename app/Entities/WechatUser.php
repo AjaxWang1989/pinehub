@@ -16,7 +16,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $appId 系统应用appid
  * @property int|null $userId 用户手机
  * @property string|null $wechatAppId 微信公众平台、小程序、开放app id
- * @property string $type OFFICE_ACCOUNT 公众平台，
+ * @property string $type OFFICE_ACCOUNT 公众平台， 
  *             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序
  * @property string|null $unionId union id
  * @property string $openId open id
@@ -55,16 +55,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereWechatAppId($value)
  * @mixin \Eloquent
- * @property string|null $appId 系统应用appid
- * @property int|null $userId 用户手机
- * @property string|null $wechatAppId 微信公众平台、小程序、开放app id
- * @property string|null $unionId union id
- * @property string $openId open id
- * @property string $sessionKey session key
- * @property \Carbon\Carbon $expiresAt session 过期
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property \Carbon\Carbon $deletedAt
  */
 class WechatUser extends Model implements Transformable
 {

@@ -18,13 +18,14 @@ class Ticket
     {
         $data = $request->all();
 
-        if($type === null) {
+        if($type === null && isset($data['ticket_type'])) {
             $data['card_type'] = $data['ticket_type'];
             unset($data['ticket_type']);
         }else{
-            $data['ticket_type'] = $type;
+            $data['card_type'] = $type;
         }
         $request = $request->request->replace($data);
+        $_REQUEST['card_type'] = $data['card_type'];
         return $next($request);
     }
 }

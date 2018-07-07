@@ -3,7 +3,9 @@
 namespace App\Listeners;
 
 use App\Entities\Card;
+use App\Entities\WechatConfig;
 use App\Events\SyncMemberCardInfoEvent;
+use Carbon\Carbon;
 
 class SyncMemberCardInfoEventListener extends AsyncEventListener
 {
@@ -37,6 +39,16 @@ class SyncMemberCardInfoEventListener extends AsyncEventListener
             if($this->attempts() > 10)
                 $this->delete();
         }
+        $wechat = WechatConfig::where('app_id', $memberCard->wechatAppId)->first();
+        tap($wechat, function (WechatConfig $config) {
+            $now = Carbon::now();
+            if($config->authorizerAccessTokenExpiresIn->getTimestamp() < $now->getTimestamp()) {
+                if($config->componentAccessTokenExpiresIn->getTimestamp() < $now->getTimestamp()) {
+                    app('wechat')->openPlatform()->access_token->getToken(true);
+                }
+                app('wechat')->openPlatform()->officialAccount($config->appId, $config->authorizerRefreshToken)->access_token->getToken(true);
+            }
+        });
         if($memberCard->sync === Card::SYNC_ING) {
             sleep(10);
         }

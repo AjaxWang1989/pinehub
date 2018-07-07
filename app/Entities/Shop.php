@@ -104,31 +104,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop within($geometryColumn, $polygon)
  * @mixin \Eloquent
- * @property int $userId 店铺老板用户id
- * @property string $countryId 国家id
- * @property int $provinceId 省份id
- * @property int $cityId 城市id
- * @property int $countyId 所属区县id
- * @property string|null $geoHash 位置hash编码
- * @property float $totalAmount 店铺总计营业额
- * @property float $todayAmount 今日营业额
- * @property float $totalOffLineAmount 店铺预定总计营业额
- * @property float $todayOffLineAmount 今日线下营业额
- * @property float $totalOrderingAmount 店铺总计营业额
- * @property float $todayOrderingAmount 今日预定营业额
- * @property int $todayOrderingNum 今日预定订单数量
- * @property int $totalOrderingNum 店铺自提系统一共预定单数
- * @property int $todayOrderWriteOffAmount 今日核销订单营业额
- * @property int $totalOrderWriteOffAmount 店铺自提系统一共核营业额
- * @property int $todayOrderWriteOffNum 今日核销订单数量
- * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
- * @property string|null $appId 系统app id
- * @property string|null $wechatAppId 微信app ID
- * @property string|null $aliAppId 支付宝app ID
- * @property string|null $mtAppId 美团app id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class Shop extends Model implements Transformable
 {

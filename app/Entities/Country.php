@@ -26,8 +26,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class Country extends Model implements Transformable
 {

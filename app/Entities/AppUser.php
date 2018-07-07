@@ -28,10 +28,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereUserId($value)
  * @mixin \Eloquent
- * @property string $appId 系统应用id
- * @property int|null $userId 用户id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class AppUser extends Model implements Transformable
 {

@@ -35,14 +35,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopProduct whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopProduct whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $shopId 店铺id
- * @property int $merchandiseId 商品ID
- * @property int|null $skuProductId sku单品ID
- * @property int $stockNum 库存
- * @property int $sellNum 销量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class ShopProduct extends Model implements Transformable
 {

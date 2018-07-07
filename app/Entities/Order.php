@@ -77,30 +77,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWechatAppId($value)
  * @mixin \Eloquent
- * @property string|null $transactionId
- * @property string|null $openId 微信open id或支付宝user ID
- * @property string|null $wechatAppId 维系app id
- * @property string|null $aliAppId 支付宝app id
- * @property string|null $appId 系统app id
- * @property int|null $buyerUserId 买家
- * @property float $totalAmount 应付款
- * @property float $paymentAmount 实际付款
- * @property float $discountAmount 优惠价格
- * @property \Carbon\Carbon|null $paidAt 支付时间
- * @property string $payType 支付方式默认微信支付
- * @property \Carbon\Carbon|null $signedAt 签收时间
- * @property string|null $receiverCity 收货城市
- * @property string|null $receiverDistrict 收货人所在城市区县
- * @property string|null $receiverAddress 收货地址
- * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @property string|null $postNo
- * @property string|null $postCode
- * @property string|null $postName
- * @property int $scoreSettle 积分是否已经结算
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class Order extends Model implements Transformable
 {

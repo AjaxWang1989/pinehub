@@ -76,19 +76,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereVipLevel($value)
  * @mixin \Eloquent
- * @property string|null $appId 系统appid
- * @property string $userName 用户名称
- * @property string $realName 真实姓名
- * @property int $canUseScore 用户可用积分
- * @property int $totalScore 用户总积分
- * @property int $vipLevel VIP等级
- * @property \Carbon\Carbon $lastLoginAt 最后登录时间
- * @property int $orderCount 订单数
- * @property string|null $registerChannel 注册渠道
- * @property string $mobileCompany 手机号码所属公司
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
