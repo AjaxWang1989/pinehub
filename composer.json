@@ -15,6 +15,7 @@
         "laravel/lumen-framework": "5.6.*",
         "league/flysystem": "^1.0",
         "overtrue/laravel-wechat": "~4.0",
+        "pda/pheanstalk": "^3.1",
         "predis/predis": "^1.1",
         "prettus/l5-repository": "^2.6",
         "react/react": "^0.4.2",
