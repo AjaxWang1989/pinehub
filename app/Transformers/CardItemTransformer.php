@@ -38,6 +38,11 @@ class CardItemTransformer extends TransformerAbstract
             'sync' => $model->sync,
             'begin_at' => $model->beginAt,
             'end_at' => $model->endAt,
+            'least_cost' => isset($model->cardInfo['least_cost']) ? $model->cardInfo['least_cost'] : (isset($model->cardInfo['advanced_info']) &&
+                isset($model->cardInfo['advanced_info']['use_condition']) && isset($model->cardInfo['advanced_info']['use_condition']['least_cost'])
+                ? $model->cardInfo['advanced_info']['use_condition']['least_cost'] : null),
+            'reduce_cost' => isset($model->cardInfo['reduce_cost']) ? $model->cardInfo['reduce_cost'] : null,
+            'discount' => isset($model->cardInfo['discount']) ? $model->cardInfo['discount'] : null,
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,
