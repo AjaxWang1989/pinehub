@@ -27,6 +27,14 @@ class SyncMemberCardInfoEventListener extends AsyncEventListener
     {
         //
         $memberCard = $event->memberCard;
+        if(!$memberCard->wechatAppId) {
+            $memberCard = Card::find($memberCard->id);
+        }
+        if(!$memberCard->wechatAppId) {
+            $this->fail();
+            if($this->attempts() > 10)
+                $this->delete();
+        }
         if($memberCard->sync === Card::SYNC_ING) {
             sleep(10);
         }
