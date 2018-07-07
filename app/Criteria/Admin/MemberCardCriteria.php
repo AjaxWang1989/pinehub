@@ -26,8 +26,8 @@ class MemberCardCriteria implements CriteriaInterface
     {
         $appManager = app(AppManager::class);
         $model = $model->whereAppId($appManager->currentApp->id);
-        if($appManager->currentApp->wechatAppId)
-            $model->whereWechatAppId($appManager->currentApp->wechatAppId);
+//        if($appManager->currentApp->wechatAppId)
+//            $model->whereWechatAppId($appManager->currentApp->wechatAppId);
         return $model;
     }
 }
