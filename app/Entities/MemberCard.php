@@ -41,17 +41,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereUserId($value)
  * @mixin \Eloquent
- * @property int $cardId 卡券card id
- * @property string $cardCode 核销码
- * @property int|null $isGiveByFriend
- * @property string $appId 应用id
- * @property int $userId 用户id
- * @property string|null $openId
- * @property string|null $friendOpenId
- * @property string|null $unionId
- * @property string|null $outerStr
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class MemberCard extends Model implements Transformable
 {

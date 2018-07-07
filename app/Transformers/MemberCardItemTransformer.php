@@ -24,7 +24,7 @@ class MemberCardItemTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             'color'      => $model->cardInfo['base_info']['color'],
-            'background_pic_url' => $model->cardInfo['background_pic_url'],
+            'background_pic_url' => isset($model->cardInfo['background_pic_url'])? $model->cardInfo['background_pic_url'] : null,
             'logo_url' => $model->cardInfo['base_info']['logo_url'] ,
             'card_type' => $model->cardType,
             'brand_name' => $model->cardInfo['base_info']['brand_name'] ,
