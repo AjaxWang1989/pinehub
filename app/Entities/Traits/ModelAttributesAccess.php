@@ -42,4 +42,10 @@ trait ModelAttributesAccess
         }
         return null;
     }
+
+    public function __isset($name)
+    {
+        // TODO: Implement __isset() method.
+        return !!$this->{$name};
+    }
 }

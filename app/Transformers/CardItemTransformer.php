@@ -4,7 +4,6 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Entities\Card as CardItem;
-use function PHPSTORM_META\type;
 
 /**
  * Class CardItemTransformer.
