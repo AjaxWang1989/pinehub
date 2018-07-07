@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Entities\Card;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CardCreateRequest extends FormRequest
 {
@@ -26,6 +28,7 @@ class CardCreateRequest extends FormRequest
         return [
             //
             'ticket_info' => ['required', 'array'],
+            'ticket_type' => ['required', Rule::in([Card::COUPON_CARD, Card::DISCOUNT, Card::CASH, Card::GIFT, Card::GROUPON])],
             'sync' => ['required', 'boolean'],
             'begin_at' => ['required', 'date'],
             'end_at'   => ['required', 'date']

@@ -56,11 +56,13 @@ define('ONE_DAY_SECONDS', 86400);
 define('USER_AUTH_BASE', 'user_base');
 define('USER_AUTH_INFO', 'user_info');
 
-define('MEMBER_CARD', 'member_card');
+define('MEMBER_CARD', 'MEMBER_CARD');
 
-define('COUPON_CARD', 'coupon_card');
-define('GROUPON_CARD', 'groupon');
-define('DISCOUNT_CARD', 'discount');
+define('COUPON_CARD', 'GENERAL_COUPON');
+define('GROUPON_CARD', 'GROUPON');
+define('DISCOUNT_CARD', 'DISCOUNT');
+define('CASH_CARD', 'CASH');
+define('GIFT_CARD', 'GIFT');
 
 define('WECHAT_THUMB_MESSAGE', 'thumb');
 

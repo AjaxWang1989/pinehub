@@ -33,7 +33,7 @@ class CardCriteria implements CriteriaInterface
         if($cardType) {
             return $model->whereCardType($cardType);
         }else{
-            return $model->whereIn('card_type', [Card::GROUPON, Card::DISCOUNT, Card::COUPON_CARD, Card::GIFT]);
+            return $model->whereIn('card_type', [Card::GROUPON, Card::DISCOUNT, Card::COUPON_CARD, Card::GIFT, Card::CASH]);
         }
 
     }

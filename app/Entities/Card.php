@@ -56,11 +56,12 @@ class Card extends Model implements Transformable
     const CHECK_FAILED = 2;
 
     //'member_card','coupon_card','discount','groupon','gift'
-    const MEMBER_CARD = 'member_card';
-    const COUPON_CARD = 'coupon_card';
-    const DISCOUNT = 'discount';
-    const GROUPON = 'groupon';
-    const GIFT = 'gift';
+    const MEMBER_CARD = MEMBER_CARD;
+    const COUPON_CARD = COUPON_CARD;
+    const DISCOUNT = DISCOUNT_CARD;
+    const GROUPON = GROUPON_CARD;
+    const GIFT = GIFT_CARD;
+    const CASH = CASH_CARD;
 
     protected $casts = [
         'card_info' => 'json',
