@@ -23,6 +23,14 @@ class ComponentAccessToken
         $this->authInfo['expires_in'] = Carbon::now()->addMinute($authInfo['expires_in']);
     }
 
+
+    public function __get($name)
+    {
+        // TODO: Implement __get() method.\
+        $key = upperCaseSplit($name, '_');
+        return $this->authInfo[$key];
+    }
+
     /**
      * @return array
      */

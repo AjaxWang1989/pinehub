@@ -39,6 +39,14 @@ class AccessToken implements \ArrayAccess
         $this->accessToken = $accessToken;
     }
 
+
+    public function __get($name)
+    {
+        // TODO: Implement __get() method.\
+        $key = upperCaseSplit($name, '_');
+        return $this->accessToken[$key];
+    }
+
     /**
      * @param string $accessToken
      * @return AccessToken

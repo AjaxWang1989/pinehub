@@ -27,5 +27,20 @@ class WechatAuthAccessTokenListener
     public function handle(WechatAuthAccessTokenRefreshEvent $event)
     {
         //
+        $wechat = $event->wechat;
+        $now = time();
+        if($wechat->authorizerAccessTokenExpiresIn->getTimestamp() < $now) {
+            if($wechat->componentAccessTokenExpiresIn->getTimestamp() < $now) {
+                $componentAccessToken = app('wechat')->openPlatformComponentAccess(true);
+                $wechat->componentAccessToken = $componentAccessToken->getComponentAccessToken();
+                $wechat->componentAccessTokenExpiresIn = $componentAccessToken->getExpiresIn();
+            }
+            $openPlatformAccessToken = app('wechat')->openPlatformOfficialAccountAccessToken($wechat->appId,
+                $wechat->authorizerRefreshToken, true);
+            $wechat->authorizerRefreshToken = $openPlatformAccessToken->authorizerAccessToken;
+            $wechat->authorizerAccessToken = $openPlatformAccessToken->authorizerAccessToken;
+            $wechat->authorizerAccessTokenExpiresIn = $openPlatformAccessToken->expiresIn;
+            $wechat->save();
+        }
     }
 }

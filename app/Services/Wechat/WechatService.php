@@ -10,7 +10,6 @@ namespace App\Services\Wechat;
 
 
 use App\Entities\Customer;
-use App\Entities\WechatUser;
 use App\Exceptions\WechatMaterialArticleUpdateException;
 use App\Exceptions\WechatMaterialDeleteException;
 use App\Exceptions\WechatMaterialListException;
@@ -25,12 +24,12 @@ use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
 use App\Services\Wechat\Components\OfficialAccountAuthorizerInfo;
 use App\Services\Wechat\OfficialAccount\AccessToken;
 use EasyWeChat\Factory;
-use EasyWeChat\Kernel\Http\StreamResponse;
 use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\OfficialAccount\Server\Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
-use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\CacheBridge;
+use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
+use App\Services\Wechat\OpenPlatform\OpenPlatformAccessToken as OPAccessToken;
 
 class WechatService
 {
@@ -89,9 +88,9 @@ class WechatService
         return new Authorizer($authorizer['authorization_info']);
     }
 
-    public function openPlatformComponentAccess()
+    public function openPlatformComponentAccess(bool $refresh = false)
     {
-        $token = $this->openPlatform()->access_token->getToken();
+        $token = $this->openPlatform()->access_token->getToken($refresh);
         return new ComponentAccessToken($token);
     }
 
@@ -471,10 +470,10 @@ class WechatService
         return $wechatUser;
     }
 
-    public function openPlatformOfficialAccountAccessToken(string   $appId)
+    public function openPlatformOfficialAccountAccessToken(string  $appId, string $refreshToken = null, bool $refresh = false, OpenPlatformAccessToken $accessToken = null)
     {
-        $accessToken = $this->openPlatform()->officialAccount($appId)->access_token->getToken();
-        return (new AccessToken($accessToken));
+        $accessToken = $this->openPlatform()->officialAccount($appId, $refreshToken, $accessToken)->access_token->getToken($refresh);
+        return (new OPAccessToken($accessToken));
     }
 
 }
