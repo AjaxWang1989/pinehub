@@ -73,11 +73,13 @@ class MemberCardsController extends Controller
         $appManager = app(AppManager::class);
         $data['card_type'] = Card::MEMBER_CARD;
         $data['app_id'] = $appManager->currentApp->id;
+        $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
         $data['status'] = Card::CHECK_ING;
         $data['sync'] = $request->input('sync', false) ? Card::SYNC_NO_NEED : Card::SYNC_ING;
         $data['card_info'] = $request->input('member_info');
         $memberCard = $this->repository->create($data);
-        Event::fire(new SyncMemberCardInfoEvent($memberCard));
+        if($data['wechat_app_id'] && $data['sync'])
+            Event::fire(new SyncMemberCardInfoEvent($memberCard));
         $response = [
             'message' => 'MemberCard created.',
             'data'    => $memberCard->toArray(),
