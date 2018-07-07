@@ -41,17 +41,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereWechatAppId($value)
  * @mixin \Eloquent
- * @property string|null $cardId 卡券id
- * @property string|null $wechatAppId 微信app id
- * @property string|null $aliAppId 支付宝app id
- * @property string|null $appId 系统app id
- * @property string $cardType 卡券类型
- * @property array $cardInfo 卡券信息
- * @property \Carbon\Carbon $beginAt
- * @property \Carbon\Carbon $endAt
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class Card extends Model implements Transformable
 {
