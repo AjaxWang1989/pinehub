@@ -22,7 +22,8 @@ class CardItemTransformer extends TransformerAbstract
      */
     public function transform(CardItem $model)
     {
-        dump($model->cardInfo['reduce_cost'], $model->cardInfo['discount']);
+        dump(isset($model->cardInfo['reduce_cost']) ? $model->cardInfo['reduce_cost'] : null,
+            isset($model->cardInfo['discount']) ? $model->cardInfo['discount'] : null);
         \Log::debug('card info', [is_array($model->cardInfo),  'discount' => isset($model->cardInfo['discount']) ]);
         return [
             'id'         => (int) $model->id,
