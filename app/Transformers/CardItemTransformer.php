@@ -4,6 +4,7 @@ namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
 use App\Entities\Card as CardItem;
+use function PHPSTORM_META\type;
 
 /**
  * Class CardItemTransformer.
@@ -21,7 +22,7 @@ class CardItemTransformer extends TransformerAbstract
      */
     public function transform(CardItem $model)
     {
-        \Log::debug('card info', [is_array($model->cardInfo) , 'discount' => isset($model->cardInfo['discount']) ]);
+        \Log::debug('card info', [is_array($model->cardInfo), type($model->cardInfo), 'discount' => isset($model->cardInfo['discount']) ]);
         return [
             'id'         => (int) $model->id,
             'color'      => $model->cardInfo['base_info']['color'],
