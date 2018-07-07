@@ -82,8 +82,10 @@ class CardsController extends Controller
         $appManager = app(AppManager::class);
         $data['card_info'] = $request->input('ticket_info');
         $data['app_id'] = $appManager->currentApp->id;
+        $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
         $data['begin_at'] = $request->input('begin_at');
         $data['end_at'] = $request->input('end_at');
+        $data['card_type'] = $request->input('ticket_type');
         $card = $this->repository->create($data);
         if ($request->input('sync', false)) {
             Event::fire(new SyncTicketCardInfoEvent($card));
