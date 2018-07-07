@@ -43,6 +43,7 @@ class CardItemTransformer extends TransformerAbstract
                 ? $model->cardInfo['advanced_info']['use_condition']['least_cost'] : null),
             'reduce_cost' => isset($model->cardInfo['reduce_cost']) ? $model->cardInfo['reduce_cost'] : null,
             'discount' => isset($model->cardInfo['discount']) ? $model->cardInfo['discount'] : null,
+            'get_limit' => isset($model->cardInfo['base_info']['get_limit']) ? $model->cardInfo['base_info']['get_limit'] : null,
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,
