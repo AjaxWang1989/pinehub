@@ -21,7 +21,7 @@ class CardItemTransformer extends TransformerAbstract
      */
     public function transform(CardItem $model)
     {
-        \Log::debug('card info', ['cash' => $model->cardInfo['reduce_cost'] , 'discount' => isset($model->cardInfo['discount']) ]);
+        \Log::debug('card info', [is_array($model->cardInfo) , 'discount' => isset($model->cardInfo['discount']) ]);
         return [
             'id'         => (int) $model->id,
             'color'      => $model->cardInfo['base_info']['color'],
