@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\CardCriteria;
+use App\Entities\Ticket;
 use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
@@ -167,6 +168,21 @@ class CardsController extends Controller
        }
 
        return redirect()->back()->with('message', $response['message']);
+    }
+
+    public function unavailable(int $id)
+    {
+        $result = $this->repository->update(['status' => Ticket::UNAVAILABLE], $id);
+        if($result) {
+            $result = app('wechat')->officeAccount()->card->reduceStock($result->cardId, $result->cardInfo['base_info']['sku']['quantity']);
+            if($result['errcode'] !== 0) {
+                $this->response()->error('同步失败');
+            }else{
+                return $this->response(new JsonResponse(['message' => '设置成功，卡券已经失效']));
+            }
+        }else{
+            $this->response()->error('设置失败');
+        }
     }
 
 

@@ -43,4 +43,6 @@ use Prettus\Repository\Traits\TransformableTrait;
 class Ticket extends Card
 {
     protected $table = 'cards';
+
+    const UNAVAILABLE = 3;//unavailable
 }
