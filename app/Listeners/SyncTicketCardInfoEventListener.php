@@ -27,5 +27,6 @@ class SyncTicketCardInfoEventListener
     public function handle(SyncTicketCardInfoEvent $event)
     {
         //
+        app('wechat')->card($event->card->cardType, $event->card->cardInfo);
     }
 }

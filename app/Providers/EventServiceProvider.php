@@ -26,6 +26,7 @@ use App\Listeners\OpenPlatformUnauthorized;
 use App\Listeners\OpenPlatformUpdateAuthorized;
 use App\Listeners\OrderScoreListener;
 use App\Listeners\SyncMemberCardInfoEventListener;
+use App\Listeners\SyncTicketCardInfoEventListener;
 use App\Listeners\UserConsumeCardEventListener;
 use App\Listeners\UserDelCardEventListener;
 use App\Listeners\UserEnterOfficialAccountFromCardEventListener;
@@ -68,7 +69,7 @@ class EventServiceProvider extends ServiceProvider
             SyncMemberCardInfoEventListener::class
         ],
         SyncTicketCardInfoEvent::class => [
-            SyncMemberCardInfoEventListener::class
+            SyncTicketCardInfoEventListener::class
         ],
         CardSKURemindEvent::class => [
             CardSKURemindEventListener::class

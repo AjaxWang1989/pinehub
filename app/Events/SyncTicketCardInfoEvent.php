@@ -12,7 +12,7 @@ class SyncTicketCardInfoEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $card = null;
+    public $card = null;
     /**
      * Create a new event instance.
      * @param Card $card
