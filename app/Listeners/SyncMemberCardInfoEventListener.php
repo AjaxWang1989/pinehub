@@ -63,6 +63,5 @@ class SyncMemberCardInfoEventListener
           $memberCard->sync = Card::SYNC_FAILED;
         }
         $memberCard->save();
-        Event::fire(new WechatAuthAccessTokenRefreshEvent($wechat));
     }
 }
