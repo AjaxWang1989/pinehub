@@ -10,6 +10,8 @@ namespace App\Services;
 
 
 use App\Entities\App;
+use App\Entities\MiniProgram;
+use App\Entities\OfficialAccount;
 use App\Entities\WechatConfig;
 use App\Repositories\AppRepository;
 use App\Services\AliPay\AliPayOpenPlatform;
@@ -20,8 +22,8 @@ use EasyWeChat\OpenPlatform\Application as OpenPlatform;
 
 /**
  * @property App $currentApp
- * @property WechatConfig $officialAccount
- * @property WechatConfig $miniProgram
+ * @property OfficialAccount $officialAccount
+ * @property MiniProgram $miniProgram
  * @property OpenPlatform $openPlatform
  * @property AliPayOpenPlatform $aliPayOpenPlatform
  * */

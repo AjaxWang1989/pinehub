@@ -5,7 +5,9 @@ namespace App\Listeners;
 use App\Entities\Card;
 use App\Entities\WechatConfig;
 use App\Events\SyncMemberCardInfoEvent;
+use App\Events\WechatAuthAccessTokenRefreshEvent;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Event;
 
 class SyncMemberCardInfoEventListener extends AsyncEventListener
 {
@@ -39,25 +41,17 @@ class SyncMemberCardInfoEventListener extends AsyncEventListener
             if($this->attempts() > 10)
                 $this->delete();
         }
+        /** @var WechatConfig $wechat */
         $wechat = WechatConfig::where('app_id', $memberCard->wechatAppId)->first();
-        tap($wechat, function (WechatConfig $config) {
-            $now = Carbon::now();
-            if($config->authorizerAccessTokenExpiresIn->getTimestamp() < $now->getTimestamp()) {
-                if($config->componentAccessTokenExpiresIn->getTimestamp() < $now->getTimestamp()) {
-                    app('wechat')->openPlatform()->access_token->getToken(true);
-                }
-                app('wechat')->openPlatform()->officialAccount($config->appId, $config->authorizerRefreshToken)->access_token->getToken(true);
-            }
-        });
         if($memberCard->sync === Card::SYNC_ING) {
             sleep(10);
         }
 
         if($memberCard->cardId === null) {
-            $result = app('wechat')->openPlatform()->officialAccount($memberCard->wechatAppId)->card
+            $result = app('wechat')->openPlatform()->officialAccount($memberCard->wechatAppId, $wechat->authorizerRefreshToken)->card
                 ->create($memberCard->cardType, $memberCard->cardInfo);
         } else {
-            $result = app('wechat')->openPlatform()->officialAccount($memberCard->wechatAppId)->card
+            $result = app('wechat')->openPlatform()->officialAccount($memberCard->wechatAppId, $wechat->authorizerRefreshToken)->card
                 ->update($memberCard->cardId, $memberCard->cardType, $memberCard->cardInfo);
         }
 
@@ -70,5 +64,6 @@ class SyncMemberCardInfoEventListener extends AsyncEventListener
           $memberCard->sync = Card::SYNC_FAILED;
         }
         $memberCard->save();
+        Event::fire(new WechatAuthAccessTokenRefreshEvent($wechat));
     }
 }

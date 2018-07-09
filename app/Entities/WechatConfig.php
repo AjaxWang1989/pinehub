@@ -112,5 +112,4 @@ class WechatConfig extends Model implements Transformable
     {
         return $this->hasOne(WechatMenu::class, 'app_id', 'app_id');
     }
-
 }

@@ -41,6 +41,10 @@ class OpenPlatformController extends Controller
         //监听事件
     }
 
+    /**
+     * @return mixed
+     * @throws
+     * */
     public function __invoke(Application $application)
     {
         $server = $application->server;

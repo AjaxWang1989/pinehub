@@ -43,11 +43,17 @@ class WechatService
 
     protected $openPlatform = null;
 
-    public function __construct(array  $config = [])
+    /**
+     * @param array $config
+     * */
+    public function __construct(array $config = [])
     {
         $this->config = $config;
     }
 
+    /**
+     * @param array $config
+     * */
     public function setConfig(array  $config)
     {
         $this->config = $config;
@@ -62,7 +68,8 @@ class WechatService
             }else{
                 $appManager = app(AppManager::class);
                 $appId = $appManager->officialAccount->appId;
-                $this->officeAccount = $this->openPlatform()->officialAccount($appId);
+                $this->officeAccount = $this->openPlatform()->officialAccount($appId,
+                    $appManager->officialAccount->authorizerRefreshToken);
             }
         }
 
@@ -88,6 +95,11 @@ class WechatService
         return new Authorizer($authorizer['authorization_info']);
     }
 
+    /**
+     * @param bool $refresh
+     * @return  ComponentAccessToken
+     * @throws
+     * */
     public function openPlatformComponentAccess(bool $refresh = false)
     {
         $token = $this->openPlatform()->access_token->getToken($refresh);
@@ -137,6 +149,12 @@ class WechatService
         return $url;
     }
 
+
+
+    /**
+     * @return mixed
+     * @throws
+     * */
     public function materialStats()
     {
         $stats = $this->officeAccount()->material->stats();
@@ -147,6 +165,13 @@ class WechatService
     }
 
 
+    /**
+     * @param string $type
+     * @param int $offset
+     * @param int $limit
+     * @return mixed
+     * @throws
+     * */
     public function materialList(string $type, int $offset, int $limit)
     {
         $result = $this->officeAccount()->material->list($type, $offset, $limit);
@@ -171,6 +196,12 @@ class WechatService
         return $result['media_id'];
     }
 
+    /**
+     * @param string $type
+     * @param string $path
+     * @return mixed
+     * @throws
+     * */
     public function uploadMedia(string $type, string $path)
     {
         $result  = $this->officeAccount()->media->upload($type, $path);
@@ -180,6 +211,13 @@ class WechatService
         return $result['media_id'];
     }
 
+    /**
+     * @param string $mediaId
+     * @param Article $article
+     * @param int $index
+     * @return mixed
+     * @throws
+     * */
     public function updateArticle(string $mediaId, Article $article, int $index = 0) {
         $article['media_id'] = $mediaId;
         $result = $this->officeAccount()->material->updateArticle($mediaId, $article, $index);
@@ -190,6 +228,14 @@ class WechatService
         return true;
     }
 
+    /**
+     * @param string $type
+     * @param string $path
+     * @param string $title
+     * @param string $des
+     * @return mixed
+     * @throws
+     * */
     public function uploadMaterial(string $type, string $path, string $title = null, string  $des = null)
     {
         $result = null;
@@ -226,6 +272,11 @@ class WechatService
         return $result;
     }
 
+    /**
+     * @param string $mediaId
+     * @return mixed
+     * @throws
+     * */
     public function deleteMaterial(string  $mediaId)
     {
         $result = $this->officeAccount()->material->delete($mediaId);
@@ -235,6 +286,12 @@ class WechatService
         return true;
     }
 
+    /**
+     * @param string $mediaId
+     * @param bool $isTemp
+     * @return mixed
+     * @throws
+     * */
     public function material(string  $mediaId, bool $isTemp = false)
     {
         if($isTemp) {
@@ -271,7 +328,7 @@ class WechatService
             }else{
                 $appManager = app(AppManager::class);
                 $appId = $appManager->miniProgram->appId;
-                $this->miniProgram = $this->openPlatform()->miniProgram($appId);
+                $this->miniProgram = $this->openPlatform()->miniProgram($appId, $appManager->miniProgram->authorizerRefreshToken);
             }
         }
         $this->setWechatApplication($this->miniProgram, app());
@@ -338,6 +395,10 @@ class WechatService
         return $this->openPlatform()->server;
     }
 
+    /**
+     * @return mixed
+     * @throws
+     * */
     public function officeAccountServerHandle()
     {
         $this->officeAccountServer()->push(function ($message) {
@@ -346,6 +407,10 @@ class WechatService
         return $this->officeAccountServer()->serve();
     }
 
+    /**
+     * @return mixed
+     * @throws
+     * */
     public function miniProgramServerHandle()
     {
 
@@ -356,6 +421,11 @@ class WechatService
         return $this->miniProgramServer()->serve();
     }
 
+
+    /**
+     * @return mixed
+     * @throws
+     * */
     public function openPlatformServerHandle()
     {
         $this->openPlatformServer()->push(function ($message) {
@@ -365,6 +435,12 @@ class WechatService
         return $this->openPlatformServer()->serve();
     }
 
+    /**
+     * @param Guard $server
+     * @param  $message
+     * @return mixed
+     * @throws
+     * */
     protected function serverMessageHandle(Guard $server, $message)
     {
         switch ($message['MsgType']) {
@@ -394,12 +470,21 @@ class WechatService
         }
     }
 
+    /**
+     * @return AccessToken
+     * @throws
+     * */
     public function officialAccountAccessToken()
     {
         $accessToken = $this->officeAccount()->access_token->getToken();
         return (new AccessToken($accessToken));
     }
 
+    /**
+     * @param $openId
+     * @return mixed
+     * @throws
+     * */
     public function officialAccountUser($openId)
     {
         $user = $this->officeAccount()->user->get($openId);
@@ -470,10 +555,20 @@ class WechatService
         return $wechatUser;
     }
 
-    public function openPlatformOfficialAccountAccessToken(string  $appId, string $refreshToken = null, bool $refresh = false, OpenPlatformAccessToken $accessToken = null)
+    /**
+     * @param bool $refresh
+     * @return mixed
+     * @throws
+     * */
+    public function openPlatformOfficialAccountAccessToken(bool $refresh = false)
     {
-        $accessToken = $this->openPlatform()->officialAccount($appId, $refreshToken, $accessToken)->access_token->getToken($refresh);
+        $accessToken = $this->officeAccount()->access_token->getToken($refresh);
         return (new OPAccessToken($accessToken));
+    }
+
+    public function card(string $type, array $data)
+    {
+        return $this->officeAccount()->card->create($type, $data);
     }
 
 }

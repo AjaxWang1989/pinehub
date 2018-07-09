@@ -59,7 +59,7 @@ class EventServiceProvider extends ServiceProvider
             OpenPlatformUnauthorized::class
         ],
         UpdateAuthorized::class => [
-            OpenPlatformUpdateAuthorized::class
+           OpenPlatformAuthorized::class
         ],
         VerifyTicketRefreshed::class =>[
             VerifyTicketRefreshEventListener::class

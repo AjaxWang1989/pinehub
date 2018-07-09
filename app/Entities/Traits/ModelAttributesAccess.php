@@ -48,4 +48,13 @@ trait ModelAttributesAccess
         // TODO: Implement __isset() method.
         return !!$this->{$name};
     }
+
+    public function __unset($name)
+    {
+        // TODO: Implement __unset() method.
+        if(!$this->getAttribute($name)) {
+            $name = upperCaseSplit($name, '_');
+        }
+        unset($this->attributes[$name], $this->relations[$name]);
+    }
 }

@@ -6,7 +6,7 @@ use App\Events\WechatAuthAccessTokenRefreshEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class WechatAuthAccessTokenRefreshListener
+class WechatAuthAccessTokenRefreshListener extends AsyncEventListener
 {
     /**
      * Create the event listener.
@@ -31,15 +31,20 @@ class WechatAuthAccessTokenRefreshListener
         $now = time();
         if($wechat->authorizerAccessTokenExpiresIn->getTimestamp() < $now) {
             if($wechat->componentAccessTokenExpiresIn->getTimestamp() < $now) {
-                $componentAccessToken = app('wechat')->openPlatformComponentAccess(true);
-                $wechat->componentAccessToken = $componentAccessToken->getComponentAccessToken();
-                $wechat->componentAccessTokenExpiresIn = $componentAccessToken->getExpiresIn();
+                $componentAccessToken = app('wechat')->openPlatformComponentAccess();
+                if($wechat->componentAccessToken !== $componentAccessToken->componentAccessToken){
+                    $wechat->componentAccessToken = $componentAccessToken->componentAccessToken;
+                    $wechat->componentAccessTokenExpiresIn = $componentAccessToken->expiresIn;
+                }
+
             }
-            $openPlatformAccessToken = app('wechat')->openPlatformOfficialAccountAccessToken($wechat->appId,
-                $wechat->authorizerRefreshToken, true);
-            $wechat->authorizerRefreshToken = $openPlatformAccessToken->authorizerAccessToken;
-            $wechat->authorizerAccessToken = $openPlatformAccessToken->authorizerAccessToken;
-            $wechat->authorizerAccessTokenExpiresIn = $openPlatformAccessToken->expiresIn;
+            $openPlatformAccessToken = app('wechat')->openPlatformOfficialAccountAccessToken();
+            if($wechat->authorizerAccessToken !== $openPlatformAccessToken->authorizerAccessToken) {
+                $wechat->authorizerRefreshToken = $openPlatformAccessToken->authorizerRefreshToken;
+                $wechat->authorizerAccessToken = $openPlatformAccessToken->authorizerAccessToken;
+                $wechat->authorizerAccessTokenExpiresIn = $openPlatformAccessToken->expiresIn;
+            }
+
             $wechat->save();
         }
     }

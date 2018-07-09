@@ -3,26 +3,20 @@
 namespace App\Repositories;
 
 use App\Events\WechatAuthAccessTokenRefreshEvent;
-use App\Repositories\Traits\Destruct;
 use Illuminate\Support\Facades\Event;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\WechatConfig;
+use App\Repositories\OfficialAccountRepository;
+use App\Entities\OfficialAccount;
+use App\Validators\OfficialAccountValidator;
 
 /**
- * Class WechatConfigRepositoryEloquent.
+ * Class OfficialAccountRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class WechatConfigRepositoryEloquent extends BaseRepository implements WechatConfigRepository
+class OfficialAccountRepositoryEloquent extends BaseRepository implements OfficialAccountRepository
 {
-    use Destruct;
-    protected $fieldSearchable = [
-        'app_id' => 'like',
-        'mode' => '=',
-        'type' => '=',
-        'wechat_bind_app' => '='
-    ];
     /**
      * Specify Model class name
      *
@@ -30,7 +24,7 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
      */
     public function model()
     {
-        return WechatConfig::class;
+        return OfficialAccount::class;
     }
 
     
@@ -42,9 +36,12 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-        WechatConfig::saved(function (WechatConfig &$account) {
+        OfficialAccount::creating(function (OfficialAccount &$account) {
+            $account->type = WECHAT_OFFICIAL_ACCOUNT;
+        });
+
+        OfficialAccount::saved(function (OfficialAccount &$account) {
             Event::fire((new WechatAuthAccessTokenRefreshEvent($account))->delay($account->authorizerAccessTokenExpiresIn));
         });
     }
-
 }

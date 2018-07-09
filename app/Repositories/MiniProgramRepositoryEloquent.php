@@ -2,27 +2,19 @@
 
 namespace App\Repositories;
 
-use App\Events\WechatAuthAccessTokenRefreshEvent;
-use App\Repositories\Traits\Destruct;
-use Illuminate\Support\Facades\Event;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\WechatConfig;
+use Illuminate\Support\Facades\Event;
+use App\Entities\MiniProgram;
+use App\Events\WechatAuthAccessTokenRefreshEvent;
 
 /**
- * Class WechatConfigRepositoryEloquent.
+ * Class MiniProgramRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class WechatConfigRepositoryEloquent extends BaseRepository implements WechatConfigRepository
+class MiniProgramRepositoryEloquent extends BaseRepository implements MiniProgramRepository
 {
-    use Destruct;
-    protected $fieldSearchable = [
-        'app_id' => 'like',
-        'mode' => '=',
-        'type' => '=',
-        'wechat_bind_app' => '='
-    ];
     /**
      * Specify Model class name
      *
@@ -30,7 +22,7 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
      */
     public function model()
     {
-        return WechatConfig::class;
+        return MiniProgram::class;
     }
 
     
@@ -42,9 +34,13 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-        WechatConfig::saved(function (WechatConfig &$account) {
+        MiniProgram::creating(function (MiniProgram &$account) {
+            $account->type = WECHAT_MINI_PROGRAM;
+        });
+
+        MiniProgram::saved(function (MiniProgram &$account) {
             Event::fire((new WechatAuthAccessTokenRefreshEvent($account))->delay($account->authorizerAccessTokenExpiresIn));
         });
     }
-
+    
 }
