@@ -48,6 +48,11 @@ class UserGetCardEventListener
                         $memberCard->isGiveByFriend = $payload['IsGiveByFriend'];
                         $memberCard->friendOpenId = $payload['FriendUserName'];
                         $memberCard->active = false;
+                        if($memberCard->card->cardInfo['base_info']['sku']['quantity'] > 0){
+                            $memberCard->card->cardInfo['base_info']['sku']['quantity'] -= 1;
+                            $memberCard->card->save();
+                        }
+
                         $memberCard->save();
                     }
 
@@ -63,6 +68,10 @@ class UserGetCardEventListener
                     $ticketCard->cardCode = $payload['UserCardCode'];
                     $ticketCard->appId = $customer->appId;
                     $ticketCard->used = false;
+                    if($ticketCard->card->cardInfo['base_info']['sku']['quantity'] > 0){
+                        $ticketCard->card->cardInfo['base_info']['sku']['quantity'] -= 1;
+                        $ticketCard->card->save();
+                    }
                     $ticketCard->save();
                 }
             }

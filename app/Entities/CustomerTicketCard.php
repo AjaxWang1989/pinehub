@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -18,6 +19,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $used 是否核销
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
+ * @property-read \App\Entities\App $app
+ * @property-read \App\Entities\Card $card
+ * @property-read \App\Entities\Customer $customer
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereCardCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereCardId($value)
@@ -37,6 +41,27 @@ class CustomerTicketCard extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'card_id',
+        'card_code',
+        'app_id',
+        'customer_id',
+        'used'
+    ];
+
+    public function card(): BelongsTo
+    {
+        return $this->belongsTo(Card::class, 'card_id', 'id');
+    }
+
+    public function app(): BelongsTo
+    {
+        return $this->belongsTo(App::class, 'app_id', 'id');
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
 
 }
