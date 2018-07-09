@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Entities\Ticket;
 use App\Entities\WechatConfig;
 use App\Events\SyncTicketCardInfoEvent;
 use Illuminate\Queue\InteractsWithQueue;
@@ -30,7 +31,7 @@ class SyncTicketCardInfoEventListener
         //
         $ticket = $event->card;
         if(!$ticket->wechatAppId) {
-            $ticket = Card::with('app')->find($ticket->id);
+            $ticket = Ticket::with('app')->find($ticket->id);
             $ticket->wechatAppId = $ticket->app->wechatAppId;
             $ticket->save();
         }
@@ -41,7 +42,7 @@ class SyncTicketCardInfoEventListener
         }
         /** @var WechatConfig $wechat */
         $wechat = WechatConfig::where('app_id', $ticket->wechatAppId)->first();
-        if($ticket->sync === Card::SYNC_ING) {
+        if($ticket->sync === Ticket::SYNC_ING) {
             sleep(10);
         }
 
@@ -57,9 +58,9 @@ class SyncTicketCardInfoEventListener
             $app = $ticket->app()->first();
             $ticket->cardId = $result['card_id'];
             $ticket->wechatAppId = $app->wechatAppId;
-            $ticket->sync = Card::SYNC_SUCCESS;
+            $ticket->sync = Ticket::SYNC_SUCCESS;
         } else {
-            $ticket->sync = Card::SYNC_FAILED;
+            $ticket->sync = Ticket::SYNC_FAILED;
         }
         $ticket->save();
     }
