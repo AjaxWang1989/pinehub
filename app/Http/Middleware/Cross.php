@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Dingo\Api\Http\Response\Factory;
 use Illuminate\Support\Facades\Log;
 
 class Cross
@@ -16,6 +17,10 @@ class Cross
      */
     public function handle($request, Closure $next = null)
     {
+        if($request->method() === HTTP_METHOD_OPTIONS) {
+            $response = app(Factory::class)->created();
+            return $this->setHeader($response);
+        }
         $response = $next($request);
         $this->setHeader($response);
         return $response;
