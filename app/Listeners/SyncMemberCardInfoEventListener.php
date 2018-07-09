@@ -6,10 +6,9 @@ use App\Entities\Card;
 use App\Entities\WechatConfig;
 use App\Events\SyncMemberCardInfoEvent;
 use App\Events\WechatAuthAccessTokenRefreshEvent;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Event;
 
-class SyncMemberCardInfoEventListener extends AsyncEventListener
+class SyncMemberCardInfoEventListener
 {
     /**
      * Create the event listener.
