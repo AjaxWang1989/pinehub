@@ -24,7 +24,7 @@ class MemberCardCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            //'member_info' => ['required', 'array'],
+            'member_info' => ['required', 'array'],
             'sync' => ['required', 'boolean']
         ];
     }

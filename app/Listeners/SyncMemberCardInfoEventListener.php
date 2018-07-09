@@ -63,7 +63,7 @@ class SyncMemberCardInfoEventListener
         } else {
           $memberCard->sync = Card::SYNC_FAILED;
           $memberCard->save();
-          throw new \Exception($result['errmsg']);
+          throw new \Exception(json_encode($result));
         }
 
     }
