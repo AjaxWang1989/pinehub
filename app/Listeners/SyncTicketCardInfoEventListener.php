@@ -54,15 +54,17 @@ class SyncTicketCardInfoEventListener
                 ->update($ticket->cardId, $ticket->cardType, $ticket->cardInfo);
         }
 
-        \Log::debug('wechat ticket sync', $result);
         if($result['errcode'] === 0) {
             $app = $ticket->app()->first();
             $ticket->cardId = $result['card_id'];
             $ticket->wechatAppId = $app->wechatAppId;
             $ticket->sync = Ticket::SYNC_SUCCESS;
+            $ticket->save();
         } else {
             $ticket->sync = Ticket::SYNC_FAILED;
+            $ticket->save();
+            throw new \Exception($result['errmsg']);
         }
-        $ticket->save();
+
     }
 }
