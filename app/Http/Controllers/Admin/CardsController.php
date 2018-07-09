@@ -185,6 +185,12 @@ class CardsController extends Controller
         }
     }
 
+    public function qrCode(int $id)
+    {
+        $ticket = $this->repository->find($id);
+
+    }
+
 
     /**
      * Remove the specified resource from storage.

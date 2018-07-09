@@ -59,9 +59,12 @@ class SyncMemberCardInfoEventListener
             $memberCard->cardId = $result['card_id'];
             $memberCard->wechatAppId = $app->wechatAppId;
             $memberCard->sync = Card::SYNC_SUCCESS;
+            $memberCard->save();
         } else {
           $memberCard->sync = Card::SYNC_FAILED;
+          $memberCard->save();
+          throw new \Exception($result['errmsg']);
         }
-        $memberCard->save();
+
     }
 }
