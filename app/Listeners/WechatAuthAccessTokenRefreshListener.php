@@ -6,7 +6,7 @@ use App\Events\WechatAuthAccessTokenRefreshEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class WechatAuthAccessTokenListener
+class WechatAuthAccessTokenRefreshListener
 {
     /**
      * Create the event listener.

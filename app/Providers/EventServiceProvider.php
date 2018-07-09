@@ -16,6 +16,7 @@ use App\Events\UserGetCardEvent;
 use App\Events\UserSendCardEvent;
 use App\Events\UserUseCardToPayEvent;
 use App\Events\UserViewMemberCardEvent;
+use App\Events\WechatAuthAccessTokenRefreshEvent;
 use App\Listeners\CardCheckEventListener;
 use App\Listeners\CardPayOrderEventListener;
 use App\Listeners\CardSKURemindEventListener;
@@ -33,6 +34,7 @@ use App\Listeners\UserSendCardEventListener;
 use App\Listeners\UserUseCardToPayEventListener;
 use App\Listeners\UserViewMemberCardEventListener;
 use App\Listeners\VerifyTicketRefreshEventListener;
+use App\Listeners\WechatAuthAccessTokenRefreshListener;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\Authorized;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\Unauthorized;
@@ -103,6 +105,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         UserEnterOfficialAccountFromCardEvent::class => [
             UserEnterOfficialAccountFromCardEventListener::class
+        ],
+        WechatAuthAccessTokenRefreshEvent::class => [
+            WechatAuthAccessTokenRefreshListener::class
         ]
     ];
 }
