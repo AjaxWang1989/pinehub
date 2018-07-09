@@ -14,6 +14,7 @@ use App\Transformers\CardTransformer;
 use App\Transformers\CardItemTransformer;
 use App\Repositories\CardRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 
 /**
@@ -86,10 +87,12 @@ class CardsController extends Controller
         $data['begin_at'] = $request->input('begin_at');
         $data['end_at'] = $request->input('end_at');
         $data['card_type'] = $request->input('ticket_type');
-        $card = $this->repository->create($data);
-        if ($request->input('sync', false)) {
-            Event::fire(new SyncTicketCardInfoEvent($card));
-        }
+        $card = DB::transaction(function () use($request, $data) {
+            $card = $this->repository->create($data);
+            if ($request->input('sync', false)) {
+                Event::fire(new SyncTicketCardInfoEvent($card));
+            }
+        });
         $response = [
             'message' => 'Card created.',
             'data'    => $card->toArray(),
@@ -152,10 +155,14 @@ class CardsController extends Controller
        $data['card_info'] = $request->input('ticket_info');
        $data['begin_at'] = $request->input('begin_at');
        $data['end_at'] = $request->input('end_at');
-       $card = $this->repository->update($data, $id);
-       if($request->input('sync', false)) {
-           Event::fire(new SyncTicketCardInfoEvent($card));
-       }
+       $card = DB::transaction(function () use($data, $id, $request){
+           $card = $this->repository->update($data, $id);
+           if($request->input('sync', false)) {
+               Event::fire(new SyncTicketCardInfoEvent($card));
+           }
+           return $card;
+       });
+
        $response = [
            'message' => 'Card updated.',
            'data'    => $card->toArray(),

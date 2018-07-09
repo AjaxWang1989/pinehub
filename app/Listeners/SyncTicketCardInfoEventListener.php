@@ -25,6 +25,7 @@ class SyncTicketCardInfoEventListener
      *
      * @param  SyncTicketCardInfoEvent  $event
      * @return void
+     * @throws
      */
     public function handle(SyncTicketCardInfoEvent $event)
     {
