@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Entities\Ticket;
 use App\Entities\WechatConfig;
 use App\Events\SyncTicketCardInfoEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SyncTicketCardInfoEventListener
 {
