@@ -45,8 +45,10 @@ class SyncMemberCardInfoEventListener
         }
         if($result['errcode'] === 0) {
             $app = $memberCard->app()->first();
-            $memberCard->cardId = $result['card_id'];
-            $memberCard->wechatAppId = $app->wechatAppId;
+            if(!$memberCard->cardId){
+                $memberCard->cardId = $result['card_id'];
+                $memberCard->wechatAppId = $app->wechatAppId;
+            }
             $memberCard->sync = Card::SYNC_SUCCESS;
             $memberCard->save();
         } else {
