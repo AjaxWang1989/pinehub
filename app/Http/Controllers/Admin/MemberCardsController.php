@@ -80,7 +80,7 @@ class MemberCardsController extends Controller
         $data['card_info'] = $request->input('member_info');
         $memberCard = $this->repository->create($data);
         if($data['wechat_app_id'] && $data['sync'])
-            Event::fire(new SyncMemberCardInfoEvent($memberCard, app('wechat')->officeAccount()));
+            Event::fire(new SyncMemberCardInfoEvent($memberCard, [], app('wechat')->officeAccount()));
         $response = [
             'message' => 'MemberCard created.',
             'data'    => $memberCard->toArray(),
