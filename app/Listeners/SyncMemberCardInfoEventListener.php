@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Entities\Card;
 use App\Entities\WechatConfig;
 use App\Events\SyncMemberCardInfoEvent;
-use App\Events\WechatAuthAccessTokenRefreshEvent;
-use Illuminate\Support\Facades\Event;
 
 class SyncMemberCardInfoEventListener
 {
@@ -25,6 +23,7 @@ class SyncMemberCardInfoEventListener
      *
      * @param  SyncMemberCardInfoEvent  $event
      * @return void
+     * @throws
      */
     public function handle(SyncMemberCardInfoEvent $event)
     {
@@ -61,9 +60,9 @@ class SyncMemberCardInfoEventListener
             $memberCard->sync = Card::SYNC_SUCCESS;
             $memberCard->save();
         } else {
-          $memberCard->sync = Card::SYNC_FAILED;
-          $memberCard->save();
-          throw new \Exception(json_encode($result));
+            $memberCard->sync = Card::SYNC_FAILED;
+            $memberCard->save();
+            throw new \Exception(json_encode($result));
         }
 
     }

@@ -43,7 +43,7 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
     {
         $this->pushCriteria(app(RequestCriteria::class));
         WechatConfig::saved(function (WechatConfig &$account) {
-            Event::fire((new WechatAuthAccessTokenRefreshEvent($account))->delay($account->authorizerAccessTokenExpiresIn));
+            Event::fire(new WechatAuthAccessTokenRefreshEvent($account));
         });
     }
 

@@ -11,8 +11,6 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Entities\WechatConfig as Wechat;
 
 class WechatAuthAccessTokenRefreshEvent extends Job
 {
@@ -32,6 +30,7 @@ class WechatAuthAccessTokenRefreshEvent extends Job
     {
         //
         $this->wechat = $config;
+        $this->delay($this->wechat->authorizerAccessTokenExpiresIn);
     }
 
     /**
