@@ -160,7 +160,10 @@ class CardsController extends Controller
        $data['end_at'] = $request->input('end_at');
        $card = $this->repository->update($data, $id);
        if($request->input('sync', false)) {
-           Event::fire(new SyncTicketCardInfoEvent($card, app('wechat')->officeAccount()));
+           $ticket = new Ticket(with($card, function (Card $card) {
+               return $card->toArray();
+           }));
+           Event::fire(new SyncTicketCardInfoEvent($ticket, app('wechat')->officeAccount()));
        }
        $response = [
            'message' => 'Card updated.',
