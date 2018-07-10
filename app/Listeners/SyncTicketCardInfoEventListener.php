@@ -46,8 +46,11 @@ class SyncTicketCardInfoEventListener
 
         if($result['errcode'] === 0) {
             $app = $ticket->app()->first();
-            $ticket->cardId = $result['card_id'];
-            $ticket->wechatAppId = $app->wechatAppId;
+            if(!$ticket->cardId) {
+                $ticket->cardId = $result['card_id'];
+                $ticket->wechatAppId = $app->wechatAppId;
+            }
+
             $ticket->sync = Ticket::SYNC_SUCCESS;
             $ticket->save();
         } else {
