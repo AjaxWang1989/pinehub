@@ -8,6 +8,7 @@ use App\Events\SyncMemberCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
 use App\Services\AppManager;
+use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\MemberCardCreateRequest;
 use App\Http\Requests\Admin\MemberCardUpdateRequest;
@@ -79,7 +80,7 @@ class MemberCardsController extends Controller
         $data['card_info'] = $request->input('member_info');
         $memberCard = $this->repository->create($data);
         if($data['wechat_app_id'] && $data['sync'])
-            Event::fire(new SyncMemberCardInfoEvent($memberCard));
+            Event::fire(new SyncMemberCardInfoEvent($memberCard, app('wechat')->officeAccount()));
         $response = [
             'message' => 'MemberCard created.',
             'data'    => $memberCard->toArray(),
@@ -140,7 +141,7 @@ class MemberCardsController extends Controller
     {
        $data['card_info'] = $request->input('member_info');
        $memberCard = $this->repository->update($data, $id);
-       Event::fire(new SyncMemberCardInfoEvent($memberCard));
+       Event::fire(new SyncMemberCardInfoEvent($memberCard, app('wechat')->officeAccount()));
        $response = [
            'message' => 'MemberCard updated.',
            'data'    => $memberCard->toArray(),

@@ -8,6 +8,7 @@ use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
 use App\Services\AppManager;
+use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\CardCreateRequest;
 use App\Http\Requests\Admin\CardUpdateRequest;
@@ -89,7 +90,7 @@ class CardsController extends Controller
         $data['card_type'] = $request->input('ticket_type');
         $card = $this->repository->create($data);
         if ($request->input('sync', false)) {
-            Event::fire(new SyncTicketCardInfoEvent($card));
+            Event::fire(new SyncTicketCardInfoEvent($card, app('wechat')->officeAccount()));
         }
         $response = [
             'message' => 'Card created.',
@@ -155,7 +156,7 @@ class CardsController extends Controller
        $data['end_at'] = $request->input('end_at');
        $card = $this->repository->update($data, $id);
        if($request->input('sync', false)) {
-           Event::fire(new SyncTicketCardInfoEvent($card));
+           Event::fire(new SyncTicketCardInfoEvent($card, app('wechat')->officeAccount()));
        }
        $response = [
            'message' => 'Card updated.',
@@ -170,18 +171,23 @@ class CardsController extends Controller
        return redirect()->back()->with('message', $response['message']);
     }
 
+    /**
+     * @param int $id
+     * @return Response
+     * @throws
+     * */
     public function unavailable(int $id)
     {
         $result = $this->repository->update(['status' => Ticket::UNAVAILABLE], $id);
         if($result) {
             $result = app('wechat')->officeAccount()->card->reduceStock($result->cardId, $result->cardInfo['base_info']['sku']['quantity']);
             if($result['errcode'] !== 0) {
-                $this->response()->error('同步失败');
+                $this->response()->error('同步失败', HTTP_STATUS_NOT_MODIFIED);
             }else{
                 return $this->response(new JsonResponse(['message' => '设置成功，卡券已经失效']));
             }
         }else{
-            $this->response()->error('设置失败');
+            $this->response()->error('设置失败', HTTP_STATUS_NOT_MODIFIED);
         }
     }
 

@@ -39,18 +39,16 @@ class SyncMemberCardInfoEventListener
             if($this->attempts() > 10)
                 $this->delete();
         }
-        /** @var WechatConfig $wechat */
-        $wechat = WechatConfig::where('app_id', $memberCard->wechatAppId)->first();
+
+
         if($memberCard->sync === Card::SYNC_ING) {
             sleep(10);
         }
 
         if($memberCard->cardId === null) {
-            $result = app('wechat')->openPlatform()->officialAccount($memberCard->wechatAppId, $wechat->authorizerRefreshToken)->card
-                ->create($memberCard->cardType, $memberCard->cardInfo);
+            $result = $event->wechat->card->create($memberCard->cardType, $memberCard->cardInfo);
         } else {
-            $result = app('wechat')->openPlatform()->officialAccount($memberCard->wechatAppId, $wechat->authorizerRefreshToken)->card
-                ->update($memberCard->cardId, $memberCard->cardType, $memberCard->cardInfo);
+            $result = $event->wechat->card->update($memberCard->cardId, $memberCard->cardType, $memberCard->cardInfo);
         }
 
         if($result['errcode'] === 0) {

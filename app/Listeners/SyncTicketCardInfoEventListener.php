@@ -48,11 +48,9 @@ class SyncTicketCardInfoEventListener
         }
 
         if($ticket->cardId === null) {
-            $result = app('wechat')->openPlatform()->officialAccount($ticket->wechatAppId, $wechat->authorizerRefreshToken)->card
-                ->create($ticket->cardType, $ticket->cardInfo);
+            $result = $event->wechat->card->create($ticket->cardType, $ticket->cardInfo);
         } else {
-            $result = app('wechat')->openPlatform()->officialAccount($ticket->wechatAppId, $wechat->authorizerRefreshToken)->card
-                ->update($ticket->cardId, $ticket->cardType, $ticket->cardInfo);
+            $result = $event->wechat->card->update($ticket->cardId, $ticket->cardType, $ticket->cardInfo);
         }
 
         if($result['errcode'] === 0) {
