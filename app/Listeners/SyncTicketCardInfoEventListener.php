@@ -30,7 +30,7 @@ class SyncTicketCardInfoEventListener
     public function handle(SyncTicketCardInfoEvent $event)
     {
         //
-        $ticket = $event->card;
+        $ticket = $event->ticket;
         if(!$ticket->wechatAppId) {
             $ticket = Ticket::with('app')->find($ticket->id);
             $ticket->wechatAppId = $ticket->app->wechatAppId;
