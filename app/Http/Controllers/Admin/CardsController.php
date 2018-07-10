@@ -161,7 +161,7 @@ class CardsController extends Controller
        $data['end_at'] = $request->input('end_at', null);
        $card = $this->repository->find($id);
        tap($card, function (Card $card) use($data){
-          $card->cardInfo = array_merge($card->cardInfo, $data['card_info']);
+          $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
           $card->cardType = $data['card_type'];
           $card->beginAt  = $data['begin_at'];
           $card->endAt    = $data['end_at'];

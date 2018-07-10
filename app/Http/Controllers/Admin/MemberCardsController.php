@@ -144,7 +144,7 @@ class MemberCardsController extends Controller
        tap($memberCard, function (Card $card) use($data){
            \Log::error('card info before', $card->cardInfo);
            \Log::error('card info update ', $data['card_info']);
-           $card->cardInfo = array_merge($card->cardInfo, $data['card_info']);
+           $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
            \Log::error('card info after', $card->cardInfo);
            $card->save();
        });

@@ -169,3 +169,26 @@ if(!function_exists('jsonResponse')) {
         return $response;
     }
 }
+
+if(!function_exists('multi_array_merge')) {
+    function multi_array_merge(array $array1, array $array2 = null) {
+        $count = func_num_args();
+        if($count === 0) {
+            return null;
+        }elseif ($count === 1) {
+            return $array1;
+        }else {
+            foreach ($array1 as $key => $value) {
+                if(isset($array2[$key])) {
+                    if(is_array($value)) {
+                        $value = multi_array_merge($value, $array2[$key]);
+                    }else{
+                        $value = $array2[$key];
+                    }
+                    $array1[$key] = $value;
+                }
+            }
+        }
+        return $array1;
+    }
+}
