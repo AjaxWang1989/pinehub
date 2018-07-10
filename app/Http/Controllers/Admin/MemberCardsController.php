@@ -143,6 +143,7 @@ class MemberCardsController extends Controller
        $memberCard = $this->repository->find($id);
        tap($memberCard, function (Card $card) use($data){
            $card->cardInfo = array_merge($card->cardInfo, $data['card_info']);
+           \Log::error('card info ', $card->cardInfo);
            $card->save();
        });
        Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
