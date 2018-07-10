@@ -30,8 +30,8 @@ class CardCreateRequest extends FormRequest
             'ticket_info' => ['required', 'array'],
             'ticket_type' => ['required', Rule::in([Card::COUPON_CARD, Card::DISCOUNT, Card::CASH, Card::GIFT, Card::GROUPON])],
             'sync' => ['required', 'boolean'],
-            'begin_at' => ['required', 'date'],
-            'end_at'   => ['required', 'date']
+            'begin_at' => ['date'],
+            'end_at'   => ['date']
         ];
     }
 }
