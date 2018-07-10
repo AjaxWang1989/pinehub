@@ -18,6 +18,8 @@ class SyncMemberCardInfoEvent
 
     public $memberCard = null;
 
+    public $memberInfo = [];
+
     /**
      * @var MiniProgram|OpenPlatformMiniProgram|OfficialAccount|OpenPlatformOfficialAccount
      * */
@@ -26,13 +28,15 @@ class SyncMemberCardInfoEvent
     /**
      * Create a new event instance.
      * @param Card $card
+     * @param array $memberInfo
      * @param MiniProgram|OpenPlatformMiniProgram|OfficialAccount|OpenPlatformOfficialAccount
      * @return void
      */
-    public function __construct(Card $card, $wechat = null)
+    public function __construct(Card $card, array $memberInfo = [], $wechat = null)
     {
         //
         $this->memberCard = $card;
+        $this->memberInfo = $memberInfo;
         $this->wechat = $wechat;
     }
 

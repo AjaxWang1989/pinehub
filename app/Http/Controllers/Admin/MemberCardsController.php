@@ -140,8 +140,12 @@ class MemberCardsController extends Controller
     public function update(MemberCardUpdateRequest $request, $id)
     {
        $data['card_info'] = $request->input('member_info');
-       $memberCard = $this->repository->update($data, $id);
-       Event::fire(new SyncMemberCardInfoEvent($memberCard, app('wechat')->officeAccount()));
+       $memberCard = $this->repository->find($id);
+       tap($memberCard, function (Card $card) use($data){
+           $card->cardInfo = array_merge($card->cardInfo, $data['card_info']);
+           $card->save();
+       });
+       Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
        $response = [
            'message' => 'MemberCard updated.',
            'data'    => $memberCard->toArray(),

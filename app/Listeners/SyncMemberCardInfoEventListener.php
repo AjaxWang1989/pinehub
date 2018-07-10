@@ -41,9 +41,8 @@ class SyncMemberCardInfoEventListener
         if($memberCard->cardId === null) {
             $result = $event->wechat->card->create($memberCard->cardType, $memberCard->cardInfo);
         } else {
-            $result = $event->wechat->card->update($memberCard->cardId, $memberCard->cardType, $memberCard->cardInfo);
+            $result = $event->wechat->card->update($memberCard->cardId, $memberCard->cardType, $event->memberInfo);
         }
-
         if($result['errcode'] === 0) {
             $app = $memberCard->app()->first();
             $memberCard->cardId = $result['card_id'];

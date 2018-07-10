@@ -41,7 +41,7 @@ class SyncTicketCardInfoEventListener
         if($ticket->cardId === null) {
             $result = $event->wechat->card->create($ticket->cardType, $ticket->cardInfo);
         } else {
-            $result = $event->wechat->card->update($ticket->cardId, $ticket->cardType, $ticket->cardInfo);
+            $result = $event->wechat->card->update($ticket->cardId, $ticket->cardType, $event->ticketInfo);
         }
 
         if($result['errcode'] === 0) {

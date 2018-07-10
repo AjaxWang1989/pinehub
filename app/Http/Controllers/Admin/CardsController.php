@@ -95,7 +95,7 @@ class CardsController extends Controller
                 return $card->toArray();
             }));
             $ticket->exists = true;
-            Event::fire(new SyncTicketCardInfoEvent($ticket, app('wechat')->officeAccount()));
+            Event::fire(new SyncTicketCardInfoEvent($ticket, [], app('wechat')->officeAccount()));
         }
         $response = [
             'message' => 'Card created.',
@@ -157,14 +157,22 @@ class CardsController extends Controller
     {
        $data['card_type'] = $request->input('ticket_type');
        $data['card_info'] = $request->input('ticket_info');
-       $data['begin_at'] = $request->input('begin_at');
-       $data['end_at'] = $request->input('end_at');
-       $card = $this->repository->update($data, $id);
+       $data['begin_at'] = $request->input('begin_at', null);
+       $data['end_at'] = $request->input('end_at', null);
+       $card = $this->repository->find($id);
+       tap($card, function (Card $card) use($data){
+          $card->cardInfo = array_merge($card->cardInfo, $data['card_info']);
+          $card->cardType = $data['card_type'];
+          $card->beginAt  = $data['begin_at'];
+          $card->endAt    = $data['end_at'];
+          $card->save();
+       });
        if($request->input('sync', false)) {
            $ticket = new Ticket(with($card, function (Card $card) {
                return $card->toArray();
            }));
-           Event::fire(new SyncTicketCardInfoEvent($ticket, app('wechat')->officeAccount()));
+           $ticket->exists = true;
+           Event::fire(new SyncTicketCardInfoEvent($ticket, $data['card_info'], app('wechat')->officeAccount()));
        }
        $response = [
            'message' => 'Card updated.',
