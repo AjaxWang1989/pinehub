@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Entities\Card;
-use App\Entities\WechatConfig;
 use App\Events\SyncMemberCardInfoEvent;
 
 class SyncMemberCardInfoEventListener
@@ -34,12 +33,6 @@ class SyncMemberCardInfoEventListener
             $memberCard->wechatAppId = $memberCard->app->wechatAppId;
             $memberCard->save();
         }
-        if(!$memberCard->wechatAppId) {
-            $this->fail();
-            if($this->attempts() > 10)
-                $this->delete();
-        }
-
 
         if($memberCard->sync === Card::SYNC_ING) {
             sleep(10);

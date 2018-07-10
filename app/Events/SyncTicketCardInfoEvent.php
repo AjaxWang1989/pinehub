@@ -3,7 +3,6 @@
 namespace App\Events;
 
 use App\Entities\Ticket;
-use App\Jobs\Job;
 use EasyWeChat\MiniProgram\Application as MiniProgram;
 use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application as OpenPlatformMiniProgram;
 use EasyWeChat\OfficialAccount\Application as OfficialAccount;
@@ -13,7 +12,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 
-class SyncTicketCardInfoEvent extends Job
+class SyncTicketCardInfoEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

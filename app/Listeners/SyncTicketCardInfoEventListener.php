@@ -3,7 +3,6 @@
 namespace App\Listeners;
 
 use App\Entities\Ticket;
-use App\Entities\WechatConfig;
 use App\Events\SyncTicketCardInfoEvent;
 
 class SyncTicketCardInfoEventListener
@@ -34,13 +33,7 @@ class SyncTicketCardInfoEventListener
             $ticket->wechatAppId = $ticket->app->wechatAppId;
             $ticket->save();
         }
-        if(!$ticket->wechatAppId) {
-            $this->fail();
-            if($this->attempts() > 10)
-                $this->delete();
-        }
-        /** @var WechatConfig $wechat */
-        $wechat = WechatConfig::where('app_id', $ticket->wechatAppId)->first();
+
         if($ticket->sync === Ticket::SYNC_ING) {
             sleep(10);
         }
