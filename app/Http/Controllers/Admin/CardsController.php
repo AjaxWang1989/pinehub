@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\CardCriteria;
+use App\Entities\Card;
 use App\Entities\Ticket;
 use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Response\JsonResponse;
@@ -90,7 +91,10 @@ class CardsController extends Controller
         $data['card_type'] = $request->input('ticket_type');
         $card = $this->repository->create($data);
         if ($request->input('sync', false)) {
-            Event::fire(new SyncTicketCardInfoEvent($card, app('wechat')->officeAccount()));
+            $ticket = new Ticket(with($card, function (Card $card) {
+                return $card->toArray();
+            }));
+            Event::fire(new SyncTicketCardInfoEvent($ticket, app('wechat')->officeAccount()));
         }
         $response = [
             'message' => 'Card created.',
