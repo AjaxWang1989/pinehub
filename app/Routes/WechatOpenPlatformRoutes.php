@@ -11,7 +11,7 @@ namespace App\Routes;
 
 use Laravel\Lumen\Routing\Router;
 
-class WechatRoutes extends WebRoutes
+class WechatOpenPlatformRoutes extends WebRoutes
 {
     protected function subRoutes($router)
     {

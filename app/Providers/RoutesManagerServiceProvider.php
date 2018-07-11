@@ -11,7 +11,7 @@ use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
 use App\Routes\WebRoutes;
-use App\Routes\WechatRoutes;
+use App\Routes\WechatOpenPlatformRoutes;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
@@ -311,7 +311,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                     }
                     case env('WEB_OPEN_PLATFORM_PREFIX'):{
                         $this->app->singleton('app.routes',function (){
-                            return new WechatRoutes($this->app, $this->config['version'], 'Wechat',
+                            return new WechatOpenPlatformRoutes($this->app, $this->config['version'], 'Wechat',
                                 $this->config['prefix'], $this->config['domain']);
                         });
                         break;
