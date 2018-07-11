@@ -17,6 +17,7 @@ use App\Transformers\MemberCardItemTransformer;
 use App\Repositories\CardRepository as MemberCardRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class MemberCardsController.
@@ -143,6 +144,7 @@ class MemberCardsController extends Controller
     public function update(MemberCardUpdateRequest $request, $id)
     {
        $data['card_info'] = $request->input('member_info');
+       Log::debug('card info', $data);
        $memberCard = $this->repository->find($id);
        tap($memberCard, function (Card $card) use($data) {
            $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
