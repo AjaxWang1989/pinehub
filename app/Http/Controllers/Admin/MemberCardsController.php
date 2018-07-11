@@ -145,7 +145,9 @@ class MemberCardsController extends Controller
            $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
            $card->save();
        });
-       $data['card_info']['base_info']['date_info']['type'] = 1;
+       if(isset($data['card_info']['base_info']['date_info']))
+           $data['card_info']['base_info']['date_info']['type'] = 1;
+
        Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
        $response = [
            'message' => 'MemberCard updated.',
