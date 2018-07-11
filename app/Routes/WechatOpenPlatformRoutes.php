@@ -9,12 +9,14 @@
 namespace App\Routes;
 
 
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Router;
 
 class WechatOpenPlatformRoutes extends WebRoutes
 {
     protected function subRoutes($router)
     {
+        Log::debug('open platform routers');
         tap($router, function (Router $router) {
             $router->get('/{appId}/auth', ['as' => 'open-platform.auth.callback', 'uses' => 'OpenPlatformController@componentLoginCallback']);
             $router->get('/auth', ['as' => 'open-platform.auth', 'uses' => 'OpenPlatformController@componentLoginAuth']);
