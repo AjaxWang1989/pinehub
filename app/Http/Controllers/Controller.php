@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\WechatConfig;
 use Dingo\Api\Http\Response\Factory;
 use Dingo\Api\Routing\Helpers;
+use Illuminate\Http\Response;
 use Illuminate\Session\SessionManager;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -42,7 +43,7 @@ class Controller extends BaseController
     protected function response($data = null)
     {
         $response = app(Factory::class);
-        return $data ? $response->created()->setContent($data) : $response;
+        return $data ? (new Response())->setContent($data) : $response;
     }
 
     public function getList(){
