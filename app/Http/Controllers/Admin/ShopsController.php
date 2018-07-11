@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\Role;
+use App\Entities\ShopManager;
 use App\Http\Response\JsonResponse;
 
-use App\Repositories\UserRepository;
+use App\Repositories\SellerRepository;
+use App\Repositories\ShopManagerRepository;
 use App\Services\AppManager;
+use App\Utils\GeoHash;
 use Dingo\Api\Http\Request;
 use Exception;
 use App\Http\Requests\Admin\ShopCreateRequest;
@@ -13,6 +17,7 @@ use App\Http\Requests\Admin\ShopUpdateRequest;
 use App\Transformers\ShopTransformer;
 use App\Transformers\ShopItemTransformer;
 use App\Repositories\ShopRepository;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Response;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
@@ -29,19 +34,23 @@ class ShopsController extends Controller
      */
     protected $repository;
 
-    protected $userRepository;
+    protected $sellerRepository;
+
+    protected $shopManagerRepository;
 
 
     /**
      * ShopsController constructor.
      *
      * @param ShopRepository $repository
-     * @param UserRepository $userRepository
+     * @param SellerRepository $sellerRepository
+     * @param ShopManagerRepository $shopManagerRepository
      */
-    public function __construct(ShopRepository $repository, UserRepository $userRepository)
+    public function __construct(ShopRepository $repository, SellerRepository $sellerRepository, ShopManagerRepository $shopManagerRepository)
     {
         $this->repository = $repository;
-        $this->userRepository = $userRepository;
+        $this->sellerRepository = $sellerRepository;
+        $this->shopManagerRepository = $shopManagerRepository;
         parent::__construct();
 
     }
@@ -67,21 +76,24 @@ class ShopsController extends Controller
      * 获取店铺老板/经理人的用户信息
      * @param string $mobile
      * @param string $name
-     * @return User
+     * @return ShopManager
      * @throws
      * */
-    protected function getOwner(string $mobile, string $name)
+    protected function getManager(string $mobile, string $name)
     {
-        $user = $this->userRepository->findWhere(['mobile' => $mobile])->first();
-        if(!$user){
-            $user = $this->userRepository->create([
+        $shopManager = $this->shopManagerRepository->findWhere(['mobile' => $mobile])->first();
+        if(!$shopManager){
+            $shopManager = $this->shopManagerRepository->create([
                 'user_name' => $mobile,
                 'password' => password($mobile),
                 'real_name' => $name,
                 'mobile' => $mobile
             ]);
+            $seller = $this->sellerRepository->find($shopManager->id);
+            $role = Role::whereSlug(Role::SELLER)->first(['id']);
+            $seller->attach($role->id);
         }
-        return $user;
+        return $shopManager;
     }
 
     /**
@@ -98,9 +110,9 @@ class ShopsController extends Controller
         $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'description', 'status']);
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
-        $data['user_id'] = $this->getOwner($request->input('manager_mobile'), $request->input('manager_name'))->id;
+        $data['user_id'] = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'))->id;
         if($request->input('lat', null) && $request->input('lng', null)){
-            $data['position'] = new PointType($request->input('lat'), $request->input('lng'));
+            $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
         $data['wechat_app_id'] = $appManager->officialAccount->appId;
@@ -150,11 +162,12 @@ class ShopsController extends Controller
         }
     }
 
-    public function officialAccountQRCode(Request $request, int $id)
+    public function officialAccountQRCode(\Illuminate\Http\Request $request, int $id)
     {
         $shop = $this->repository->find($id);
         $appManager = app(AppManager::class);
-        $size = $request->input('size', null);
+        $size = $request->input('size', 200);
+
         if($shop && $appManager->currentApp && $size !== null && $size > 0) {
             $data = "\{
                 'app_id': {$shop->appId},
@@ -168,11 +181,11 @@ class ShopsController extends Controller
                 ]));
             }else{
                 //return redirect($qrCode);
-                return Response::create($qrCode);//->header('Content-Type', 'image/png');
+                return Response::create($qrCode);
             }
 
         }else{
-            return $this->response()->error('参数错误');
+            return new Response('错误');
         }
     }
 
@@ -225,9 +238,9 @@ class ShopsController extends Controller
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
         if(isset($data['user_id']) && $data['user_id'] && $request->input('manager_mobile', null) && $request->input('manager_name', null))
-            $data['user_id'] = $this->getOwner($request->input('manager_mobile'), $request->input('manager_name'))->id;
+            $data['user_id'] = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'))->id;
         if($request->input('lat', null) && $request->input('lng', null)){
-            $data['position'] = new PointType($request->input('lat'), $request->input('lng'));
+            $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
 
@@ -272,7 +285,8 @@ class ShopsController extends Controller
     public function __destruct()
     {
         $this->repository = null;
-        $this->userRepository = null;
+        $this->shopManagerRepository = null;
+        $this->sellerRepository = null;
         parent::__destruct(); // TODO: Change the autogenerated stub
     }
 }
