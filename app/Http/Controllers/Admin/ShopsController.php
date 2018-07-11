@@ -11,6 +11,7 @@ use App\Repositories\ShopManagerRepository;
 use App\Services\AppManager;
 use App\Utils\GeoHash;
 use Dingo\Api\Http\Request;
+use Illuminate\Http\Request as IlluminateRequest;
 use Exception;
 use App\Http\Requests\Admin\ShopCreateRequest;
 use App\Http\Requests\Admin\ShopUpdateRequest;
@@ -133,7 +134,7 @@ class ShopsController extends Controller
     }
 
 
-    public function paymentQRCode(Request $request, int $id)
+    public function paymentQRCode( int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
         $appManager = app(AppManager::class);
@@ -162,7 +163,7 @@ class ShopsController extends Controller
         }
     }
 
-    public function officialAccountQRCode(\Illuminate\Http\Request $request, int $id)
+    public function officialAccountQRCode(int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
         $appManager = app(AppManager::class);
