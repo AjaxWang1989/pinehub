@@ -57,27 +57,28 @@ class OpenPlatformController extends Controller
     public function serve(string $appId)
     {
         $server = app('wechat')->openPlatform()->officialAccount($appId)->server;
-//        $server->on(Guard::EVENT_SUBSCRIBE, function ($payload) {
-//            Event::fire(new WechatSubscribeEvent($payload));
-//        });
-//
-//        $server->on(Guard::EVENT_GET_CARD, function ($payload) {
-//            Event::fire(new UserGetCardEvent($payload));
-//        });
-//
-//        $server->on(Guard::EVENT_CARD_CHECK_NOT_PASSED, function ($payload) {
-//            $payload['status'] = 2;
-//            Event::fire(new CardCheckEvent($payload));
-//        });
-//
-//        $server->on(Guard::EVENT_CARD_CHECK_PASSED, function ($payload) {
-//            $payload['status'] = 1;
-//            Event::fire(new CardCheckEvent($payload));
-//        });
-
-        $server->push(function ($payload) {
-            Log::debug('event info ', $payload);
+        $server->on(Guard::EVENT_SUBSCRIBE, function ($payload) {
+            Event::fire(new WechatSubscribeEvent($payload));
         });
+
+        $server->on(Guard::EVENT_GET_CARD, function ($payload) {
+            Event::fire(new UserGetCardEvent($payload));
+        });
+
+        $server->on(Guard::EVENT_CARD_CHECK_NOT_PASSED, function ($payload) {
+            $payload['status'] = 2;
+            Event::fire(new CardCheckEvent($payload));
+        });
+
+        $server->on(Guard::EVENT_CARD_CHECK_PASSED, function ($payload) {
+            $payload['status'] = 1;
+            Log::debug('card check pass');
+            Event::fire(new CardCheckEvent($payload));
+        });
+
+//        $server->push(function ($payload) {
+//            Log::debug('event info ', $payload);
+//        });
 
         return $server->serve();
     }
