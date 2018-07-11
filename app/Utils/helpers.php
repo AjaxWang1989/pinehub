@@ -178,15 +178,13 @@ if(!function_exists('multi_array_merge')) {
         }elseif ($count === 1) {
             return $array1;
         }else {
-            foreach ($array1 as $key => $value) {
-                if(isset($array2[$key])) {
-                    if(is_array($value)) {
-                        $value = multi_array_merge($value, $array2[$key]);
-                    }else{
-                        $value = $array2[$key];
+            foreach ($array2 as $key => $value) {
+                if(isset($array1[$key])) {
+                    if(is_array($value) && is_array($array1[$key])) {
+                        $value = multi_array_merge($array1[$key], $array2[$key]);
                     }
-                    $array1[$key] = $value;
                 }
+                $array1[$key] = $value;
             }
         }
         return $array1;
