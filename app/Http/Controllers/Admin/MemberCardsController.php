@@ -79,7 +79,7 @@ class MemberCardsController extends Controller
         $data['sync'] = $request->input('sync', false) ? Card::SYNC_NO_NEED : Card::SYNC_ING;
         $data['card_info'] = $request->input('member_info');
         $memberCard = $this->repository->create($data);
-        if(isset($data['background_material_id'])) {
+        if(isset($data['card_info']['background_material_id'])) {
             unset($data['card_info']['background_material_id']);
         }
         if($data['wechat_app_id'] && $data['sync'])
