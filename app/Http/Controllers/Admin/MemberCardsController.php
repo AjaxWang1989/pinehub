@@ -79,8 +79,11 @@ class MemberCardsController extends Controller
         $data['sync'] = $request->input('sync', false) ? Card::SYNC_NO_NEED : Card::SYNC_ING;
         $data['card_info'] = $request->input('member_info');
         $memberCard = $this->repository->create($data);
+        if(isset($data['background_material_id'])) {
+            unset($data['card_info']['background_material_id']);
+        }
         if($data['wechat_app_id'] && $data['sync'])
-            Event::fire(new SyncMemberCardInfoEvent($memberCard, [], app('wechat')->officeAccount()));
+            Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
         $response = [
             'message' => 'MemberCard created.',
             'data'    => $memberCard->toArray(),
@@ -147,6 +150,9 @@ class MemberCardsController extends Controller
        });
        if(isset($data['card_info']['base_info']['date_info']))
            $data['card_info']['base_info']['date_info']['type'] = 1;
+       if(isset($data['card_info']['background_material_id'])) {
+           unset($data['card_info']['background_material_id']);
+       }
 
        Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
        $response = [
