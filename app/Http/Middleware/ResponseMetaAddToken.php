@@ -55,7 +55,9 @@ class ResponseMetaAddToken
                 }else{
                     $data = $response->getOriginalContent();
                     $data = $data->toArray();
-                    $data['token'] = $token;
+                    $data['meta'] = [
+                        'token' => $token
+                    ];
                     $response->setContent($data);
                 }
                 return $response;
