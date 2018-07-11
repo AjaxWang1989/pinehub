@@ -137,9 +137,9 @@ class ShopsController extends Controller
     {
         $shop = $this->repository->find($id);
         $appManager = app(AppManager::class);
-        $size = $request->input('size', null);
+        $size = $request->input('size', 200);
         if($shop && $appManager->currentApp && $size !== null && $size > 0) {
-           $url = webUriGenerator('/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
+           $url  = webUriGenerator('/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
            $url .= "?shop_id={$shop->id}";
            $url .= "&selected_appid={$appManager->currentApp->id}";
            $qrCode = QrCode::format('png')->size($size)->generate($url);
@@ -166,24 +166,19 @@ class ShopsController extends Controller
     {
         $shop = $this->repository->find($id);
         $appManager = app(AppManager::class);
-        $size = $request->input('size', 200);
 
-        if($shop && $appManager->currentApp && $size !== null && $size > 0) {
-            $data = "\{
-                'app_id': {$shop->appId},
-                'shop_id': {$shop->id}
-            \}";
-            $qrCode = app('wechat')->openPlatform()->officialAccount($appManager->currentApp->wechatAppId)->qrcode->forever(base64_encode($data));
+        if($shop && $appManager->currentApp) {
+            $data = [
+                'app_id' => $shop->appId,
+                'shop_id' => $shop->id
+            ];
+            $result = app('wechat')->openPlatform()->officialAccount($appManager->currentApp->wechatAppId)
+                ->qrcode->forever(base64_encode(json_encode($data)));
             if($request->wantsJson()) {
-                $qrCode = base64_encode($qrCode);
-                return $this->response(new JsonResponse([
-                    'qr_code' => 'data:image/png;base64, '.$qrCode
-                ]));
+                return $this->response(new JsonResponse($result));
             }else{
-                //return redirect($qrCode);
-                return Response::create($qrCode);
+                return redirect("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$result['ticket']}");
             }
-
         }else{
             return new Response('错误');
         }
