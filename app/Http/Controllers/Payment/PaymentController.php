@@ -113,6 +113,7 @@ class PaymentController extends Controller
 
             return app('wechat')->officeAccount()
                 ->oauth->scopes(['snsapi_base'])
+                ->with(['selected_appid' => $appId])
                 ->setRequest($request)
                 ->redirect($redirect);
 
@@ -136,6 +137,7 @@ class PaymentController extends Controller
 
             return app('ali.user.oauth')
                 ->defaultOAuth()
+                ->with(['selected_appid' => $appId])
                 ->setRequest($request)
                 ->redirect($redirect);
 

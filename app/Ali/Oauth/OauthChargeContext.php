@@ -57,6 +57,11 @@ class OauthChargeContext extends ChargeContext
         return redirect($this->responseData);
     }
 
+    public function with(array $parameters)
+    {
+        $this->responseData = $parameters;
+    }
+
     public function setRequest($request) {
         $this->request = $request;
         return $this;
