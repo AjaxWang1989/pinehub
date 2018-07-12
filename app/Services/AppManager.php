@@ -17,6 +17,7 @@ use App\Repositories\AppRepository;
 use App\Services\AliPay\AliPayOpenPlatform;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 use EasyWeChat\OpenPlatform\Application as OpenPlatform;
 
@@ -64,7 +65,7 @@ class AppManager
         $request = Request::capture();
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);
-
+        Log::debug('app selected '.$appId);
         if($appId) {
             $this->currentApp = $repository->find($appId);
             $this->officialAccount = with($this->currentApp, function (App $app){
