@@ -176,7 +176,7 @@ class ShopsController extends Controller
                 $currentApp = App::find($shop->appId);
                 $result = app('wechat')->openPlatform()->officialAccount($currentApp->wechatAppId, $currentApp->officialAccount->authorizerRefreshToken)
                     ->qrcode->forever(base64_encode(json_encode($data)));
-                if($result['errcode'] !== 0) {
+                if(!isset($result['ticket'])) {
                     throw new Exception('无法生成参数二维码');
                 }
                 $url = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$result['ticket']}";
