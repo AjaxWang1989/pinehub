@@ -93,7 +93,7 @@ class PaymentController extends Controller
         $shopId = $request->input('shop_id', null);
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
-        $request->session()->put('selected_appid', $appId);
+        app('session')->put('selected_appid', $appId);
         if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
             $paymentUri = webUriGenerator('/wechat/aggregate.html', env('WEB_PAYMENT_PREFIX'));
             if($shopId) {
