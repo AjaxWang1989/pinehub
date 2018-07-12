@@ -92,7 +92,7 @@ class ShopsController extends Controller
             ]);
             $seller = $this->sellerRepository->find($shopManager->id);
             $role = Role::whereSlug(Role::SELLER)->first(['id']);
-            $seller->attach($role->id);
+            $seller->roles()->attach($role->id);
         }
         return $shopManager;
     }
