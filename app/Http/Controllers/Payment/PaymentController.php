@@ -111,7 +111,7 @@ class PaymentController extends Controller
             $redirect = config('wechat.other_sdk_payment.redirect_url');
             $redirect = "{$redirect}?redirect_uri={$uri}";
 
-            return app('wechat.official_account.default')
+            return app('wechat')->officeAccount()
                 ->oauth->scopes(['snsapi_base'])
                 ->setRequest($request)
                 ->redirect($redirect);
