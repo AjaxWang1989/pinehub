@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\App;
 use App\Entities\Role;
 use App\Entities\ShopManager;
 use App\Http\Response\JsonResponse;
@@ -172,7 +173,8 @@ class ShopsController extends Controller
                     'app_id' => $shop->appId,
                     'shop_id' => $shop->id
                 ];
-                $result = app('wechat')->openPlatform()->officialAccount($appManager->currentApp->wechatAppId)
+                $currentApp = App::find($shop->appId);
+                $result = app('wechat')->openPlatform()->officialAccount($currentApp->wechatAppId)
                     ->qrcode->forever(base64_encode(json_encode($data)));
                 if($result['errcode'] !== 0) {
                     throw new Exception('无法生成参数二维码');
