@@ -129,8 +129,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
             $this->app->bind(SessionManager::class, function ($app){
                 return new SessionManager($app);
             });
+            Log::debug('dddddd dddddd');
             $this->app->alias('session', SessionManager::class);
-            //$this->app->alias('Session', Session::class);
             $this->app->configure('session');
             $this->app->middleware([
                 StartSession::class,
