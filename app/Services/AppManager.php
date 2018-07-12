@@ -65,7 +65,7 @@ class AppManager
         $request = Request::capture();
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);
-        $appId = $appId ? $appId : (app('session')->has('selected_appid') ? app('session')->get('selected_appid') : null);
+        $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
         if($appId) {
             $this->currentApp = $repository->find($appId);
             $this->officialAccount = with($this->currentApp, function (App $app){
@@ -86,7 +86,7 @@ class AppManager
             $request = Request::capture();
             $appId = $request->header('selected_appid', null);
             $appId = $appId ? $appId : $request->query('selected_appid', null);
-            $appId = $appId ? $appId : (app('session')->has('selected_appid') ? app('session')->get('selected_appid') : null);
+            $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
             if($appId) {
                 $this->currentApp = $repository->find($appId);
                 $this->officialAccount = with($this->currentApp, function (App $app){
@@ -105,7 +105,7 @@ class AppManager
             $request = Request::capture();
             $appId = $request->header('selected_appid', null);
             $appId = $appId ? $appId : $request->query('selected_appid', null);
-            $appId = $appId ? $appId : (app('session')->has('selected_appid') ? app('session')->get('selected_appid') : null);
+            $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
             if($appId) {
                 $this->currentApp = $repository->find($appId);
                 $this->miniProgram = with($this->currentApp, function (App $app){
