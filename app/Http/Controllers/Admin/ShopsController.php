@@ -174,7 +174,7 @@ class ShopsController extends Controller
                     'shop_id' => $shop->id
                 ];
                 $currentApp = App::find($shop->appId);
-                $result = app('wechat')->openPlatform()->officialAccount($currentApp->wechatAppId)
+                $result = app('wechat')->openPlatform()->officialAccount($currentApp->wechatAppId, $currentApp->officialAccount->authorizerRefreshToken)
                     ->qrcode->forever(base64_encode(json_encode($data)));
                 if($result['errcode'] !== 0) {
                     throw new Exception('无法生成参数二维码');
