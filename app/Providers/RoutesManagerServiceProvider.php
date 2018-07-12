@@ -122,11 +122,10 @@ class RoutesManagerServiceProvider extends ServiceProvider
             // 注册 SessionServiceProvider
             //
             $this->app->register(SessionServiceProvider::class);
-//            $this->app->bind(SessionManager::class, function ($app){
-//                return new SessionManager($app);
-//            });
-//
-//            $this->app->alias('session', SessionManager::class);
+            $this->app->bind(SessionManager::class, function ($app){
+                return $app->make('session');
+            });
+
             $this->app->configure('session');
             $this->app->middleware([
                 StartSession::class,
