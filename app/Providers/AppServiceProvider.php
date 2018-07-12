@@ -47,7 +47,7 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('not_exists', function($attribute, $value, $parameters)
         {
             return DB::table($parameters[0])
-                    ->where($attribute, '=', $value)
+                    ->where($parameters[1], '=', $value)
                     ->count()<1;
         });
 
