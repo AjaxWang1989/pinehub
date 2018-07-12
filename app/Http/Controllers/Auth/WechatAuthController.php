@@ -28,8 +28,8 @@ class WechatAuthController extends Controller
     {
         //$openId = null;
         $accessToken = app('wechat')->officeAccount()->oauth->getAccessToken($request->input('code'));
-        $openId = $accessToken['open_id'];
-        dd($accessToken);
+        $openId = $accessToken['openid'];
+        //dd($accessToken);
         $customer = app('wechat')->officialAccountUser($openId);
         if ($customer) {
             $openId = $customer->platformOpenId;
