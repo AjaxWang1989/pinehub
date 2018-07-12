@@ -41,6 +41,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $totalOrderWriteOffAmount 店铺自提系统一共核营业额
  * @property int $todayOrderWriteOffNum 今日核销订单数量
  * @property int $totalOrderWriteOffNum 店铺自提系统一共核销单数
+ * @property string|null $wechatParamsQrcodeUrl 微信参数二维码
  * @property int $status 状态：0-等待授权 1-营业中 2-休业 3-封锁店铺
  * @property string|null $appId 系统app id
  * @property string|null $wechatAppId 微信app ID
@@ -102,6 +103,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatParamsQrcodeUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop within($geometryColumn, $polygon)
  * @mixin \Eloquent
  */
