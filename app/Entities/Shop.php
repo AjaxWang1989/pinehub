@@ -123,7 +123,8 @@ class Shop extends Model implements Transformable
         'user_id', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'position', 'total_amount', 'today_amount',
         'total_off_line_amount', 'today_off_line_amount', 'total_ordering_amount', 'today_ordering_amount', 'total_ordering_num',
         'today_ordering_num', 'total_order_write_off_num', 'total_order_write_off_num', 'total_order_write_off_amount',
-        'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code'
+        'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code', 'app_id', 'wechat_app_id', 'name', 'ali_app_id',
+        'mt_app_id'
     ];
 
     protected $spatialFields = [
