@@ -62,7 +62,20 @@ class RoutesManagerServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-
+        $this->request = Request::capture();
+        $this->host = $this->request->getHost();
+        if(preg_match(IP_REGEX, $this->host)) {
+            exit('不能直接使用ip访问本站的！');
+            //return Response::create(['message' => '不能直接使用ip访问本站的！'])->send();
+        }
+        list( $domain, $prefix) = domainAndPrefix($this->request);
+        $this->prefix = $prefix;
+        $this->domain = $domain;
+        $this->registerRouter();
+        $this->registerServices();
+        $this->registerConfig();
+        $this->registerRoutes();
+        $this->loadRoutes();
     }
 
     /**
@@ -82,24 +95,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->request = Request::capture();
-        Log::debug('request data ',[
-            'url' => $this->request->fullUrl(),
-            'method' => $this->request->method()
-        ]);
-        $this->host = $this->request->getHost();
-        if(preg_match(IP_REGEX, $this->host)) {
-            exit('不能直接使用ip访问本站的！');
-            //return Response::create(['message' => '不能直接使用ip访问本站的！'])->send();
-        }
-        list( $domain, $prefix) = domainAndPrefix($this->request);
-        $this->prefix = $prefix;
-        $this->domain = $domain;
-        $this->registerRouter();
-        $this->registerServices();
-        $this->registerConfig();
-        $this->registerRoutes();
-        $this->loadRoutes();
+
     }
 
     protected function registerServices()
@@ -129,7 +125,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
             $this->app->bind(SessionManager::class, function ($app){
                 return new SessionManager($app);
             });
-            Log::debug('dddddd dddddd');
+
             $this->app->alias('session', SessionManager::class);
             $this->app->configure('session');
             $this->app->middleware([
