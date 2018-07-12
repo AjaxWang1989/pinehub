@@ -51,6 +51,7 @@ class CreateShopsTable extends Migration
             $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('微信app ID');
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app ID');
             $table->string('mt_app_id', 32)->nullable()->default(null)->comment('美团app id');
+            $table->string('wechat_params_qrcode_url', 255)->nullable()->default(null)->comment('微信参数二维码url');
             $table->timestamps();
             $table->softDeletes();
             $table->index('user_id');

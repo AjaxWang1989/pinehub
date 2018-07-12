@@ -169,16 +169,26 @@ class ShopsController extends Controller
         $appManager = app(AppManager::class);
 
         if($shop && $appManager->currentApp) {
-            $data = [
-                'app_id' => $shop->appId,
-                'shop_id' => $shop->id
-            ];
-            $result = app('wechat')->openPlatform()->officialAccount($appManager->currentApp->wechatAppId)
-                ->qrcode->forever(base64_encode(json_encode($data)));
+            $url = $shop->wechatParamsQrcodeUrl;
+            if(!$url) {
+                $data = [
+                    'app_id' => $shop->appId,
+                    'shop_id' => $shop->id
+                ];
+                $result = app('wechat')->openPlatform()->officialAccount($appManager->currentApp->wechatAppId)
+                    ->qrcode->forever(base64_encode(json_encode($data)));
+                if($result['errcode'] !== 0) {
+                    throw new Exception('无法生成参数二维码');
+                }
+                $url = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$result['ticket']}";
+                $shop->wechatParamsQrcodeUrl = $url;
+                $shop->save();
+            }
+
             if($request->wantsJson()) {
-                return $this->response(new JsonResponse($result));
+                return $this->response(new JsonResponse(['url' => $url]));
             }else{
-                return redirect("https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$result['ticket']}");
+                return redirect($url);
             }
         }else{
             return new Response('错误');
