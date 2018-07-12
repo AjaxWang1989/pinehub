@@ -37,7 +37,6 @@ class AccessToken implements \ArrayAccess
     ];
     public function __construct(array $accessToken)
     {
-        Log::debug('access token', $accessToken);
         $this->accessToken = $accessToken;
     }
 
@@ -47,6 +46,13 @@ class AccessToken implements \ArrayAccess
         // TODO: Implement __get() method.\
         $key = upperCaseSplit($name, '_');
         return $this->accessToken[$key];
+    }
+
+    public function __isset($name)
+    {
+        // TODO: Implement __isset() method.
+        $key = upperCaseSplit($name, '_');
+        return isset($this->accessToken[$key]);
     }
 
     /**
