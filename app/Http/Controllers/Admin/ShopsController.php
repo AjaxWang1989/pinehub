@@ -137,12 +137,11 @@ class ShopsController extends Controller
     public function paymentQRCode( int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
-        $appManager = app(AppManager::class);
         $size = $request->input('size', 200);
-        if($shop && $appManager->currentApp && $size !== null && $size > 0) {
+        if($shop  && $size !== null && $size > 0) {
            $url  = webUriGenerator('/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
            $url .= "?shop_id={$shop->id}";
-           $url .= "&selected_appid={$appManager->currentApp->id}";
+           $url .= "&selected_appid={$shop->appId}";
            $qrCode = QrCode::format('png')->size($size)->generate($url);
            if($request->wantsJson()) {
                 $qrCode = base64_encode($qrCode);
@@ -166,9 +165,7 @@ class ShopsController extends Controller
     public function officialAccountQRCode(int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
-        $appManager = app(AppManager::class);
-
-        if($shop && $appManager->currentApp) {
+        if($shop) {
             $url = $shop->wechatParamsQrcodeUrl;
             if(!$url) {
                 $data = [
