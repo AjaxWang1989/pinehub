@@ -26,10 +26,10 @@ class WechatAuthController extends Controller
 
     public function oauth2(Request $request)
     {
-        $openId = null;
-        $accessToken = app('wechat')->officeAccount()->access_token;
+        //$openId = null;
+        //$accessToken = app('wechat')->officeAccount()->access_token;
 
-        $wechatUser = app('wechat')->officeAccount()->oauth->user($accessToken);
+        $wechatUser = app('wechat')->officeAccount()->oauth->user();
         $openId = $wechatUser['open_id'];
         $customer = app('wechat')->officialAccountUser($openId);
         if ($customer) {
