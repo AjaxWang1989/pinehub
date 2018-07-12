@@ -65,6 +65,7 @@ class AppManager
         $request = Request::capture();
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);
+        $appId = $appId ? $appId : $request->session()->get();
         Log::debug('app selected '.$appId);
         if($appId) {
             $this->currentApp = $repository->find($appId);
