@@ -26,12 +26,12 @@ class ShopUpdateRequest extends FormRequest
         return [
             //
             'name'           => [ 'string', 'size:32'],
-            'user_id'        => ['integer', 'exist:user,id'],
+            'user_id'        => ['integer', 'exists:user,id'],
             'description'    => ['string'],
-            'country_id'     => ['integer', 'exist:country,id'],
-            'province_id'    => ['integer', 'exist:province,id'],
-            'city_id'        => ['integer', 'exist:city,id'],
-            'county_id'      => ['integer', 'exist:county,id'],
+            'country_id'     => ['integer', 'exists:country,id'],
+            'province_id'    => ['integer', 'exists:province,id'],
+            'city_id'        => ['integer', 'exists:city,id'],
+            'county_id'      => ['integer', 'exists:county,id'],
             'address'        => ['string'],
             'lng'            => ['numeric'],
             'lat'            => [ 'numeric'],

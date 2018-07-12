@@ -26,12 +26,12 @@ class ShopCreateRequest extends FormRequest
         return [
             //
             'name'           => [ 'string', 'size:32'],
-            'user_id'        => ['integer', 'exist:user,id'],
+            'user_id'        => ['integer', 'exists:user,id'],
             'description'    => ['string'],
-            'country_id'     => ['required', 'integer', 'exist:country,id'],
-            'province_id'    => ['required', 'integer', 'exist:province,id'],
-            'city_id'        => ['required', 'integer', 'exist:city,id'],
-            'county_id'      => ['required', 'integer', 'exist:county,id'],
+            'country_id'     => ['required', 'integer', 'exists:country,id'],
+            'province_id'    => ['required', 'integer', 'exists:province,id'],
+            'city_id'        => ['required', 'integer', 'exists:city,id'],
+            'county_id'      => ['required', 'integer', 'exists:county,id'],
             'address'        => ['required', 'string'],
             'lng'            => ['required', 'numeric'],
             'lat'            => ['require', 'numeric'],

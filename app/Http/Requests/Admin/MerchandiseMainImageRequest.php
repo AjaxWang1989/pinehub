@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProvinceCreateRequest extends FormRequest
+class MerchandiseMainImageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +23,10 @@ class ProvinceCreateRequest extends FormRequest
      */
     public function rules()
     {
+        $fileField = $this->input('file_field', 'file');
         return [
             //
-            'code' => ['required'],
-            'name' => ['required'],
-            'country_id' => ['exists:countries,id']
+            $fileField => ['required', 'mimes:png,jpg,jpeg', 'dimensions:ratio=1/1', 'max:2048']
         ];
     }
 }
