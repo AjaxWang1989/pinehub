@@ -34,7 +34,7 @@ class ShopCreateRequest extends FormRequest
             'county_id'      => ['required', 'integer', 'exists:counties,id'],
             'address'        => ['required', 'string'],
             'lng'            => ['required', 'numeric'],
-            'lat'            => ['require', 'numeric'],
+            'lat'            => ['required', 'numeric'],
             'manager_mobile' => ['regex:'.MOBILE_PATTERN, 'not_exists:users,mobile'],
             'manager_name'   => ['string', 'max:16'],
             'status'         => ['integer', 'in:0,1,2,3']
