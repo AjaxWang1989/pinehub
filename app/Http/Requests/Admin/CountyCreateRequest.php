@@ -28,7 +28,7 @@ class CountyCreateRequest extends FormRequest
             'name' => ['required'],
             'code' => ['required'],
             'country_id' => ['exists:countries,id'],
-            'province_id' => ['exists:province,id'],
+            'province_id' => ['exists:provinces,id'],
             'city_id' => ['exists:cities,id']
         ];
     }

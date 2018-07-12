@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\MerchandiseMainImageRequest;
 use App\Http\Response\JsonResponse;
 
 use App\Repositories\FileRepository;
+use App\Services\AppManager;
 use Exception;
 use App\Http\Requests\Admin\MerchandiseCreateRequest;
 use App\Http\Requests\Admin\MerchandiseUpdateRequest;
@@ -166,7 +167,10 @@ class MerchandisesController extends Controller
 
     public function uploadMerchandiseMainImage(MerchandiseMainImageRequest $request, string $driver="default")
     {
-
+        $appManager = app(AppManager::class);
+        $appId = $appManager->currentApp->id;
+        $request->request->set('dir', "{$appId}/merchandise");
+        return $this->upload($request, $driver);
     }
 
     public function __destruct()

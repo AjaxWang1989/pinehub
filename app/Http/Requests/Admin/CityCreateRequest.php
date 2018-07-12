@@ -28,7 +28,7 @@ class CityCreateRequest extends FormRequest
             'code' => ['required'],
             'name' => ['required'],
             'country_id' => ['exists:countries,id'],
-            'province_id' => ['exists:province,id']
+            'province_id' => ['exists:provinces,id']
         ];
     }
 }
