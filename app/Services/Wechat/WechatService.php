@@ -67,7 +67,7 @@ class WechatService
                 $this->officeAccount= Factory::officialAccount($this->config['official_account']);
             }else{
                 $appManager = app(AppManager::class);
-                $appId = $appManager->officialAccount->appId;
+                $appId = $appManager->officialAccount()->appId;
                 $this->officeAccount = $this->openPlatform()->officialAccount($appId,
                     $appManager->officialAccount->authorizerRefreshToken);
             }
@@ -327,7 +327,7 @@ class WechatService
                 $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
             }else{
                 $appManager = app(AppManager::class);
-                $appId = $appManager->miniProgram->appId;
+                $appId = $appManager->miniProgram()->appId;
                 $this->miniProgram = $this->openPlatform()->miniProgram($appId, $appManager->miniProgram->authorizerRefreshToken);
             }
         }

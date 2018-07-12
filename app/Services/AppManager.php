@@ -79,6 +79,43 @@ class AppManager
         $this->aliPayOpenPlatform = new AliPayOpenPlatform(config('ali.payment'));
     }
 
+    public function officialAccount()
+    {
+        if(!$this->officialAccount) {
+            $repository = $this->app->make(AppRepository::class);
+            $request = Request::capture();
+            $appId = $request->header('selected_appid', null);
+            $appId = $appId ? $appId : $request->query('selected_appid', null);
+            $appId = $appId ? $appId : app('session')->get('selected_appid');
+            if($appId) {
+                $this->currentApp = $repository->find($appId);
+                $this->officialAccount = with($this->currentApp, function (App $app){
+                    return $app->officialAccount;
+                });
+            }
+        }
+
+        return $this->officialAccount;
+    }
+
+    public function miniProgram()
+    {
+        if(!$this->miniProgram){
+            $repository = $this->app->make(AppRepository::class);
+            $request = Request::capture();
+            $appId = $request->header('selected_appid', null);
+            $appId = $appId ? $appId : $request->query('selected_appid', null);
+            $appId = $appId ? $appId : app('session')->get('selected_appid');
+            if($appId) {
+                $this->currentApp = $repository->find($appId);
+                $this->miniProgram = with($this->currentApp, function (App $app){
+                    return $app->miniProgram;
+                });
+            }
+        }
+        return $this->miniProgram;
+    }
+
     public function __get($name)
     {
         // TODO: Implement __get() method.
