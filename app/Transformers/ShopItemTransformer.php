@@ -29,7 +29,7 @@ class ShopItemTransformer extends TransformerAbstract
             'city' => $model->city->name,
             'county' => $model->county->name,
             'address' => $model->address,
-            'manager'  => $model->shopManager->userName ? $model->shopManager->nickname : $model->shopManager->mobile,
+            'manager'  => $model->shopManager->only(['user_name', 'mobile', 'nickname']),
             'total_amount' => $model->totalAmount,
             'today_amount' => $model->todayAmount,
             'status' => $model->status,
