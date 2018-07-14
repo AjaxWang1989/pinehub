@@ -23,11 +23,8 @@ class WechatPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
-        exit(json_encode($request->headers->all()));
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
-
-        //$order->openId = $openId;
         $charge = app('wechat.payment.aggregate');
         return $this->response()->item( new WechatPayment($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)),
             new WechatPaymentSigned());
@@ -40,13 +37,11 @@ class WechatPaymentController extends Controller
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $config = app('wechat')->officeAccount()->jssdk->buildConfig(['chooseWXPay']);
         $openId = $request->input('open_id', null);
-        $token = md5($openId);
-        Cache::set($token, $openId);
         try{
             $shop = $this->shopModel->find($request->input('shop_id'));
             return view('payment.aggregate.wechatpay')->with([
                 'type' => Order::WECHAT_PAY,
-                'token' => $token,
+                'openid' => $openId,
                 'shop' => $shop,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
@@ -56,7 +51,7 @@ class WechatPaymentController extends Controller
         }catch (\Exception $exception) {
             return view('payment.aggregate.wechatpay')->with([
                 'type' => Order::WECHAT_PAY,
-                'token' => $token,
+                'openid' => $openId,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
