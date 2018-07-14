@@ -26,7 +26,7 @@ class WechatPaymentController extends Controller
     public function aggregate(LumenRequest $request)
     {
         session()->setId($request->input('token'));
-        //session()->;
+        session()->start();
         /**
          * @var Shop $shop
          * */
