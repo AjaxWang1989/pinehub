@@ -15,7 +15,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $id
  * @property string|null $appId 系统appid
  * @property int|null $shopId 店铺ID
- * @property int|null $buyerUserId 买家ID
+ * @property int|null $buyerId 买家ID
  * @property int $orderId 订单id
  * @property string $code 订单子项编码
  * @property float $totalAmount 应付
@@ -27,12 +27,12 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\User|null $buyer
+ * @property-read \App\Entities\User $buyer
  * @property-read \App\Entities\Order $order
  * @property-read \App\Entities\OrderItemMerchandise $orderMerchandise
  * @property-read \App\Entities\Shop|null $shop
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereBuyerUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereBuyerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereConsignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCreatedAt($value)
@@ -64,13 +64,13 @@ class OrderItem extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'buyer_user_id', 'total_amount', 'payment_amount', 'discount_amount',
+        'code', 'buyer_id,', 'total_amount', 'payment_amount', 'discount_amount',
         'status', 'shop_id', 'signed_at', 'consigned_at', 'order_id', 'app_id'
     ];
 
     public function buyer() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'buyer_user_id', 'id');
+        return $this->belongsTo(User::class, 'buyer_id,', 'id');
     }
 
     public function shop() : BelongsTo

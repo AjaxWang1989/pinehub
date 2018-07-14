@@ -19,7 +19,7 @@ class CreateOrderItemsTable extends Migration
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统appid');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
-            $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家ID');
+            $table->unsignedInteger('buyer_id,')->nullable()->default(null)->comment('买家ID');
             $table->unsignedInteger('order_id')->comment('订单id');
             $table->string('code', 18)->comment('订单子项编码');
             $table->float('total_amount')->default(0)->comment('应付');
@@ -32,7 +32,7 @@ class CreateOrderItemsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');
-            $table->index('buyer_user_id');
+            $table->index('buyer_id,');
             $table->index('shop_id');
             $table->index('order_id');
             $table->index('status');

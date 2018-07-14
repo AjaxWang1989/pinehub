@@ -22,7 +22,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $wechatAppId 维系app id
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
- * @property int|null $buyerUserId 买家
+ * @property int|null $buyerId 买家
  * @property float $totalAmount 应付款
  * @property float $paymentAmount 实际付款
  * @property float $discountAmount 优惠价格
@@ -41,14 +41,15 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $postCode
  * @property string|null $postName
  * @property int $scoreSettle 积分是否已经结算
+ * @property string|null $ip 支付终端ip地址
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\Customer|null $buyer
+ * @property-read \App\Entities\Customer $buyer
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereBuyerUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereBuyerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCancellation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereConsignedAt($value)
@@ -56,6 +57,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDiscountAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereOpenId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaidAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePayType($value)
@@ -115,14 +117,14 @@ class Order extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'buyer_user_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
+        'code', 'buyer_id,', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
         'receiver_district', 'receiver_address', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle'
     ];
 
     public function buyer() : BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'buyer_user_id', 'id');
+        return $this->belongsTo(Customer::class, 'buyer_id,', 'id');
     }
 
     public function orderItems() : HasMany
@@ -196,7 +198,7 @@ class Order extends Model implements Transformable
 
         return [
             'body'    => 'PineHub offline scan qrcode pay',
-            'subject'    => 'wechat pay',
+            'subject'    => '线下扫码支付',
             'order_no'    => $this->code,
             'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
             'amount'    => $this->paymentAmount,// 微信沙箱模式，需要金额固定为3.01

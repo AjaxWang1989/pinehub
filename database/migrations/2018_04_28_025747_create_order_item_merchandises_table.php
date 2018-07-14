@@ -18,7 +18,7 @@ class CreateOrderItemMerchandisesTable extends Migration
 		Schema::create('order_item_merchandises', function(Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
-            $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家ID');
+            $table->unsignedInteger('buyer_id,')->nullable()->default(null)->comment('买家ID');
             $table->unsignedInteger('order_id')->comment('订单id');
             $table->unsignedInteger('order_item_id')->comment('子订单id');
             $table->unsignedInteger('merchandise_id')->nullable()->default(null)->comment('产品id');
@@ -30,7 +30,7 @@ class CreateOrderItemMerchandisesTable extends Migration
             $table->float('cost_price')->default(0)->comment('成本价');
             $table->unsignedInteger('quality')->default(1)->comment('订单产品数量');
             $table->timestamps();
-            $table->index('buyer_user_id');
+            $table->index('buyer_id,');
             $table->index('shop_id');
             $table->index('order_id');
             $table->index('order_item_id');

@@ -93,7 +93,7 @@ class OrderBuilder implements InterfaceServiceHandler
     public function handle()
     {
         // TODO: Implement handle() method.
-        $this->buyer = $this->buyer ? $this->buyer : $this->auth->user();
+        //$this->buyer = $this->buyer ? $this->buyer : $this->auth->user();
         $order = $this->input->only([
             'total_amount',
             'discount_amount',
@@ -102,7 +102,13 @@ class OrderBuilder implements InterfaceServiceHandler
             'receiver_district',
             'receiver_address',
             'type',
-            'pay_type'
+            'pay_type',
+            'open_id',
+            'app_id',
+            'wechat_app_id',
+            'ali_app_id',
+            'buyer_id',
+            'ip'
         ]);
         $order['status'] = Order::WAIT;
         if($order['type'] === Order::OFF_LINE_PAY) {
@@ -111,7 +117,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 'discount_amount' => $order['discount_amount'],
                 'payment_amount'  => $order['payment_amount'],
                 'shop_id'   => (isset($this->input['shop_id']) ? $this->input['shop_id'] : null),
-                'buyer_user_id' => $this->buyer ? $this->buyer->id : null,
+                'buyer_id,' => $order['buyer_id'],
                 'status' => Order::WAIT
             ];
             $orderItem = collect($orderItem);
@@ -154,12 +160,12 @@ class OrderBuilder implements InterfaceServiceHandler
             if(isset($orderItem['sku_product_id'])) {
                 $product = $this->skuProduct->find($orderItem['sku_product_id']);
                 $orderItemProduct = $this->buildOrderItemProduct($product, $orderItem['quality']);
-                $subOrder = $this->buildOrderItem($product, $orderItem['quality']);
+                $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['buyer_id']);
                 $subOrder['order_item_product'] = $orderItemProduct;
             }elseif (isset($orderItem['merchandise_id'])) {
                 $goods = $this->merchandise->find($orderItem['merchandise_id']);
                 $orderItemProduct = $this->buildOrderItemProduct($goods, $orderItem['quality']);
-                $subOrder = $this->buildOrderItem($goods, $orderItem['quality']);
+                $subOrder = $this->buildOrderItem($goods, $orderItem['quality'], $orderItem['buyer_id']);
                 $subOrder['order_item_product'] = $orderItemProduct;
             }
             if($subOrder){
@@ -217,11 +223,12 @@ class OrderBuilder implements InterfaceServiceHandler
      * 创建order_items表单项
      * @param SKUProduct|Merchandise|Model $model
      * @param int $quality
+     * @param $buyerId
      * @return Collection
      * */
-    protected function buildOrderItem($model, int $quality)
+    protected function buildOrderItem($model, int $quality, $buyerId = null)
     {
-        $data['buyer_user_id'] = $this->buyer->id;
+        $data['buyer_id,'] = $buyerId;
         $data['shop_id'] = isset($this->input['shop_id']) ? $this->input['shop_id'] : null;
         $data['total_amount'] =  $model->sellPrice * $quality;
         $data['discount_amount'] = 0;

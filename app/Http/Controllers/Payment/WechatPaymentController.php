@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Entities\Customer;
 use App\Entities\Order;
 use App\Http\Controllers\Payment\PaymentController as Controller;
+use App\Http\Response\JsonResponse;
 use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
 use Payment\NotifyContext;
 use App\Transformers\Api\PaymentSignedTransformer as WechatPaymentSigned;
 use App\Entities\PaymentSigned as WechatPayment;
@@ -25,18 +25,23 @@ class WechatPaymentController extends Controller
     {
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
-        $charge = app('wechat.payment.aggregate');
-        return $this->response()->item( new WechatPayment($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)),
-            new WechatPaymentSigned());
+//        $charge = app('wechat.payment.aggregate');
+        $result = app('wechat')->payment()->order->unify($order, $order->wechatAppId);
+//        return $this->response()->item( new WechatPayment($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)),
+//            new WechatPaymentSigned());
+        return $this->response(new JsonResponse($result));
     }
 
     public function aggregatePage(LumenRequest $request)
     {
-        $openId= null;
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $config = app('wechat')->officeAccount()->jssdk->buildConfig(['chooseWXPay']);
         $openId = $request->input('open_id', null);
+        $appId = $request->input('selected_appid', null);
+        $customer = Customer::whereAppId($appId)
+            ->whereOpenId($openId)
+            ->first();
         try{
             $shop = $this->shopModel->find($request->input('shop_id'));
             return view('payment.aggregate.wechatpay')->with([
@@ -46,7 +51,10 @@ class WechatPaymentController extends Controller
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'app_id' => $request->input('selected_appid', null)
+                'app_id' => $appId,
+                'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
+                'buyer_id' => $customer->id,
+                'ip' => $request->getClientIp()
             ]);
         }catch (\Exception $exception) {
             return view('payment.aggregate.wechatpay')->with([
@@ -55,7 +63,10 @@ class WechatPaymentController extends Controller
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'app_id' => $request->input('selected_appid', null)
+                'app_id' => $appId,
+                'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
+                'buyer_id' => $customer->id,
+                'ip' => $request->getClientIp()
             ]);
         }
     }

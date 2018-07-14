@@ -10,6 +10,7 @@ namespace App\Services\Wechat;
 
 
 use App\Entities\Customer;
+use App\Entities\Order;
 use App\Exceptions\WechatMaterialArticleUpdateException;
 use App\Exceptions\WechatMaterialDeleteException;
 use App\Exceptions\WechatMaterialListException;
@@ -30,6 +31,8 @@ use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
 use Overtrue\LaravelWeChat\CacheBridge;
 use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
 use App\Services\Wechat\OpenPlatform\OpenPlatformAccessToken as OPAccessToken;
+use Psr\Http\Message\ResponseInterface;
+use EasyWeChat\Payment\Application as Payment;
 
 class WechatService
 {
@@ -39,6 +42,9 @@ class WechatService
 
     protected $miniProgram = null;
 
+    /**
+     * @var Payment
+     * */
     protected $payment = null;
 
     protected $openPlatform = null;
@@ -315,9 +321,39 @@ class WechatService
 
     public function payment()
     {
-        if(!$this->payment)
+        if(!$this->payment){
             $this->payment = Factory::payment($this->config['payment']);
+        } else {
+            $this->payment->config->merge($this->config['payment']);
+        }
         return $this->payment;
+    }
+
+    /**
+     * @param Order|array
+     * @param string $paymentAppId
+     * @return array|string|Object|ResponseInterface
+     * @throws
+     * */
+    public function unify($order, string  $paymentAppId)
+    {
+        $this->config['payment']['app_id'] = $paymentAppId;
+        $payment = $this->payment();
+        if($order instanceof Order) {
+            $unifyData = [
+                'body' => '扫码支付',
+                'out_trade_no' => $order->code,
+                'total_fee' => $order->paymentAmount * 100,
+                'spbill_create_ip' => $order->ip, // 可选，如不传该参数，SDK 将会自动获取相应 IP 地址
+                'notify_url' => $this->config['payment']['notify_url'], // 支付结果通知网址，如果不设置则会使用配置里的默认地址
+                'trade_type' => 'JSAPI',
+                'openid' => $order->openId,
+            ];
+        }else{
+            $unifyData = $order;
+        }
+
+        return $payment->order->unify($unifyData);
     }
 
     public function miniProgram()
@@ -482,7 +518,7 @@ class WechatService
 
     /**
      * @param $openId
-     * @return mixed
+     * @return Customer
      * @throws
      * */
     public function officialAccountUser($openId)

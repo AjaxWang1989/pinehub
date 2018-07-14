@@ -20,7 +20,7 @@ class CreateOrdersTable extends Migration
             $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('维系app id');
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
-            $table->unsignedInteger('buyer_user_id')->nullable()->default(null)->comment('买家');
+            $table->unsignedInteger('buyer_id,')->nullable()->default(null)->comment('买家');
             $table->float('total_amount')->default(0)->comment('应付款');
             $table->float('payment_amount')->default('0')->comment('实际付款');
             $table->float('discount_amount')->default(0)->comment('优惠价格');
@@ -43,10 +43,11 @@ class CreateOrdersTable extends Migration
             $table->string('post_code', 6)->nullable()->default(null)->comment('邮编');
             $table->string('post_name', 64)->nullable()->default(null)->comment('快递公司名称');
             $table->string('transaction_id', 32)->nullable()->default(null)->comment('支付交易流水');
+            $table->string('ip', 15)->nullable()->default(null)->comment('支付终端ip地址');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');
-            $table->index('buyer_user_id');
+            $table->index('buyer_id,');
             $table->index('post_type');
         });
     }

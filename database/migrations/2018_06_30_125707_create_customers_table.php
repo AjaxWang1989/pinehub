@@ -51,6 +51,7 @@ class CreateCustomersTable extends Migration
             $table->index('union_id');
             $table->index('platform_open_id');
             $table->index('sex');
+            $table->unique(['app_id', 'type', 'platform_app_id', 'platform_open_id']);
         });
     }
 
