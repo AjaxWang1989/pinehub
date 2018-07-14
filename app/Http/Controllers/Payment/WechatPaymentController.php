@@ -45,6 +45,7 @@ class WechatPaymentController extends Controller
         $openId = $request->input('open_id', null);
         $appId = $request->input('selected_appid', null);
         $customer = Customer::whereAppId($appId)
+            ->whereType(Customer::WECHAT_OFFICE_ACCOUNT)
             ->wherePlatformOpenId($openId)
             ->first();
 

@@ -112,7 +112,7 @@ class PaymentController extends Controller
             }
             $uri = isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri;
             if($customer) {
-                return redirect($uri);
+                return redirect("{$uri}&open_id={$customer->openId}");
             }
             $uri = urlencode($uri);
             $redirect = config('wechat.other_sdk_payment.redirect_url');
@@ -139,7 +139,7 @@ class PaymentController extends Controller
             }
             $uri = isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri;
             if($customer) {
-                return redirect($uri);
+                return redirect("{$uri}&open_id={$customer->openId}");
             }
             $uri = urlencode($uri);
             $redirect = config('ali.payment.redirect_url');
