@@ -178,15 +178,15 @@ class OrderBuilder implements InterfaceServiceHandler
     protected function checkOrder(Collection $orderItems, $order) {
         $errors = null;
         \Log::debug('order items total amount sum :'.$orderItems->sum('total_amount').' order total amount '.$order['total_amount']);
-        if ($orderItems->sum('total_amount') != $order['total_amount']) {
+        if ($orderItems->sum('total_amount') != $order->get('total_amount', 0)) {
             $errors = new MessageBag([
                 'total_amount' => '订单总金额有误无法提交'
             ]);
-        } elseif ($orderItems->sum('discount_amount') != $order['discount_amount']) {
+        } elseif ($orderItems->sum('discount_amount') != $order->get('discount_amount', 0)) {
             $errors = new MessageBag([
                 'discount_amount' => '订单优惠金额有误无法提交'
             ]);
-        } elseif ( $orderItems->sum('payment_amount') != $order['payment_amount'] ) {
+        } elseif ( $orderItems->sum('payment_amount') != $order->get('payment_amount', 0) ) {
             $errors = new MessageBag([
                 'payment_amount' => '订单实际支付金额有误无法提交'
             ]);
@@ -200,15 +200,15 @@ class OrderBuilder implements InterfaceServiceHandler
     protected function checkOrderItem (Collection $orderItem, array $input)
     {
         $errors = null;
-        if($input['total_amount'] !== $orderItem['total_amount']) {
+        if($input['total_amount'] !== $orderItem->get('total_amount', 0)) {
             $errors = new MessageBag([
                 'total_amount' => '子订单总金额有误无法提交'
             ]);
-        } elseif ($input['discount_amount'] !== $orderItem['discount_amount'] ) {
+        } elseif ($input['discount_amount'] !== $orderItem->get('discount_amount', 0) ) {
             $errors = new MessageBag([
                 'discount_amount' => '子订单优惠金额有误无法提交'
             ]);
-        } elseif ($input['payment_amount'] !== $orderItem['payment_amount']) {
+        } elseif ($input['payment_amount'] !== $orderItem->get('payment_amount', 0)) {
             $errors = new MessageBag([
                 'payment_amount' => '子订单实际支付金额有误无法提交'
             ]);
