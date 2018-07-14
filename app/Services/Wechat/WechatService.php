@@ -523,72 +523,80 @@ class WechatService
      * */
     public function officialAccountUser($openId)
     {
+        $appManager = app(AppManager::class);
+        $customer = Customer::whereAppId($appManager->currentApp->id)
+            ->wherePlatformAppId($this->officeAccount()->config['app_id'])
+            ->whereType(Customer::WECHAT_OFFICE_ACCOUNT)
+            ->wherePlatformOpenId($openId)->first();
+        if($customer) {
+            return $customer;
+        }
         $user = $this->officeAccount()->user->get($openId);
-        $wechatUser = new Customer();
-        $wechatUser->platformAppId = $this->officeAccount()->config->get('app_id');
-        $wechatUser->appId = app(AppManager::class)->currentApp ? app(AppManager::class)->currentApp->id : null;
-        $wechatUser->platformOpenId = $user['openid'];
+        $customer = new Customer();
+        $customer->platformAppId = $this->officeAccount()->config->get('app_id');
+        $customer->appId = app(AppManager::class)->currentApp ? app(AppManager::class)->currentApp->id : null;
+        $customer->platformOpenId = $user['openid'];
         if(isset($user['unionid'])) {
-            $wechatUser->unionId = $user['unionid'];
+            $customer->unionId = $user['unionid'];
         }
 
         if(isset($user['nickname'])){
-            $wechatUser->nickname = $user['nickname'];
+            $customer->nickname = $user['nickname'];
         }
 
         if(isset($user['province'])){
-            $wechatUser->province = $user['province'];
+            $customer->province = $user['province'];
         }
 
         if(isset($user['city'])){
-            $wechatUser->city = $user['city'];
+            $customer->city = $user['city'];
         }
 
         if(isset($user['country'])){
-            $wechatUser->country = $user['country'];
+            $customer->country = $user['country'];
         }
 
         if(isset($user['headimgurl'])) {
-            $wechatUser->avatar = $user['headimgurl'];
+            $customer->avatar = $user['headimgurl'];
         }
 
         if(isset($user['privilege'])) {
-            $wechatUser->privilege = $user['privilege'];
+            $customer->privilege = $user['privilege'];
         }
 
         if(isset($user['subscribe'])) {
-            $wechatUser->subscribe = $user['subscribe'];
+            $customer->subscribe = $user['subscribe'];
         }
 
         if(isset($user['subscribeScene'])) {
-            $wechatUser->subscribeScene = $user['subscribe_scene'];
+            $customer->subscribeScene = $user['subscribe_scene'];
         }
 
         if(isset($user['subscribe_time'])) {
-            $wechatUser->subscribeTime = date('Y-m-d h:i:s', $user['subscribe_time']);
+            $customer->subscribeTime = date('Y-m-d h:i:s', $user['subscribe_time']);
         }
 
         if(isset($user['remark'])) {
-            $wechatUser->remark = $user['remark'];
+            $customer->remark = $user['remark'];
         }
 
         if(isset($user['groupid'])) {
-            $wechatUser->groupId = $user['groupid'];
+            $customer->groupId = $user['groupid'];
         }
 
         if(isset($user['tagid_list'])) {
-            $wechatUser->tagidList = $user['tagid_list'];
+            $customer->tagidList = $user['tagid_list'];
         }
 
         if(isset($user['qr_scene'])) {
-            $wechatUser->qrScene = $user['qr_scene'];
+            $customer->qrScene = $user['qr_scene'];
         }
 
         if(isset($user['qr_scene_str'])) {
-            $wechatUser->qrSceneStr = $user['qr_scene_str'];
+            $customer->qrSceneStr = $user['qr_scene_str'];
         }
 
-        return $wechatUser;
+        return $customer;
     }
 
     /**

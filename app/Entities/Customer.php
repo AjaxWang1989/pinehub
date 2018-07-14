@@ -89,6 +89,10 @@ class Customer extends Model implements Transformable
         'privilege' => 'json',
         'tags' => 'array'
     ];
+    const WECHAT_OFFICE_ACCOUNT = 'WECHAT_OFFICE_ACCOUNT';
+    const WECHAT_OPEN_PLATFORM = 'WECHAT_OPEN_PLATFORM';
+    const WECHAT_MINI_PROGRAM = 'WECHAT_MINI_PROGRAM';
+    const ALIPAY_OPEN_PLATFORM = 'ALIPAY_OPEN_PLATFORM';
 
     /**
      * The attributes that are mass assignable.
