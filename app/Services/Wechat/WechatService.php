@@ -329,6 +329,10 @@ class WechatService
         return $this->payment;
     }
 
+    public function jssdk(string  $prepayId, string $paymentAppId)
+    {
+        return $this->payment($paymentAppId)->jssdk->sdkConfig($prepayId);
+    }
     /**
      * @param Order|array
      * @param string $paymentAppId

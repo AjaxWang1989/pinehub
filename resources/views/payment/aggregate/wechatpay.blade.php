@@ -336,11 +336,11 @@
                 success:function(data) {
                     $(this).removeClass('weui-btn_disabled');
                     $(this).removeAttr('disable');
-                    if(data['return_code'] === 'FAIL') {
+                    if(data['data']['return_code'] === 'FAIL') {
                         alert(data['return_msg']);
                     }else{
 
-                        let $data =data.data;
+                        let $data =data['data']['sdk_config'];
                         $data['timestamp'] = $data['timeStamp'];
                         $data['success'] = function (res) {
                             if(res === 'get_brand_wcpay_request:ok') {
