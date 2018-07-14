@@ -25,6 +25,8 @@ class WechatPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
+        session()->setId($request->input('token'));
+        //session()->;
         /**
          * @var Shop $shop
          * */
@@ -60,19 +62,20 @@ class WechatPaymentController extends Controller
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $config = app('wechat')->officeAccount()->jssdk->buildConfig(['chooseWXPay']);
-        Log::debug('shop ', $request->all());
+
+        $apiUrl = $paymentApi.'?token='.session()->getId();
         $shop = $this->shopModel->find((int)$request->input('shop_id'));
         session(['shop' => $shop]);
         try{
 
             return view('payment.aggregate.wechatpay')->with([
-                'paymentApi' => $paymentApi,
+                'paymentApi' => $apiUrl,
                 'config' => $config,
                 'accept' => $accept,
             ]);
         }catch (\Exception $exception) {
             return view('payment.aggregate.wechatpay')->with([
-                'paymentApi' => $paymentApi,
+                'paymentApi' => $apiUrl,
                 'config' => $config,
                 'accept' => $accept,
             ]);
