@@ -325,8 +325,9 @@
                 type:"POST",
                 headers:{
                     accept: "{{ $accept }}",
+                    token: "{{$token}}"
                 },
-                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'open_id' : '{{$openId}}' },
+                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount },
                 beforeSend: function(){
 
                 },

@@ -7,6 +7,8 @@ use App\Http\Controllers\Payment\PaymentController as Controller;
 use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Payment\NotifyContext;
 use App\Transformers\Api\PaymentSignedTransformer as WechatPaymentSigned;
 use App\Entities\PaymentSigned as WechatPayment;
@@ -23,8 +25,9 @@ class WechatPaymentController extends Controller
     {
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
-        $openId = $this->session->get('open_id');
-        $order->openId = $openId;
+        Log::debug('header', $request->headers->all());
+        exit();
+        //$order->openId = $openId;
         $charge = app('wechat.payment.aggregate');
         return $this->response()->item( new WechatPayment($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)),
             new WechatPaymentSigned());
@@ -37,12 +40,13 @@ class WechatPaymentController extends Controller
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $config = app('wechat')->officeAccount()->jssdk->buildConfig(['chooseWXPay']);
         $openId = $request->input('open_id', null);
-        $this->session->put('open_id', $openId);
+        $token = md5($openId);
+        Cache::set($token, $openId);
         try{
             $shop = $this->shopModel->find($request->input('shop_id'));
             return view('payment.aggregate.wechatpay')->with([
                 'type' => Order::WECHAT_PAY,
-                'openId' => $openId,
+                'token' => $token,
                 'shop' => $shop,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
@@ -52,7 +56,7 @@ class WechatPaymentController extends Controller
         }catch (\Exception $exception) {
             return view('payment.aggregate.wechatpay')->with([
                 'type' => Order::WECHAT_PAY,
-                'openId' => $openId,
+                'token' => $token,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
