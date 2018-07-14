@@ -118,7 +118,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 'payment_amount'  => $order->get('payment_amount'),
                 'shop_id'   => (isset($this->input['shop_id']) ? $this->input['shop_id'] : null),
                 'buyer_id' => $order->get('buyer_id'),
-                'status' => Order::WAIT
+                'status' => $order->get('status')
             ];
             $orderItem = collect($orderItem);
             $orderItems = collect();
@@ -129,16 +129,13 @@ class OrderBuilder implements InterfaceServiceHandler
 
         if($orderItems && $orderItems->count()){
             $orderItems = $this->buildOrderItems($orderItems);
-            Log::debug('orderItems', $orderItem->toArray());
             $this->checkOrder($orderItems, $order);
         }
         /**
          *@var Order
          * */
         return DB::transaction(function () use($order, $orderItems){
-            Log::debug('save order data', $order->toArray());
             $orderModel = $this->order->create($order->toArray());
-            Log::debug('order items', $orderItems->toArray());
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['order_id'] = $orderModel->id;

@@ -64,7 +64,7 @@ class OrderItem extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'buyer_id,', 'total_amount', 'payment_amount', 'discount_amount',
+        'code', 'buyer_id', 'total_amount', 'payment_amount', 'discount_amount',
         'status', 'shop_id', 'signed_at', 'consigned_at', 'order_id', 'app_id'
     ];
 
