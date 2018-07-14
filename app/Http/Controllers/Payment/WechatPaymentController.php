@@ -47,6 +47,7 @@ class WechatPaymentController extends Controller
             'ip' => $request->getClientIp(),
             'shop_id' => $shop->id
         ];
+        Log::debug('payment order ', $order);
         $request->merge($order);
         $order = $this->app->make('order.builder')->setInput($request->all())->handle();
         $result = app('wechat')->unify($order, $order->wechatAppId);
