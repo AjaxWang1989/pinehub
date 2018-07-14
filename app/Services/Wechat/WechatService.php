@@ -336,10 +336,11 @@ class WechatService
     /**
      * @param Order|array
      * @param string $paymentAppId
+     * @param string $device
      * @return array|string|Object|ResponseInterface
      * @throws
      * */
-    public function unify($order, string  $paymentAppId)
+    public function unify($order, string  $paymentAppId, $device = 'WEB')
     {
         $this->config['payment']['app_id'] = $paymentAppId;
         $payment = $this->payment();
@@ -352,6 +353,7 @@ class WechatService
                 'notify_url' => $this->config['payment']['notify_url'], // 支付结果通知网址，如果不设置则会使用配置里的默认地址
                 'trade_type' => 'JSAPI',
                 'openid' => $order->openId,
+                'device_info' => $device
             ];
         }else{
             $unifyData = $order;
