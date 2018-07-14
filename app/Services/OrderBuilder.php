@@ -110,15 +110,14 @@ class OrderBuilder implements InterfaceServiceHandler
             'buyer_id',
             'ip'
         ]);
-        Log::debug('order build data', $order->toArray());
         $order['status'] = Order::WAIT;
         if($order['type'] === Order::OFF_LINE_PAY) {
             $orderItem = [
-                'total_amount' => $order['total_amount'],
-                'discount_amount' => $order['discount_amount'],
-                'payment_amount'  => $order['payment_amount'],
+                'total_amount' => $order->get('total_amount'),
+                'discount_amount' => $order->get('discount_amount', 0),
+                'payment_amount'  => $order->get('payment_amount'),
                 'shop_id'   => (isset($this->input['shop_id']) ? $this->input['shop_id'] : null),
-                'buyer_id,' => $order['buyer_id'],
+                'buyer_id,' => $order->get('buyer_id'),
                 'status' => Order::WAIT
             ];
             $orderItem = collect($orderItem);
