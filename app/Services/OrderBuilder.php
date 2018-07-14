@@ -135,6 +135,7 @@ class OrderBuilder implements InterfaceServiceHandler
          *@var Order
          * */
         return DB::transaction(function () use($order, $orderItems){
+            Log::debug('save order data', $order->toArray());
             $orderModel = $this->order->create($order->toArray());
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
