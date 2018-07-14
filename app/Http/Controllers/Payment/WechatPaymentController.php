@@ -42,38 +42,41 @@ class WechatPaymentController extends Controller
         $customer = Customer::whereAppId($appId)
             ->wherePlatformOpenId($openId)
             ->first();
+
         try{
-            $shop = $this->shopModel->find($request->input('shop_id'));
+            $shop = $this->shopModel->find($request->input('shop_id'))
+             $order = [
+                 'type' => Order::OFF_LINE_PAY,
+                 'pay_type' => Order::WECHAT_PAY,
+                 'openid' => $openId,
+                 'app_id' => $appId,
+                 'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
+                 'buyer_id' => $customer->id,
+                 'ip' => $request->getClientIp(),
+                 'shop_id' => $shop->id
+             ];;
             return view('payment.aggregate.wechatpay')->with([
                 'shop' => $shop,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'order' => [
-                    'type' => Order::OFF_LINE_PAY,
-                    'pay_type' => Order::WECHAT_PAY,
-                    'openid' => $openId,
-                    'app_id' => $appId,
-                    'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
-                    'buyer_id' => $customer->id,
-                    'ip' => $request->getClientIp(),
-                    'shop_id' => $shop->id
-                ]
+                'order' => json_encode($order)
             ]);
         }catch (\Exception $exception) {
+            $order = [
+                'type' => Order::OFF_LINE_PAY,
+                'pay_type' => Order::WECHAT_PAY,
+                'openid' => $openId,
+                'app_id' => $appId,
+                'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
+                'buyer_id' => $customer->id,
+                'ip' => $request->getClientIp()
+            ];
             return view('payment.aggregate.wechatpay')->with([
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'order' => [
-                    'type' => Order::OFF_LINE_PAY,
-                    'pay_type' => Order::WECHAT_PAY,
-                    'openid' => $openId,
-                    'app_id' => $appId,
-                    'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
-                    'buyer_id' => $customer->id,
-                    'ip' => $request->getClientIp()
-                ]
+                'order' => json_encode($order)
             ]);
         }
     }
