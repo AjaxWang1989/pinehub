@@ -88,7 +88,7 @@ class OrderBuilder implements InterfaceServiceHandler
 
     public function setInput(array  $input)
     {
-        $this->input = $input;
+        $this->input = collect($input);
         return $this;
     }
 
