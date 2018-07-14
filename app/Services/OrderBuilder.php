@@ -129,6 +129,7 @@ class OrderBuilder implements InterfaceServiceHandler
 
         if($orderItems && $orderItems->count()){
             $orderItems = $this->buildOrderItems($orderItems);
+            Log::debug('orderItems', $orderItem->toArray());
             $this->checkOrder($orderItems, $order);
         }
         /**
