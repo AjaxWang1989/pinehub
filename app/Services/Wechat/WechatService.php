@@ -490,7 +490,7 @@ class WechatService
         $user = $this->officeAccount()->user->get($openId);
         $wechatUser = new Customer();
         $wechatUser->platformAppId = $this->officeAccount()->config->get('app_id');
-        $wechatUser->appId = app('currentApp') ? app('currentApp')->appId : null;
+        $wechatUser->appId = app(AppManager::class)->currentApp ? app(AppManager::class)->currentApp->id : null;
         $wechatUser->platformOpenId = $user['openid'];
         if(isset($user['unionid'])) {
             $wechatUser->unionId = $user['unionid'];
