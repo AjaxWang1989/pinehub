@@ -7,6 +7,7 @@ use App\Services\AppManager;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 
 class WechatAuthController extends Controller
@@ -35,6 +36,7 @@ class WechatAuthController extends Controller
             $openId = $customer->platformOpenId;
         }
         app('session')->put('customer', $customer);
+        Log::debug('session', [session('customer'), session()->getId()]);
         $customer->appId = app(AppManager::class)->currentApp->id;
 
         $this->customerRepository->updateOrCreate([
