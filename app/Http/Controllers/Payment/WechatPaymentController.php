@@ -50,7 +50,7 @@ class WechatPaymentController extends Controller
             $order = [
                  'type' => Order::OFF_LINE_PAY,
                  'pay_type' => Order::WECHAT_PAY,
-                 'openid' => $openId,
+                 'open_id' => $openId,
                  'app_id' => $appId,
                  'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
                  'buyer_id' => $customer->id,
@@ -68,7 +68,7 @@ class WechatPaymentController extends Controller
             $order = [
                 'type' => Order::OFF_LINE_PAY,
                 'pay_type' => Order::WECHAT_PAY,
-                'openid' => $openId,
+                'open_id' => $openId,
                 'app_id' => $appId,
                 'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
                 'buyer_id' => $customer->id,
