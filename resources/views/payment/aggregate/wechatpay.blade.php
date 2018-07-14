@@ -341,6 +341,7 @@
                     }else{
 
                         let $data =data['data']['sdk_config'];
+                        alert(JSON.stringify(data['data']));
                         $data['timestamp'] = $data['timeStamp'];
                         $data['success'] = function (res) {
                             if(res === 'get_brand_wcpay_request:ok') {
