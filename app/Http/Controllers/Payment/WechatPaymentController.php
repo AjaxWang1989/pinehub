@@ -60,7 +60,7 @@ class WechatPaymentController extends Controller
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $config = app('wechat')->officeAccount()->jssdk->buildConfig(['chooseWXPay']);
-        Log::debug('shop_id '. $request->input('shop_id', 0));
+        Log::debug('shop ', $request->all());
         $shop = $this->shopModel->find((int)$request->input('shop_id'));
         session(['shop' => $shop]);
         try{
