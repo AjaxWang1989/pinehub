@@ -110,7 +110,7 @@ class OrderBuilder implements InterfaceServiceHandler
             'buyer_id',
             'ip'
         ]);
-        Log::debug('order build data', $order);
+        Log::debug('order build data', $order->toArray());
         $order['status'] = Order::WAIT;
         if($order['type'] === Order::OFF_LINE_PAY) {
             $orderItem = [
