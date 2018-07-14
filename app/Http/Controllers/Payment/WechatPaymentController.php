@@ -28,6 +28,7 @@ class WechatPaymentController extends Controller
         $order = $this->app->make('order.builder')->handle();
 //        $charge = app('wechat.payment.aggregate');
         $result = app('wechat')->unify($order, $order->wechatAppId);
+        Log::debug('jsapi params', $result);
 //        return $this->response()->item( new WechatPayment($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)),
 //            new WechatPaymentSigned());
         return $this->response(new JsonResponse($result));
