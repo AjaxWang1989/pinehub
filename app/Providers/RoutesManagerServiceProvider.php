@@ -118,7 +118,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
         }
 
-        if(!$this->app['isApiServer'] || $this->app->runningInConsole()){
+        if(!$this->app['isApiServer'] || $this->domain === env('PAYMENT_API_DOMAIN') || $this->app->runningInConsole()){
             // 注册 SessionServiceProvider
             //
             $this->app->register(SessionServiceProvider::class);
