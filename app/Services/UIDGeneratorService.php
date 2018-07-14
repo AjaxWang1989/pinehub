@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Illuminate\Cache\RedisLock;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UIDGeneratorService implements InterfaceServiceHandler
 {
@@ -122,6 +123,7 @@ class UIDGeneratorService implements InterfaceServiceHandler
             $this->lock = null;
             $keyLength = strlen($this->segmentMaxLength.'') - 1;
             $key = sprintf("%0{$keyLength}d", $key);
+            Log::debug('uuid key ',['key' => $key, 'length' => $keyLength]);
             return generatorUID($this->segmentKey, $key);
         }elseif($this->wait_time < self::WAIT_MAX_TIME){
             sleep(self::INTERVAL_TIME);
