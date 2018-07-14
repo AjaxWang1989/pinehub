@@ -110,7 +110,7 @@ class PaymentController extends Controller
                     $queryStr = "?selected_appid={$appId}";
                 }
             }
-            $uri = isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri;
+            $uri = isset($queryStr) ? "{$paymentUri}{$queryStr}" : $paymentUri;
             if($customer) {
                 return redirect($uri);
             }
@@ -137,7 +137,7 @@ class PaymentController extends Controller
                     $queryStr = "?selected_appid={$appId}";
                 }
             }
-            $uri = isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri;
+            $uri = isset($queryStr) ? "{$paymentUri}{$queryStr}" : $paymentUri;
             if($customer) {
                 return redirect($uri);
             }
