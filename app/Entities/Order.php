@@ -196,7 +196,7 @@ class Order extends Model implements Transformable
 
         return [
             'body'    => 'PineHub offline scan qrcode pay',
-            //'subject'    => 'wechat pay',
+            'subject'    => 'wechat pay',
             'order_no'    => $this->code,
             'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
             'amount'    => $this->paymentAmount,// 微信沙箱模式，需要金额固定为3.01
