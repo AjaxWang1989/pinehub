@@ -44,8 +44,8 @@ class WechatPaymentController extends Controller
             ->first();
 
         try{
-            $shop = $this->shopModel->find($request->input('shop_id'))
-             $order = [
+            $shop = $this->shopModel->find($request->input('shop_id'));
+            $order = [
                  'type' => Order::OFF_LINE_PAY,
                  'pay_type' => Order::WECHAT_PAY,
                  'openid' => $openId,
@@ -54,7 +54,7 @@ class WechatPaymentController extends Controller
                  'buyer_id' => $customer->id,
                  'ip' => $request->getClientIp(),
                  'shop_id' => $shop->id
-             ];;
+             ];
             return view('payment.aggregate.wechatpay')->with([
                 'shop' => $shop,
                 'paymentApi' => $paymentApi,
