@@ -9,6 +9,7 @@ use App\Http\Response\JsonResponse;
 use Dingo\Api\Http\Request as DingoRequest;
 use Illuminate\Http\Request as LumenRequest;
 use Dingo\Api\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Payment\NotifyContext;
 use App\Transformers\Api\PaymentSignedTransformer as WechatPaymentSigned;
 use App\Entities\PaymentSigned as WechatPayment;
@@ -23,7 +24,7 @@ class WechatPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
-        $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
+        Log::debug('pay order data ', $request->all());
         $order = $this->app->make('order.builder')->handle();
 //        $charge = app('wechat.payment.aggregate');
         $result = app('wechat')->payment()->order->unify($order, $order->wechatAppId);
