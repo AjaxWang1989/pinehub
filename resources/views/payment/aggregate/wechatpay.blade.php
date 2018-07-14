@@ -320,13 +320,16 @@
             var amount =  parseFloat($(".input-money")[0].innerHTML);
             $(this).addClass('weui-btn_disabled');
             $(this).attr('disable', true);
+            let order = {!! $order !!};
+            order['total_amount'] = amount;
+            order['payment_amount'] = amount;
             $.ajax({
                 url:"{{ $paymentApi }}",
                 type:"POST",
                 headers:{
                     accept: "{{ $accept }}",
                 },
-                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'open_id': '{{$openid}}' },
+                data: order,
                 beforeSend: function(){
 
                 },

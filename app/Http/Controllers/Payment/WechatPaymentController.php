@@ -45,28 +45,35 @@ class WechatPaymentController extends Controller
         try{
             $shop = $this->shopModel->find($request->input('shop_id'));
             return view('payment.aggregate.wechatpay')->with([
-                'type' => Order::WECHAT_PAY,
-                'openid' => $openId,
                 'shop' => $shop,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'app_id' => $appId,
-                'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
-                'buyer_id' => $customer->id,
-                'ip' => $request->getClientIp()
+                'order' => [
+                    'type' => Order::OFF_LINE_PAY,
+                    'pay_type' => Order::WECHAT_PAY,
+                    'openid' => $openId,
+                    'app_id' => $appId,
+                    'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
+                    'buyer_id' => $customer->id,
+                    'ip' => $request->getClientIp(),
+                    'shop_id' => $shop->id
+                ]
             ]);
         }catch (\Exception $exception) {
             return view('payment.aggregate.wechatpay')->with([
-                'type' => Order::WECHAT_PAY,
-                'openid' => $openId,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'app_id' => $appId,
-                'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
-                'buyer_id' => $customer->id,
-                'ip' => $request->getClientIp()
+                'order' => [
+                    'type' => Order::OFF_LINE_PAY,
+                    'pay_type' => Order::WECHAT_PAY,
+                    'openid' => $openId,
+                    'app_id' => $appId,
+                    'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
+                    'buyer_id' => $customer->id,
+                    'ip' => $request->getClientIp()
+                ]
             ]);
         }
     }
