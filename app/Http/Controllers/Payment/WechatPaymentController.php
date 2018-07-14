@@ -40,7 +40,7 @@ class WechatPaymentController extends Controller
         $openId = $request->input('open_id', null);
         $appId = $request->input('selected_appid', null);
         $customer = Customer::whereAppId($appId)
-            ->whereOpenId($openId)
+            ->wherePlatformOpenId($openId)
             ->first();
         try{
             $shop = $this->shopModel->find($request->input('shop_id'));
