@@ -84,7 +84,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
     {
         $this->request = Request::capture();
         $this->host = $this->request->getHost();
-        Log::debug('api info ', [$this->host, $this->request->method()]);
+        Log::debug('api info ', [$this->request->fullUrl(), $this->request->method()]);
         if(preg_match(IP_REGEX, $this->host)) {
             exit('不能直接使用ip访问本站的！');
             //return Response::create(['message' => '不能直接使用ip访问本站的！'])->send();
