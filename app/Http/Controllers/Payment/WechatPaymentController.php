@@ -23,8 +23,8 @@ class WechatPaymentController extends Controller
     {
         $request->merge(['pay_type' => Order::WECHAT_PAY, 'type' => Order::OFF_LINE_PAY]);
         $order = $this->app->make('order.builder')->handle();
-        $wxUser = $this->session->get('wx_user');
-        $order->openId = $wxUser;
+        $openId = $this->session->get('open_id');
+        $order->openId = $openId;
         $charge = app('wechat.payment.aggregate');
         return $this->response()->item( new WechatPayment($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)),
             new WechatPaymentSigned());
@@ -36,9 +36,9 @@ class WechatPaymentController extends Controller
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $config = app('wechat')->officeAccount()->jssdk->buildConfig(['chooseWXPay']);
+        $openId = $request->input('open_id', null);
+        $this->session->put('open_id', $openId);
         try{
-            $openId = app('session')->get('open_id');
-            $openId =$openId ? $openId : $request->input('open_id', null);
             $shop = $this->shopModel->find($request->input('shop_id'));
             return view('payment.aggregate.wechatpay')->with([
                 'type' => Order::WECHAT_PAY,
