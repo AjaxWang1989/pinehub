@@ -95,6 +95,7 @@ class PaymentController extends Controller
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
         app('session')->put('selected_appid', $appId);
+        $customer = app('session')->get('customser', null);
         if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
             $paymentUri = webUriGenerator('/wechat/aggregate.html', env('WEB_PAYMENT_PREFIX'));
             if($shopId) {
@@ -109,7 +110,9 @@ class PaymentController extends Controller
                 }
             }
             $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
-
+            if($customer) {
+                return redirect($uri);
+            }
             $redirect = config('wechat.other_sdk_payment.redirect_url');
             $redirect = "{$redirect}?redirect_uri={$uri}";
             $redirect = "{$redirect}&selected_appid={$appId}";
@@ -133,7 +136,9 @@ class PaymentController extends Controller
                 }
             }
             $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
-
+            if($customer) {
+                return redirect($uri);
+            }
             $redirect = config('ali.payment.redirect_url');
             $redirect = "{$redirect}?redirect_uri={$uri}";
 

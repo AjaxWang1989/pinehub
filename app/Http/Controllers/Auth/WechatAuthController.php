@@ -34,6 +34,7 @@ class WechatAuthController extends Controller
         if ($customer) {
             $openId = $customer->platformOpenId;
         }
+        app('session')->put('customer', $customer);
         $customer->appId = app(AppManager::class)->currentApp->id;
 
         $this->customerRepository->updateOrCreate([
