@@ -336,25 +336,28 @@
                 success:function(data) {
                     $(this).removeClass('weui-btn_disabled');
                     $(this).removeAttr('disable');
-                    let $data =data.data;
-                    $data['timestamp'] = $data['timeStamp'];
-                    $data['success'] = function (res) {
-                        if(res === 'get_brand_wcpay_request:ok') {
+                    if(data['return_code'] === 'FAIL') {
+                        alert(data['return_msg']);
+                    }else{
 
-                        }else if (res === 'get_brand_wcpay_request:cancel') {
-                            $(this).removeClass('weui-btn_disabled');
-                            $(this).removeAttr('disable');
-                        }else if(res === 'get_brand_wcpay_request:fail'){
-                            $(this).removeClass('weui-btn_disabled');
-                            $(this).removeAttr('disable');
+                        let $data =data.data;
+                        $data['timestamp'] = $data['timeStamp'];
+                        $data['success'] = function (res) {
+                            if(res === 'get_brand_wcpay_request:ok') {
+
+                            }else if (res === 'get_brand_wcpay_request:cancel') {
+
+                            }else if(res === 'get_brand_wcpay_request:fail'){
+
+                            }
+
+                        };
+                        $data['error'] = function (error) {
+
                         }
-
-                    };
-                    $data['error'] = function (error) {
-                        $(this).removeClass('weui-btn_disabled');
-                        $(this).removeAttr('disable');
+                        wx.chooseWXPay($data);
                     }
-                    wx.chooseWXPay($data);
+
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown){
                     alert(textStatus);
