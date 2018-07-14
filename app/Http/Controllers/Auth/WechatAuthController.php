@@ -35,14 +35,15 @@ class WechatAuthController extends Controller
         if ($customer) {
             $openId = $customer->platformOpenId;
         }
-        app('session')->put('customer', $customer);
+//        app('session')->put('customer', $customer);
         $customer->appId = app(AppManager::class)->currentApp->id;
 
-        $this->customerRepository->updateOrCreate([
+        $customer = $this->customerRepository->updateOrCreate([
             'app_id' => $customer->appId,
             'platform_app_id' => $customer->platformAppId,
             'platform_open_id' => $customer->platformOpenId
         ], $customer->toArray());
+        session(['customer' => $customer]);
         $redirect = $request->input('redirect_uri', null);
         if($redirect) {
             if(count(parse_query($redirect)) > 0){
