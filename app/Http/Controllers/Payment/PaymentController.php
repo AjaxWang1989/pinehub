@@ -110,10 +110,11 @@ class PaymentController extends Controller
                     $queryStr = "?selected_appid={$appId}";
                 }
             }
-            $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
+            $uri = isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri;
             if($customer) {
                 return redirect($uri);
             }
+            $uri = urlencode($uri);
             $redirect = config('wechat.other_sdk_payment.redirect_url');
             $redirect = "{$redirect}?redirect_uri={$uri}";
             $redirect = "{$redirect}&selected_appid={$appId}";
@@ -136,10 +137,11 @@ class PaymentController extends Controller
                     $queryStr = "?selected_appid={$appId}";
                 }
             }
-            $uri = urlencode(isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri);
+            $uri = isset($queryStr) ? "{$paymentUri}?{$queryStr}" : $paymentUri;
             if($customer) {
                 return redirect($uri);
             }
+            $uri = urlencode($uri);
             $redirect = config('ali.payment.redirect_url');
             $redirect = "{$redirect}?redirect_uri={$uri}";
 
