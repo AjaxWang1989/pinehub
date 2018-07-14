@@ -353,8 +353,8 @@
                     }
                     wx.chooseWXPay($data);
                 },
-                error: function(){
-                    alert('error');
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    alert(textStatus);
                 }
             });
         });
