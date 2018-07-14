@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Payment;
 
 use App\Entities\Customer;
 use App\Entities\Order;
+use App\Entities\Shop;
 use App\Http\Controllers\Payment\PaymentController as Controller;
 use App\Http\Response\JsonResponse;
 use Dingo\Api\Http\Request as DingoRequest;
@@ -24,16 +25,33 @@ class WechatPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
-        Log::debug('pay order data ', $request->all());
-        $order = $this->app->make('order.builder')->handle();
-//        $charge = app('wechat.payment.aggregate');
+        /**
+         * @var Shop $shop
+         * */
+        $shop = session('shop', null);
+
+        /**
+         * @var Customer $customer
+         * */
+        $customer = session('customer', null);
+
+        $order = [
+            'type' => Order::OFF_LINE_PAY,
+            'pay_type' => Order::WECHAT_PAY,
+            'open_id' => $customer->platformOpenId,
+            'app_id' => $customer->appId,
+            'wechat_app_id' => $customer->platformAppId,
+            'buyer_id' => $customer->id,
+            'ip' => $request->getClientIp(),
+            'shop_id' => $shop->id
+        ];
+        $request->merge($order);
+        $order = $this->app->make('order.builder')->setInput($request->all())->handle();
         $result = app('wechat')->unify($order, $order->wechatAppId);
         if($result['return_code'] === 'SUCCESS'){
             $sdkConfig = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
             $result['sdk_config'] = $sdkConfig;
         }
-//        return $this->response()->item( new WechatPayment($this->preOrder($order->buildWechatAggregatePaymentOrder(), $charge)),
-//            new WechatPaymentSigned());
         return $this->response(new JsonResponse($result));
     }
 
@@ -42,47 +60,20 @@ class WechatPaymentController extends Controller
         $paymentApi = paymentApiUriGenerator('/wechat/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
         $config = app('wechat')->officeAccount()->jssdk->buildConfig(['chooseWXPay']);
-        $openId = $request->input('open_id', null);
-        $appId = $request->input('selected_appid', null);
-        $customer = Customer::whereAppId($appId)
-            ->whereType(Customer::WECHAT_OFFICE_ACCOUNT)
-            ->wherePlatformOpenId($openId)
-            ->first();
-
+        $shop = $this->shopModel->find($request->input('shop_id'));
+        session(['shop' => $shop]);
         try{
-            $shop = $this->shopModel->find($request->input('shop_id'));
-            $order = [
-                 'type' => Order::OFF_LINE_PAY,
-                 'pay_type' => Order::WECHAT_PAY,
-                 'open_id' => $openId,
-                 'app_id' => $appId,
-                 'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
-                 'buyer_id' => $customer->id,
-                 'ip' => $request->getClientIp(),
-                 'shop_id' => $shop->id
-             ];
+
             return view('payment.aggregate.wechatpay')->with([
-                'shop' => $shop,
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'order' => json_encode($order)
             ]);
         }catch (\Exception $exception) {
-            $order = [
-                'type' => Order::OFF_LINE_PAY,
-                'pay_type' => Order::WECHAT_PAY,
-                'open_id' => $openId,
-                'app_id' => $appId,
-                'wechat_app_id' => app('wechat')->officeAccount()->config['app_id'],
-                'buyer_id' => $customer->id,
-                'ip' => $request->getClientIp()
-            ];
             return view('payment.aggregate.wechatpay')->with([
                 'paymentApi' => $paymentApi,
                 'config' => $config,
                 'accept' => $accept,
-                'order' => json_encode($order)
             ]);
         }
     }

@@ -86,6 +86,12 @@ class OrderBuilder implements InterfaceServiceHandler
         $this->orderItemMerchandise = $orderItemMerchandise;
     }
 
+    public function setInput(array  $input)
+    {
+        $this->input = $input;
+        return $this;
+    }
+
     /**
      * @return Order
      * @throws
