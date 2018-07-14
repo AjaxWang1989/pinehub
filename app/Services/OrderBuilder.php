@@ -111,7 +111,7 @@ class OrderBuilder implements InterfaceServiceHandler
             'ip'
         ]);
         $order['status'] = Order::WAIT;
-        if($order['type'] === Order::OFF_LINE_PAY) {
+        if((int)$order['type'] === Order::OFF_LINE_PAY) {
             $orderItem = [
                 'total_amount' => $order->get('total_amount'),
                 'discount_amount' => $order->get('discount_amount', 0),
