@@ -10,6 +10,7 @@ namespace App\Ali\Oauth\Data;
 
 
 use Payment\Common\Ali\Data\Charge\ChargeBaseData;
+use Payment\Utils\ArrayUtil;
 
 /**
  * @property null|string authToken
@@ -53,6 +54,7 @@ class UserData extends ChargeBaseData
         ];
         //$signData = array_merge($signData, $bizContent);
         // 移除数组中的空值
+
         $this->retData = ArrayUtil::paraFilter($signData);
     }
 }
