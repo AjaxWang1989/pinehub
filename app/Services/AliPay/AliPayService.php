@@ -41,7 +41,6 @@ class AliPayService
     protected function getCredentials() : array
     {
         $code = Request::input('auth_code');
-        \Log::debug('auth code '.$code);
         return [
             'grant_type' => 'authorization_code', 'code' => $code
         ];

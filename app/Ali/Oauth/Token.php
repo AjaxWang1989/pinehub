@@ -11,6 +11,7 @@ namespace App\Ali\Oauth;
 
 use App\Ali\Oauth\Data\TokenData;
 use Payment\Common\Ali\AliBaseStrategy;
+use Payment\Common\PayException;
 
 class Token extends AliBaseStrategy
 {
