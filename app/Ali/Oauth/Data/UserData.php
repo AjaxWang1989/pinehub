@@ -41,6 +41,7 @@ class UserData extends ChargeBaseData
 //        $bizContent = $this->getBizContent();
 //        $bizContent = ArrayUtil::paraFilter($bizContent);// 过滤掉空值，下面不用在检查是否为空
 
+        \Log::debug('user share params', $this->data);
         $signData = [
             // 公共参数
             'app_id'        => $this->appId,
