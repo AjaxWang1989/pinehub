@@ -30,7 +30,10 @@ class WechatAuthAccessTokenRefreshEvent extends Job
     {
         //
         $this->wechat = $config;
-        $this->delay($this->wechat->authorizerAccessTokenExpiresIn);
+        if($this->wechat->authorizerAccessTokenExpiresIn->timestamp > time()) {
+            $this->delay($this->wechat->authorizerAccessTokenExpiresIn);
+        }
+
     }
 
     /**

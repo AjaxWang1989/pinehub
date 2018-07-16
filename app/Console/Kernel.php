@@ -6,6 +6,7 @@ use App\Console\Commands\Console\TestMakeCommand;
 use App\Console\Commands\HashEncrypt;
 use App\Console\Commands\JWTGenerateCommand;
 use App\Console\Commands\ModelsCommand;
+use App\Console\Commands\WechatAccessTokenRefreshCommand;
 use Illuminate\Auth\Console\AuthMakeCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
@@ -67,7 +68,8 @@ class Kernel extends ConsoleKernel
         ConfigClearCommand::class,
         JWTGenerateCommand::class,
         ModelsCommand::class,
-        TestMakeCommand::class
+        TestMakeCommand::class,
+        WechatAccessTokenRefreshCommand::class
     ];
 
     /**
@@ -79,5 +81,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //
+        $schedule->command('wechat.access.token:refresh')->dailyAt('24:00');
     }
 }

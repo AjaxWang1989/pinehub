@@ -3,7 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Entities\WechatConfig;
+use App\Events\WechatAuthAccessTokenRefreshEvent;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Collection;
 
 class WechatAccessTokenRefreshCommand extends Command
 {
@@ -39,6 +42,10 @@ class WechatAccessTokenRefreshCommand extends Command
     public function handle()
     {
         //
-        WechatConfig::chunk('');
+        WechatConfig::where('authorizer_access_token_expires_in', '<=', Carbon::now())->chunk(100, function (Collection $collection) {
+            $collection->map(function (WechatConfig $wechatConfig) {
+                dispatch(new WechatAuthAccessTokenRefreshEvent($wechatConfig));
+            });
+        });
     }
 }
