@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -47,6 +48,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $miniProgramInfo 可根据这个字段判断是否为小程序类型授权
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
+ * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\WechatMenu $menu
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAesKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAlias($value)
@@ -111,5 +113,10 @@ class WechatConfig extends Model implements Transformable
     public function menu() : HasOne
     {
         return $this->hasOne(WechatMenu::class, 'app_id', 'app_id');
+    }
+
+    public function app() :BelongsTo
+    {
+        return $this->belongsTo(App::class, 'wechat_bind_app', 'id');
     }
 }
