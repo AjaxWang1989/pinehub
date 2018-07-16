@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Entities\Customer;
 use App\Repositories\CustomerRepository;
+use App\Services\AppManager;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -23,11 +25,19 @@ class AliAuthController extends Controller
     public function oauth2(Request $request)
     {
         $token = app('alipay')->getToken();
+        $appManager = app(AppManager::class);
+        $appId = $appManager->currentApp->id;
+        $aliAppId = config('ali.payment.app_id');
         $redirect = $request->input('redirect_uri', null);
-        $customer = $this->customerRepository->updateOrCreate(['platform_open_id' => $token['user_id']], [
-            'app_id' => $request->input('selected_appid', null),
-            'platform_app_id' => config('ali.payment.app_id'),
-            'type' => 'ALIPAY_OPEN_PLATFORM',
+        $customer = $this->customerRepository->updateOrCreate([
+            'app_id' => $appId,
+            'platform_app_id' => $aliAppId,
+            'type' => Customer::ALIPAY_OPEN_PLATFORM,
+            'platform_open_id' => $token['user_id']
+        ], [
+            'app_id' => $appId,
+            'platform_app_id' => $aliAppId,
+            'type' => Customer::ALIPAY_OPEN_PLATFORM,
             'platform_open_id' => $token['user_id']
         ]);
         session(['customer' => $customer]);
