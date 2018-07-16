@@ -82,7 +82,7 @@ class Kernel extends ConsoleKernel
     {
         //
         echo "schedule start \n";
-        $schedule->command('wechat.access.token:refresh');
+        $schedule->command('wechat.access.token:refresh')->dailyAt('00:00');
         echo "schedule end \n";
     }
 }
