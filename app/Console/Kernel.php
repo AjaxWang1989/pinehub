@@ -83,7 +83,7 @@ class Kernel extends ConsoleKernel
     {
         //
         Log::debug('schedule start');
-        $schedule->command('wechat.access.token:refresh')->everyMinute();
+        $schedule->command('wechat.access.token:refresh')->dailyAt('00:00');
         Log::debug('schedule end');
     }
 }
