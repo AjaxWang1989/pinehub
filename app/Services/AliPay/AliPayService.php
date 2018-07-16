@@ -34,12 +34,14 @@ class AliPayService
         }
         $token = app('ali.oauth.token')->charge($this->getCredentials())->getToken();
         Cache::put($this->getCacheKey(), $token, $token['expires_in']);
+        \Log::debug('ali token', $token);
         return $token;
     }
 
     protected function getCredentials() : array
     {
         $code = Request::input('auth_code');
+        \Log::debug('auth code '.$code);
         return [
             'grant_type' => 'authorization_code', 'code' => $code
         ];
