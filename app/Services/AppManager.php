@@ -83,6 +83,10 @@ class AppManager
 
     public function getAppId()
     {
+        $appId = $this->currentApp ? $this->currentApp->id : null;
+        if($appId) {
+            return $appId;
+        }
         $request = Request::capture();
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);
@@ -95,15 +99,15 @@ class AppManager
         if(!$this->officialAccount) {
             $repository = $this->app->make(AppRepository::class);
             echo "current app 1 {$this->currentApp}";
-            $appId = $this->currentApp ? $this->currentApp->id : $this->getAppId();
+            $appId = $this->getAppId();
             if($appId) {
-                $this->currentApp = $repository->find($appId);
+                $this->currentApp = $this->currentApp ? $this->currentApp : $repository->find($appId);
                 $this->officialAccount = with($this->currentApp, function (App $app){
                     return $app->officialAccount;
                 });
             }
         }
-
+        throw new \Exception($this->currentApp);
         return $this->officialAccount;
     }
 
@@ -111,9 +115,9 @@ class AppManager
     {
         if(!$this->miniProgram){
             $repository = $this->app->make(AppRepository::class);
-            $appId = $this->currentApp ? $this->currentApp->id : $this->getAppId();
+            $appId = $this->getAppId();
             if($appId) {
-                $this->currentApp = $repository->find($appId);
+                $this->currentApp = $this->currentApp ? $this->currentApp : $repository->find($appId);
                 $this->miniProgram = with($this->currentApp, function (App $app){
                     return $app->miniProgram;
                 });
