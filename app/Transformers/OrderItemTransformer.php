@@ -34,7 +34,8 @@ class OrderItemTransformer extends TransformerAbstract
                 return $data;
             }) : null,
             'code' => $model->code,
-            'buyer' => $model->buyer->only(['id', 'nickname', 'mobile']),
+            'customer' => $model->customer->only(['id', 'nickname', 'mobile']),
+            'member'   => $model->customer->member ? $model->customer->member->only(['id', 'nickname', 'user_name', 'mobile']) : null,
             'payment_amount' => $model->paymentAmount,
             'paid_at' => $model->paidAt,
             'pay_type' => $model->payType,

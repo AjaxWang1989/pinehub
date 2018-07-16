@@ -31,6 +31,7 @@ class OrderCriteria implements CriteriaInterface
         if(($shopId = Request::input('shop_id', null))) {
             $model = $model->whereShopId($shopId);
         }
+        $model = $model->with(['customer.member']);
         return $model;
     }
 }
