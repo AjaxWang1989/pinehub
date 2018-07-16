@@ -336,7 +336,7 @@
                 headers:{
                     accept: "{{ $accept }}",
                 },
-                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'buyer_id': '{{ $userId }}'},
+                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount},
                 beforeSend: function(){
                     AlipayJSBridge.call('showLoading', {
                         text: '支付中······',

@@ -38,10 +38,6 @@ class UserData extends ChargeBaseData
      */
     protected function buildData()
     {
-//        $bizContent = $this->getBizContent();
-//        $bizContent = ArrayUtil::paraFilter($bizContent);// 过滤掉空值，下面不用在检查是否为空
-
-        \Log::debug('user share params', $this->data);
         $signData = [
             // 公共参数
             'app_id'        => $this->appId,
@@ -53,8 +49,7 @@ class UserData extends ChargeBaseData
             'version'       => $this->version,
             'auth_token'    => $this->authToken
         ];
-        \Log::debug('signData', $signData);
-        //$signData = array_merge($signData, $bizContent);
+
         // 移除数组中的空值
 
         $this->retData = ArrayUtil::paraFilter($signData);

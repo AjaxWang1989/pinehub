@@ -14,6 +14,8 @@ use Illuminate\View\View;
 use Payment\NotifyContext;
 use App\Entities\PaymentSigned as AliPaymentSigned;
 use App\Transformers\Api\PaymentSignedTransformer as AliPaymentSignedTransformer;
+use App\Entities\Shop;
+use App\Entities\Customer;
 
 
 class AliPaymentController extends Controller
@@ -26,11 +28,32 @@ class AliPaymentController extends Controller
      * */
     public function aggregate(LumenRequest $request)
     {
-        $request->merge(['pay_type' => Order::ALI_PAY, 'type' => Order::OFF_LINE_PAY]);
-        $order = $this->app->make('order.builder')->handle();
+        session()->setId($request->input('token'));
+        session()->start();
+        /**
+         * @var Shop $shop
+         * */
+        $shop = session('shop', null);
+
+        /**
+         * @var Customer $customer
+         * */
+        $customer = session('customer', null);
+
+        $order = [
+            'type' => Order::OFF_LINE_PAY,
+            'pay_type' => Order::ALI_PAY,
+            'open_id' => $customer->platformOpenId,
+            'app_id' => $customer->appId,
+            'wechat_app_id' => $customer->platformAppId,
+            'buyer_id' => $customer->id,
+            'ip' => $request->getClientIp(),
+            'shop_id' => $shop->id
+        ];
+        $request->merge($order);
+        $order = $this->app->make('order.builder')->setInput($request->all())->handle();
         $charge = app('ali.payment.aggregate');
         $order = $this->preOrder($order->buildAliAggregatePaymentOrder(), $charge);
-
         return $this->response()->item( new AliPaymentSigned($order),
             new AliPaymentSignedTransformer());
     }
@@ -39,25 +62,19 @@ class AliPaymentController extends Controller
     {
         $paymentApi = paymentApiUriGenerator('/ali/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
-        $userId = $request->input('buyer_id', null);
-        $appManager = app(AppManager::class);
+        //$userId = $request->input('buyer_id', null);
+        $apiUrl = $paymentApi.'?token='.session()->getId();
+        $shop = $this->shopModel->find((int)$request->input('shop_id'));
+        session(['shop' => $shop]);
         try{
-            $shop = $this->shopModel->find($request->input('shop_id'));
             return view('payment.aggregate.alipay')->with([
-                'type' => Order::ALI_PAY,
-                'shop' => $shop,
-                'paymentApi' => $paymentApi,
+                'paymentApi' => $apiUrl,
                 'accept' => $accept,
-                'userId' => $userId,
-                'app_id' => $appManager->currentApp->id
             ]);
         }catch (\Exception $exception){
             return view('payment.aggregate.alipay')->with([
-                'type' => Order::ALI_PAY,
-                'paymentApi' => $paymentApi,
+                'paymentApi' => $apiUrl,
                 'accept' => $accept,
-                'userId' => $userId,
-                'app_id' => $appManager->currentApp->id
             ]);
         }
     }

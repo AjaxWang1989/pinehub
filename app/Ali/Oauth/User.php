@@ -38,7 +38,6 @@ class User extends AliBaseStrategy
     protected function retData(array $data)
     {
         $requestData = parent::retData($data);
-        \Log::debug('request data', $requestData);
         try {
             $res = $this->sendReq($requestData);
         } catch (PayException $e) {
