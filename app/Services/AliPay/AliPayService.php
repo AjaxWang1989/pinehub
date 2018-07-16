@@ -20,7 +20,7 @@ class AliPayService
     public function oauth()
     {
         $token = $this->getToken();
-        $oauth = app('ali.user.info')->charge(['auth_token' => $token['access_token']]);
+        $oauth = app('ali.user.info')->charge(['authToken' => $token['access_token']]);
         return $oauth;
     }
 
