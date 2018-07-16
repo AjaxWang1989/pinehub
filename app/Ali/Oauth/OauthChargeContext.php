@@ -66,6 +66,7 @@ class OauthChargeContext extends ChargeContext
     public function with(array $parameters)
     {
         $this->responseData = $parameters;
+        return $this;
     }
 
     public function setRequest($request) {
