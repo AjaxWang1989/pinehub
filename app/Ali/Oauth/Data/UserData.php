@@ -52,6 +52,7 @@ class UserData extends ChargeBaseData
             'version'       => $this->version,
             'auth_token'    => $this->authToken
         ];
+        \Log::debug('signData', $signData);
         //$signData = array_merge($signData, $bizContent);
         // 移除数组中的空值
 
