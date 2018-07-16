@@ -81,6 +81,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //
-        //$schedule->command('wechat.access.token:refresh')->dailyAt('24:00');
+        $schedule->command('wechat.access.token:refresh')->dailyAt('24:00');
     }
 }
