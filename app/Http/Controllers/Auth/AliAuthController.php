@@ -43,9 +43,9 @@ class AliAuthController extends Controller
         session(['customer' => $customer]);
         if($redirect) {
             if(count(parse_query($redirect)) > 0){
-                $append = "&buyer_id={$token['user_id']}";
+                $append = "&customer_id={$token['user_id']}";
             }else{
-                $append = "?buyer_id={$token['user_id']}";
+                $append = "?customer_id={$token['user_id']}";
             }
             return redirect("{$redirect}{$append}");
         }

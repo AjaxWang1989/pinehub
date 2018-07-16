@@ -12,13 +12,14 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\OrderItemMerchandise
  *
  * @property int $id
- * @property string|null $name
  * @property int|null $shopId 店铺ID
- * @property int|null $buyerId 买家ID
+ * @property int|null $memberId 买家会员id
+ * @property int|null $customerId 买家ID
  * @property int $orderId 订单id
  * @property int $orderItemId 子订单id
  * @property int|null $merchandiseId 产品id
  * @property int|null $skuProductId 规格产品ID
+ * @property string|null $name 产品名称
  * @property string|null $mainImage 产品主图
  * @property float $originPrice 原价
  * @property float $sellPrice 售价
@@ -26,16 +27,18 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $quality 订单产品数量
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
+ * @property-read \App\Entities\Member|null $member
  * @property-read \App\Entities\Merchandise|null $merchandise
  * @property-read \App\Entities\Order $order
  * @property-read \App\Entities\OrderItem $orderItem
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\SKUProduct|null $skuProduct
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereBuyerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereMainImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereMemberId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereMerchandiseId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereOrderId($value)
@@ -68,8 +71,15 @@ class OrderItemMerchandise extends Model implements Transformable
         'origin_price',
         'sell_price',
         'cost_price',
-        'quality'
+        'quality',
+        'member_id'
     ];
+
+    public function member() : BelongsTo
+    {
+        return $this->belongsTo(Member::class, 'member_id', 'id');
+    }
+
 
     public function shop() : BelongsTo
     {

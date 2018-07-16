@@ -11,7 +11,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\ScoreRule
  *
  * @property int $id
- * @property string|null $name
+ * @property string|null $name 规则名称
  * @property string $appId 系统应用appid
  * @property int $score 增加的积分数
  * @property int $totalScore 累计积分数

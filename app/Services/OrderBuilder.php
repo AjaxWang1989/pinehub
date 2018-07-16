@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Entities\Merchandise;
 use App\Entities\Order;
+use App\Entities\OrderItem;
 use App\Entities\SKUProduct;
 use App\Entities\User;
 use App\Repositories\MerchandiseRepositoryEloquent;
@@ -113,8 +114,9 @@ class OrderBuilder implements InterfaceServiceHandler
             'app_id',
             'wechat_app_id',
             'ali_app_id',
-            'buyer_id',
-            'ip'
+            'customer_id',
+            'ip',
+            'member_id'
         ]);
         $order['status'] = Order::WAIT;
         if((int)$order['type'] === Order::OFF_LINE_PAY) {
@@ -123,8 +125,9 @@ class OrderBuilder implements InterfaceServiceHandler
                 'discount_amount' => $order->get('discount_amount', 0),
                 'payment_amount'  => $order->get('payment_amount'),
                 'shop_id'   => (isset($this->input['shop_id']) ? $this->input['shop_id'] : null),
-                'buyer_id' => $order->get('buyer_id'),
-                'status' => $order->get('status')
+                'customer_id' => $order->get('customer_id'),
+                'status' => $order->get('status'),
+                'member_id' => $order->get('member_id')
             ];
             $orderItem = collect($orderItem);
             $orderItems = collect();
@@ -137,21 +140,32 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems = $this->buildOrderItems($orderItems);
             $this->checkOrder($orderItems, $order);
         }
-        /**
-         *@var Order
-         * */
+
         return DB::transaction(function () use($order, $orderItems){
+            /**
+             *@var Order $orderModel
+             * */
             $orderModel = $this->order->create($order->toArray());
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['order_id'] = $orderModel->id;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);
+                    /**
+                     *@var OrderItem $orderItemModel
+                     * */
                     $orderItemModel = $this->orderItem->create($orderItem->except(['order_item_product'])
                         ->toArray());
-                    if(isset($orderItem['order_item_product'])){
-                        $orderItem['order_item_product']['order_id'] = $orderModel->id;
-                        $orderItem['order_item_product']['order_item_id'] = $orderItemModel->id;
-                        $this->orderItemMerchandise->create($orderItem->only(['order_item_product'])->toArray());
+                    $product = $orderItem->get('order_item_product', null);
+
+                    if($product){
+                        tap($product, function (Collection $product) use(&$orderModel,&$orderItemModel) {
+                            $product->put('order_id', $orderModel->id);
+                            $product->put('order_item_id', $orderItemModel->id);
+                            $product->put('customer_id', $orderModel->customerId);
+                            $product->put('member_id', $orderModel->memberId);
+                            $this->orderItemMerchandise->create($product->toArray());
+                        });
+
                     }
                 });
             }
@@ -166,12 +180,12 @@ class OrderBuilder implements InterfaceServiceHandler
             if(isset($orderItem['sku_product_id'])) {
                 $product = $this->skuProduct->find($orderItem['sku_product_id']);
                 $orderItemProduct = $this->buildOrderItemProduct($product, $orderItem['quality']);
-                $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['buyer_id']);
+                $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['customer_id']);
                 $subOrder['order_item_product'] = $orderItemProduct;
             }elseif (isset($orderItem['merchandise_id'])) {
                 $goods = $this->merchandise->find($orderItem['merchandise_id']);
                 $orderItemProduct = $this->buildOrderItemProduct($goods, $orderItem['quality']);
-                $subOrder = $this->buildOrderItem($goods, $orderItem['quality'], $orderItem['buyer_id']);
+                $subOrder = $this->buildOrderItem($goods, $orderItem['quality'], $orderItem['customer_id']);
                 $subOrder['order_item_product'] = $orderItemProduct;
             }
             if($subOrder){
@@ -229,12 +243,12 @@ class OrderBuilder implements InterfaceServiceHandler
      * 创建order_items表单项
      * @param SKUProduct|Merchandise|Model $model
      * @param int $quality
-     * @param $buyerId
+     * @param $customerId
      * @return Collection
      * */
-    protected function buildOrderItem($model, int $quality, $buyerId = null)
+    protected function buildOrderItem($model, int $quality, $customerId = null)
     {
-        $data['buyer_id'] = $buyerId;
+        $data['customer_id'] = $customerId;
         $data['shop_id'] = isset($this->input['shop_id']) ? $this->input['shop_id'] : null;
         $data['total_amount'] =  $model->sellPrice * $quality;
         $data['discount_amount'] = 0;

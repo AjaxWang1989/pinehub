@@ -14,8 +14,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  *
  * @property int $id
  * @property string|null $appId 系统应用appid
- * @property string|null $mobile
- * @property int|null $userId 会员id
+ * @property string|null $mobile 手机号码
+ * @property int|null $memberId 会员id
  * @property string|null $platformAppId 微信公众平台、小程序、开放app id
  * @property string $type WECHAT_OFFICE_ACCOUNT 公众平台，
  *             WECHAT_OPEN_PLATFORM 微信开放平台 WECHAT_MINI_PROGRAM 微信小程序 ALIPAY_OPEN_PLATFORM  支付宝开发平台 SELF 平台客户
@@ -45,8 +45,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read \App\Entities\Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
- * @property-read \App\Entities\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereCanUseScore($value)
@@ -58,6 +58,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereIsCertified($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereIsStudentCertified($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereMemberId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereNickname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereOrderCount($value)
@@ -75,7 +76,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUnionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserType($value)
  * @mixin \Eloquent
@@ -101,7 +101,7 @@ class Customer extends Model implements Transformable
      */
     protected $fillable = [
         'app_id',
-        'user_id',
+        'member_id',
         'platform_app_id',
         'type',
         'union_id',
@@ -127,13 +127,13 @@ class Customer extends Model implements Transformable
         'tags'
     ];
 
-    public function user() : BelongsTo
+    public function member() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(Member::class, 'member_id', 'id');
     }
 
     public function orders() : HasMany
     {
-        return $this->hasMany(Order::class, 'buyer_id,', 'id');
+        return $this->hasMany(Order::class, 'customer_id,', 'id');
     }
 }

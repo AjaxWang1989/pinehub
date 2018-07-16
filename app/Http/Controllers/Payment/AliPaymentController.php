@@ -46,7 +46,8 @@ class AliPaymentController extends Controller
             'open_id' => $customer->platformOpenId,
             'app_id' => $customer->appId,
             'wechat_app_id' => $customer->platformAppId,
-            'buyer_id' => $customer->id,
+            'customer_id' => $customer->id,
+            'member_id'   => $customer->memberId,
             'ip' => $request->getClientIp(),
             'shop_id' => $shop->id
         ];
@@ -62,7 +63,7 @@ class AliPaymentController extends Controller
     {
         $paymentApi = paymentApiUriGenerator('/ali/aggregate');
         $accept = "application/vnd.pinehub.v0.0.1+json";
-        //$userId = $request->input('buyer_id', null);
+        //$userId = $request->input('customer_id', null);
         $apiUrl = $paymentApi.'?token='.session()->getId();
         $shop = $this->shopModel->find((int)$request->input('shop_id'));
         session(['shop' => $shop]);

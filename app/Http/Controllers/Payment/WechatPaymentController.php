@@ -43,9 +43,10 @@ class WechatPaymentController extends Controller
             'open_id' => $customer->platformOpenId,
             'app_id' => $customer->appId,
             'wechat_app_id' => $customer->platformAppId,
-            'buyer_id' => $customer->id,
+            'customer_id' => $customer->id,
             'ip' => $request->getClientIp(),
-            'shop_id' => $shop->id
+            'shop_id' => $shop->id,
+            'member_id'   => $customer->memberId
         ];
         Log::debug('payment order ', $order);
         $request->merge($order);

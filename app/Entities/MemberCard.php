@@ -14,19 +14,19 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $id
  * @property int $cardId 卡券card id
  * @property string $cardCode 核销码
- * @property int|null $isGiveByFriend
  * @property string $appId 应用id
- * @property int $userId 用户id
- * @property string|null $openId
- * @property string|null $friendOpenId
- * @property string|null $unionId
- * @property int|null $active
- * @property string|null $outerStr
+ * @property int $isGiveByFriend 是否朋友赠送
+ * @property string|null $friendOpenId 好友微信open id
+ * @property int|null $userId 用户id
+ * @property string|null $openId 微信open id
+ * @property string|null $unionId 微信open id
+ * @property string|null $outerStr 领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加Addcard接口中自定义该字段的字符串值。
+ * @property int $active 是否激活
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property-read \App\Entities\App $app
  * @property-read \App\Entities\Card $card
- * @property-read \App\Entities\User $user
+ * @property-read \App\Entities\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCardCode($value)

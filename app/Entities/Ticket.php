@@ -10,16 +10,16 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\Ticket
  *
  * @property int $id
- * @property string|null $cardId 卡券id
+ * @property string $cardId 卡券id
  * @property string|null $wechatAppId 微信app id
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
  * @property string $cardType 卡券类型
  * @property array $cardInfo 卡券信息
- * @property int|null $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功'
  * @property int $status 0-审核中 1-审核通过 2-审核未通过
- * @property \Carbon\Carbon $beginAt
- * @property \Carbon\Carbon $endAt
+ * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
+ * @property \Carbon\Carbon $beginAt 开始日期
+ * @property \Carbon\Carbon $endAt 结束时间
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt

@@ -17,7 +17,7 @@ class CreateCustomersTable extends Migration
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统应用appid');
             $table->string('mobile', 11)->nullable()->default(null)->comment('手机号码');
-            $table->unsignedInteger('user_id')->nullable()->default(null)->comment('会员id');
+            $table->unsignedInteger('member_id')->nullable()->default(null)->comment('会员id');
             $table->string('platform_app_id', 32)->nullable()->default(null)->comment('微信公众平台、小程序、开放app id');
             $table->string('type')->default('WECHAT_OFFICIAL_ACCOUNT')->comment('WECHAT_OFFICE_ACCOUNT 公众平台，
             WECHAT_OPEN_PLATFORM 微信开放平台 WECHAT_MINI_PROGRAM 微信小程序 ALIPAY_OPEN_PLATFORM  支付宝开发平台 SELF 平台客户');

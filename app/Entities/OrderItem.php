@@ -15,7 +15,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $id
  * @property string|null $appId 系统appid
  * @property int|null $shopId 店铺ID
- * @property int|null $buyerId 买家ID
+ * @property int|null $memberId 买家会员id
+ * @property int|null $customerId 买家ID
  * @property int $orderId 订单id
  * @property string $code 订单子项编码
  * @property float $totalAmount 应付
@@ -27,18 +28,20 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\User $buyer
+ * @property-read \App\Entities\Customer $customer
+ * @property-read \App\Entities\Member|null $member
  * @property-read \App\Entities\Order $order
  * @property-read \App\Entities\OrderItemMerchandise $orderMerchandise
  * @property-read \App\Entities\Shop|null $shop
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereBuyerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereConsignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereDiscountAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereMemberId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem wherePaymentAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereShopId($value)
@@ -64,13 +67,19 @@ class OrderItem extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'buyer_id', 'total_amount', 'payment_amount', 'discount_amount',
-        'status', 'shop_id', 'signed_at', 'consigned_at', 'order_id', 'app_id'
+        'code', 'customer_id', 'total_amount', 'payment_amount', 'discount_amount',
+        'status', 'shop_id', 'signed_at', 'consigned_at', 'order_id', 'app_id', 'member_id'
     ];
 
-    public function buyer() : BelongsTo
+    public function member() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'buyer_id,', 'id');
+        return $this->belongsTo(Member::class, 'member_id', 'id');
+    }
+
+
+    public function customer() : BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id,', 'id');
     }
 
     public function shop() : BelongsTo

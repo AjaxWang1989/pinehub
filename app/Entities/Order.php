@@ -17,12 +17,12 @@ use App\Entities\Traits\ModelAttributesAccess;
  *
  * @property int $id
  * @property string $code 订单编号
- * @property string|null $transactionId
  * @property string|null $openId 微信open id或支付宝user ID
  * @property string|null $wechatAppId 维系app id
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
- * @property int|null $buyerId 买家
+ * @property int|null $memberId 买家会员id
+ * @property int|null $customerId 买家
  * @property float $totalAmount 应付款
  * @property float $paymentAmount 实际付款
  * @property float $discountAmount 优惠价格
@@ -37,27 +37,30 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Carbon\Carbon|null $consignedAt 发货时间
  * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
- * @property string|null $postNo
- * @property string|null $postCode
- * @property string|null $postName
  * @property int $scoreSettle 积分是否已经结算
+ * @property string|null $postNo 快递编号
+ * @property string|null $postCode 邮编
+ * @property string|null $postName 快递公司名称
+ * @property string|null $transactionId 支付交易流水
  * @property string|null $ip 支付终端ip地址
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\Customer $buyer
+ * @property-read \App\Entities\Customer $customer
+ * @property-read \App\Entities\Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereBuyerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCancellation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereConsignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDiscountAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereMemberId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereOpenId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaidAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePayType($value)
@@ -117,15 +120,20 @@ class Order extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'buyer_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
+        'code', 'customer_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
         'receiver_district', 'receiver_address', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
-        'ip', 'open_id', 'transaction_id'
+        'ip', 'open_id', 'transaction_id', 'member_id'
     ];
 
-    public function buyer() : BelongsTo
+    public function member() : BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'buyer_id,', 'id');
+        return $this->belongsTo(Member::class, 'member_id', 'id');
+    }
+
+    public function customer() : BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id,', 'id');
     }
 
     public function orderItems() : HasMany
@@ -156,7 +164,6 @@ class Order extends Model implements Transformable
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
         $request = app('request');
         $clientIp = $request->getClientIp();
-        $buyerId = $request->input('buyer_id', null);
         return [
             'body'    => 'ali qr pay',
             'subject'    => '支付宝扫码支付',
@@ -168,7 +175,7 @@ class Order extends Model implements Transformable
             'store_id' => '',
             'operator_id' => '',
             'terminal_id' => '',// 终端设备号(门店号或收银设备ID) 默认值 web
-            'buyer_id' => $buyerId
+            'buyer_id' => $this->openId
         ];
     }
 
@@ -195,8 +202,6 @@ class Order extends Model implements Transformable
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
         $request = app('request');
         $clientIp = $request->getClientIp();
-        $openId = $request->input('open_id', null);
-
         return [
             'body'    => 'PineHub offline scan qrcode pay',
             'subject'    => '线下扫码支付',
@@ -208,7 +213,7 @@ class Order extends Model implements Transformable
                 'order_no' => $this->code
             ])),
             'client_ip' => $clientIp,// 客户地址
-            'openid' => $openId,
+            'openid' => $this->openId,
         ];
     }
 
