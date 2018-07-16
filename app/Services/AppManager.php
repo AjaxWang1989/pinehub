@@ -94,7 +94,7 @@ class AppManager
     {
         if(!$this->officialAccount) {
             $repository = $this->app->make(AppRepository::class);
-            Log::debug('current app 1 ', [$this->currentApp]);
+            echo "current app 1 {$this->currentApp}";
             $appId = $this->currentApp ? $this->currentApp->id : $this->getAppId();
             if($appId) {
                 $this->currentApp = $repository->find($appId);
