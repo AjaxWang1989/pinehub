@@ -42,6 +42,8 @@ class AuthData extends ChargeBaseData
 
     protected function checkDataParam()
     {
+        Log::debug('request data ', $this->data);
+
         if(!is_array($this->scopes)) {
             $this->scopes = explode(',', $this->scopes);
         }

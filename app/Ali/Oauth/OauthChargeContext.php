@@ -17,6 +17,8 @@ class OauthChargeContext extends ChargeContext
     protected $responseData = null;
 
     protected $request = null;
+
+    protected $params = [];
     public function initCharge($channel, array $config)
     {
         if($channel === Config::ALI_USER_OAUTH){
@@ -31,7 +33,7 @@ class OauthChargeContext extends ChargeContext
     }
 
     public function defaultOAuth() {
-        $this->responseData = [
+        $this->params = [
             'scopes' => 'auth_base',
             'state' => 'init'
         ];
@@ -58,8 +60,8 @@ class OauthChargeContext extends ChargeContext
     }
 
     public function redirect($redirectUri) {
-        $this->responseData['redirect_uri'] = $redirectUri;
-        $this->charge($this->responseData);
+        $this->params['redirect_uri'] = $redirectUri;
+        $this->charge($this->params);
         return redirect($this->responseData);
     }
 
