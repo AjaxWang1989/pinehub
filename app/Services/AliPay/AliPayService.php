@@ -42,7 +42,8 @@ class AliPayService
     {
         $code = Request::input('auth_code');
         return [
-            'grant_type' => 'authorization_code', 'code' => $code
+            'grant_type' => 'authorization_code',
+            'code' => $code
         ];
     }
 
