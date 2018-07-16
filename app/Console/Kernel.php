@@ -82,10 +82,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //
-        echo "schedule start \n";
         Log::debug('schedule start');
-        $schedule->command('wechat.access.token:refresh')->dailyAt('00:00');
-        echo "schedule end \n";
+        $schedule->command('wechat.access.token:refresh')->everyMinute();
         Log::debug('schedule end');
     }
 }
