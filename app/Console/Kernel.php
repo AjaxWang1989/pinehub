@@ -31,6 +31,7 @@ use App\Console\Commands\Console\RuleMakeCommand;
 use App\Console\Commands\Console\VendorPublishCommand;
 use Illuminate\Routing\Console\ControllerMakeCommand;
 use Illuminate\Routing\Console\MiddlewareMakeCommand;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -82,7 +83,9 @@ class Kernel extends ConsoleKernel
     {
         //
         echo "schedule start \n";
+        Log::debug('schedule start');
         $schedule->command('wechat.access.token:refresh')->dailyAt('00:00');
         echo "schedule end \n";
+        Log::debug('schedule end');
     }
 }
