@@ -31,7 +31,7 @@ class WechatAuthAccessTokenRefreshListener extends AsyncEventListener
         $wechat = $event->wechat;
         $now = time();
         $app = app();
-        $app->bind('selected_appid', function () use($wechat){
+        $app->singleton('selected_appid', function () use($wechat){
             return $wechat->wechatBindApp;
         });
         if($wechat->authorizerAccessTokenExpiresIn->getTimestamp() < $now) {
