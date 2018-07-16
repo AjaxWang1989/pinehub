@@ -45,6 +45,7 @@ class AuthData extends ChargeBaseData
         if(!is_array($this->scopes)) {
             $this->scopes = explode(',', $this->scopes);
         }
+        Log::debug('scopes', [$this->scopes]);
         foreach ($this->scopes as $scope){
             if(!in_array($scope, ['auth_base', 'auth_user'])){
                 throw new PayException('scope错误');
