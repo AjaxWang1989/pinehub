@@ -22,7 +22,7 @@ class AliAuthController extends Controller
     //
     public function oauth2(Request $request)
     {
-        $user = app('ali.user.info')->getUser();
+        $user = app('alipay')->oauth()->getUser();
         dd($user);
         $redirect = $request->input('redirect_uri', null);
         if(($token = $this->session->get('ali.oauth.token')) && isset($token['user_id'])) {
