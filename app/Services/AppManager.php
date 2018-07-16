@@ -76,13 +76,17 @@ class AppManager
         $this->aliPayOpenPlatform = new AliPayOpenPlatform(config('ali.payment'));
     }
 
+    public function setCurrentApp($currentApp)
+    {
+        $this->currentApp = $currentApp;
+    }
+
     public function getAppId()
     {
         $request = Request::capture();
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);
         $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
-        $appId =$appId ? $appId : ($this->app->has('currentApp') ? $this->app->make('currentApp')->id : null);
         return $appId;
     }
 
@@ -90,7 +94,7 @@ class AppManager
     {
         if(!$this->officialAccount) {
             $repository = $this->app->make(AppRepository::class);
-            $appId = $this->getAppId();
+            $appId = $this->currentApp ? $this->currentApp->id : $this->getAppId();
             if($appId) {
                 $this->currentApp = $repository->find($appId);
                 $this->officialAccount = with($this->currentApp, function (App $app){
@@ -106,7 +110,7 @@ class AppManager
     {
         if(!$this->miniProgram){
             $repository = $this->app->make(AppRepository::class);
-            $appId = $this->getAppId();
+            $appId = $this->currentApp ? $this->currentApp->id : $this->getAppId();
             if($appId) {
                 $this->currentApp = $repository->find($appId);
                 $this->miniProgram = with($this->currentApp, function (App $app){
