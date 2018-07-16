@@ -34,7 +34,7 @@ class OauthChargeContext extends ChargeContext
 
     public function defaultOAuth() {
         $this->params = [
-            'scopes' => 'auth_base,auth_user',
+            'scopes' => 'auth_base',
             'state' => 'init'
         ];
         return $this;
