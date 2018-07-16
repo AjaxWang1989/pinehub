@@ -2,22 +2,20 @@
 /**
  * Created by PhpStorm.
  * User: wangzaron
- * Date: 2018/5/21
- * Time: 下午10:25
+ * Date: 2018/7/16
+ * Time: 上午9:11
  */
 
-namespace App\Ali\Payment;
+namespace App\Ali\Oauth;
 
 
-use App\Ali\Payment\Data\WapPaymentData;
-use Illuminate\Support\Facades\Log;
+use App\Ali\Oauth\Data\UserData;
 use Payment\Common\Ali\AliBaseStrategy;
 use Payment\Common\PayException;
 
-class WapPayment extends AliBaseStrategy
+class User extends AliBaseStrategy
 {
-    // wap 支付接口名称
-    protected $method = 'alipay.trade.create';
+    protected $method = 'alipay.user.info.share';
 
     /**
      * 获取支付对应的数据完成类
@@ -28,7 +26,7 @@ class WapPayment extends AliBaseStrategy
     {
         $this->config->method = $this->method;
         // 以下两种方式任选一种
-        return WapPaymentData::class;
+        return UserData::class;
     }
 
     /**
@@ -39,18 +37,13 @@ class WapPayment extends AliBaseStrategy
      */
     protected function retData(array $data)
     {
-        $reqData = parent::retData($data);
-        // 发起网络请求
+        $requestData = parent::retData($data);
+
         try {
-            $data = $this->sendReq($reqData);
+            $res = $this->sendReq($requestData);
         } catch (PayException $e) {
             throw $e;
         }
-
-        // 检查是否报错
-        if ($data['code'] !== '10000') {
-            new PayException($data['sub_msg']);
-        }
-        return $data;
+        return $res;
     }
 }

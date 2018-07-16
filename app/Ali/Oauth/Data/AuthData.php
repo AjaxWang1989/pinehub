@@ -50,7 +50,7 @@ class AuthData extends ChargeBaseData
                 throw new PayException('scope错误');
             }
         }
-       Log::debug('state ', [$this->state, $this->state === null]);
+
        if($this->state === null){
            throw new PayException('state错误');
        }

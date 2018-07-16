@@ -13,4 +13,5 @@ class Config
 {
     const ALI_USER_OAUTH = 'user_oauth';
     const ALI_OAUTH_TOKEN = 'oauth_token';
+    const ALI_USER_SHARE  = 'user_share';
 }

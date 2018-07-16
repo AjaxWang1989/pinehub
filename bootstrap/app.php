@@ -98,6 +98,7 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\App\Providers\RepositoryServiceProvider::class);
  $app->register(\Illuminate\Foundation\Providers\FoundationServiceProvider::class);
  $app->register(\App\Providers\WechatServiceProvider::class);
+ $app->register(\App\Providers\AliPayServiceProvider::class);
  $app->register(App\Providers\AppServiceProvider::class);
  $app->register(App\Providers\AuthServiceProvider::class);
  $app->register(App\Providers\EventServiceProvider::class);
