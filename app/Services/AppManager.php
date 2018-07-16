@@ -82,7 +82,7 @@ class AppManager
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);
         $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
-        $appId =$appId ? $appId : ($this->app->has('currentApp') ? $this->app->make('currentApp') : null);
+        $appId =$appId ? $appId : ($this->app->has('currentApp') ? $this->app->make('currentApp')->id : null);
         return $appId;
     }
 
