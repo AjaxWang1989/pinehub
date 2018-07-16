@@ -42,10 +42,12 @@ class WechatAccessTokenRefreshCommand extends Command
     public function handle()
     {
         //
+        echo "start handle wechat access token refresh command \n";
         WechatConfig::where('authorizer_access_token_expires_in', '<=', Carbon::now())->chunk(100, function (Collection $collection) {
             $collection->map(function (WechatConfig $wechatConfig) {
                 dispatch(new WechatAuthAccessTokenRefreshEvent($wechatConfig));
             });
         });
+        echo "end handle wechat access token refresh command \n";
     }
 }
