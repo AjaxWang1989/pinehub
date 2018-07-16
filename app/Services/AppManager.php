@@ -62,10 +62,7 @@ class AppManager
         $this->app = $app;
         $repository = $app->make(AppRepository::class);
         $this->openPlatform = $this->app->make('wechat')->openPlatform();
-        $request = Request::capture();
-        $appId = $request->header('selected_appid', null);
-        $appId = $appId ? $appId : $request->query('selected_appid', null);
-        $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
+        $appId = $this->getAppId();
         if($appId) {
             $this->currentApp = $repository->find($appId);
             $this->officialAccount = with($this->currentApp, function (App $app){
@@ -79,14 +76,21 @@ class AppManager
         $this->aliPayOpenPlatform = new AliPayOpenPlatform(config('ali.payment'));
     }
 
+    public function getAppId()
+    {
+        $request = Request::capture();
+        $appId = $request->header('selected_appid', null);
+        $appId = $appId ? $appId : $request->query('selected_appid', null);
+        $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
+        $appId =$appId ? $appId : $this->app['selected_appid'];
+        return $appId;
+    }
+
     public function officialAccount()
     {
         if(!$this->officialAccount) {
             $repository = $this->app->make(AppRepository::class);
-            $request = Request::capture();
-            $appId = $request->header('selected_appid', null);
-            $appId = $appId ? $appId : $request->query('selected_appid', null);
-            $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
+            $appId = $this->getAppId();
             if($appId) {
                 $this->currentApp = $repository->find($appId);
                 $this->officialAccount = with($this->currentApp, function (App $app){
@@ -102,10 +106,7 @@ class AppManager
     {
         if(!$this->miniProgram){
             $repository = $this->app->make(AppRepository::class);
-            $request = Request::capture();
-            $appId = $request->header('selected_appid', null);
-            $appId = $appId ? $appId : $request->query('selected_appid', null);
-            $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
+            $appId = $this->getAppId();
             if($appId) {
                 $this->currentApp = $repository->find($appId);
                 $this->miniProgram = with($this->currentApp, function (App $app){

@@ -48,7 +48,6 @@ class WechatAccessTokenRefreshCommand extends Command
         Log::debug( "start handle wechat access token refresh command \n");
         WechatConfig::where('authorizer_access_token_expires_in', '<=', Carbon::now())->chunk(100, function (Collection $collection) {
             $collection->map(function (WechatConfig $wechatConfig) {
-                Request::merge(['selected_appid' => $wechatConfig->wechatBindApp]);
                 Event::fire((new WechatAuthAccessTokenRefreshEvent($wechatConfig)));
             });
         });
