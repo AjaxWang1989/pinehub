@@ -98,7 +98,6 @@ class AppManager
     {
         if(!$this->officialAccount) {
             $repository = $this->app->make(AppRepository::class);
-            echo "current app 1 {$this->currentApp}";
             $appId = $this->getAppId();
             if($appId) {
                 $this->currentApp = $this->currentApp ? $this->currentApp : $repository->find($appId);
@@ -107,7 +106,6 @@ class AppManager
                 });
             }
         }
-        throw new \Exception($this->currentApp);
         return $this->officialAccount;
     }
 
