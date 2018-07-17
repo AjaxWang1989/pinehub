@@ -41,6 +41,7 @@ class OrderItemTransformer extends TransformerAbstract
             'pay_type' => $model->payType,
             'status' => $model->status,
             'type' => $model->type,
+            'trade_status' => $model->tradeStatus,
 
             /* place your other model properties here */
 

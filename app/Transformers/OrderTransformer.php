@@ -56,7 +56,7 @@ class OrderTransformer extends TransformerAbstract
             'receiver_address' => $model->receiverAddress,
             'type' => $model->type,
             'transaction_id' => $model->transactionId,
-
+            'trade_status' => $model->tradeStatus,
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,
