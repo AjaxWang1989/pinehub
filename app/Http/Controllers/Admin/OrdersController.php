@@ -53,7 +53,8 @@ class OrdersController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(OrderSearchCriteria::class);
-        $orders = $this->repository->with(['orderItems.orderMerchandise', 'orderItems.shop', 'customer', 'member'])->paginate();
+        $orders = $this->repository->with(['orderItems.orderMerchandise',
+            'orderItems.shop', 'customer', 'member'])->paginate(\Illuminate\Support\Facades\Request::input('limit', PAGE_LIMIT));
 
         if (request()->wantsJson()) {
 
