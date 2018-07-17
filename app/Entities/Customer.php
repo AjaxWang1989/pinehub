@@ -134,6 +134,6 @@ class Customer extends Model implements Transformable
 
     public function orders() : HasMany
     {
-        return $this->hasMany(Order::class, 'customer_id,', 'id');
+        return $this->hasMany(Order::class, 'customer_id', 'id');
     }
 }

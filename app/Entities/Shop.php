@@ -171,6 +171,6 @@ class Shop extends Model implements Transformable
     public function waitWriteOffCustomers()
     {
         return $this->orders && $this->orders->count() > 0 ? $this->orders->where('status', Order::PAID)
-                   ->pluck('customer_id,') : null;
+                   ->pluck('customer_id') : null;
     }
 }

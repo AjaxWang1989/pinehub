@@ -79,7 +79,7 @@ class OrderItem extends Model implements Transformable
 
     public function customer() : BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'customer_id,', 'id');
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
     public function shop() : BelongsTo
