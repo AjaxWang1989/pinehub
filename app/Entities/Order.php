@@ -43,6 +43,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $postName 快递公司名称
  * @property string|null $transactionId 支付交易流水
  * @property string|null $ip 支付终端ip地址
+ * @property string|null $tradeStatus 交易状态
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -77,6 +78,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTradeStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTransactionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
@@ -92,6 +94,7 @@ class Order extends Model implements Transformable
     const PAID = 300;
     const SEND = 400;
     const COMPLETED = 500;
+    const PAY_FAILED = 600;
 
     const ORDER_NUMBER_PREFIX = 'PH';
     const ALI_PAY = 'ALI_PAY';
@@ -107,6 +110,12 @@ class Order extends Model implements Transformable
 
     const VIRTRUAL_MERCHANDISE = 0;
     const REAL_MERCHANDISE = 1;
+
+    const TRADE_WAIT = 'TRADE_WAIT';
+    const TRADE_FAILED = 'TRADE_FAILED';
+    const TRADE_SUCCESS = 'TRADE_SUCCESS';
+    const TRADE_FINISHED = 'TRADE_FINISHED';
+    const TRADE_CANCEL = 'TRADE_CANCEL';
 
     protected $dates = [
         'signed_at',

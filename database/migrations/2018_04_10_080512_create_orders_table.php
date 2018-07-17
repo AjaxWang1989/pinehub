@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use App\Entities\Order;
 
 class CreateOrdersTable extends Migration
 {
@@ -45,6 +46,7 @@ class CreateOrdersTable extends Migration
             $table->string('post_name', 64)->nullable()->default(null)->comment('快递公司名称');
             $table->string('transaction_id', 32)->nullable()->default(null)->comment('支付交易流水');
             $table->string('ip', 15)->nullable()->default(null)->comment('支付终端ip地址');
+            $table->string('trade_status', 16)->nullable()->default(Order::TRADE_FINISHED)->comment('交易状态');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');
