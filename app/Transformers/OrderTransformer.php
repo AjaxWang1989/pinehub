@@ -29,7 +29,7 @@ class OrderTransformer extends TransformerAbstract
                     'origin_price', 'cost_price']) : [];
                 $data  = array_merge($data, $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'signed_at',
                     'consigned_at', 'status']));
-                $data['shop'] = $orderItem->shop->only(['id', 'name']);
+                $data['shop'] = $orderItem->shop ? $orderItem->shop->only(['id', 'name']) : null;
                 $data['merchandise_stock_num'] = $orderItem->orderMerchandise && $orderItem->orderMerchandise->merchandise ?
                     $orderItem->orderMerchandise->merchandise->stockNum : 0;
                 $data['sku_product_stock_num'] = $orderItem->orderMerchandise && $orderItem->orderMerchandise->skuProduct ?
@@ -37,8 +37,8 @@ class OrderTransformer extends TransformerAbstract
                 return $data;
             }) : null,
             'code' => $model->code,
-            'customer' => $model->customer->only(['id', 'nickname', 'mobile']),
-            'member'   => $model->customer->member ? $model->customer->member->only(['id', 'nickname', 'user_name', 'mobile']) : null,
+            'customer' => $model->customer ? $model->customer->only(['id', 'nickname', 'mobile']) : null,
+            'member'   => $model->member ? $model->member->only(['id', 'nickname', 'user_name', 'mobile']) : null,
             'total_amount' => $model->totalAmount,
             'payment_amount' => $model->paymentAmount,
             'discount_amount' => $model->discountAmount,

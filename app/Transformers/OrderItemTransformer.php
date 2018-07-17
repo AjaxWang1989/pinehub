@@ -30,12 +30,12 @@ class OrderItemTransformer extends TransformerAbstract
                     $orderItem->orderMerchandise->only(['name', 'merchandise_id', 'sku_product_id',
                         'main_image', 'sell_price', 'quality']) : [];
                 $data  = array_merge($data, $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'status']));
-                $data['shop'] = $orderItem->shop->only(['id', 'name']);
+                $data['shop'] =$orderItem->shop ? $orderItem->shop->only(['id', 'name']) : null;
                 return $data;
             }) : null,
             'code' => $model->code,
-            'customer' => $model->customer->only(['id', 'nickname', 'mobile']),
-            'member'   => $model->customer->member ? $model->customer->member->only(['id', 'nickname', 'user_name', 'mobile']) : null,
+            'customer' => $model->customer ? $model->customer->only(['id', 'nickname', 'mobile']) : null,
+            'member'   => $model->member ? $model->member->only(['id', 'nickname', 'user_name', 'mobile']) : null,
             'payment_amount' => $model->paymentAmount,
             'paid_at' => $model->paidAt,
             'pay_type' => $model->payType,
