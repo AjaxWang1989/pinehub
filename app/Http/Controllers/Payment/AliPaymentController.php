@@ -55,6 +55,8 @@ class AliPaymentController extends Controller
         $order = $this->app->make('order.builder')->setInput($request->all())->handle();
         $charge = app('ali.payment.aggregate');
         $order = $this->preOrder($order->buildAliAggregatePaymentOrder(), $charge);
+        $order->status = Order::MAKE_SURE;
+        $order->save();
         return $this->response()->item( new AliPaymentSigned($order),
             new AliPaymentSignedTransformer());
     }

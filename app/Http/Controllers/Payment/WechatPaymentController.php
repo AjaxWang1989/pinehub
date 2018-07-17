@@ -52,6 +52,8 @@ class WechatPaymentController extends Controller
         $request->merge($order);
         $order = $this->app->make('order.builder')->setInput($request->all())->handle();
         $result = app('wechat')->unify($order, $order->wechatAppId);
+        $order->status = Order::MAKE_SURE;
+        $order->save();
         if($result['return_code'] === 'SUCCESS'){
             $sdkConfig = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
             $result['sdk_config'] = $sdkConfig;
