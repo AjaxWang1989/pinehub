@@ -25,10 +25,20 @@ class OrderTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             'order_item' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
-                $data = $orderItem->orderMerchandise ? $orderItem->orderMerchandise->only(['name', 'merchandise_id', 'sku_product_id', 'main_image', 'sell_price', 'quality',
-                    'origin_price', 'cost_price']) : [];
+                $data = $orderItem->orderMerchandise ?
+                    $orderItem->orderMerchandise->map(function (Merchandise $merchandise){
+                        $data = $merchandise->only(['name', 'merchandise_id', 'sku_product_id',
+                            'main_image', 'sell_price', 'quality']);
+                        $data['sell_price'] = number_format($data['sell_price'], 2);
+                        $data['origin_price'] = number_format($data['origin_price'], 2);
+                        $data['cost_price'] = number_format($data['cost_price'], 2);
+                        return $data;
+                    }) : [];
                 $data  = array_merge($data, $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'signed_at',
                     'consigned_at', 'status']));
+                $data['total_amount'] = number_format($data['total_amount'], 2);
+                $data['payment_amount'] = number_format($data['payment_amount'], 2);
+                $data['discount_amount'] = number_format($data['discount_amount'], 2);
                 $data['shop'] = $orderItem->shop ? $orderItem->shop->only(['id', 'name']) : null;
                 $data['merchandise_stock_num'] = $orderItem->orderMerchandise && $orderItem->orderMerchandise->merchandise ?
                     $orderItem->orderMerchandise->merchandise->stockNum : 0;
