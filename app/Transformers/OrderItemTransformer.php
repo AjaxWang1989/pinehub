@@ -32,8 +32,8 @@ class OrderItemTransformer extends TransformerAbstract
                         $data = $merchandise->only(['name', 'merchandise_id', 'sku_product_id',
                             'main_image', 'sell_price', 'quality']);
                         $data['sell_price'] = number_format($data['sell_price'], 2);
-                        $data['origin_price'] = number_format($data['origin_price'], 2);
-                        $data['cost_price'] = number_format($data['cost_price'], 2);
+//                        $data['origin_price'] = number_format($data['origin_price'], 2);
+//                        $data['cost_price'] = number_format($data['cost_price'], 2);
                         return $data;
                     }) : [];
 
