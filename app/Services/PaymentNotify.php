@@ -31,8 +31,7 @@ class PaymentNotify implements PayNotifyInterface
         $order = $this->order->findWhere(['code' => $data['order_no']])->first();
         $this->offLinePayOrder($order);
         $order->transactionId = $data['transaction_id'];
-        Log::debug('notify data', $data);
-        if($data['trade_status'] === 'SUCCESS'){
+        if($data['trade_state'] === 'success'){
             $order->tradeStatus = Order::TRADE_SUCCESS;
             $order->status = Order::PAID;
             $order->paidAt = Carbon::now();
