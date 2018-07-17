@@ -132,7 +132,7 @@ class Order extends Model implements Transformable
         'code', 'customer_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
         'receiver_district', 'receiver_address', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
-        'ip', 'open_id', 'transaction_id', 'member_id'
+        'ip', 'open_id', 'transaction_id', 'member_id', 'trade_status'
     ];
 
     public function member() : BelongsTo

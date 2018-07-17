@@ -58,7 +58,7 @@ class OrderBuilder implements InterfaceServiceHandler
     /**
      * @var User|null
      * */
-    protected $buyer = null;
+   // protected $buyer = null;
 
     /**
      * @var MerchandiseRepositoryEloquent|null

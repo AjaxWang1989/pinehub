@@ -107,12 +107,12 @@ class ScoreRule extends Model implements Transformable
         if($this->type === 1) {
             switch ($this->rule['type']) {
                 case self::ORDER_AMOUNT_SCORE: {
-                    $scoreSettleCash = $this->buildScoreSettle($order->buyerUserId, ScoreSettleCash::ORDER_AMOUNT_RULE,
+                    $scoreSettleCash = $this->buildScoreSettle($order->memberId, ScoreSettleCash::ORDER_AMOUNT_RULE,
                         'order_amount', $order->paymentAmount);
                     break;
                 }
                 case self::ORDER_COUNT_SCORE: {
-                    $scoreSettleCash = $this->buildScoreSettle($order->buyerUserId, ScoreSettleCash::ORDER_COUNT_RULE,
+                    $scoreSettleCash = $this->buildScoreSettle($order->memberId, ScoreSettleCash::ORDER_COUNT_RULE,
                         'order_count', 1);
                     break;
                 }

@@ -30,7 +30,7 @@ class CreateOrdersTable extends Migration
             $table->enum('pay_type', ['WECHAT_PAY', 'ALI_PAY'])->default('WECHAT_PAY')
                 ->comment('支付方式默认微信支付');
             $table->unsignedInteger('status')->default(10)
-                ->comment('订单状态：0-订单取消 10-已确定 20-已支付 30-已发货 40-已完成 ');
+                ->comment('订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败 ');
             $table->unsignedTinyInteger('cancellation')->default(0)
                 ->comment('取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消 ');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
@@ -46,7 +46,8 @@ class CreateOrdersTable extends Migration
             $table->string('post_name', 64)->nullable()->default(null)->comment('快递公司名称');
             $table->string('transaction_id', 32)->nullable()->default(null)->comment('支付交易流水');
             $table->string('ip', 15)->nullable()->default(null)->comment('支付终端ip地址');
-            $table->string('trade_status', 16)->nullable()->default(Order::TRADE_FINISHED)->comment('交易状态');
+            $table->string('trade_status', 16)->nullable()->default(Order::TRADE_FINISHED)->comment('交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
+                TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');

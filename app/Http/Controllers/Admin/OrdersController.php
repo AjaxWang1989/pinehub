@@ -53,7 +53,7 @@ class OrdersController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(OrderSearchCriteria::class);
-        $orders = $this->repository->with(['orderItems.orderMerchandise', 'orderItems.shop', 'buyer'])->paginate();
+        $orders = $this->repository->with(['orderItems.orderMerchandise', 'orderItems.shop', 'customer.member'])->paginate();
 
         if (request()->wantsJson()) {
 
@@ -98,7 +98,7 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        $order = $this->repository->with(['orderItems.orderMerchandise', 'orderItems.shop', 'buyer'])->find($id);
+        $order = $this->repository->with(['orderItems.orderMerchandise', 'orderItems.shop', 'customer.member'])->find($id);
 
         if (request()->wantsJson()) {
 
