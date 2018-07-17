@@ -28,7 +28,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property float $discountAmount 优惠价格
  * @property \Carbon\Carbon|null $paidAt 支付时间
  * @property string $payType 支付方式默认微信支付
- * @property int $status 订单状态：0-订单取消 10-已确定 20-已支付 30-已发货 40-已完成
+ * @property int $status 订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败
  * @property int $cancellation 取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消
  * @property \Carbon\Carbon|null $signedAt 签收时间
  * @property string|null $receiverCity 收货城市
@@ -43,7 +43,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $postName 快递公司名称
  * @property string|null $transactionId 支付交易流水
  * @property string|null $ip 支付终端ip地址
- * @property string|null $tradeStatus 交易状态
+ * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
+ *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
