@@ -13,6 +13,7 @@ namespace App\Services;
 use App\Entities\Order;
 use App\Repositories\OrderRepositoryEloquent;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Payment\Notify\PayNotifyInterface;
 
 class PaymentNotify implements PayNotifyInterface
@@ -30,6 +31,7 @@ class PaymentNotify implements PayNotifyInterface
         $order = $this->order->findWhere(['code' => $data['order_no']])->first();
         $this->offLinePayOrder($order);
         $order->transactionId = $data['transaction_id'];
+        Log::debug('notify data', $data);
         if($data['trade_status'] === 'SUCCESS'){
             $order->tradeStatus = Order::TRADE_SUCCESS;
             $order->status = Order::PAID;
