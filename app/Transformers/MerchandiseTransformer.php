@@ -23,7 +23,7 @@ class MerchandiseTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
+            'categories' => $model->categories,
             /* place your other model properties here */
             'app_id' => $model->appId,
             'code' => $model->code,
