@@ -25,6 +25,7 @@ class MerchandiseUpdateRequest extends FormRequest
     {
         return [
             //
+            'categories' => ['required', 'array'],
             'name' => ['required', 'max:255'],
             'main_image' => ['required', 'url'],
             'images' => ['required', 'array'],

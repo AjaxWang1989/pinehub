@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\Merchandise;
 use App\Http\Requests\Admin\MerchandiseImageRequest;
 use App\Http\Response\JsonResponse;
 
@@ -67,8 +68,12 @@ class MerchandisesController extends Controller
      */
     public function store(MerchandiseCreateRequest $request)
     {
-        $merchandise = $this->repository->create($request->all());
-
+        $categories = $request->input('categories');
+        $data = $request->except(['categories']);
+        $merchandise = $this->repository->create($data);
+        tap($merchandise, function (Merchandise $merchandise) use($categories){
+            $merchandise->categories()->sync($categories);
+        });
         $response = [
             'message' => 'Merchandise created.',
             'data'    => $merchandise->toArray(),
@@ -127,8 +132,12 @@ class MerchandisesController extends Controller
      */
     public function update(MerchandiseUpdateRequest $request, $id)
     {
-       $merchandise = $this->repository->update($request->all(), $id);
-
+        $categories = $request->input('categories');
+        $data = $request->except(['categories']);
+        $merchandise = $this->repository->update($data, $id);
+        tap($merchandise, function (Merchandise $merchandise) use($categories){
+            $merchandise->categories()->sync($categories);
+        });
        $response = [
            'message' => 'Merchandise updated.',
            'data'    => $merchandise->toArray(),
