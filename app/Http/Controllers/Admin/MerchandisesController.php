@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Requests\Admin\MerchandiseMainImageRequest;
+use App\Http\Requests\Admin\MerchandiseImageRequest;
 use App\Http\Response\JsonResponse;
 
 use App\Repositories\FileRepository;
@@ -165,7 +165,7 @@ class MerchandisesController extends Controller
         return redirect()->back()->with('message', 'Merchandise deleted.');
     }
 
-    public function uploadMerchandiseMainImage(MerchandiseMainImageRequest $request, string $driver="default")
+    public function uploadMerchandiseImage(MerchandiseImageRequest $request, string $driver="default")
     {
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;

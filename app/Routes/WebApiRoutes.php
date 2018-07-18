@@ -128,6 +128,14 @@ class WebApiRoutes extends ApiRoutes
                     $router->delete("auto_reply_messages", ['as' => 'wechat.auto_reply_message.delete.bat', 'uses' => 'AutoReplyMessagesController@destroy']);
                 });
 
+                $router->get('categories', ['as' => 'categories.list', 'uses' => 'CategoriesController@index']);
+                $router->post('category', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);
+
+                $router->get('merchandises', ['as' => 'merchandises.list', 'uses' => 'MerchandisesController@index']);
+                $router->post('merchandise', ['as' => 'merchandise.create', 'uses' => 'MerchandisesController@store']);
+                $router->put('merchandise/{id}', ['as' => 'merchandise.update', 'uses' => 'MerchandisesController@update']);
+                $router->get('merchandise/{id}', ['as' => 'merchandise.show', 'uses' => 'MerchandisesController@show']);
+                $router->post('merchandise/image/{driver?}', ['as' => 'merchandise.image.upload', 'uses' => 'MerchandisesController@uploadMerchandiseImage']);
             });
 
 

@@ -13,7 +13,7 @@ class MerchandiseUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,17 @@ class MerchandiseUpdateRequest extends FormRequest
     {
         return [
             //
+            'name' => ['required', 'max:255'],
+            'main_image' => ['required', 'url'],
+            'images' => ['required', 'array'],
+            'preview' => ['required', 'max:256'],
+            'detail' => ['required'],
+            'origin_price' => ['required', 'numeric'],
+            'sell_price' => ['required', 'numeric'],
+            'cost_price' => ['numeric'],
+            'factory_price' => ['numeric'],
+            'stock_num' => ['required', 'integer'],
+            'status' => ['required', 'in:'.Merchandise::UP.','.Merchandise::DOWN]
         ];
     }
 }

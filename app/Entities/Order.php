@@ -48,7 +48,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\Customer $customer
+ * @property-read \App\Entities\Customer|null $customer
  * @property-read \App\Entities\Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
