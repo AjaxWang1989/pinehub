@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Entities\Merchandise;
 
 class MerchandiseUpdateRequest extends FormRequest
 {

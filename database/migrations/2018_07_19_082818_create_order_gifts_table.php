@@ -15,6 +15,7 @@ class CreateOrderGiftsTable extends Migration
     {
         Schema::create('order_gifts', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name', 16)->comment('名称');
             $table->string('app_id', 16)->comment('系统应用id');
             $table->string('type', 16)->comment('支付活动方式：满减送 PAY_FULL/支付礼包 PAY_GIFT');
             $table->timestamp('begin_at')->comment('开始时间');

@@ -11,6 +11,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\OrderGift
  *
  * @property int $id
+ * @property string $name 名称
  * @property string $appId 系统应用id
  * @property string $type 支付活动方式：满减送 PAY_FULL/支付礼包 PAY_GIFT
  * @property \Carbon\Carbon $beginAt 开始时间
@@ -25,6 +26,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereEndAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereGift($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereUpdatedAt($value)
