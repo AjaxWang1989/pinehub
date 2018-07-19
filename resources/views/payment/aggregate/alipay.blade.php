@@ -345,9 +345,9 @@
                 success:function(data) {
                     //location.href = data.data.redirect;
                     console.log(JSON.stringify(data.data));
-                    alert(JSON.stringify(data.data));
+                    // alert(JSON.stringify(data.data));
+                    AlipayJSBridge.call('hideLoading');
                     if(!!data.data && !!data.data.trade_no){
-                        AlipayJSBridge.call('hideLoading');
                         AlipayJSBridge.call("tradePay", {
                             tradeNO: data.data.trade_no
                         }, function(result) {
@@ -378,6 +378,7 @@
                     }
                 },
                 error: function(error){
+                    AlipayJSBridge.call('hideLoading');
                     alert(error);
                 }
             });
