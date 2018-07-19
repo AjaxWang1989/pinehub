@@ -136,6 +136,11 @@ class WebApiRoutes extends ApiRoutes
                 $router->put('merchandise/{id}', ['as' => 'merchandise.update', 'uses' => 'MerchandisesController@update']);
                 $router->get('merchandise/{id}', ['as' => 'merchandise.show', 'uses' => 'MerchandisesController@show']);
                 $router->post('merchandise/image/{driver?}', ['as' => 'merchandise.image.upload', 'uses' => 'MerchandisesController@uploadMerchandiseImage']);
+
+                $router->post('order-gift', ['as' => 'order-gift.create', 'uses' => 'OrderGiftsController@store']);
+                $router->put('order-gift/{id}', ['as' => 'order-gift.update', 'uses' => 'OrderGiftsController@update']);
+                $router->get('order-gifts', ['as' => 'order-gift.list', 'uses' => 'OrderGiftsController@index']);
+                $router->get('order-gift/{id}', ['as' => 'order-gift.create', 'uses' => 'OrderGiftsController@store']);
             });
 
 
