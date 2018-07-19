@@ -12,11 +12,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  *
  * @property int $id
  * @property string $appId 系统应用id
- * @property string $type 支付活动方式：满减/支付礼包
+ * @property string $type 支付活动方式：满减送 PAY_FULL/支付礼包 PAY_GIFT
  * @property \Carbon\Carbon $beginAt 开始时间
  * @property \Carbon\Carbon $endAt 结束时间
  * @property int $status 状态：0-未开始 1-进行中 2-结束 3-失效
- * @property mixed $gift 礼包json：{discount:0.9, cost: 10.00, ticket_id: XXX}
+ * @property mixed $gift 礼包json：{discount:0.9, cost: 10.00, ticket_id: XXX, score: 10, condition: { least_amount: 100}}
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderGift whereAppId($value)
