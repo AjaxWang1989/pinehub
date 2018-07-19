@@ -43,6 +43,7 @@ class WapPayment extends AliBaseStrategy
         // 发起网络请求
         try {
             $data = $this->sendReq($reqData);
+            Log::debug('alipayment config', $this->config->toArray());
         } catch (PayException $e) {
             throw $e;
         }
