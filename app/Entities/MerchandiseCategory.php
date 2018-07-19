@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Prettus\Repository\Contracts\Transformable;
@@ -28,7 +29,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class MerchandiseCategory extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.
