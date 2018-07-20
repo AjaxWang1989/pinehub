@@ -48,6 +48,10 @@ class OrderGift extends Model implements Transformable
         'begin_at',
         'end_at'
     ];
+
+    protected $casts = [
+        'gift' => 'array'
+    ];
     /**
      * The attributes that are mass assignable.
      *
