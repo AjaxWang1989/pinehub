@@ -4,6 +4,8 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -58,5 +60,10 @@ class OrderGift extends Model implements Transformable
      * @var array
      */
     protected $fillable = ['app_id', 'name', 'begin_at', 'end_at', 'gift', 'type', 'status'];
+
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'gift.*.ticket_id', 'id');
+    }
 
 }
