@@ -63,7 +63,7 @@ class OrderGift extends Model implements Transformable
 
     public function tickets(): HasMany
     {
-        return $this->hasMany(Ticket::class, "gift->'$.ticket_id'", 'id');
+        return $this->hasMany(Ticket::class, "gift -> '$[*].ticket_id'", 'id');
     }
 
 }
