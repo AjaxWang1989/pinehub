@@ -61,9 +61,9 @@ class OrderGift extends Model implements Transformable
      */
     protected $fillable = ['app_id', 'name', 'begin_at', 'end_at', 'gift', 'type', 'status'];
 
-    public function tickets(): HasMany
+    public function tickets(): BelongsTo
     {
-        return $this->hasMany(Ticket::class, "gift -> '$[*].ticket_id'", 'id');
+        return $this->belongsTo(Ticket::class, "gift -> \'\$[*]\.ticket_id\'", 'id');
     }
 
 }
