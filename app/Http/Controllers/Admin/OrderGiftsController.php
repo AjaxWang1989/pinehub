@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\OrderGift;
 use App\Http\Response\JsonResponse;
 
 use Exception;
@@ -44,7 +45,7 @@ class OrderGiftsController extends Controller
     public function index()
     {
         $type = Request::input('type');
-        $orderGifts = $this->repository->scopeQuery(function ($model) use($type) {
+        $orderGifts = $this->repository->scopeQuery(function (OrderGift &$model) use($type) {
             $model->where('type', $type);
             $beginAt = Request::input('begin_at', null);
             $endAt = Request::input('end_at', null);
