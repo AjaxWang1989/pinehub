@@ -12,6 +12,7 @@ use App\Transformers\OrderGiftTransformer;
 use App\Transformers\OrderGiftItemTransformer;
 use App\Repositories\OrderGiftRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 
 /**
@@ -46,7 +47,7 @@ class OrderGiftsController extends Controller
     {
         $type = Request::input('type');
         $orderGifts = $this->repository->scopeQuery(function (OrderGift &$model) use($type) {
-            $model->where('type', $type);
+            $model->whereType($type);
             $beginAt = Request::input('begin_at', null);
             $endAt = Request::input('end_at', null);
             if($beginAt) {
@@ -56,6 +57,7 @@ class OrderGiftsController extends Controller
             if($endAt) {
                 $model->where('end_at', '<', $endAt);
             }
+            Log::debug('order gift type '.$type);
             return $model;
         })->paginate();
 
