@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Criteria\Admin\OrderGiftCriteria;
 use App\Services\AppManager;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\OrderGiftRepository;
@@ -42,5 +43,5 @@ class OrderGiftRepositoryEloquent extends BaseRepository implements OrderGiftRep
             return $gift;
         });
     }
-    
+
 }

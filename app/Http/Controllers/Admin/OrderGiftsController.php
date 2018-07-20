@@ -47,15 +47,15 @@ class OrderGiftsController extends Controller
     {
         $type = Request::input('type');
         $orderGifts = $this->repository->scopeQuery(function (OrderGift &$model) use($type) {
-            $model->whereType($type);
+            $model = $model->whereType($type);
             $beginAt = Request::input('begin_at', null);
             $endAt = Request::input('end_at', null);
             if($beginAt) {
-                $model->where('begin_at', '>=', $beginAt);
+                $model = $model->where('begin_at', '>=', $beginAt);
             }
 
             if($endAt) {
-                $model->where('end_at', '<', $endAt);
+                $model = $model->where('end_at', '<', $endAt);
             }
             Log::debug('order gift type '.$type);
             return $model;
