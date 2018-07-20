@@ -31,7 +31,7 @@ class OrderGiftItemTransformer extends TransformerAbstract
             'begin_at' => $model->beginAt,
             'end_at' => $model->endAt,
             'gift' => $model->gift,
-            'tickets' => $model->tickets,
+            'tickets' => $model->tickets(),
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];
