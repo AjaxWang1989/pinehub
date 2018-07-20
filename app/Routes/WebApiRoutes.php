@@ -140,7 +140,7 @@ class WebApiRoutes extends ApiRoutes
                 $router->post('order-gift', ['as' => 'order-gift.create', 'uses' => 'OrderGiftsController@store']);
                 $router->put('order-gift/{id}', ['as' => 'order-gift.update', 'uses' => 'OrderGiftsController@update']);
                 $router->get('order-gifts', ['as' => 'order-gift.list', 'uses' => 'OrderGiftsController@index']);
-                $router->get('order-gift/{id}', ['as' => 'order-gift.create', 'uses' => 'OrderGiftsController@store']);
+                $router->get('order-gift/{id}', ['as' => 'order-gift.show', 'uses' => 'OrderGiftsController@show']);
             });
 
 
