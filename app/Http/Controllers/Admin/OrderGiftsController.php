@@ -55,6 +55,7 @@ class OrderGiftsController extends Controller
             if($endAt) {
                 $model->where('end_at', '<', $endAt);
             }
+            return $model;
         })->paginate();
 
         if (request()->wantsJson()) {
