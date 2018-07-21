@@ -30,7 +30,7 @@ class OrderGiftUpdateRequest extends FormRequest
             //
             'name' => ['required'],
             'begin_at' => ['required', 'date', 'before:end_at'],
-            'end_at' => ['required', 'date', 'after:end_at'],
+            'end_at' => ['required', 'date', 'after:begin_at'],
             'gift' => ['required', 'array'],
             'type' => ['required', Rule::in([OrderGift::PAY_FULL, OrderGift::PAY_GIFT])],
             'status' => ['required', Rule::in([OrderGift::WAIT, OrderGift::RUNNING, OrderGift::END, OrderGift::INVALID])]
