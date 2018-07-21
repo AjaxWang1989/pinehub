@@ -55,7 +55,7 @@ class AuthController extends Controller
 
     public function refreshToken()
     {
-        if($this->auth()->check()){
+        if(Auth::getToken()){
             $token = Auth::refresh();
             $tokenMeta =  [
                 'token' =>$token,
