@@ -68,13 +68,6 @@ class OrderGift extends Model implements Transformable
             $tickets[] = $gift['ticket_id'];
         }
         $tickets = Ticket::whereIn('id', $tickets)->get();
-        $this->ticketRelation()->get();
         return $tickets;
     }
-
-    public function ticketRelation(): BelongsTo
-    {
-        return $this->belongsTo(Ticket::class, 'gift->$.ticket_id', 'id');
-    }
-
 }
