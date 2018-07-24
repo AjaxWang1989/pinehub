@@ -21,7 +21,10 @@ class ConfigServiceProvider extends ServiceProvider
             'ali',
             'wechat',
             'filesystems',
-            'session'
+            'session',
+            'database',
+            'order',
+            'queue'
                  ] as $name){
             laravelToLumen($this->app)->configure($name);
         }
