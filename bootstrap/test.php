@@ -120,11 +120,10 @@ $app->bind('path.config', function (){
 | can respond to, as well as the controllers that may handle them.
 |
 */
-//$app->router->group([
-//    'namespace' => 'App\Http\Controllers',
-//], function ($router) {
-//    require __DIR__.'/../routes/web.php';
-//    require __DIR__.'/../routes/mp.php';
-//});
+$app->router->group([
+    'namespace' => 'App\Http\Controllers',
+], function ($router) {
+    require __DIR__.'/../routes/web.php';
+});
 
 return $app;
