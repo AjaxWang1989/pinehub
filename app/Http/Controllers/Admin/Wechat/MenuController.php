@@ -13,6 +13,7 @@ use App\Http\Requests\Admin\Wechat\MenuCreateRequest;
 use App\Repositories\WechatMenuRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class MenusesController.
@@ -151,6 +152,7 @@ class MenuController extends Controller
                     unset($button['type']);
                 }
             }
+            Log::debug('buttons', $buttons['button']);
             $result = app('wechat')->officeAccount()->menu->create($buttons['button']);
             if($result['errcode'] !== 0) {
                 $this->response()->error($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
