@@ -46,9 +46,7 @@ class MenuController extends Controller
     {
         $menuses = $this->repository->paginate();
         if (request()->wantsJson()) {
-            return response()->json([
-                'data' => $menuses,
-            ]);
+            return $this->response()->paginator($menuses, new WechatMenuTransformer());
         }
         return view('menuses.index', compact('menuses'));
     }
