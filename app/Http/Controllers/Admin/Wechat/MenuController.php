@@ -147,6 +147,8 @@ class MenuController extends Controller
                 unset($button['width']);
                 if(empty($button['sub_button'])) {
                     unset($button['sub_button']);
+                }else{
+                    unset($button['type']);
                 }
             }
             $result = app('wechat')->officeAccount()->menu->create($buttons['button']);
