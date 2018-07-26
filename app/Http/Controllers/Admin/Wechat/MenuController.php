@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Http\Requests\Admin\Wechat\MenuCreateRequest;
 use App\Repositories\WechatMenuRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Collection;
+
 /**
  * Class MenusesController.
  *
@@ -141,6 +143,14 @@ class MenuController extends Controller
             $buttons = $menu->menus;
             $menu->isPublic = true;
             $menu->save();
+            foreach ($buttons['button'] as &$button) {
+                unset($button['width']);
+                if(empty($button['sub_button'])) {
+                    unset($button['sub_button']);
+                }else{
+                    unset($button['sub_button']['width']);
+                }
+            }
             $result = app('wechat')->officeAccount()->menu->create($buttons);
             if($result['errcode'] !== 0) {
                 $this->response()->error($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
