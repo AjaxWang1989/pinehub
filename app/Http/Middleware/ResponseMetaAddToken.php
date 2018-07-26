@@ -59,7 +59,7 @@ class ResponseMetaAddToken
                     $data['meta'] = [
                         'token' => $token
                     ];
-                    $response->setContent($data);
+                    $response->setContent(json_encode($data));
                 }
                 return $response;
             });
