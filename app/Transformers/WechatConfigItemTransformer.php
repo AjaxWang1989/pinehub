@@ -37,6 +37,7 @@ class WechatConfigItemTransformer extends TransformerAbstract
             'service_type_info' => $model->serviceTypeInfo,
             'business_info' => $model->businessInfo,
             'func_info' => $model->funcInfo,
+            'qr_code' => $model->qrcodeUrl,
             'wechat_bind_app' => $model->wechatBindApp,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
