@@ -143,7 +143,7 @@ class MenuController extends Controller
             $menu->save();
             $result = app('wechat')->officeAccount()->menu->create($buttons);
             if($result['errcode'] !== 0) {
-                $this->response()->error($result['errmsg']);
+                $this->response()->error($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
             }
 
         });
