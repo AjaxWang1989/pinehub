@@ -24,7 +24,11 @@ class ConfigServiceProvider extends ServiceProvider
             'session',
             'database',
             'order',
-            'queue'
+            'queue',
+            'broadcasting',
+            'cache',
+            'logging',
+            'view'
                  ] as $name){
             laravelToLumen($this->app)->configure($name);
         }

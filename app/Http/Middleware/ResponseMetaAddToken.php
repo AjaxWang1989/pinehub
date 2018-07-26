@@ -7,6 +7,7 @@ use Closure;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -54,7 +55,7 @@ class ResponseMetaAddToken
                     $response->meta('token', $token);
                 }else{
                     $data = $response->getOriginalContent();
-                    $data = $data->toArray();
+                    $data = $data instanceOf Arrayable ? $data->toArray() : $data;
                     $data['meta'] = [
                         'token' => $token
                     ];

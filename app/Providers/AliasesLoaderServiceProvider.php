@@ -25,7 +25,6 @@ class AliasesLoaderServiceProvider extends ServiceProvider
     public function register()
     {
         //
-
         $this->setAliases(config('app.alias'));
     }
 

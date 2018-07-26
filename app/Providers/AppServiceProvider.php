@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\{
 use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
+use Laravoole\LaravooleServiceProvider;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
 use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
@@ -86,5 +87,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AppManager::class, function (Application $app) {
             return new AppManager($app);
         });
+       // $this->app->register(LaravooleServiceProvider::class);
     }
 }
