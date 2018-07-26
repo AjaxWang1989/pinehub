@@ -84,7 +84,7 @@ class MenuController extends Controller
     {
         $menu = $this->repository->find($id);
         if (request()->wantsJson()) {
-            return $this->response()->item($menu);
+            return $this->response()->item($menu, new WechatMenuTransformer());
         }
 
         return view('menuses.show', compact('menu'));
