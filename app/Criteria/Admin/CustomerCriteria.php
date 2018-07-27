@@ -27,7 +27,7 @@ class CustomerCriteria implements CriteriaInterface
             $appManager = app(AppManager::class);
             $appId = $appManager->currentApp->id;
             return $customer->whereAppId($appId)
-                ->groupBy('user_id');
+                ->groupBy('member_id');
         });
     }
 }
