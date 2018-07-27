@@ -26,8 +26,8 @@ class CustomerCriteria implements CriteriaInterface
         return with($model, function (Customer &$customer) {
             $appManager = app(AppManager::class);
             $appId = $appManager->currentApp->id;
-            return $customer->whereAppId($appId)
-                ->groupBy('member_id');
+            return $customer->whereAppId($appId);
+//                ->groupBy('member_id');
         });
     }
 }
