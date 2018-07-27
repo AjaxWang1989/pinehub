@@ -62,9 +62,7 @@ class SearchRequestCriteria implements CriteriaInterface
                     $key = $modelTableName.'.'.$key;
                     $this->buildQuery($key, $value, $query);
                 }else{
-                    $query->whereHas($relation, function (Builder $query) use($key, $value){
-                        $this->buildQuery($key, $value, $query);
-                    });
+                    $this->buildQuery($key, $value, $query, $relation);
                 }
 
             }
@@ -72,40 +70,75 @@ class SearchRequestCriteria implements CriteriaInterface
 
     }
 
-    protected function buildQuery($key, $value, Builder $query)
+    protected function buildQuery($key, $value, Builder $query, $relation = null)
     {
         if(!is_array($value)) {
-            $query->where($key, $value);
+            if(!$relation) {
+                $query->where($key, $value);
+            }else{
+                $query->whereHas($relation, function (Builder $query)use($key, $value){
+                    $query->where($key, $value);
+                });
+            }
         }else{
             $count = count($value);
             if($count > 1 && isset($value[$count - 1])) {
                 $items = $value;
-                $query->where(function (Builder $query) use($items, $key) {
-                    foreach ($items as $item ) {
-                        if(!is_array($item)) {
-                            $query->where($key, $item);
-                        }else{
-                            if($item['join']) {
-                                $this->addConditionInQuery($item, $query, $key);
+                if(!$relation) {
+                    $query->where(function (Builder $query) use($items, $key) {
+                        foreach ($items as $item ) {
+                            if(!is_array($item)) {
+                                $query->where($key, $item);
                             }else{
-                                $query->orWhere(function (Builder $query) use ($key, $item){
+                                if($item['join']) {
                                     $this->addConditionInQuery($item, $query, $key);
-                                });
-                            }
+                                }else{
+                                    $query->orWhere(function (Builder $query) use ($key, $item){
+                                        $this->addConditionInQuery($item, $query, $key);
+                                    });
+                                }
 
+                            }
                         }
-                    }
-                });
+                    });
+                }else{
+                    $query->whereHas($relation, function (Builder $query) use($items, $key){
+                        foreach ($items as $item ) {
+                            if(!is_array($item)) {
+                                $query->where($key, $item);
+                            }else{
+                                if($item['join']) {
+                                    $this->addConditionInQuery($item, $query, $key);
+                                }else{
+                                    $query->orWhere(function (Builder $query) use ($key, $item){
+                                        $this->addConditionInQuery($item, $query, $key);
+                                    });
+                                }
+
+                            }
+                        }
+                    });
+                }
+
 
             }else{
                 $item = $value;
-                if(!is_array($item)) {
-                    $query->where($key, $item);
-                }else{
-                    if($item['join']) {
+                if($item['join']) {
+                    if(!$relation) {
                         $this->addConditionInQuery($item, $query, $key);
                     }else{
+                        $query->whereHas($relation, function (Builder $query) use($item, $key) {
+                            $this->addConditionInQuery($item, $query, $key);
+                        });
+                    }
+
+                }else{
+                    if(!$relation) {
                         $query->orWhere(function (Builder $query) use ($key, $item){
+                            $this->addConditionInQuery($item, $query, $key);
+                        });
+                    }else{
+                        $query->orWhereHas($relation, function (Builder $query) use($item, $key) {
                             $this->addConditionInQuery($item, $query, $key);
                         });
                     }
