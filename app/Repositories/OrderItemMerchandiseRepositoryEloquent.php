@@ -30,6 +30,7 @@ class OrderItemMerchandiseRepositoryEloquent extends BaseRepository implements O
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {

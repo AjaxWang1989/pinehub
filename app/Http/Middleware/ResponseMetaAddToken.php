@@ -54,7 +54,13 @@ class ResponseMetaAddToken
                 if($response instanceof Response){
                     $response->meta('token', $token);
                 }else{
-                    $data = $response->getOriginalContent();
+                    if($response instanceof Response || $response instanceof \Illuminate\Http\Response) {
+                        $data = $response->getOriginalContent();
+                    }elseif($response instanceof \Symfony\Component\HttpFoundation\Response) {
+                        $data = $response->getContent();
+                        $data = json_decode($data);
+                    }
+
                     $data = $data instanceOf Arrayable ? $data->toArray() : $data;
                     $data['meta'] = [
                         'token' => $token
