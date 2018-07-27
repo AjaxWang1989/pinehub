@@ -16,14 +16,14 @@ use App\Validators\Api\OrderValidator;
 class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 {
     use Destruct;
-//    protected $fieldSearchable = [
-//        'type' => '=',
-//        'pay_type' => '=',
-//        'status' => '=',
-//        'customer_id' => '=',
-//        'member.mobile' => '=',
-//        'code' => '='
-//    ];
+    protected $fieldSearchable = [
+        'type',
+        'pay_type',
+        'status',
+        'customer_id',
+        'member.mobile',
+        'code'
+    ];
     /**
      * Specify Model class name
      *
