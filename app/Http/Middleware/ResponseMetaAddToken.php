@@ -44,7 +44,7 @@ class ResponseMetaAddToken
     {
         $token = $this->auth->guard($guard)->getToken();
         $response = $next($request);
-        Log::debug('response', [$response->headers]);
+
         if($token && is_object($token)) {
             $token = $token->get();
             $token = Cache::get($token, null);

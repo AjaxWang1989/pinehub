@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -44,6 +45,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        $this->pushCriteria(SearchRequestCriteria::class);
         Order::creating(function (Order &$order){
             $order->code =  app('uid.generator')->getUid(ORDER_CODE_FORMAT, ORDER_SEGMENT_MAX_LENGTH);
             return $order;

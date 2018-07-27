@@ -26,13 +26,18 @@ class SearchRequestCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $fieldsSearchable = $repository->getFieldsSearchable();
-        $searchStr = Request::query('searchJson');
+        $searchStr = Request::query('searchJson', null);
+        if(!$searchStr) {
+            return $model;
+        }
         $searchJson = json_decode(base64_decode($searchStr), true);
+        $fields = [];
         foreach ($searchJson as $key => $value) {
             if(in_array($key, $fieldsSearchable)) {
                 $fields[$key] = $value;
             }
         }
+        $model = $this->parseSearch($fields, $model);
         return $model;
     }
 
@@ -40,63 +45,110 @@ class SearchRequestCriteria implements CriteriaInterface
      * parse search query
      * @param array $fields
      * @param Builder|Model $model
+     * @return Model|Builder
      * */
-    protected function parseSearchQuery(array $fields, $model)
+    protected function parseSearch(array $fields, $model)
     {
-        $model->where(function (Builder $query) use($fields) {
+        return $model->where(function (Builder $query) use($fields) {
             foreach ($fields as $key => $value) {
-                if(!is_array($value)) {
-                    $query->where($key, $value);
-                }else{
-                    $count = count($value);
-                    if($count > 1 && isset($value[$count - 1])) {
-                        $items = $value;
-                        foreach ($items as $item ) {
-                            if(!is_array($item)) {
-                                $query->where($key, $item);
-                            }else{
-                                if($item['join']) {
-                                    if(!isset($item['opt'])){
-                                        $item['opt'] = '=';
-                                    }
-                                    switch ($item['opt']) {
-                                        case '=': {
-                                            if(is_array($item['value'])) {
-                                                $query->whereIn($key, $item['value']);
-                                            }elseif ($value === null){
-                                                $query->whereNull($key);
-                                            }else{
-                                                $query->where($key, $item['value']);
-                                            }
-                                            break;
-                                        }
-                                        case '!=': {
-                                            if($item['value'] === null) {
-                                                $query->whereNotNull($key);
-                                            }elseif (is_array($item['value'])) {
-                                                $query->whereNotIn($key, $item['value']);
-                                            }
-                                            break;
-                                        }
-                                        case '>':
-                                        case '>=':
-                                        case '<':
-                                        case '<=': {
-                                            $query->where($key, $item['opt'], $item['value']);
-                                            break;
-                                        }
-                                    }
-
-                                }else{
-                                    $query->orWhere($key, $item['opt'], $item['value']);
-                                }
-
-                            }
-                        }
-                    }
+                $relation = null;
+                if(stripos($key, '.')) {
+                    $explode = explode('.', $key);
+                    $key = array_pop($explode);
+                    $relation = implode('.', $explode);
                 }
+                $modelTableName = $query->getModel()->getTable();
+                if(is_null($relation)) {
+                    $key = $modelTableName.'.'.$key;
+                    $this->buildQuery($key, $value, $query);
+                }else{
+                    $query->whereHas($relation, function (Builder $query) use($key, $value){
+                        $this->buildQuery($key, $value, $query);
+                    });
+                }
+
             }
         });
+
+    }
+
+    protected function buildQuery($key, $value, Builder $query)
+    {
+        if(!is_array($value)) {
+            $query->where($key, $value);
+        }else{
+            $count = count($value);
+            if($count > 1 && isset($value[$count - 1])) {
+                $items = $value;
+                $query->where(function (Builder $query) use($items, $key) {
+                    foreach ($items as $item ) {
+                        if(!is_array($item)) {
+                            $query->where($key, $item);
+                        }else{
+                            if($item['join']) {
+                                $this->addConditionInQuery($item, $query, $key);
+                            }else{
+                                $query->orWhere(function (Builder $query) use ($key, $item){
+                                    $this->addConditionInQuery($item, $query, $key);
+                                });
+                            }
+
+                        }
+                    }
+                });
+
+            }else{
+                $item = $value;
+                if(!is_array($item)) {
+                    $query->where($key, $item);
+                }else{
+                    if($item['join']) {
+                        $this->addConditionInQuery($item, $query, $key);
+                    }else{
+                        $query->orWhere(function (Builder $query) use ($key, $item){
+                            $this->addConditionInQuery($item, $query, $key);
+                        });
+                    }
+
+                }
+            }
+        }
+    }
+
+
+    protected function addConditionInQuery(array  $item, Builder &$query, string $key) {
+        if(!isset($item['opt'])){
+            $item['opt'] = '=';
+        }
+        $operator = isset($item['opt']) ? $item['opt'] : '=';
+        $value = $item['value'];
+        switch ($operator) {
+            case '=': {
+                if(is_array($item['value'])) {
+                    $query->whereIn($key, $value);
+                }elseif ($item['value'] === null){
+                    $query->whereNull($key);
+                }else{
+                    $query->where($key, $value);
+                }
+                break;
+            }
+            case '!=': {
+                if($item['value'] === null) {
+                    $query->whereNotNull($key);
+                }elseif (is_array($item['value'])) {
+                    $query->whereNotIn($key, $value);
+                }
+                break;
+            }
+            case '>':
+            case '>=':
+            case '<':
+            case '<=': {
+                $query->where($key, $operator, $value);
+                break;
+            }
+        }
 
     }
 }
