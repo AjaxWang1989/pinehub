@@ -22,6 +22,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         'status',
         'customer_id',
         'member.mobile',
+        'orderItemMerchandise.name',
         'code'
     ];
     /**
@@ -38,6 +39,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {
