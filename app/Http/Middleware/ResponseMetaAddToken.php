@@ -58,6 +58,7 @@ class ResponseMetaAddToken
                         $data = $response->getOriginalContent();
                     }elseif($response instanceof \Symfony\Component\HttpFoundation\Response) {
                         $data = $response->getContent();
+                        Log::debug($data);
                         $data = json_decode($data);
                     }
 
