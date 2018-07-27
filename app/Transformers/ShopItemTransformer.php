@@ -24,6 +24,7 @@ class ShopItemTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             /* place your other model properties here */
+            'code' => $model->code,
             'country' => $model->country->name,
             'province' => $model->province->name,
             'city' => $model->city->name,
