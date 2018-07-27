@@ -44,12 +44,12 @@ class ResponseMetaAddToken
     {
         $token = $this->auth->guard($guard)->getToken();
         $response = $next($request);
-
+        Log::debug('response', [$response->headers]);
         if($token && is_object($token)) {
             $token = $token->get();
             $token = Cache::get($token, null);
         }
-        if($token) {
+        if($token && $request->wantsJson()) {
             return tap($response, function (&$response) use ($token){
                 if($response instanceof Response){
                     $response->meta('token', $token);
@@ -58,7 +58,7 @@ class ResponseMetaAddToken
                         $data = $response->getOriginalContent();
                     }elseif($response instanceof \Symfony\Component\HttpFoundation\Response) {
                         $data = $response->getContent();
-                        Log::debug($data);
+
                         $data = json_decode($data);
                     }
 
