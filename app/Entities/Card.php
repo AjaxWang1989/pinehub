@@ -91,5 +91,4 @@ class Card extends Model implements Transformable
     {
         return $this->belongsTo(App::class, 'app_id', 'id');
     }
-
 }
