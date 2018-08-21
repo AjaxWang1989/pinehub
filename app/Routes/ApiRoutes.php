@@ -66,12 +66,7 @@ class ApiRoutes extends Routes
      * */
     protected function routes($router)
     {
-//        $router->group(['middleware' => ['api.auth']], function () use($router){
-//            $router->get("/self/info", [
-//                'as' => 'self.info',
-//                'uses' => 'MyselfController@selfInfo'
-//            ]);
-//        });
+
     }
 
     protected function boot()

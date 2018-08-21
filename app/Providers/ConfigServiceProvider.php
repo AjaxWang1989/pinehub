@@ -28,7 +28,9 @@ class ConfigServiceProvider extends ServiceProvider
             'broadcasting',
             'cache',
             'logging',
-            'view'
+            'view',
+            'gateway',
+            'routes'
                  ] as $name){
             laravelToLumen($this->app)->configure($name);
         }

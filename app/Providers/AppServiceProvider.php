@@ -9,6 +9,7 @@ use App\Services\AppManager;
 use App\Services\FileService;
 use App\Services\UIDGeneratorService;
 use Dingo\Api\Http\Request;
+use Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Filesystem\FilesystemServiceProvider;
@@ -88,5 +89,6 @@ class AppServiceProvider extends ServiceProvider
             return new AppManager($app);
         });
        // $this->app->register(LaravooleServiceProvider::class);
+        $this->app->register(LaravelSServiceProvider::class);
     }
 }

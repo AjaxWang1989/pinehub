@@ -9,7 +9,7 @@ namespace App\Routes;
 use Dingo\Api\Routing\Router as DingoRouter;
 use Dingo\Api\Routing\Router;
 use Laravel\Lumen\Routing\Router as LumenRouter;
-class WebApiRoutes extends ApiRoutes
+class BackendApiRoutes extends ApiRoutes
 {
 
     protected function routes($router)

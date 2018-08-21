@@ -10,6 +10,5 @@
  * @var \Illuminate\Routing\Router $router
  * */
 $router->get('', function (){
-    \App\Entities\Ticket::all();
-    echo "test empty framework\n";
+    echo phpinfo();
 });

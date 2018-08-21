@@ -55,6 +55,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\MerchandiseCategoryRepository::class, \App\Repositories\MerchandiseCategoryRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\MerchandiseRepository::class, \App\Repositories\MerchandiseRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\OrderGiftRepository::class, \App\Repositories\OrderGiftRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ProjectRepository::class, \App\Repositories\ProjectRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MiniProgramPageRepository::class, \App\Repositories\MiniProgramPageRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MiniProgramTemplateRepository::class, \App\Repositories\MiniProgramTemplateRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MiniProgramDraftRepository::class, \App\Repositories\MiniProgramDraftRepositoryEloquent::class);
         //:end-bindings:
         Log::debug("repository bindings\n");
     }
