@@ -7,7 +7,7 @@
  * Time: 上午10:17
  */
 
-namespace App\Http\Controllers\Payment;
+namespace App\Http\Controllers\H5\Payment;
 
 
 use App\Entities\Order;
