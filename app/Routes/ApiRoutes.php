@@ -19,6 +19,7 @@ class ApiRoutes extends Routes
     public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null)
     {
         parent::__construct($app, $version, $namespace, $prefix, $domain);
+        config(['api.domain' => $domain]);
         $this->router = $this->app->make('api.router');
         $this->app->middleware(Cross::class);
     }

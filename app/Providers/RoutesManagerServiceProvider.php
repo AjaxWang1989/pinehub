@@ -122,12 +122,11 @@ class RoutesManagerServiceProvider extends ServiceProvider
     protected function registerRoutes()
     {
         foreach (config('routes') as $route) {
-            if($this->gateway === $route['gateway']) {
+            if($this->gateway === gateway($route['gateway'])) {
                 $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
-                $tmp = explode('.', $route['gateway']);
-                $domain = config('gateway.'.$route['gateway']).'.'.config('gateway.'.$tmp[0].'_domain');
+                $domain = $this->gateway;
                 $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain);
-                $routes->loads();
+                $routes->load();
             }
         }
     }
