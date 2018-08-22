@@ -12,5 +12,26 @@ return [
         'version' => 'v1',
 //        'prefix' => null,
         'namespace' => 'Auth'
+    ],
+    [
+        'gateway' => 'api.backend',
+        'router' => \App\Routes\BackendApiRoutes::class,
+        'version' => 'v1',
+//        'prefix' => null,
+        'namespace' => 'Admin'
+    ],
+    [
+        'gateway' => 'api.mp',
+        'router' => \App\Routes\MiniProgramApiRoutes::class,
+        'version' => 'v1',
+//        'prefix' => null,
+        'namespace' => 'MiniProgram'
+    ],
+    [
+        'gateway' => 'api.h5',
+        'router' => \App\Routes\AuthApiRoutes::class,
+        'version' => 'v1',
+//        'prefix' => null,
+        'namespace' => 'Auth'
     ]
 ];

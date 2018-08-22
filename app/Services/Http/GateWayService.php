@@ -17,11 +17,21 @@ class GateWayService
     {
         $this->domain = $domain;
         $this->gateways = collect($gateways)->map(function ($value) use ($domain) {
-            return $value.'.'.$domain;
+            return $value;
         });
     }
 
     public function has($gateway) {
+        if(preg_match("/{$this->domain}/", $gateway, $matches)) {
+            $gateway = explode('.', $gateway)[0];
+        }
         return $this->gateways->search($gateway);
+    }
+
+    public function getGateway(string $gateway) {
+        if($this->has($gateway)) {
+            return preg_match("/{$this->domain}/", $gateway, $matches) ? $gateway : $gateway.'.'.$this->domain;
+        }
+        return null;
     }
 }

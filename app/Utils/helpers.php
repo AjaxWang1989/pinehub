@@ -111,53 +111,66 @@ if(!function_exists('generatorUID')){
     }
 }
 
-if(!function_exists('webUriGenerator')) {
-    function webUriGenerator(string $route, string $prefix = '', string $domain = '') {
-        if(!$domain) {
-            $domain = config('app.web_domain');
+if(!function_exists('apiUrlGenerator')) {
+    function apiUrlGenerator(string $gateway, string $name, array $params = [], array $query = [], string $version = null) {
+        $router = app('api.router');
+        $routes = $router->getRoutes($version);
+        $search = [];
+        $replace = [];
+        $url = null;
+        foreach ($params as $key => $param) {
+            $search[] = '/({'.$key.'})|({'.$key.'?})/';
+            $replace[] = $param;
         }
-        if(!$prefix){
-            $prefix = (config('app.web_prefix') ? config('app.web_prefix') : '');
+        foreach ($routes as $route) {
+            $url = value(function () use($name, $search, $replace, $route){
+                $routeUri = $route->uri();
+                $routeName = $route->getName();
+                if($name === $routeName) {
+                    return preg_replace($search, $replace, $routeUri);
+                }
+                return null;
+            });
+            if($url) {
+                $url = trim($url, '/');
+                break;
+            }
         }
-        $domain = trim($domain, '/');
-        if($domain) {
-            $domain .= '/';
-        }
-        $prefix = trim($prefix, '/');
 
-        if($prefix) {
-            $prefix .= '/';
+        if($url){
+            return gateway($gateway).'/'.$url .'?'. http_build_query($query);
+        }else{
+            return null;
         }
-
-        $route = trim($route, '/');
-
-        $protocol = config('app.protocol');
-        if(!$protocol){
-            $protocol = env('WEB_PROTO');
-        }
-        return $protocol.$domain.$prefix.$route;
     }
 }
 
-if(!function_exists('paymentApiUriGenerator')) {
-    function paymentApiUriGenerator(string $route){
-        return config('app.protocol').config('app.payment_api_domain').(env('PAYMENT_API_PREFIX')? '/'.env('PAYMENT_API_PREFIX') : '').$route;
-    }
-}
-
-if(!function_exists('domainAndPrefix')) {
-    function domainAndPrefix (\Illuminate\Http\Request $request) {
-        $domain = $request->getHost();
-        $domains = explode('.', $domain);
-        if($domains[0] === 'www')
-        {
-            array_shift($domains);
+if(!function_exists('webUrlGenerator')) {
+    function webUrlGenerator(string $gateway, string $name, array $params = [], array $query = []) {
+        $router = app()->router;
+        $routes = $router->namedRoutes;
+        $search = [];
+        $replace = [];
+        $url = null;
+        foreach ($params as $key => $param) {
+            $search[] = '/({'.$key.'})|({'.$key.'?})/';
+            $replace[] = $param;
         }
-        $domain = implode('.', $domains);
-        $path = $request->path();
-        $tmp = explode('/', $path);
-        $prefix = $tmp[0];
-        return [$domain, $prefix];
+        foreach ($routes as $routeName =>  $routeUri) {
+            if($name === $routeName) {
+                $url = preg_replace($search, $replace, $routeUri);
+            }
+            if($url) {
+                $url = trim($url, '/');
+                break;
+            }
+        }
+
+        if($url){
+            return gateway($gateway).'/'.$url .'?'. http_build_query($query);
+        }else{
+            return null;
+        }
     }
 }
 
@@ -188,5 +201,34 @@ if(!function_exists('multi_array_merge')) {
             }
         }
         return $array1;
+    }
+}
+
+if(!function_exists('gateway')) {
+    function gateway(string $gateway) {
+        $tmp = explode('.', $gateway);
+        if($tmp[0] === 'api') {
+            $gateway = app('api.gateways');
+        }else{
+            $gateway = app('web.gateways');
+        }
+
+        return $gateway->getGateway($tmp[1]);
+    }
+}
+
+if(!function_exists('domainAndPrefix')) {
+    function domainAndPrefix (\Illuminate\Http\Request $request) {
+        $domain = $request->getHost();
+        $domains = explode('.', $domain);
+        if($domains[0] === 'www')
+        {
+            array_shift($domains);
+        }
+        $domain = implode('.', $domains);
+        $path = $request->path();
+        $tmp = explode('/', $path);
+        $prefix = $tmp[0];
+        return [$domain, $prefix];
     }
 }
