@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Exceptions\ApiHttpExceptionHandler;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Request;
@@ -28,46 +29,7 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                 if(Request::method() === HTTP_METHOD_OPTIONS) {
                     return $responseSender->send();
                 }
-                $response['status_code'] = method_exists($exception, 'getStatusCode') ? $exception->getStatusCode() : 500;
-                $response['message'] = $exception->getMessage();
-                $response['errors'] = method_exists($exception, 'getErrors') ? $exception->getErrors() : null;
-                $response['errors'] = method_exists($exception, 'errors') ? $exception->errors() : null;
-                if($exception instanceof AuthorizationException) {
-                    $response['status_code'] = 401;
-                }
-                switch($response['status_code']){
-                    case HTTP_STATUS_BAD_REQUEST:{
-                        if(!$response['message'] ){
-                            $response['message']  = "客户端请求有误";
-                        }
-                        break;
-                    }
-                    case HTTP_STATUS_UNAUTHORIZED: {
-                        if(!$response['message']){
-                            $response['message'] = "登陆失败，或者未登录权限不足，请重新登陆";
-                        }
-                        break;
-                    }
-                    case HTTP_STATUS_PAYMENT_REQUIRED:{
-                        if(!$response['message']){
-                            $response['message'] = "预留字段暂未定义";
-                        }
-                        break;
-                    }
-                    case HTTP_STATUS_FORBIDDEN:{
-                        if(!$response['message']){
-                            $response['message'] = "资源受限，禁止访问";
-                        }
-                        break;
-                    }
-                    case HTTP_STATUS_NOT_FOUND:{
-                        if(!$response['message']){
-                            $response['message'] = "资源不存在无法访问";
-                        }
-                        break;
-                    }
-                }
-                return $responseSender->setContent($response)->send();
+                return $this->app->make('api.http.handler')->handle($exception);
             });
         }
     }
@@ -80,5 +42,8 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        $this->app->singleton('api.http.handler', function ($app) {
+            return new ApiHttpExceptionHandler($app['Illuminate\Contracts\Debug\ExceptionHandler'], config('api.errorFormat'), config('api.debug'));
+        });
     }
 }
