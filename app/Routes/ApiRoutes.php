@@ -38,13 +38,13 @@ class ApiRoutes extends Routes
         $second['middleware'] = ['cross', 'auth.meta:api'];
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
-            $router->any('/', function (Request $request) use ($self){
-                return 'web api version '.$self->version.', host domain '.$request->getHost();
-            });
-
-            $router->get('/version', function (Request $request) use ($self){
-                return 'web api version '.$self->version.', host domain '.$request->getHost();
-            });
+//            $router->any('/', function (Request $request) use ($self){
+//                return 'web api version '.$self->version.', host domain '.$request->getHost();
+//            });
+//
+//            $router->get('/version', function (Request $request) use ($self){
+//                return 'web api version '.$self->version.', host domain '.$request->getHost();
+//            });
 
             $namespace = $this->namespace;
             if($this->namespace){

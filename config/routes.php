@@ -33,5 +33,12 @@ return [
         'version' => 'v1',
 //        'prefix' => null,
         'namespace' => 'Auth'
+    ],
+    [
+        'gateway' => 'api.auth',
+        'router' => \App\Routes\TestApiRoutes::class,
+        'version' => 'v1',
+        'namespace' => 'Test'
     ]
+
 ];
