@@ -49,7 +49,6 @@ class AuthController extends Controller
     public function getPublicKey()
     {
         $item = new AuthSecretKey();
-
         return $this->response()->item($item, new AuthPublicKeyTransformer());
     }
 
@@ -150,5 +149,10 @@ class AuthController extends Controller
             }
         }
         return null;
+    }
+
+
+    public function  testLogin(){
+        return '测试';
     }
 }

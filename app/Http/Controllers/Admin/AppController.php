@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Cache;
 
 class AppController extends Controller
 {
+    //定义repository 处理model层数据
     protected $appRepository  = null;
     public function __construct(FileRepository $fileModel, AppRepository $appRepository)
     {
