@@ -59,7 +59,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $this->prefix  = $prefix;
         $this->gateway = $gateway;
 
-        if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway)) {
+        if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway) && !$this->app->runningInConsole()) {
             throw new NotFoundHttpException('网关错误');
         }
         $this->app['isApiServer'] = $this->app->make('api.gateways')->has($this->gateway);
@@ -121,9 +121,9 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     protected function registerRoutes()
     {
-        $version = app('request')->version();
+        $version = app('request') instanceof \Dingo\Api\Http\Request ? app('request')->version() : null;
         foreach (config('routes') as $route) {
-            if($this->gateway === gateway($route['gateway']) && $version === $route['version']) {
+            if($this->gateway === gateway($route['gateway']) && ($version === null || $version === $route['version'])) {
                 $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
                 $domain = $this->gateway;
                 $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain);
