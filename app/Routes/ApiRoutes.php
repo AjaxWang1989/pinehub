@@ -16,6 +16,9 @@ use Laravel\Lumen\Application;
 
 class ApiRoutes extends Routes
 {
+    const VERSIONS = [
+        'V1' => 'v1'
+    ];
     public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null)
     {
         parent::__construct($app, $version, $namespace, $prefix, $domain);
@@ -24,7 +27,7 @@ class ApiRoutes extends Routes
         $this->app->middleware(Cross::class);
     }
 
-    protected function routesRegister()
+    protected function routesRegister($version = null)
     {
         $second = [];
         if($this->prefix){
@@ -34,17 +37,19 @@ class ApiRoutes extends Routes
         if($this->domain){
             $second['domain'] = $this->domain;
         }
+        $this->version = $version ? $version : $this->version;
 
         $second['middleware'] = ['cross', 'auth.meta:api'];
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
-//            $router->any('/', function (Request $request) use ($self){
-//                return 'web api version '.$self->version.', host domain '.$request->getHost();
-//            });
-//
-//            $router->get('/version', function (Request $request) use ($self){
-//                return 'web api version '.$self->version.', host domain '.$request->getHost();
-//            });
+
+            $router->any('/', function (Request $request) use ($self){
+                return 'web api version '.$self->version.', host domain '.$request->getHost();
+            });
+
+            $router->get('/version', function (Request $request) use ($self){
+                return 'web api version '.$self->version.', host domain '.$request->getHost();
+            });
 
             $namespace = $this->namespace;
             if($this->namespace){

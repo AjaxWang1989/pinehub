@@ -34,11 +34,11 @@ return [
 //        'prefix' => null,
         'namespace' => 'Auth'
     ],
-    [
-        'gateway' => 'api.auth',
-        'router' => \App\Routes\TestApiRoutes::class,
-        'version' => 'v1',
-        'namespace' => 'Test'
-    ]
+//    [
+//        'gateway' => 'api.auth',
+//        'router' => \App\Routes\TestApiRoutes::class,
+//        'version' => 'v1',
+//        'namespace' => 'Test'
+//    ]
 
 ];
