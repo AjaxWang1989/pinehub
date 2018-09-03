@@ -59,9 +59,9 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $this->prefix  = $prefix;
         $this->gateway = $gateway;
 
-        if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway)) {
-            throw new NotFoundHttpException('网关错误');
-        }
+//        if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway)) {
+//            throw new NotFoundHttpException('网关错误');
+//        }
         $this->app['isApiServer'] = $this->app->make('api.gateways')->has($this->gateway);
         $this->registerRouter();
         $this->registerServices();
