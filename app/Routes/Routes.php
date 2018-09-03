@@ -27,6 +27,7 @@ class Routes
 
     protected $version = null;
 
+
     /**
      *@var Application $app
      * */
@@ -52,18 +53,18 @@ class Routes
         }
     }
 
-    public function load()
+    public function load($version = null)
     {
         $this->boot();
         $this->app->make('router')->group([
             //'namespace' => 'App\Http\Controllers',
             //'middleware' => 'cross'
-        ], function () {
-            $this->routesRegister();
+        ], function () use($version){
+            $this->routesRegister($version);
         });
     }
 
-    protected function routesRegister()
+    protected function routesRegister($version = null)
     {
 
     }
