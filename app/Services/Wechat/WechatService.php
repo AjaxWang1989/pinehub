@@ -33,6 +33,7 @@ use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
 use App\Services\Wechat\OpenPlatform\OpenPlatformAccessToken as OPAccessToken;
 use Psr\Http\Message\ResponseInterface;
 use EasyWeChat\Payment\Application as Payment;
+use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application as MiniProgram;
 
 class WechatService
 {
@@ -40,6 +41,9 @@ class WechatService
 
     protected $officeAccount = null;
 
+    /**
+     * @var MiniProgram
+     * */
     protected $miniProgram = null;
 
     /**
@@ -362,6 +366,9 @@ class WechatService
         return $payment->order->unify($unifyData);
     }
 
+    /**
+     * @return  MiniProgram
+     * */
     public function miniProgram()
     {
         if(!$this->miniProgram){

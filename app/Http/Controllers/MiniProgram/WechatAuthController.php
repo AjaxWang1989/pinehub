@@ -15,7 +15,7 @@ use App\Repositories\WechatUserRepository;
 use App\Transformers\WechatUserTransformer;
 use Illuminate\Support\Facades\Auth;
 
-class UserController extends Controller
+class WechatAuthController extends Controller
 {
     protected  $wechatuserrepository = null;
 
@@ -26,7 +26,16 @@ class UserController extends Controller
     }
 
     public function registerUser(CreateRequest $request){
-        $item = $this->wechatuserrepository->create($request->all());
+        $wechatUser = $this->wechatuserrepository->create($request->all());
+        $param = array('open_id'=>$wechatUser['open_id'],'session_key'=>$wechatUser['session_key']);
+        $token = Auth::login($wechatUser);
+        return $this->response()->item($token, new WechatUserTransformer());
+    }
+
+    public function userInfo(string $openid){
+        $item = $this->wechatuserrepository->find($openid,'open_id');
         return $this->response()->item($item, new WechatUserTransformer());
     }
+
+
 }

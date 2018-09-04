@@ -7,7 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-
+use Illuminate\Auth\Authenticatable;
+use Laravel\Lumen\Auth\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 /**
  * App\Entities\WechatUser
@@ -56,9 +59,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereWechatAppId($value)
  * @mixin \Eloquent
  */
-class WechatUser extends Model implements Transformable
+class WechatUser extends Model  implements AuthenticatableContract, AuthorizableContract, Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
 
     protected $casts = [
         'expires_at' => 'date',
