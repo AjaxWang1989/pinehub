@@ -38,9 +38,12 @@ class Routes
      * */
     protected $router = null;
 
-    public function __construct(Application $app, $version = null, $namespace = null, $prefix =null, $domain = null)
+    protected $auth = null;
+
+    public function __construct(Application $app, $version = null, $namespace = null, $prefix =null, $domain = null, string  $auth = null)
     {
         $this->app = $app;
+        $this->auth = $auth;
         if($namespace[0] !== '\\') {
             $namespace = '\\'.$namespace;
         }

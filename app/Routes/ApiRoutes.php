@@ -19,9 +19,9 @@ class ApiRoutes extends Routes
     const VERSIONS = [
         'V1' => 'v1'
     ];
-    public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null)
+    public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null, string $auth = null)
     {
-        parent::__construct($app, $version, $namespace, $prefix, $domain);
+        parent::__construct($app, $version, $namespace, $prefix, $domain, $auth);
         config(['api.domain' => $domain]);
         $this->router = $this->app->make('api.router');
         $this->app->middleware(Cross::class);
@@ -39,7 +39,7 @@ class ApiRoutes extends Routes
         }
         $this->version = $version ? $version : $this->version;
 
-        $second['middleware'] = ['cross', 'auth.meta:api'];
+        $second['middleware'] = ['cross', 'auth.meta:'.($this->auth ? $this->auth : 'api')];
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
 

@@ -25,7 +25,8 @@ return [
         'router' => \App\Routes\MiniProgramApiRoutes::class,
         'version' => 'v1',
 //        'prefix' => null,
-        'namespace' => 'MiniProgram'
+        'namespace' => 'MiniProgram',
+        'auth' => 'mp'
     ],
     [
         'gateway' => 'api.h5',
