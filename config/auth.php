@@ -36,6 +36,7 @@ return [
 
     'guards' => [
         'api' => ['driver' => 'jwt-auth', 'provider' => 'users'],
+        'mp'  => ['driver' => 'jwt-auth', 'provider' => 'wx']
     ],
 
     /*
@@ -61,6 +62,10 @@ return [
             'driver' => 'eloquent',
             'model' => \App\Entities\User::class,
         ],
+        'wx' => [
+            'driver' => 'eloquent',
+            'model' => \App\Entities\WechatUser::class
+        ]
     ],
 
     /*

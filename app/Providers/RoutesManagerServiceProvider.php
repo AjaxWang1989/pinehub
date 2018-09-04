@@ -125,8 +125,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
         foreach (config('routes') as $route) {
             if($this->gateway === gateway($route['gateway']) && ($version === null || $version === $route['version'])) {
                 $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
+                $auth = isset($route['auth']) ? $route['auth'] : null ;
                 $domain = $this->gateway;
-                $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain);
+                if($auth){
+                    $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain, $auth);
+                }else{
+                    $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain);
+                }
+
                 $routes->load();
             }
         }
