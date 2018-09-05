@@ -24,5 +24,7 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->get('/user/info', ['as' => 'user.info','uses' => 'AuthController@userInfo']);
         $router->get('/new/activity', ['as' => 'user.new.activity','uses' => 'ActivityController@newActivity']);
         $router->get('/app/access/{appid}/{appsecret}', ['as' => 'user.app.access','uses' => 'AuthController@appAccess']);
+        $router->get('/nearest/store', ['as' => 'user.nearest.store','uses' => 'ShopsController@nearestStore']);
+        $router->get('/nearby/stores', ['as' => 'user.nearby.stores','uses' => 'ShopsController@nearbyStores']);
     }
 }

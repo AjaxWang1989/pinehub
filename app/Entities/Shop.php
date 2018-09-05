@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -172,5 +173,11 @@ class Shop extends Model implements Transformable
     {
         return $this->orders && $this->orders->count() > 0 ? $this->orders->where('status', Order::PAID)
                    ->pluck('customer_id') : null;
+    }
+
+    public function scopeNear(Builder $query, float $lng, float $lat, float $distance) {
+        $rate = 111.1;
+        $where = "MBRContains(LineString(Point({$lng} + {$distance} / ({$rate} / COS(RADIANS({$lat}))), {$lat} + {$distance} / {$rate}  ), Point({$lng} - {$distance} / ( {$rate} / COS(RADIANS({$lat}))), {$lat} - {$distance} / {$rate})),position)";
+        return $query->where(DB::raw($where));
     }
 }
