@@ -22,17 +22,20 @@ class AppTransformer extends TransformerAbstract
      */
     public function transform(App $model)
     {
+//        return [
+//            'id'         => $model->id,
+//            'name' => $model->name,
+//            'mini_app_id' => $model->miniAppId,
+//            'wechat_app_id' => $model->wechatAppId,
+//            'secret' => $model->secret,
+//            'logo' => $model->logo,
+//            /* place your other model properties here */
+//
+//            'created_at' => $model->createdAt,
+//            'updated_at' => $model->updatedAt
+//        ];
         return [
-            'id'         => $model->id,
-            'name' => $model->name,
-            'mini_app_id' => $model->miniAppId,
-            'wechat_app_id' => $model->wechatAppId,
-            'secret' => $model->secret,
-            'logo' => $model->logo,
-            /* place your other model properties here */
-
-            'created_at' => $model->createdAt,
-            'updated_at' => $model->updatedAt
+            'access_token' => $model['access_token'],
         ];
     }
 }

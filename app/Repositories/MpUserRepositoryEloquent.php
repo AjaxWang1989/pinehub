@@ -1,19 +1,21 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/9/5
+ * Time: 0:49
+ */
 
 namespace App\Repositories;
 
+use App\Entities\MpUser;
 use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\WechatUser;
 
-/**
- * Class WechatUserRepositoryEloquent.
- *
- * @package namespace App\Repositories;
- */
-class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserRepository
+class MpUserRepositoryEloquent extends BaseRepository implements MpUserRepository
 {
+
     use Destruct;
     /**
      * Specify Model class name
@@ -22,10 +24,10 @@ class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserR
      */
     public function model()
     {
-        return WechatUser::class;
+        return MpUser::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -36,11 +38,5 @@ class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserR
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
-    public function a()
-    {
-        // TODO: Implement a() method.
-        $this->pushCriteria('ddd');
-        $this->pushCriteria('ddss');
-    }
 
-}
+    }

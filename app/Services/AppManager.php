@@ -79,6 +79,13 @@ class AppManager
     public function setCurrentApp($currentApp)
     {
         $this->currentApp = $currentApp;
+        return $this;
+    }
+
+    public function setAccessToken(string  $accessToken) {
+        Cache::add($accessToken, $this->currentApp->id, 60);
+//        dump($accessToken);
+//        dump(Cache::get($accessToken));
     }
 
     public function getAppId()

@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/9/5
+ * Time: 0:03
+ */
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
@@ -20,7 +25,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property string|null $appId 系统应用appid
  * @property int|null $userId 用户手机
  * @property string|null $wechatAppId 微信公众平台、小程序、开放app id
- * @property string $type OFFICE_ACCOUNT 公众平台， 
+ * @property string $type OFFICE_ACCOUNT 公众平台，
  *             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序
  * @property string|null $unionId union id
  * @property string $openId open id
@@ -60,10 +65,11 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereWechatAppId($value)
  * @mixin \Eloquent
  */
-class WechatUser extends Model  implements AuthenticatableContract, AuthorizableContract, Transformable
+class   MpUser extends Model  implements AuthenticatableContract, AuthorizableContract, Transformable
 {
     use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
-
+    const TYPE = 'MINI_PROGRAM';
+    protected $table = 'wechat_users';
     protected $casts = [
         'expires_at' => 'date',
         'tagid_list' => 'json',

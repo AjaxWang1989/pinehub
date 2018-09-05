@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Entities\MpUser;
 use App\Events\CardCheckEvent;
 use App\Events\CardPayOrderEvent;
 use App\Events\CardSKURemindEvent;
@@ -36,6 +37,7 @@ use App\Listeners\UserUseCardToPayEventListener;
 use App\Listeners\UserViewMemberCardEventListener;
 use App\Listeners\VerifyTicketRefreshEventListener;
 use App\Listeners\WechatAuthAccessTokenRefreshListener;
+use App\Observers\MpUserObserver;
 use Laravel\Lumen\Providers\EventServiceProvider as ServiceProvider;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\Authorized;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\Unauthorized;
@@ -44,6 +46,16 @@ use Overtrue\LaravelWeChat\Events\OpenPlatform\VerifyTicketRefreshed;
 
 class EventServiceProvider extends ServiceProvider
 {
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        MpUser::observe(MpUserObserver::class);
+        parent::boot();
+    }
     /**
      * The event listener mappings for the application.
      *

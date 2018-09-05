@@ -17,7 +17,7 @@ class OauthRoutes extends WebRoutes
     {
         tap($router, function (Router $router) {
             $router->get('/ali', ['as' => 'oauth.ali', 'uses' => 'AliAuthController@oauth2']);
-            $router->get('/wechat', ['as' => 'oauth.wechat', 'uses' => 'WechatAuthController@oauth2']);
+            $router->get('/wechat', ['as' => 'oauth.wechat', 'uses' => 'AuthController@oauth2']);
         });
     }
 }
