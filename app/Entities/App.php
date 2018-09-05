@@ -15,7 +15,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\App
  *
  * @property string $id app id
- * @property int|null $userId 应用拥有者
  * @property string $secret 应用secret
  * @property string $name 应用名称
  * @property string $logo 应用logo
@@ -42,6 +41,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereWechatAppId($value)
  * @mixin \Eloquent
+ * @property int|null $ownerUserId 应用拥有者
+ * @property string $concatPhoneNum 联系电话
+ * @property-read \App\Entities\User|null $owner
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereConcatPhoneNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOwnerUserId($value)
  */
 class App extends Model implements Transformable
 {
@@ -59,13 +63,20 @@ class App extends Model implements Transformable
      */
     protected $fillable = [
         'id',
+        'owner_user_id',
         'name',
         'secret',
         'logo',
+        'concat_phone_num',
         'wechat_app_id',
         'mini_app_id',
         'open_app_id'
     ];
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_user_id', 'id');
+    }
 
     public function officialAccount(): BelongsTo
     {

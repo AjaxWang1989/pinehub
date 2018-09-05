@@ -66,10 +66,4 @@ class AppController extends Controller
         return $this->response(new JsonResponse(['delete_count' => $result]));
     }
 
-    public function selectApp(int $id, Request $request)
-    {
-        $token = $request->input('token', null);
-        Cache::set(CURRENT_APP_PREFIX.$token, $id);
-        return $this->response(new JsonResponse(['message' => '选择APP']));
-    }
 }

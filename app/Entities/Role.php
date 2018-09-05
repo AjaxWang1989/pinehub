@@ -10,7 +10,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
 
 /**
- * App\Entities\Role
+ * App\Entities\AdminRole
  *
  * @property int $id
  * @property string $slug 角色标识

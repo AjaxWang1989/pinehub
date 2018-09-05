@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Exceptions\GatewayNotAllowed;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -59,12 +60,16 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $this->prefix  = $prefix;
         $this->gateway = $gateway;
 
-        if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway) && !$this->app->runningInConsole()) {
-            throw new NotFoundHttpException('网关错误');
-        }
         $this->app['isApiServer'] = $this->app->make('api.gateways')->has($this->gateway);
+
+
         $this->registerRouter();
         $this->registerServices();
+
+        if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway) && !$this->app->runningInConsole()) {
+            throw new GatewayNotAllowed('网关错误');
+        }
+
         $this->registerRoutes();
     }
 

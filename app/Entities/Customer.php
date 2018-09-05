@@ -32,7 +32,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $privilege 微信特权信息
  * @property int $isStudentCertified 是否是学生
  * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户
  *             B代表被冻结账户 W代表已注册，未激活的账户
  * @property int $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
  * @property int $canUseScore 用户可用积分

@@ -15,6 +15,14 @@ class CreateActivityMerchandisesTable extends Migration
     {
         Schema::create('activity_merchandises', function (Blueprint $table) {
             $table->increments('id');
+            $table->unsignedInteger('activity_id')->comment('活动ID');
+            $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺活动时显示的店铺ID');
+            $table->unsignedInteger('shop_merchandise_id')->nullable()->default(null)->comment('店铺活动时显示的店铺产品ID');
+            $table->unsignedInteger('merchandise_id')->comment('产品ID');
+            $table->unsignedInteger('product_id')->nullable()->default(null)->comment('sku单品ID');
+            $table->integer('stock_num')->default(-1)->comment('参与活动的数量:-1无限制，大于0参与活动商品数量，0售罄');
+            $table->timestamp('start_at')->nullable()->default(null)->comment('开售时间');
+            $table->timestamp('end_at')->nullable()->default(null)->comment('结业时间');
             $table->timestamps();
         });
     }

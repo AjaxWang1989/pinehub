@@ -137,7 +137,10 @@ return array(
     |
     */
     'custom_db_types' => array(
-        'mysql' => ['point' => 'json_array']
+        'mysql' => [
+            'point' => 'json_array',
+            'json'  => 'json_array'
+        ]
     ),
 
     /*

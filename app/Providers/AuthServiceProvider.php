@@ -34,9 +34,9 @@ class AuthServiceProvider extends ServiceProvider
 //        });
 
         //dingo auth HTTP Basic
-        app('api.auth')->extend('basic', function ($app) {
-            return new DingoBasic($app['auth'], 'mobile');
-        });
+//        app('api.auth')->extend('basic', function ($app) {
+//            return new DingoBasic($app['auth'], 'mobile');
+//        });
 
         //dingo auth JSON Web Tokens (JWT)
 
