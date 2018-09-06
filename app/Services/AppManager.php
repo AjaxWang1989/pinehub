@@ -63,7 +63,6 @@ class AppManager
     {
         $this->app = $app;
         $repository = $app->make(AppRepository::class);
-        $this->openPlatform = $this->app->make('wechat')->openPlatform();
         $appId = $this->getAppId();
         if($appId) {
             $this->currentApp = $repository->find($appId);
@@ -76,6 +75,14 @@ class AppManager
             });
         }
         $this->aliPayOpenPlatform = new AliPayOpenPlatform(config('ali.payment'));
+    }
+
+    public function openPlatform()
+    {
+        if(!$this->openPlatform) {
+            $this->openPlatform = $this->app->make('wechat')->openPlatform();
+        }
+        return $this->openPlatform;
     }
 
     public function setCurrentApp($currentApp)
