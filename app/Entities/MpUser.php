@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/9/5
+ * Time: 0:03
+ */
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
@@ -60,47 +65,8 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereWechatAppId($value)
  * @mixin \Eloquent
  */
-class WechatUser extends Model  implements AuthenticatableContract, AuthorizableContract, Transformable
+class   MpUser extends WechatUser
 {
-    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
-
-    protected $casts = [
-        'expires_at' => 'date',
-        'tagid_list' => 'json',
-        'subscribe_time' => 'date',
-        'deleted_at' => 'date'
-    ];
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id', 'app_id', 'wechat_app_id', 'type', 'union_id',
-        'open_id', 'session_key', 'expires_at', 'avatar', 'country',
-        'province', 'city', 'nickname', 'sex', 'privilege',
-        'tagid_list', 'remark', 'subscribe_time', 'group_id',
-        'subscribe', 'subscribe_scene', 'qr_scene', 'qr_scene_str'
-    ];
-
-    public function user() : BelongsTo
-    {
-        return $this->belongsTo(User::class, 'user_id', 'id');
-    }
-
-    public function app()
-    {
-        return $this->belongsTo(App::class, 'app_id', 'id');
-    }
-
-    public function orders()
-    {
-        return $this->hasMany(Order::class, 'open_id', 'open_id')->where('type', 'WECHAT_PAY');
-    }
-
-    public function getAuthPassword()
-    {
-        return Hash::make($this->sessionKey);
-    }
+    const TYPE = 'MINI_PROGRAM';
+    protected $table = 'wechat_users';
 }

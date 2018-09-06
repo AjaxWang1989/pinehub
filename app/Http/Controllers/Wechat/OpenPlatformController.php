@@ -3,17 +3,10 @@
 namespace App\Http\Controllers\Wechat;
 
 use App\Entities\App;
-use App\Events\UserGetCardEvent;
-use App\Events\WechatSubscribeEvent;
-use App\Events\CardCheckEvent;
 use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
-
-use App\Services\Wechat\OpenPlatform\Guard;
-
 use Dingo\Api\Routing\Helpers;
 use EasyWeChat\OpenPlatform\Application;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
@@ -56,13 +49,7 @@ class OpenPlatformController extends Controller
      * */
     public function serve(string $appId)
     {
-        $server = app('wechat')->openPlatform()->officialAccount($appId)->server;
-
-        $server->push(function ($payload) {
-            Log::debug('event info ', $payload);
-        });
-
-        return $server->serve();
+        return app('wechat')->openPlatformServerHandle($appId);
     }
 
 

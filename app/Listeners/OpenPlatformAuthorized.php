@@ -21,6 +21,7 @@ class OpenPlatformAuthorized
     /**
      * Create the event listener.
      * @param WechatConfigRepository $wechatConfigRepository
+     * @param AppRepository $appRepository
      * @return void
      */
     public function __construct(WechatConfigRepository $wechatConfigRepository, AppRepository $appRepository)

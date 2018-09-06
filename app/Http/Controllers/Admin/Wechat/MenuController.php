@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
-use App\Criteria\Admin\WechatMenuCriteria;
 use App\Entities\WechatMenu;
 use App\Exceptions\WechatMenuDeleteException;
+use App\Http\Controllers\Admin\AppManagerTrait;
 use App\Http\Requests\Admin\Wechat\MenuUpdateRequest;
 use App\Http\Response\JsonResponse;
+use App\Repositories\AppRepository;
+use App\Services\AppManager;
 use App\Transformers\WechatMenuTransformer;
-use Illuminate\Database\Eloquent\Builder;
+use Dingo\Api\Http\Request;
 use App\Http\Requests\Admin\Wechat\MenuCreateRequest;
 use App\Repositories\WechatMenuRepository;
 use App\Http\Controllers\Controller;
+use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class MenusesController.
@@ -22,23 +26,26 @@ use Illuminate\Support\Facades\Log;
  */
 class MenuController extends Controller
 {
+    use AppManagerTrait;
     /**
      * @var MenusRepository
      */
     protected $repository;
 
 
-
     /**
      * MenusesController constructor.
      *
      * @param WechatMenuRepository $repository
+     * @param Request $request
+     * @param AppRepository $appRepository
+     * @throws
      */
-    public function __construct(WechatMenuRepository $repository)
+    public function __construct(WechatMenuRepository $repository, Request $request, AppRepository $appRepository)
     {
         $this->repository = $repository;
-        $this->repository->pushCriteria(WechatMenuCriteria::class);
         parent::__construct();
+        $this->parseApp($request, $appRepository);
     }
 
     /**
@@ -65,9 +72,8 @@ class MenuController extends Controller
      */
     public function store(MenuCreateRequest $request)
     {
-        $menus = $request->input('menus');
-        $name = $request->input('name');
-        $menu = $this->repository->create(['app_id' => $this->currentOfficialAccount->appId, 'menus'  => $menus, 'name' => $name]);
+        $menu = $request->only(['menus', 'name']);
+        $menu = $this->repository->create($menu);
 
         if ($request->wantsJson()) {
             return $this->response()->item($menu, new WechatMenuTransformer());
@@ -111,24 +117,21 @@ class MenuController extends Controller
      * Update the specified resource in storage.
      *
      * @param  MenuUpdateRequest $request
-     * @param  string            $id
+     * @param  int            $id
      *
-     * @return Response
+     * @return Response|RedirectResponse
      *
      * @throws
      */
     public function update(MenuUpdateRequest $request, $id)
     {
         $menu = $this->repository->update($request->all(), $id);
+        if(!$menu)
+            throw new ModelNotFoundException('菜单查找失败，没有相应的菜单数据！', 'MENU_NOT_FOUND');
         $response = [
             'message' => '菜单修改成功.',
         ];
-        tap($menu, function (WechatMenu $menu) {
-            $menu->isPublic = false;
-            $menu->save();
-        });
         if ($request->wantsJson()) {
-
             return $this->response()->item($menu, new WechatMenuTransformer());
         }
 
@@ -136,34 +139,26 @@ class MenuController extends Controller
     }
 
 
+    /**
+     * @param int|array $id
+     * @return Response
+     * */
     public function sync($id)
     {
-        $menu = $this->repository->find($id);
-
-        tap($menu, function (WechatMenu $menu) {
-            $buttons = $menu->menus;
-            $menu->isPublic = true;
-            $menu->save();
-            foreach ($buttons['button'] as &$button) {
-                unset($button['width']);
-                if(empty($button['sub_button'])) {
-                    unset($button['sub_button']);
-                }else{
-                    unset($button['type']);
-                }
-            }
-            Log::debug('buttons', $buttons['button']);
-            $result = app('wechat')->officeAccount()->menu->create($buttons['button']);
-            if($result['errcode'] !== 0) {
-                $this->response()->error($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
-            }
-
-        });
-
+        $menu = $this->repository->update(['is_public' => true], $id);
+        if(!$menu)
+            throw new ModelNotFoundException('菜单查找失败，没有相应的菜单数据！', 'MENU_NOT_FOUND');
         return $this->response(new JsonResponse(['message' => '数据与微信同步成功！']));
     }
 
-    public function destroy(Request $request, $id = null)
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     * @throws
+     * */
+    public function destroy(Request $request, int $id = null)
     {
         $count = 0;
         if($id === null) {
@@ -172,7 +167,8 @@ class MenuController extends Controller
         if(is_array($id)){
             $deleted = $this->repository->findWhere([
                 'is_publish' => false,
-                ['id' , 'in', $id]
+                ['id' , 'in', $id],
+                'app_id' => app(AppManager::class)->officialAccount->appId
             ]);
             $idCount = count($id);
             $deletedCount = $deleted->count();

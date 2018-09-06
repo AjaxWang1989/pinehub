@@ -35,5 +35,12 @@ class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserR
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
+    public function a()
+    {
+        // TODO: Implement a() method.
+        $this->pushCriteria('ddd');
+        $this->pushCriteria('ddss');
+    }
+
 }

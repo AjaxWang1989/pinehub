@@ -22,6 +22,8 @@ class ApiRoutes extends Routes
     public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null, string $auth = null)
     {
         parent::__construct($app, $version, $namespace, $prefix, $domain, $auth);
+        $this->auth = $this->auth ? $this->auth : 'api';
+        config(['auth.defaults.guard' => $this->auth]);
         config(['api.domain' => $domain]);
         $this->router = $this->app->make('api.router');
         $this->app->middleware(Cross::class);
@@ -39,7 +41,8 @@ class ApiRoutes extends Routes
         }
         $this->version = $version ? $version : $this->version;
 
-        $second['middleware'] = ['cross', 'auth.meta:'.($this->auth ? $this->auth : 'api')];
+        $second['middleware'] = ['cross', 'auth.meta:'.$this->auth];
+
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
 

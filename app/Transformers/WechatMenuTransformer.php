@@ -24,7 +24,7 @@ class WechatMenuTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             /* place your other model properties here */
-            'app_id' => $model->appid,
+            'app_id' => $model->appId,
             'is_public' => $model->isPublic,
             'name' => $model->name,
             'menus' => $model->menus,

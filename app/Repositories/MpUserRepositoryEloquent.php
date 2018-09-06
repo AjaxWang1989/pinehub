@@ -1,20 +1,21 @@
 <?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2018/9/5
+ * Time: 0:49
+ */
 
 namespace App\Repositories;
 
-use App\Criteria\Admin\WechatMenuCriteria;
+use App\Entities\MpUser;
 use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\WechatMenu;
 
-/**
- * Class WechatMenuRepositoryEloquent.
- *
- * @package namespace App\Repositories;
- */
-class WechatMenuRepositoryEloquent extends BaseRepository implements WechatMenuRepository
+class MpUserRepositoryEloquent extends BaseRepository implements MpUserRepository
 {
+
     use Destruct;
     /**
      * Specify Model class name
@@ -23,9 +24,8 @@ class WechatMenuRepositoryEloquent extends BaseRepository implements WechatMenuR
      */
     public function model()
     {
-        return WechatMenu::class;
+        return MpUser::class;
     }
-
 
 
 
@@ -36,7 +36,7 @@ class WechatMenuRepositoryEloquent extends BaseRepository implements WechatMenuR
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-        $this->pushCriteria(WechatMenuCriteria::class);
     }
-    
-}
+
+
+    }

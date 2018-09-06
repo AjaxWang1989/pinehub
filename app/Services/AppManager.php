@@ -57,6 +57,8 @@ class AppManager
      * */
     protected $miniProgram = null;
 
+    public $ttl = 60;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
@@ -79,6 +81,11 @@ class AppManager
     public function setCurrentApp($currentApp)
     {
         $this->currentApp = $currentApp;
+        return $this;
+    }
+
+    public function setAccessToken(string  $accessToken) {
+        Cache::add($accessToken, $this->currentApp->id, $this->ttl);
     }
 
     public function getAppId()
@@ -87,11 +94,7 @@ class AppManager
         if($appId) {
             return $appId;
         }
-        $request = Request::capture();
-        $appId = $request->header('selected_appid', null);
-        $appId = $appId ? $appId : $request->query('selected_appid', null);
-        $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
-        return $appId;
+        return null;
     }
 
     public function officialAccount()

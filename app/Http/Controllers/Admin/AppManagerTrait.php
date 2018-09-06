@@ -7,14 +7,14 @@
  */
 
 namespace App\Http\Controllers\Admin;
-use App\Http\Controllers\Controller as BaseController;
+
 use App\Repositories\AppRepository;
 use App\Services\AppManager;
 use Dingo\Api\Http\Request;
 
-class Controller extends BaseController
+trait AppManagerTrait
 {
-    public function __construct(Request $request, AppRepository $repository)
+    public function parseApp(Request $request, AppRepository $repository)
     {
         $appId = $request->header('selected_appid', null);
         $appId = $appId ? $appId : $request->query('selected_appid', null);

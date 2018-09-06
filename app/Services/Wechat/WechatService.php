@@ -26,10 +26,10 @@ use App\Services\Wechat\Components\OfficialAccountAuthorizerInfo;
 use App\Services\Wechat\OfficialAccount\AccessToken;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Article;
-use EasyWeChat\OfficialAccount\Server\Guard;
+use EasyWeChat\Kernel\ServerGuard as Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
 use Overtrue\LaravelWeChat\CacheBridge;
-use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
+//use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
 use App\Services\Wechat\OpenPlatform\OpenPlatformAccessToken as OPAccessToken;
 use Psr\Http\Message\ResponseInterface;
 use EasyWeChat\Payment\Application as Payment;
@@ -53,12 +53,16 @@ class WechatService
 
     protected $openPlatform = null;
 
+    protected $appManager = null;
+
     /**
      * @param array $config
+     * @param AppManager $appManager
      * */
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], AppManager $appManager = null)
     {
         $this->config = $config;
+        $this->appManager = $appManager;
     }
 
     /**
@@ -76,10 +80,9 @@ class WechatService
             if(isset($this->config['official_account']['app_secret'])) {
                 $this->officeAccount= Factory::officialAccount($this->config['official_account']);
             }else{
-                $appManager = app(AppManager::class);
-                $appId = $appManager->officialAccount()->appId;
+                $appId = $this->appManager->officialAccount()->appId;
                 $this->officeAccount = $this->openPlatform()->officialAccount($appId,
-                    $appManager->officialAccount->authorizerRefreshToken);
+                    $this->appManager->officialAccount->authorizerRefreshToken);
             }
         }
 
@@ -375,9 +378,8 @@ class WechatService
             if(isset($this->config['mini_program']['app_secret'])) {
                 $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
             }else{
-                $appManager = app(AppManager::class);
-                $appId = $appManager->miniProgram()->appId;
-                $this->miniProgram = $this->openPlatform()->miniProgram($appId, $appManager->miniProgram->authorizerRefreshToken);
+                $appId = $this->appManager->miniProgram()->appId;
+                $this->miniProgram = $this->openPlatform()->miniProgram($appId, $this->appManager->miniProgram->authorizerRefreshToken);
             }
         }
         $this->setWechatApplication($this->miniProgram, app());
@@ -445,74 +447,70 @@ class WechatService
     }
 
     /**
+     * @param string $appId
      * @return mixed
      * @throws
      * */
-    public function officeAccountServerHandle()
+    public function officeAccountServerHandle(string  $appId)
     {
-        $this->officeAccountServer()->push(function ($message) {
-            return $this->serverMessageHandle($this->officeAccountServer(), $message);
+        $server = $this->officeAccountServer();
+        $server->push(function ($message, $server)use($appId) {
+            return $this->serverMessageHandle($server, $message, $appId);
         });
-        return $this->officeAccountServer()->serve();
+        return $server->serve();
     }
 
     /**
+     * @param string $appId
      * @return mixed
      * @throws
      * */
-    public function miniProgramServerHandle()
+    public function miniProgramServerHandle(string  $appId)
     {
-
-        $this->miniProgramServer()->push(function ($message) {
-           $this->serverMessageHandle($this->miniProgramServer(), $message);
+        $server = $this->miniProgramServer();
+        $server->push(function ($message) use($server, $appId){
+           $this->serverMessageHandle($server, $message, $appId);
         });
 
-        return $this->miniProgramServer()->serve();
+        return $server->serve();
     }
 
 
     /**
+     * @param string $appId
      * @return mixed
      * @throws
      * */
-    public function openPlatformServerHandle()
+    public function openPlatformServerHandle(string $appId)
     {
-        $this->openPlatformServer()->push(function ($message) {
-            $this->serverMessageHandle($this->openPlatformServer(), $message);
+        $server = $this->openPlatformServer();
+        $server->push(function ($message) use($appId, $server) {
+            $this->serverMessageHandle($server, $message, $appId);
         });
-
-        return $this->openPlatformServer()->serve();
+        return $server->serve();
     }
 
     /**
      * @param Guard $server
-     * @param  $message
+     * @param  array $message
+     * @param string $appId
      * @return mixed
      * @throws
      * */
-    protected function serverMessageHandle(Guard $server, $message)
+    protected function serverMessageHandle(Guard $server, array $message, string $appId)
     {
+        $payload = [
+            'app_id' => $appId,
+            'message' => $message
+        ];
         switch ($message['MsgType']) {
-            case WECHAT_TEXT_MESSAGE: {
-                return $server->dispatch();
-                break;
-            }
-            case WECHAT_IMAGE_MESSAGE: {
-                return $server->dispatch();
-                break;
-            }
-            case WECHAT_VOICE_MESSAGE: {
-                return $server->dispatch();
-                break;
-            }
             case WECHAT_EVENT_MESSAGE: {
-                return $server->dispatch($message['Event'], $message);
+                return $server->dispatch($message['Event'], $payload);
                 break;
             }
-            case OPEN_PLATFORM_COMPONENT_VERIFY_TICKET: {
-                return $server->dispatch($message['Event'], $message);
-                break;
-            }
+            case WECHAT_TEXT_MESSAGE:
+            case WECHAT_IMAGE_MESSAGE:
+            case WECHAT_VOICE_MESSAGE:
             default:
                 return app(EchoStrHandler::class)->handle($message);
                 break;
