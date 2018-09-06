@@ -24,12 +24,23 @@ class AuthController extends Controller
 {
     protected  $mpUserRepository = null;
 
+    /**
+     * AuthController constructor.
+     * @param MpUserRepository $mpUserRepository
+     * @param AppRepository $appRepository
+     * @param Request $request
+     */
     public function __construct(MpUserRepository $mpUserRepository,AppRepository $appRepository, Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->mpUserRepository = $mpUserRepository;
         $this->appRepository = $appRepository;
     }
+    /**
+     * 注册
+     * @param Request $request
+     * @throws
+     * */
 
     public function registerUser(CreateRequest $request){
         $mpUser = $request->all();
@@ -40,10 +51,20 @@ class AuthController extends Controller
         return $this->response()->item($mpUser, new MpUserTransformer());
     }
 
+    /**
+     * 获取用户信息
+     * @return \Dingo\Api\Http\Response
+     */
     public function userInfo(){
         $user = $this->user();
         return $this->response()->item($user, new MpUserInfoTransformer());
     }
+
+    /**
+     * @param string $appid
+     * @param string $appsecret
+     * @return \Dingo\Api\Http\Response
+     */
 
     public function appAccess(string $appid, string $appsecret){
         $where = array('id'=>$appid,'secret'=>$appsecret);
