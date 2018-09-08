@@ -29,6 +29,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $categoryId 分类ID
+ * @property-read \App\Entities\Category $category
+ * @property-read \App\Entities\Merchandise $merchandise
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
  */
 class ShopMerchandise extends Model implements Transformable
 {

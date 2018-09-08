@@ -46,6 +46,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\User|null $owner
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereConcatPhoneNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOwnerUserId($value)
+ * @property string $contactName 联系人名称
+ * @property string $contactPhoneNum 联系电话
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactPhoneNum($value)
  */
 class App extends Model implements Transformable
 {
@@ -67,7 +71,8 @@ class App extends Model implements Transformable
         'name',
         'secret',
         'logo',
-        'concat_phone_num',
+        'contact_phone_num',
+        'contact_name',
         'wechat_app_id',
         'mini_app_id',
         'open_app_id'

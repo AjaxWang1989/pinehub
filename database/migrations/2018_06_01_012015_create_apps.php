@@ -20,7 +20,8 @@ class CreateApps extends Migration
             $table->string('secret', 32)->comment('应用secret');
             $table->string('name', 16)->comment('应用名称');
             $table->string('logo')->comment('应用logo');
-            $table->string('concat_phone_num')->default('')->comment('联系电话');
+            $table->string('contact_name')->default('')->comment('联系人名称');
+            $table->string('contact_phone_num', 12)->default('')->comment('联系电话');
             $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('微信公众号appid');
             $table->string('mini_app_id', 32)->nullable()->default(null)->comment('小程序appid');
             $table->string('open_app_id', 32)->nullable()->default(null)->comment('api创建open platform appid');
