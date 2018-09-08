@@ -11,5 +11,9 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface MerchandiseCategoryRepository extends RepositoryInterface
 {
-    //
+    /**
+     * @param int $id
+     * @return $MerchandiseCategory
+     */
+    public function  merchandises(int $id);
 }

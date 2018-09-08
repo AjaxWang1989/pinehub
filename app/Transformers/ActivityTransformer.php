@@ -17,9 +17,9 @@ class ActivityTransformer extends TransformerAbstract
     public function transform(Activity $model)
     {
         return [
-            'id'  => $model['id'],
-            'title'=>$model['title'],
-            'background'=>$model['background'],
+            'id'  => $model->id,
+            'title'=>$model->title,
+            'poster_img'=>$model->posterImg,
         ];
     }
 }
