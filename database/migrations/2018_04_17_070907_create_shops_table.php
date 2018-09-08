@@ -57,7 +57,9 @@ class CreateShopsTable extends Migration
             $table->index('user_id');
             $table->index('city_id');
             $table->index('county_id');
+            $table->index('geo_hash');
             $table->index('status');
+            $table->spatialIndex('position');
 		});
 	}
 
