@@ -206,6 +206,7 @@ if(!function_exists('multi_array_merge')) {
 
 if(!function_exists('gateway')) {
     function gateway(string $gateway) {
+        $gatewayConfig = config('gateway.'.$gateway);
         $tmp = explode('.', $gateway);
         if($tmp[0] === 'api') {
             $gateway = app('api.gateways');
@@ -213,7 +214,7 @@ if(!function_exists('gateway')) {
             $gateway = app('web.gateways');
         }
 
-        return $gateway->getGateway($tmp[1]);
+        return $gateway->getGateway($gatewayConfig);
     }
 }
 
