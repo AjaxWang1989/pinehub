@@ -18,7 +18,7 @@ class MpUserTransformer extends TransformerAbstract
     public function transform(MpUser $model)
     {
         return [
-            'token' => $model['token'],
+            'token' => $model->token,
             'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
             'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
         ];

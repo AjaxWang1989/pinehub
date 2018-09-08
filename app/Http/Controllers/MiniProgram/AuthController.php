@@ -75,5 +75,4 @@ class AuthController extends Controller
         return $this->response()->item($item, new AppTransformer());
     }
 
-
 }
