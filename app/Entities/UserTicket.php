@@ -5,6 +5,9 @@ namespace App\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use App\Entities\Traits\ModelAttributesAccess;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 
 /**
  * Class UserTicket.
@@ -28,13 +31,20 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class UserTicket extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'card_id','card_code','user_id','status'
+    ];
+
+    public function tickets():BelongsTo
+    {
+        return $this->BelongsTo(Card::class,'card_id','card_id');
+    }
 
 }

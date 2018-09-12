@@ -55,7 +55,7 @@ class CategoriesController extends Controller
       return $this->response->paginator($item,new MerchandisesTransformer());
     }
 
-    /**
+    /*
      * 一个店铺下的所有分类
      * @param int $id
      */

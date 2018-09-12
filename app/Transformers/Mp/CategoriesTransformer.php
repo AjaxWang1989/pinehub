@@ -10,7 +10,6 @@ namespace App\Transformers\Mp;
 use League\Fractal\TransformerAbstract;
 use App\Entities\Category;
 
-
 class CategoriesTransformer extends TransformerAbstract
 {
     public function transform(Category $model){

@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Repositories\Traits\Destruct;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\Order;
@@ -50,5 +51,14 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             $order->code =  app('uid.generator')->getUid(ORDER_CODE_FORMAT, ORDER_SEGMENT_MAX_LENGTH);
             return $order;
         });
+    }
+
+    /**
+     * @param $data
+     * @return bool
+     */
+    public function insertMerchandise($itemMerchandises){
+        $item = DB::table('order_item_merchandises')->insert($itemMerchandises);
+        return $item;
     }
 }

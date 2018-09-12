@@ -12,4 +12,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface UserTicketRepository extends RepositoryInterface
 {
     //
+    public function userTickets(int $status,int $userId);
 }

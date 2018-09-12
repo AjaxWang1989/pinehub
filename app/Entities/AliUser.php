@@ -43,8 +43,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserType($value)
  * @mixin \Eloquent
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
- *             B代表被冻结账户 W代表已注册，未激活的账户
  */
 class AliUser extends Model implements Transformable
 {

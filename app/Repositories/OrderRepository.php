@@ -13,4 +13,10 @@ interface OrderRepository extends RepositoryInterface
 {
     //
     public function pushCriteria($class);
+
+    /**
+     * @param $itemMerchandises
+     * @return mixed
+     */
+    public function insertMerchandise($itemMerchandises);
 }

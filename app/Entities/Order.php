@@ -33,9 +33,11 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Carbon\Carbon|null $signedAt 签收时间
  * @property string|null $receiverCity 收货城市
  * @property string|null $receiverDistrict 收货人所在城市区县
+ * * @property string|null $receiverName 收货人姓名
  * @property string|null $receiverAddress 收货地址
+ * * @property string|null $receiverMobile 收货人电话
  * @property \Carbon\Carbon|null $consignedAt 发货时间
- * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单
+ * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
  * @property int $scoreSettle 积分是否已经结算
  * @property string|null $postNo 快递编号
@@ -86,8 +88,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWechatAppId($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItemMerchandise[] $orderItemMerchandises
- * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
- *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
  */
 class Order extends Model implements Transformable
 {
@@ -135,7 +135,7 @@ class Order extends Model implements Transformable
     protected $fillable = [
         'code', 'customer_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
-        'receiver_district', 'receiver_address', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
+        'receiver_district','receiver_name', 'receiver_address','receiver_mobile', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
         'ip', 'open_id', 'transaction_id', 'member_id', 'trade_status'
     ];
 

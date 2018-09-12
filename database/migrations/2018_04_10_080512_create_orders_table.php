@@ -36,9 +36,12 @@ class CreateOrdersTable extends Migration
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
             $table->string('receiver_city', 16)->nullable()->default(null)->comment('收货城市');
             $table->string('receiver_district', 16)->nullable()->default(null)->comment('收货人所在城市区县');
+            $table->string('receiver_name', 16)->nullable()->default(null)->comment('收货姓名');
             $table->string('receiver_address', 32)->nullable()->default(null)->comment('收货地址');
+            $table->string('receiver_mobile', 11)->nullable()->default(null)->comment('收货人电话');
+            $table->string('comment', 255)->nullable()->default(null)->comment('备注');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
-            $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单');
+            $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手');
             $table->unsignedTinyInteger('post_type')->default(0)->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
             $table->boolean('score_settle')->default(false)->comment('积分是否已经结算');
             $table->string('post_no', 32)->nullable()->default(null)->comment('快递编号');

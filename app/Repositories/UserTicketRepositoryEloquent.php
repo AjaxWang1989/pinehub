@@ -34,5 +34,12 @@ class UserTicketRepositoryEloquent extends BaseRepository implements UserTicketR
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
+    public function userTickets(int $status,$userId,$limit='15'){
+        $this->scopeQuery(function (UserTicket $userTicket) use($status,$userId) {
+            return $userTicket->with('tickets')->where(['user_id'=>$userId,'status'=>$status]);
+        });
+        return $this->paginate($limit);
+    }
     
 }
