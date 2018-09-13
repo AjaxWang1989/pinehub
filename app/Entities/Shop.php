@@ -178,7 +178,8 @@ class Shop extends Model implements Transformable
 
     public function scopeNear(Builder $query, float $lng, float $lat, float $distance) {
         $rate = 111.1;
-        $where = "MBRContains(LineString(Point({$lng} + {$distance} / ({$rate} / COS(RADIANS({$lat}))), {$lat} + {$distance} / {$rate}  ), Point({$lng} - {$distance} / ( {$rate} / COS(RADIANS({$lat}))), {$lat} - {$distance} / {$rate})),position)";
-        return $query->where(DB::raw($where));
+        $where = "MBRContains(LineString(Point({$lng} + {$distance} / ({$rate} / COS(RADIANS({$lat}))), {$lat} + 
+        {$distance} / {$rate}  ), Point({$lng} - {$distance} / ( {$rate} / COS(RADIANS({$lat}))), {$lat} - {$distance} / {$rate})),position)";
+        return $query->whereRaw($where);
     }
 }
