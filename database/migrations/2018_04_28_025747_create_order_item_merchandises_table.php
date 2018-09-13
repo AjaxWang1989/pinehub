@@ -41,7 +41,6 @@ class CreateOrderItemMerchandisesTable extends Migration
             $table->index('customer_id');
             $table->index('shop_id');
             $table->index('order_id');
-            $table->index('order_item_id');
             $table->index('merchandise_id');
             $table->index('sku_product_id');
 		});

@@ -15,6 +15,7 @@ use App\Transformers\Mp\CategoriesTransformer;
 use App\Transformers\Mp\MerchandisesTransformer;
 use App\Transformers\Mp\StoreMerchandiseTransformer;
 use App\Transformers\Mp\StoreCategoriesTransformer;
+use App\Transformers\Mp\StoreStockStatisticsTransformer;
 use App\Repositories\ShopMerchandiseRepository;
 
 
@@ -73,6 +74,15 @@ class CategoriesController extends Controller
     public function storeMerchandise(int $id ,int $categoryId){
         $item = $this->shopMerchandiseRepository->storeMerchandise($id,$categoryId);
         return $this->response->paginator($item,new StoreMerchandiseTransformer());
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function storeStockStatistics(Request $request){
+        $store = $request->all();
+        $item  = $this->shopMerchandiseRepository->storeStockMerchandise($store);
+        return $this->response()->paginator($item,new StoreStockStatisticsTransformer);
     }
 
 }

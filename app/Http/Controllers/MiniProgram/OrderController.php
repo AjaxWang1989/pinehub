@@ -16,6 +16,8 @@ use App\Repositories\CardRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Repositories\MerchandiseRepository;
 use App\Transformers\Mp\OrderTransformer;
+use App\Transformers\Mp\OrderStoreBuffetTransformer;
+use App\Transformers\Mp\OrderStoreSendTransformer;
 
 class OrderController extends Controller
 {
@@ -44,16 +46,21 @@ class OrderController extends Controller
     }
 
     /**
+     * 创建订单
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function createOrder(Request $request){
+    public function createOrder(Request $request)
+    {
         $user = $this->user();
         $userId = $user ? $user['id'] : 1;
         $orders = $request->all();
         $orders['member_id'] = $userId;
         $cardRepository = $this->cardRepository->findWhere(['id'=>$orders['ticked_id']])->first();
         $orders['discount_amount'] = $cardRepository['card_info']['discount'];
+        $orders['shop_id'] = $orders['store_id'];
+        $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']])->sum('amount');
+        $orders['total_amount'] = $shoppingCartAmount;
         $ordersMerchandise = $this->orderRepository->create($orders);
         $shoppingCart = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']]);
         $itemMerchandises = [];
@@ -70,11 +77,43 @@ class OrderController extends Controller
             $itemMerchandises[$k]['sell_price'] = $merchandises['sell_price'];
             $itemMerchandises[$k]['cost_price'] = $merchandises['cost_price'];
             $itemMerchandises[$k]['quality'] = $v['quality'];
-            $itemMerchandises[$k]['total_price'] = $v['amount'];
-            $itemMerchandises[$k]['payment_price'] = $v['amount'];
+            $itemMerchandises[$k]['total_amount'] = $v['amount'];
+            $itemMerchandises[$k]['payment_amount'] = $v['amount'];
             $itemMerchandises[$k]['status'] = 10;
         }
         $item = $this->orderRepository->insertMerchandise($itemMerchandises);
         return $this->response()->item($ordersMerchandise,new OrderTransformer());
     }
+
+    /**
+     * 自提订单
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function storeBuffetOrders(Request $request){
+        $user = $this->user();
+        $userId = $user ? $user['id'] : 1;
+        $sendTime = $request->all();
+        $item = $this->orderRepository->storeBuffetOrders($sendTime,$userId);
+        return $this->response()->paginator($item,new OrderStoreBuffetTransformer());
+    }
+
+    /**
+     * 配送订单
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function storeSendOrders(Request $request)
+    {
+        $user = $this->user();
+        $userId = $user ? $user['id'] : 1;
+        $sendTime = $request->all();
+        if (empty($sendTime)){
+            $sendTime['send_start_time'] = date('Y-m-d 00:00:00',time());
+            $sendTime['send_end_time'] = date('Y-m-d 23:59:59',time());
+        }
+        $item = $this->orderRepository->storeSendOrders($sendTime,$userId);
+        return $this->response()->paginator($item,new OrderStoreSendTransformer());
+    }
+
 }

@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('维系app id');
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
+            $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺id');
             $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
             $table->unsignedInteger('customer_id')->nullable()->default(null)->comment('买家');
             $table->float('total_amount')->default(0)->comment('应付款');
@@ -39,6 +40,7 @@ class CreateOrdersTable extends Migration
             $table->string('receiver_name', 16)->nullable()->default(null)->comment('收货姓名');
             $table->string('receiver_address', 32)->nullable()->default(null)->comment('收货地址');
             $table->string('receiver_mobile', 11)->nullable()->default(null)->comment('收货人电话');
+            $table->timestamp('send_time')->nullable()->default(null)->comment('配送时间');
             $table->string('comment', 255)->nullable()->default(null)->comment('备注');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
             $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手');

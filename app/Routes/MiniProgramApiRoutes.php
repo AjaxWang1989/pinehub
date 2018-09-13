@@ -34,5 +34,8 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->post('/create/order', ['as' => 'user.create.order','uses' => 'OrderController@createOrder']);
         $router->post('/add/merchandise', ['as' => 'user.add.merchandise','uses' => 'ShoppingCartController@addMerchandise']);
         $router->get('/shoppingcart/merchandises/{store_id}', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@shoppingCartMerchandises']);
+        $router->get('/store/buffet/orders', ['as' => 'user.store.buffet.orders','uses' => 'OrderController@storeBuffetOrders']);
+        $router->get('/store/send/orders', ['as' => 'user.store.send.orders','uses' => 'OrderController@storeSendOrders']);
+        $router->get('/store/stock/statistics', ['as' => 'user.store.stock.statistics','uses' => 'CategoriesController@storeStockStatistics']);
     }
 }

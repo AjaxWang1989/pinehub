@@ -57,8 +57,38 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param $data
      * @return bool
      */
-    public function insertMerchandise($itemMerchandises){
+    public function insertMerchandise($itemMerchandises)
+    {
         $item = DB::table('order_item_merchandises')->insert($itemMerchandises);
         return $item;
+    }
+
+    /**
+     * @param $sendTime
+     * @param $userId
+     * @param string $limit
+     * @return mixed
+     */
+
+    public function storeBuffetOrders($sendTime,$userId,$limit = '15')
+    {
+        $this->scopeQuery(function (Order $order) use($userId,$sendTime) {
+            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])->whereRaw("send_time >= '".$sendTime['send_start_time']."' AND send_time <= '".$sendTime['send_end_time']."' AND type =3 OR type =1");
+        });
+        return $this->paginate($limit);
+    }
+
+    /**
+     * @param $sendTime
+     * @param $userId
+     * @param string $limit
+     * @return mixed
+     */
+    public function storeSendOrders($sendTime,$userId,$limit = '15')
+    {
+        $this->scopeQuery(function (Order $order) use($userId,$sendTime) {
+            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])->whereRaw("send_time >= '".$sendTime['send_start_time']."' AND send_time <= '".$sendTime['send_end_time']."' AND type =2 OR type =4");
+        });
+        return $this->paginate($limit);
     }
 }

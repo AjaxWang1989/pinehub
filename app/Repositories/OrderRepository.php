@@ -19,4 +19,18 @@ interface OrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function insertMerchandise($itemMerchandises);
+
+    /**
+     * @param $sendTime
+     * @param $userId
+     * @return mixed
+     */
+    public function storeBuffetOrders($sendTime,$userId);
+
+    /**
+     * @param $sendTime
+     * @param $userId
+     * @return mixed
+     */
+    public function storeSendOrders($sendTime,$userId);
 }

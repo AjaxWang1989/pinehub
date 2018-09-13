@@ -20,4 +20,10 @@ interface ShopMerchandiseRepository extends RepositoryInterface
      * @param int $categoryId
      */
     public function storeMerchandise(int $id ,int $categoryId);
+
+    /**
+     * @param $store
+     * @return mixed
+     */
+    public function storeStockMerchandise($store);
 }

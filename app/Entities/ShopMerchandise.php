@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $categoryId 分类ID
  * @property-read \App\Entities\Category $category
  * @property-read \App\Entities\Merchandise $merchandise
+ * @property-read \App\Entities\Shop $shop
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
  */
 class ShopMerchandise extends Model implements Transformable
@@ -55,5 +56,10 @@ class ShopMerchandise extends Model implements Transformable
     public function merchandise() : BelongsTo
     {
         return $this->belongsTo(Merchandise::class, 'merchandise_id', 'id');
+    }
+
+    public function shop():BelongsTo
+    {
+        return $this->belongsTo(Shop::class,'shop_id','id');
     }
 }

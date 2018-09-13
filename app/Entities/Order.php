@@ -21,6 +21,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $wechatAppId 维系app id
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
+ * @property int|null $shopId 店铺id
  * @property int|null $memberId 买家会员id
  * @property int|null $customerId 买家
  * @property float $totalAmount 应付款
@@ -35,7 +36,9 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $receiverDistrict 收货人所在城市区县
  * * @property string|null $receiverName 收货人姓名
  * @property string|null $receiverAddress 收货地址
- * * @property string|null $receiverMobile 收货人电话
+ * @property string|null $receiverMobile 收货人电话
+ * @property string|null $sendTime 配送时间
+ * @property string|null $comment 配送时间
  * @property \Carbon\Carbon|null $consignedAt 发货时间
  * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
@@ -135,8 +138,8 @@ class Order extends Model implements Transformable
     protected $fillable = [
         'code', 'customer_id', 'total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
-        'receiver_district','receiver_name', 'receiver_address','receiver_mobile', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
-        'ip', 'open_id', 'transaction_id', 'member_id', 'trade_status'
+        'receiver_district','receiver_name', 'receiver_address','receiver_mobile', 'send_time','comment','type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
+        'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status'
     ];
 
     public function member() : BelongsTo

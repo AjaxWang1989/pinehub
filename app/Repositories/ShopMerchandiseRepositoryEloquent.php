@@ -60,4 +60,11 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
         });
         return $this->paginate($limit);
     }
+
+    public function storeStockMerchandise($store,$limit = '15'){
+        $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($store) {
+            return $ShopMerchandise->with('merchandise')->where(['shop_id'=>$store['store_id'],'category_id'=>$store['category_id']]);
+        });
+        return $this->paginate($limit);
+    }
 }
