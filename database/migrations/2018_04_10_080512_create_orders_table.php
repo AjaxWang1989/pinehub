@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺id');
             $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
             $table->unsignedInteger('customer_id')->nullable()->default(null)->comment('买家');
+            $table->unsignedInteger('merchandise_num')->nullable()->default(null)->comment('此订单商品数量总数');
             $table->float('total_amount')->default(0)->comment('应付款');
             $table->float('payment_amount')->default('0')->comment('实际付款');
             $table->float('discount_amount')->default(0)->comment('优惠价格');

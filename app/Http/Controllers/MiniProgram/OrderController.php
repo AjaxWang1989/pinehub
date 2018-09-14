@@ -18,6 +18,8 @@ use App\Repositories\MerchandiseRepository;
 use App\Transformers\Mp\OrderTransformer;
 use App\Transformers\Mp\OrderStoreBuffetTransformer;
 use App\Transformers\Mp\OrderStoreSendTransformer;
+use App\Transformers\Mp\StatusOrdersTransformer;
+use App\Transformers\Mp\StoreOrdersSummaryTransformer;
 
 class OrderController extends Controller
 {
@@ -60,6 +62,8 @@ class OrderController extends Controller
         $orders['discount_amount'] = $cardRepository['card_info']['discount'];
         $orders['shop_id'] = $orders['store_id'];
         $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']])->sum('amount');
+        $shoppingCartMerchandiseNum = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']])->sum('quality');
+        $orders['merchandise_num'] = $shoppingCartMerchandiseNum;
         $orders['total_amount'] = $shoppingCartAmount;
         $ordersMerchandise = $this->orderRepository->create($orders);
         $shoppingCart = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']]);
@@ -114,6 +118,32 @@ class OrderController extends Controller
         }
         $item = $this->orderRepository->storeSendOrders($sendTime,$userId);
         return $this->response()->paginator($item,new OrderStoreSendTransformer());
+    }
+
+    /**
+     * 所有订单信息
+     * @param string $status
+     *
+     */
+
+    public function orders(string  $status){
+        $user = $this->user();
+        $userId = $user ? $user['id'] : 1;
+        $item = $this->orderRepository->allOrders($status,$userId);
+        return $this->response()->paginator($item,new StatusOrdersTransformer());
+    }
+
+    /**
+     * 销售订单汇总
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function storeOrdersSummary(Request $request){
+        $user = $this->user();
+        $userId = $user ? $user['id'] : 1;
+        $request = $request->all();
+        $item = $this->orderRepository->storeOrdersSummary($request,$userId);
+        return $this->response()->paginator($item,new StoreOrdersSummaryTransformer());
     }
 
 }

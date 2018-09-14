@@ -37,7 +37,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         return Order::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -88,6 +88,29 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $this->scopeQuery(function (Order $order) use($userId,$sendTime) {
             return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])->whereRaw("send_time >= '".$sendTime['send_start_time']."' AND send_time <= '".$sendTime['send_end_time']."' AND type =2 OR type =4");
+        });
+        return $this->paginate($limit);
+    }
+
+    /**
+     * @param string $status
+     * @param int $userId
+     * @param string $limit
+     * @return mixed
+     */
+    public function allOrders(string $status,int $userId,$limit = '15')
+    {
+        $this->scopeQuery(function (Order $order) use($status,$userId){
+            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId,'status'=>$status]);
+        });
+        return $this->paginate($limit);
+    }
+
+
+    public function storeOrdersSummary(array $request,int $userId,$limit = '15')
+    {
+        $this->scopeQuery(function (Order $order) use($userId,$request) {
+            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])->whereRaw("send_time >= '".$request['send_start_time']."' AND send_time <= '".$request['send_end_time']."' AND type = '".$request['type']."' AND status = '".$request['status']."'");
         });
         return $this->paginate($limit);
     }
