@@ -73,7 +73,7 @@ class Merchandise extends Model implements Transformable
      */
     protected $fillable = [
         'code', 'name', 'main_image', 'images', 'preview', 'detail', 'origin_price', 'cost_price', 'sell_price', 'factory_price',
-        'stock_num', 'sell_num', 'status'
+        'stock_num', 'sell_num', 'status', 'capacity'
     ];
 
     public function orderItems() : HasMany

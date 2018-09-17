@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use AlbertCht\Form\FormRequestServiceProvider;
 use App\Exceptions\GatewayNotAllowed;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
@@ -95,6 +96,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
             // 注册 SessionServiceProvider
             //
             $this->app->register(SessionServiceProvider::class);
+            $this->app->register(FormRequestServiceProvider::class);
             $this->app->bind(SessionManager::class, function ($app){
                 return $app->make('session');
             });

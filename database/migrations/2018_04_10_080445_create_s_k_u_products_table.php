@@ -22,6 +22,7 @@ class CreateSKUProductsTable extends Migration
             $table->float('sell_price')->default(0)->comment('售价');
             $table->float('cost_price')->default(0)->comment('成本价格');
             $table->float('factory_price')->default(0)->comment('工厂价格');
+            $table->unsignedInteger('capacity')->default(0)->comment('产能（工厂生产能力）');
             $table->unsignedInteger('stock_num')->default(0)->comment('库存');
             $table->unsignedInteger('sell_num')->default('0')->comment('已售出数量');
             $table->unsignedTinyInteger('status')->default(0)->comment('状态：0-下架 1-上架');
