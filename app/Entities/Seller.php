@@ -5,6 +5,7 @@ namespace App\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Entities\Seller
@@ -70,4 +71,9 @@ use Prettus\Repository\Traits\TransformableTrait;
 class Seller extends User
 {
   protected $table = 'users';
+
+  public function shop() :HasOne
+  {
+        return $this->HasOne(User::class,'user_id','id');
+  }
 }

@@ -57,7 +57,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param $data
      * @return bool
      */
-    public function insertMerchandise($itemMerchandises)
+    public function insertMerchandise(array $itemMerchandises)
     {
         $item = DB::table('order_item_merchandises')->insert($itemMerchandises);
         return $item;
@@ -70,10 +70,19 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      */
 
-    public function storeBuffetOrders($sendTime,$userId,$limit = '15')
+    public function storeBuffetOrders(array $sendTime,int $userId,$limit = '15')
     {
-        $this->scopeQuery(function (Order $order) use($userId,$sendTime) {
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])->whereRaw("send_time >= '".$sendTime['send_start_time']."' AND send_time <= '".$sendTime['send_end_time']."' AND type =3 OR type =1");
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = $sendTime['send_start_time'];
+        $endAt = $sendTime['send_end_time'];
+
+        $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
+            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])
+                ->where('send_time', '>=', $startAt)
+                ->where('send_time', '<', $endAt)
+                ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION]);
         });
         return $this->paginate($limit);
     }
@@ -84,10 +93,19 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param string $limit
      * @return mixed
      */
-    public function storeSendOrders($sendTime,$userId,$limit = '15')
+    public function storeSendOrders(array $sendTime,int $userId,$limit = '15')
     {
-        $this->scopeQuery(function (Order $order) use($userId,$sendTime) {
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])->whereRaw("send_time >= '".$sendTime['send_start_time']."' AND send_time <= '".$sendTime['send_end_time']."' AND type =2 OR type =4");
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = $sendTime['send_start_time'];
+        $endAt = $sendTime['send_end_time'];
+
+        $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
+            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])
+                ->where('send_time', '>=', $startAt)
+                ->where('send_time', '<', $endAt)
+                ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);
         });
         return $this->paginate($limit);
     }
@@ -106,12 +124,293 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         return $this->paginate($limit);
     }
 
+    /**
+     * @param array $request
+     * @param int $userId
+     * @param string $limit
+     * @return mixed
+     */
 
     public function storeOrdersSummary(array $request,int $userId,$limit = '15')
     {
-        $this->scopeQuery(function (Order $order) use($userId,$request) {
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])->whereRaw("send_time >= '".$request['send_start_time']."' AND send_time <= '".$request['send_end_time']."' AND type = '".$request['type']."' AND status = '".$request['status']."'");
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = $request['send_start_time'];
+        $endAt = $request['send_end_time'];
+
+        $this->scopeQuery(function (Order $order) use($userId,$request,$startAt,$endAt) {
+            return $order->with('orderItemMerchandises')
+                ->where(['shop_id'=>$userId])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt)
+                ->where('type',$request['type'])
+                ->where('status',$request['status']);
         });
         return $this->paginate($limit);
+    }
+
+    /**
+     * @param array $request
+     * @param int $userId
+     * @return mixed
+     */
+    public function orderStatistics(array $request,int $userId)
+    {
+        $startAt = null;
+        $endAt = null;
+        $limit =  null;
+        if ($request['date'] == 'hour')
+        {
+            $startAt = date('Y-m_d 00:00:00',time());
+            $endAt  = date('Y-m-d 23:59:59',time());
+            $limit = '24';
+        }else if($request['date'] == 'week')
+        {
+            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+            $limit = '7';
+        }else if($request['date'] == 'month')
+        {
+            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
+            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+            $limit = '31';
+        }
+        $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt,$limit) {
+            return $order->select([
+                $request['date'],
+                DB::raw('sum( `payment_amount` ) as total_amount')])
+                ->where(['shop_id'=>$userId])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt)
+                ->groupby($request['date'])->orderBy($request['date'])->limit($limit);
+        });
+        return $this->get();
+    }
+
+    /**
+ * @param array $request
+ * @param int $userId
+ * @return mixed
+ */
+    public function bookPaymentAmount(array $request,int $userId)
+    {
+        $startAt = null;
+        $endAt = null;
+        if ($request['date'] == 'hour')
+        {
+            $startAt = date('Y-m_d 00:00:00',time());
+            $endAt  = date('Y-m-d 23:59:59',time());
+        }else if($request['date'] == 'week')
+        {
+            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+        }else if($request['date'] == 'month')
+        {
+            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
+            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+        }
+        $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
+            return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
+                ->where(['shop_id'=>$userId])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt)
+                ->whereIn('type', [Order::ORDERING_PAY,Order::E_SHOP_PAY]);
+        });
+        return $this->first('total_amount');
+    }
+
+    /**
+     * @param array $request
+     * @param int $userId
+     * @return mixed
+     */
+    public function sitePaymentAmount(array $request,int $userId)
+    {
+        $startAt = null;
+        $endAt = null;
+        if ($request['date'] == 'hour')
+        {
+            $startAt = date('Y-m_d 00:00:00',time());
+            $endAt  = date('Y-m-d 23:59:59',time());
+        }else if($request['date'] == 'week')
+        {
+            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+        }else if($request['date'] == 'month')
+        {
+            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
+            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+        }
+        $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
+            return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
+                ->where(['shop_id'=>$userId])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt)
+                ->whereIn('type', [Order::SITE_SELF_EXTRACTION,Order::SITE_DISTRIBUTION]);
+        });
+        return $this->first('total_amount');
+    }
+
+    /**
+     * @param array $request
+     * @param int $userId
+     * @return mixed
+     */
+    public function sellOrderNum(array $request,int $userId)
+    {
+        $startAt = null;
+        $endAt = null;
+        if ($request['date'] == 'hour')
+        {
+            $startAt = date('Y-m_d 00:00:00',time());
+            $endAt  = date('Y-m-d 23:59:59',time());
+        }else if($request['date'] == 'week')
+        {
+            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+        }else if($request['date'] == 'month')
+        {
+            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
+            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+        }
+        $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
+            return $order->where(['shop_id'=>$userId])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt);
+        });
+        return $this->get();
+    }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function todaySellAmount(array $request)
+    {
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = date('Y-m_d 00:00:00',time());
+        $endAt  = date('Y-m-d 23:59:59',time());
+
+        $this->scopeQuery(function (Order $order) use($request, $startAt, $endAt){
+            return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
+                ->where(['shop_id'=>$request['store_id']])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt);
+        });
+        return $this->first('total_amount');
+
+    }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function weekSellAmount(array $request)
+    {
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+
+        $this->scopeQuery(function (Order $order) use($request, $startAt, $endAt){
+            return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
+                ->where(['shop_id'=>$request['store_id']])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt);
+        });
+        return $this->first('total_amount');
+
+    }
+
+    /**
+     * @param array $request
+     * @param string $limit
+     * @return mixed
+     */
+    public function sellAmount(array $request,$limit = '7')
+    {
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+
+        $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt,$limit){
+            return $order->select('week',
+                DB::raw('sum( `payment_amount` ) as total_amount'))
+                ->where(['shop_id'=>$request['store_id']])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt)
+                ->groupby('week')->orderBy('week')->limit($limit);
+        });
+        return $this->get();
+    }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function todayBuyNum(array $request)
+    {
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = date('Y-m_d 00:00:00',time());
+        $endAt  = date('Y-m-d 23:59:59',time());
+
+        $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt){
+            return $order->where(['shop_id'=>$request['store_id']])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt);
+        });
+        return $this->get();
+    }
+
+    /**
+     * @param array $request
+     * @return mixed
+     */
+    public function weekBuyNum(array $request)
+    {
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+
+        $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt){
+            return $order->where(['shop_id'=>$request['store_id']])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt);
+        });
+        return $this->get();
+    }
+
+    /**
+     * @param array $request
+     * @param string $limit
+     * @return mixed
+     */
+    public function weekStatistics(array $request,$limit = '7')
+    {
+        $startAt = null;
+        $endAt = null;
+
+        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+
+        $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt,$limit){
+            return $order->select('week',
+                DB::raw('count( * ) as buy_mum'))
+                ->where(['shop_id'=>$request['store_id']])
+                ->where('paid_at', '>=', $startAt)
+                ->where('paid_at', '<', $endAt)
+                ->groupby('week')->orderBy('week')->limit($limit);
+        });
+        return $this->get();
     }
 }

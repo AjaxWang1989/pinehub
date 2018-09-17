@@ -80,6 +80,10 @@ class OrderItemMerchandise extends Model implements Transformable
         return $this->belongsTo(Member::class, 'member_id', 'id');
     }
 
+    public function customer() : BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
 
     public function shop() : BelongsTo
     {

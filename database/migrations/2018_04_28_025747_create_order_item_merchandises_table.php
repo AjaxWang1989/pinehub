@@ -33,6 +33,7 @@ class CreateOrderItemMerchandisesTable extends Migration
             $table->float('total_amount')->default(0)->comment('应付');
             $table->float('discount_amount')->default(0)->comment('优惠');
             $table->float('payment_amount')->default(0)->comment('实付');
+            $table->timestamp('paid_at')->nullable()->default(null)->comment('支付时间');
             $table->unsignedInteger('status')->default(10)
                 ->comment('订单状态：0-订单取消 10-已确定 20-已支付 30-已发货 40-已完成 ');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');

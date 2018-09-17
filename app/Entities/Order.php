@@ -113,6 +113,8 @@ class Order extends Model implements Transformable
     const OFF_LINE_PAY = 0;
     const ORDERING_PAY = 1;
     const E_SHOP_PAY =2;
+    const SITE_SELF_EXTRACTION = 3;
+    const SITE_DISTRIBUTION = 4;
 
     const EXPIRES_SECOND = 600;
 

@@ -54,6 +54,10 @@ class CreateOrdersTable extends Migration
             $table->string('ip', 15)->nullable()->default(null)->comment('支付终端ip地址');
             $table->string('trade_status', 16)->nullable()->default(Order::TRADE_FINISHED)->comment('交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付');
+            $table->unsignedInteger('years')->nullable()->default(null)->comment('年');
+            $table->unsignedInteger('month', 255)->nullable()->default(null)->comment('月');
+            $table->unsignedInteger('week', 255)->nullable()->default(null)->comment('星期');
+            $table->unsignedInteger('hour', 255)->nullable()->default(null)->comment('小时');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');
