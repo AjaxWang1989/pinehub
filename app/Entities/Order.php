@@ -105,9 +105,11 @@ class Order extends Model implements Transformable
     const PAY_FAILED = 600;
 
     const ORDER_NUMBER_PREFIX = 'PH';
-    const ALI_PAY = 'ALI_PAY';
 
-    const WECHAT_PAY = 'WECHAT_PAY';
+    const UNKOWN_PAY = 0;
+    const ALI_PAY = 1;
+
+    const WECHAT_PAY = 2;
 
 
     const OFF_LINE_PAY = 0;

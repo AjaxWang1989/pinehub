@@ -29,8 +29,8 @@ class CreateOrdersTable extends Migration
             $table->float('payment_amount')->default('0')->comment('实际付款');
             $table->float('discount_amount')->default(0)->comment('优惠价格');
             $table->timestamp('paid_at')->nullable()->default(null)->comment('支付时间');
-            $table->enum('pay_type', ['WECHAT_PAY', 'ALI_PAY'])->default('WECHAT_PAY')
-                ->comment('支付方式默认微信支付');
+            $table->unsignedTinyInteger('pay_type')->default(Order::WECHAT_PAY)
+                ->comment('支付方式默认微信支付:0-未知，1-支付宝，2-微信支付');
             $table->unsignedInteger('status')->default(10)
                 ->comment('订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败 ');
             $table->unsignedTinyInteger('cancellation')->default(0)
