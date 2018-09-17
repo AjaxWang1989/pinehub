@@ -45,7 +45,7 @@ class CreateOrdersTable extends Migration
             $table->string('comment', 255)->nullable()->default(null)->comment('备注');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
             $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手');
-            $table->unsignedTinyInteger('post_type')->default(0)->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
+            $table->unsignedMediumInteger('post_type')->default(0)->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
             $table->boolean('score_settle')->default(false)->comment('积分是否已经结算');
             $table->string('post_no', 32)->nullable()->default(null)->comment('快递编号');
             $table->string('post_code', 6)->nullable()->default(null)->comment('邮编');
@@ -54,10 +54,10 @@ class CreateOrdersTable extends Migration
             $table->string('ip', 15)->nullable()->default(null)->comment('支付终端ip地址');
             $table->string('trade_status', 16)->nullable()->default(Order::TRADE_FINISHED)->comment('交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付');
-            $table->unsignedInteger('years')->nullable()->default(null)->comment('年');
-            $table->unsignedInteger('month', 255)->nullable()->default(null)->comment('月');
-            $table->unsignedInteger('week', 255)->nullable()->default(null)->comment('星期');
-            $table->unsignedInteger('hour', 255)->nullable()->default(null)->comment('小时');
+            $table->unsignedSmallInteger('years')->nullable()->default(null)->comment('年');
+            $table->unsignedTinyInteger('month')->nullable()->default(null)->comment('月');
+            $table->unsignedTinyInteger('week')->nullable()->default(null)->comment('星期');
+            $table->unsignedTinyInteger('hour')->nullable()->default(null)->comment('小时');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Wechat;
 
 use App\Entities\App;
+use App\Http\Requests\Admin\OpenPlatformAuthCallbackRequest as AuthCallbackRequest;
+use App\Http\Requests\Admin\OpenPlatformAuthRequest as AuthRequest;
 use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
 use Dingo\Api\Routing\Helpers;
@@ -53,26 +55,27 @@ class OpenPlatformController extends Controller
     }
 
 
-    public function componentLoginAuth(Request $request)
+    public function componentAuth(AuthRequest $request)
     {
         $appId = $request->input('app_id', null);
         $token = $request->input('token', null);
-        return view('open-platform.auth')->with('authUrl', $this->wechat->openPlatformComponentLoginPage($appId, $token))->with('success', false);
+        $type = $request->input('type', 'all');
+        return view('open-platform.auth')->with('authUrl', $this->wechat->openPlatformComponentAuthPage($appId, $token, $type))
+            ->with('success', false);
     }
 
 
     /**
      * @param string $appId
-     * @param Request $request
+     * @param AuthCallbackRequest $request
      * @return View
      * @throws
      * */
-    public function componentLoginCallback(string $appId, Request $request)
+    public function componentAuthCallback(string $appId,  AuthCallbackRequest $request)
     {
         $app = $this->appRepository->find($appId);
         $authCode = $request->input('auth_code', null);
         $expiresIn = $request->input('expires_in', null);
-        $cacheAuthCodeKey = CURRENT_APP_PREFIX.$authCode;
         $token = $request->input('token', null);
         if($app && $authCode && $expiresIn) {
             $authInfo = $this->wechat->openPlatform()->handleAuthorize($authCode);
@@ -83,7 +86,7 @@ class OpenPlatformController extends Controller
 
             Event::fire(new Authorized($payload));
 
-            Cache::set($cacheAuthCodeKey, with($app, function (App $app) use($request, $token) {
+            Cache::set(CURRENT_APP_PREFIX.$authCode, with($app, function (App $app) use($request, $token) {
                 return ['app_id' => $app->id, 'token' => $token];
             }), $expiresIn);
         }
@@ -92,7 +95,8 @@ class OpenPlatformController extends Controller
 
     public function openPlatformAuthMakeSure(Request $request)
     {
-        $auth = Cache::get(CURRENT_APP_PREFIX.$request->input('token'), false);
+        $token = $request->bearerToken() ?? $request->input('token');
+        $auth = Cache::get(CURRENT_APP_PREFIX.$token, false);
         if($auth) {
             return jsonResponse($auth);
         }
