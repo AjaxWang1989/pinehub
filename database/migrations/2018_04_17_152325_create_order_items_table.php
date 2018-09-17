@@ -27,7 +27,7 @@ class CreateOrderItemsTable extends Migration
             $table->float('discount_amount')->default(0)->comment('优惠');
             $table->float('payment_amount')->default(0)->comment('实付');
             $table->unsignedInteger('status')->default(10)
-                ->comment('订单状态：0-订单取消 10-已确定 20-已支付 30-已发货 40-已完成 ');
+                ->comment('订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
             $table->timestamps();
