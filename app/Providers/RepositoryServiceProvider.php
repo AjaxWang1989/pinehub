@@ -67,6 +67,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\ShoppingCartRepository::class, \App\Repositories\ShoppingCartRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\ShopMerchandiseStockModifyRepository::class, \App\Repositories\ShopMerchandiseStockModifyRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\OrderItemRepository::class, \App\Repositories\OrderItemRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\StorePurchaseOrdersRepository::class, \App\Repositories\StorePurchaseOrdersRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\OrderPurchaseItemsRepository::class, \App\Repositories\OrderPurchaseItemsRepositoryEloquent::class);
         //:end-bindings:
         Log::debug("repository bindings\n");
     }
