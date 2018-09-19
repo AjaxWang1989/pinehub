@@ -44,7 +44,13 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
 
     public function storeCategories(int $id,$limit = '15'){
         $this->scopeQuery(function (ShopMerchandise $ShopCategory) use($id) {
-            return $ShopCategory->with('category')->where(['shop_id'=>$id])->groupby('category_id');
+            return $ShopCategory->select([
+                DB::raw('category_id as id'),
+                DB::raw('categories.name as name')
+            ])
+                ->join('categories', 'shop_merchandises.category_id', '=', 'categories.id')
+                ->where(['shop_id'=>$id])
+                ->groupBy('category_id');
         });
         return $this->paginate($limit);
     }

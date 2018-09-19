@@ -51,6 +51,10 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $ip 支付终端ip地址
  * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功
  *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
+ * @property int|null $years 年
+ * @property int|null $month 月
+ * @property int|null $week 星期
+ * @property int|null $hour 小时
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -144,7 +148,7 @@ class Order extends Model implements Transformable
         'code', 'customer_id', 'merchandise_num','total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
         'receiver_district','receiver_name', 'receiver_address','receiver_mobile', 'send_time','comment','type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
-        'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status'
+        'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status','years','month','week','hour'
     ];
 
     public function member() : BelongsTo

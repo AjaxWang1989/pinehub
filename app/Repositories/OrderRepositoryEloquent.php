@@ -83,7 +83,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      */
     public function insertMerchandise(array $itemMerchandises)
     {
-        $item = DB::table('order_item_merchandises')->insert($itemMerchandises);
+        $item = DB::table('order_items')->insert($itemMerchandises);
         return $item;
     }
 
@@ -103,7 +103,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $sendTime['send_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])
+            return $order->with('orderItems')->where(['shop_id'=>$userId])
                 ->where('send_time', '>=', $startAt)
                 ->where('send_time', '<', $endAt)
                 ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION]);
@@ -126,7 +126,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $sendTime['send_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])
+            return $order->with('orderItems')->where(['shop_id'=>$userId])
                 ->where('send_time', '>=', $startAt)
                 ->where('send_time', '<', $endAt)
                 ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);

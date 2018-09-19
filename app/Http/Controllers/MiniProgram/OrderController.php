@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 
+use App\Entities\Order;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
 use App\Repositories\OrderRepository;
@@ -39,6 +40,7 @@ class OrderController extends Controller
      */
     public function __construct(AppRepository $appRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
     {
+        date_default_timezone_set("Asia/Shanghai");
         parent::__construct($request, $appRepository);
         $this->appRepository = $appRepository;
         $this->orderRepository = $orderRepository;
@@ -57,14 +59,20 @@ class OrderController extends Controller
         $user = $this->user();
         $userId = $user ? $user['id'] : 1;
         $orders = $request->all();
-        $orders['member_id'] = $userId;
+        $orders['customer_id'] = $userId;
+        $orders['open_id']  = $userId['open_id'];
         $cardRepository = $this->cardRepository->findWhere(['id'=>$orders['ticked_id']])->first();
-        $orders['discount_amount'] = $cardRepository['card_info']['discount'];
+        $orders['discount_amount'] = $cardRepository ? $cardRepository['card_info']['discount'] : '';
         $orders['shop_id'] = $orders['store_id'];
         $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']])->sum('amount');
         $shoppingCartMerchandiseNum = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']])->sum('quality');
         $orders['merchandise_num'] = $shoppingCartMerchandiseNum;
         $orders['total_amount'] = $shoppingCartAmount;
+        $orders['status'] = Order::WAIT;
+        $orders['years'] = date('Y',time());
+        $orders['month'] = date('m',time());
+        $orders['week']  = date('w',time()) ==0 ? 7 : date('w',time());
+        $orders['hour']  = date('H',time());
         $ordersMerchandise = $this->orderRepository->create($orders);
         $shoppingCart = $this->shoppingCartRepository->findWhere(['user_id'=>$userId,'shop_id'=>$orders['store_id']]);
         $itemMerchandises = [];
@@ -72,7 +80,7 @@ class OrderController extends Controller
         foreach ($shoppingCart as $k => $v) {
             $merchandises = $this->merchandiseRepository->findWhere(['id'=>$v['merchandise_id']])->first();
             $itemMerchandises[$k]['shop_id'] = $v['shop_id'];
-            $itemMerchandises[$k]['member_id'] = $v['user_id'];
+            $itemMerchandises[$k]['customer_id'] = $v['user_id'];
             $itemMerchandises[$k]['order_id'] = $ordersMerchandise['id'];
             $itemMerchandises[$k]['merchandise_id'] = $v['merchandise_id'];
             $itemMerchandises[$k]['name'] = $merchandises['name'];
@@ -82,10 +90,9 @@ class OrderController extends Controller
             $itemMerchandises[$k]['cost_price'] = $merchandises['cost_price'];
             $itemMerchandises[$k]['quality'] = $v['quality'];
             $itemMerchandises[$k]['total_amount'] = $v['amount'];
-            $itemMerchandises[$k]['payment_amount'] = $v['amount'];
             $itemMerchandises[$k]['status'] = 10;
         }
-        $item = $this->orderRepository->insertMerchandise($itemMerchandises);
+        $this->orderRepository->insertMerchandise($itemMerchandises);
         return $this->response()->item($ordersMerchandise,new OrderTransformer());
     }
 

@@ -61,14 +61,14 @@ class AuthController extends Controller
     }
 
     /**
+     * 判断是否为当前的小程序
      * @param string $appid
      * @param string $appsecret
      * @return \Dingo\Api\Http\Response
      */
 
     public function appAccess(string $appid, string $appsecret){
-        $where = array('id'=>$appid,'secret'=>$appsecret);
-        $item = $this->appRepository->findWhere($where)->first();
+        $item = $this->appRepository->findWhere(['id'=>$appid,'secret'=>$appsecret])->first();
         $accessToken = Hash::make($appid,$item->toArray());
         app(AppManager::class)->setCurrentApp($item)->setAccessToken($accessToken);
         $item['access_token'] = $accessToken;

@@ -15,6 +15,7 @@ class MpUserInfoTransformer extends TransformerAbstract
     public function transform(MpUser $model)
     {
         return [
+            'id' =>$model->id,
             'nickname' => $model->nickname,
             'type' => $model->type,
             'open_id' => $model->openId,
@@ -23,7 +24,9 @@ class MpUserInfoTransformer extends TransformerAbstract
             'province' => $model->province,
             'city' => $model->city,
             'sex' => $model->sex,
-            'mobile' => $model->user->mobile
+            'mobile' => $model->user->mobile,
+            'vip_level' => $model->user->vipLevel,
+            'total_score'=> $model->user->totalScore
         ];
     }
 }
