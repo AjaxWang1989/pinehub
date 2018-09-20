@@ -14,6 +14,7 @@ use App\Repositories\AppRepository;
 use App\Repositories\MerchandiseRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\ShoppingCartTransformer;
+use App\Http\Response\JsonResponse;
 
 class ShoppingCartController extends Controller
 {
@@ -42,10 +43,10 @@ class ShoppingCartController extends Controller
      */
     public function addMerchandise(CreateRequest $request){
         $user = $this->user();
-        $user['id'] = $user ? $user['id'] : '1';
+        $userId = $user ? $user['id'] : '1';
         $shoppingCart = $request->all();
         $merchandise = $this->merchandiseRepository->findWhere(['id'=>$shoppingCart['merchandise_id']])->first();
-        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'user_id'=>$user['id']])->first();
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'user_id'=>$userId])->first();
         $shoppingCart['name'] = $merchandise['name'];
         $shoppingCart['user_id'] = $user['id'];
         $shoppingCart['sell_price'] = $merchandise['sell_price'];
@@ -62,6 +63,43 @@ class ShoppingCartController extends Controller
     }
 
     /**
+     * 减少购物车商品
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function reduceMerchandise(Request $request){
+        $user = $this->user();
+        $userId = $user ? $user['id'] : '1';
+        $shoppingCart = $request->all();
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'user_id'=>$userId])->first();
+        if ($shoppingMerchandise['quality'] != 1){
+            $shoppingCart['quality'] = $shoppingMerchandise['quality']-1;
+            $shoppingCart['amount'] = $shoppingMerchandise['sell_price'] * $shoppingCart['quality'];
+            $item = $this->shoppingCartRepository->update($shoppingCart,$shoppingMerchandise['id']);
+            return $this->response()->item($item,new ShoppingCartTransformer);
+        }else{
+            $item= $this->shoppingCartRepository->delete($shoppingMerchandise['id']);
+            return $this->response(new JsonResponse(['delete_count' => $item]));
+        }
+    }
+
+    /**
+     * 清空购物车
+     * @param int $storeId
+     * @return \Dingo\Api\Http\Response
+     */
+    public function emptyMerchandise(int $storeId){
+        $user = $this->user();
+        $userId = $user ? $user['id'] : '1';
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$storeId,'user_id'=>$userId]);
+        foreach ($shoppingMerchandise as $v){
+            $item = $this->shoppingCartRepository->delete($v['id']);
+        }
+        return $this->response(new JsonResponse(['delete_count' => $item]));
+    }
+
+    /**
+     * 获取购物车商品信息
      * @param int $storeId
      * @return \Dingo\Api\Http\Response
      */

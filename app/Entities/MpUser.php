@@ -65,8 +65,8 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereWechatAppId($value)
  * @mixin \Eloquent
  */
-class   MpUser extends WechatUser
+class   MpUser extends Customer
 {
     const TYPE = 'MINI_PROGRAM';
-    protected $table = 'wechat_users';
+    protected $table = 'customers';
 }

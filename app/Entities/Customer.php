@@ -4,10 +4,15 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Auth\Authenticatable;
+use Laravel\Lumen\Auth\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 /**
  * App\Entities\Customer
@@ -79,12 +84,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserType($value)
  * @mixin \Eloquent
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
  *             B代表被冻结账户 W代表已注册，未激活的账户
  */
-class Customer extends Model implements Transformable
+class Customer extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
 
     protected $casts = [
         'session_key_expires_at' => 'date',
@@ -134,8 +138,18 @@ class Customer extends Model implements Transformable
         return $this->belongsTo(Member::class, 'member_id', 'id');
     }
 
+    public function app()
+    {
+        return $this->belongsTo(App::class, 'app_id', 'id');
+    }
+
     public function orders() : HasMany
     {
         return $this->hasMany(Order::class, 'customer_id', 'id');
+    }
+
+    public function getAuthPassword()
+    {
+        return Hash::make($this->sessionKey);
     }
 }
