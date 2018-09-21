@@ -23,6 +23,7 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->post('/register/user', ['as' => 'user.register.user','uses' => 'AuthController@registerUser']);
         $router->get('/user/info', ['as' => 'user.info','uses' => 'AuthController@userInfo']);
         $router->get('/mvp/login/{code}', ['as' => 'user.mvp.login','uses' => 'AuthController@mvpLogin']);
+        $router->get('/save/mobile/{code}', ['as' => 'user.save.mobile','uses' => 'AuthController@saveMobile']);
         $router->get('/new/activity', ['as' => 'user.new.activity','uses' => 'ActivityController@newActivity']);
         $router->get('/new/activity/{activityId}/merchandise', ['as' => 'user.new.activity.merchandise','uses' => 'ActivityController@newActivityMerchandise']);
         $router->get('/app/access/{appid}/{appsecret}', ['as' => 'user.app.access','uses' => 'AuthController@appAccess']);

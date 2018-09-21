@@ -24,7 +24,7 @@ class UserController extends Controller
 
     public function userTickets(int $status){
         $user = $this->user();
-        $userId = $user['id']?$user['id']:1;
+        $userId = $user['member_id'];
         $item = $this->userTicketRepository->userTickets($status,$userId);
         return $this->response()->paginator($item,new UserTicketsTransformer());
     }

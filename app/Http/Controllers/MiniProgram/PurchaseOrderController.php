@@ -16,6 +16,8 @@ use App\Repositories\ShopMerchandiseRepository;
 use App\Repositories\MerchandiseCategoryRepository;
 use App\Transformers\Mp\StorePurchaseOrdersTransformer;
 use App\Transformers\Mp\StoreCodeOrderMerchandiseUpTransformer;
+use App\Repositories\ShopRepository;
+use App\Http\Response\JsonResponse;
 
 
 class PurchaseOrderController extends Controller
@@ -24,14 +26,19 @@ class PurchaseOrderController extends Controller
     protected $orderPurchaseItemsRepository  = null;
     protected $shopMerchandiseRepository     = null;
     protected $merchandiseCategoryRepository = null;
+    protected  $shopRepository = null;
 
     /**
      * PurchaseOrderController constructor.
      * @param AppRepository $appRepository
+     * @param ShopRepository $shopRepository
+     * @param MerchandiseCategoryRepository $merchandiseCategoryRepository
+     * @param ShopMerchandiseRepository $shopMerchandiseRepository
      * @param StorePurchaseOrdersRepository $storePurchaseOrdersRepository
+     * @param OrderPurchaseItemsRepository $orderPurchaseItemsRepository
      * @param Request $request
      */
-    public function __construct(AppRepository $appRepository,MerchandiseCategoryRepository $merchandiseCategoryRepository,ShopMerchandiseRepository $shopMerchandiseRepository,StorePurchaseOrdersRepository $storePurchaseOrdersRepository ,OrderPurchaseItemsRepository $orderPurchaseItemsRepository,Request $request)
+    public function __construct(AppRepository $appRepository,ShopRepository $shopRepository,MerchandiseCategoryRepository $merchandiseCategoryRepository,ShopMerchandiseRepository $shopMerchandiseRepository,StorePurchaseOrdersRepository $storePurchaseOrdersRepository ,OrderPurchaseItemsRepository $orderPurchaseItemsRepository,Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->appRepository = $appRepository;
@@ -39,6 +46,7 @@ class PurchaseOrderController extends Controller
         $this->orderPurchaseItemsRepository  = $orderPurchaseItemsRepository;
         $this->shopMerchandiseRepository     = $shopMerchandiseRepository;
         $this->merchandiseCategoryRepository = $merchandiseCategoryRepository;
+        $this->shopRepository = $shopRepository;
     }
 
     /**
@@ -50,13 +58,17 @@ class PurchaseOrderController extends Controller
 
     {
         $user = $this->user();
-        $userId = $user ? $user['id'] : 1;
-        $request = $request->all();
-        $storePurchaseStatisticsAmount = $this->storePurchaseOrdersRepository->storePurchaseStatistics($request,$userId);
-        $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($request,$userId);
-        $item['total_amount'] = $storePurchaseStatisticsAmount['total_amount'];
-        $item['orders'] = $storeOrders;
-        return $this->response()->array($item,new StorePurchaseOrdersTransformer);
+        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        if ($shopUser){
+            $userId = $shopUser['id'];
+            $request = $request->all();
+            $storePurchaseStatisticsAmount = $this->storePurchaseOrdersRepository->storePurchaseStatistics($request,$userId);
+            $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($request,$userId);
+            $item['total_amount'] = $storePurchaseStatisticsAmount['total_amount'];
+            $item['orders'] = $storeOrders;
+            return $this->response()->array($item,new StorePurchaseOrdersTransformer);
+        }
+        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**

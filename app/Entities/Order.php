@@ -166,10 +166,10 @@ class Order extends Model implements Transformable
         return $this->hasMany(OrderItem::class, 'order_id', 'id');
     }
 
-    public function orderItemMerchandises() : HasMany
-    {
-        return $this->hasMany(OrderItemMerchandise::class, 'order_id', 'id');
-    }
+//    public function orderItemMerchandises() : HasMany
+//    {
+//        return $this->hasMany(OrderItemMerchandise::class, 'order_id', 'id');
+//    }
 
     public function buildAliWapPaymentOrder(){
         $now = Carbon::now();

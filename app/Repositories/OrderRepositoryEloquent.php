@@ -143,7 +143,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     public function allOrders(string $status,int $userId,$limit = '15')
     {
         $this->scopeQuery(function (Order $order) use($status,$userId){
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId,'status'=>$status]);
+            return $order->with('orderItems')->where(['shop_id'=>$userId,'status'=>$status]);
         });
         return $this->paginate($limit);
     }
@@ -164,7 +164,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $request['send_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$request,$startAt,$endAt) {
-            return $order->with('orderItemMerchandises')
+            return $order->with('orderItems')
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)

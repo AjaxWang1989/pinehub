@@ -12,32 +12,49 @@ namespace App\Http\Controllers\MiniProgram;
 use App\Entities\Activity;
 use App\Repositories\ActivityRepository;
 use App\Repositories\AppRepository;
+use App\Repositories\ShopRepository;
 use App\Repositories\ActivityMerchandiseRepository;
 use App\Transformers\ActivityTransformer;
 use App\Transformers\Mp\ActivityMerchandiseTransformer;
 use Dingo\Api\Http\Request;
+use App\Http\Response\JsonResponse;
 
 class ActivityController extends Controller
 {
     protected  $activityRepository = null;
     protected  $activityMerchandiseRepository = null;
+    protected  $shopRepository = null;
 
-    public function __construct(ActivityRepository $activityRepository,ActivityMerchandiseRepository $activityMerchandiseRepository, AppRepository $appRepository, Request $request)
+    /**
+     * ActivityController constructor.
+     * @param ActivityRepository $activityRepository
+     * @param ShopRepository $shopRepository
+     * @param ActivityMerchandiseRepository $activityMerchandiseRepository
+     * @param AppRepository $appRepository
+     * @param Request $request
+     */
+    public function __construct(ActivityRepository $activityRepository,ShopRepository $shopRepository,ActivityMerchandiseRepository $activityMerchandiseRepository, AppRepository $appRepository, Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->activityRepository = $activityRepository;
         $this->activityMerchandiseRepository = $activityMerchandiseRepository;
+        $this->shopRepository = $shopRepository;
     }
 
     /**
      *获取新品预定的标题和背景图片
      * @return \Dingo\Api\Http\Response
      */
-    public function newActivity(){
+    public function newActivity()
+    {
         $user = $this->user();
-        $userId = $user ? $user['id'] : '1';
-        $item = $this->activityRepository->findWhere(['shop_id'=>$userId])->first();
-        return $this->response()->item($item, new ActivityTransformer());
+        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        if ($shopUser){
+            $userId = $shopUser['id'];
+            $item = $this->activityRepository->findWhere(['shop_id'=>$userId])->first();
+            return $this->response()->item($item, new ActivityTransformer());
+        }
+        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**
@@ -45,10 +62,15 @@ class ActivityController extends Controller
      * @param int $activityId
      * @return mixed
      */
-    public function newActivityMerchandise(int $activityId){
+    public function newActivityMerchandise(int $activityId)
+    {
         $user = $this->user();
-        $userId = $user ? $user['id'] : '1';
-        $item = $this->activityMerchandiseRepository->newActivityMerchandise($activityId,$userId);
-        return $this->response()->paginator($item,new ActivityMerchandiseTransformer());
+        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        if ($shopUser){
+            $userId = $shopUser['id'];
+            $item = $this->activityMerchandiseRepository->newActivityMerchandise($activityId,$userId);
+            return $this->response()->paginator($item,new ActivityMerchandiseTransformer());
+        }
+        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 }

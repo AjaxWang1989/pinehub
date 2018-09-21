@@ -43,12 +43,12 @@ class ShoppingCartController extends Controller
      */
     public function addMerchandise(CreateRequest $request){
         $user = $this->user();
-        $userId = $user ? $user['id'] : '1';
         $shoppingCart = $request->all();
         $merchandise = $this->merchandiseRepository->findWhere(['id'=>$shoppingCart['merchandise_id']])->first();
-        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'user_id'=>$userId])->first();
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'customer_id'=>$user['id']])->first();
         $shoppingCart['name'] = $merchandise['name'];
-        $shoppingCart['user_id'] = $user['id'];
+        $shoppingCart['customer_id'] = $user['id'];
+        $shoppingCart['member_id'] = $user['member_id'];
         $shoppingCart['sell_price'] = $merchandise['sell_price'];
         if ($shoppingMerchandise){
             $shoppingCart['quality'] = $shoppingMerchandise['quality']+1;
@@ -69,9 +69,8 @@ class ShoppingCartController extends Controller
      */
     public function reduceMerchandise(Request $request){
         $user = $this->user();
-        $userId = $user ? $user['id'] : '1';
         $shoppingCart = $request->all();
-        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'user_id'=>$userId])->first();
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'customer_id'=>$user['id']])->first();
         if ($shoppingMerchandise['quality'] != 1){
             $shoppingCart['quality'] = $shoppingMerchandise['quality']-1;
             $shoppingCart['amount'] = $shoppingMerchandise['sell_price'] * $shoppingCart['quality'];
@@ -90,8 +89,7 @@ class ShoppingCartController extends Controller
      */
     public function emptyMerchandise(int $storeId){
         $user = $this->user();
-        $userId = $user ? $user['id'] : '1';
-        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$storeId,'user_id'=>$userId]);
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$storeId,'customer_id'=>$user['id']]);
         foreach ($shoppingMerchandise as $v){
             $item = $this->shoppingCartRepository->delete($v['id']);
         }
@@ -106,7 +104,7 @@ class ShoppingCartController extends Controller
 
     public function shoppingCartMerchandises(int $storeId){
         $user = $this->user();
-        $userId = $user ? $user['id'] : '1';
+        $userId =$user['id'];
         $shoppingCartMerchandises  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId,$userId);
         return $this->response()->paginator($shoppingCartMerchandises,new ShoppingCartTransformer);
     }

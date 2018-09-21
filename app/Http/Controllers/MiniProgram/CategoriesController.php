@@ -103,7 +103,7 @@ class CategoriesController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeMerchandiseStock($id,Request $request)
+    public function storeMerchandiseStock(int $id,Request $request)
     {
         $request = $request->input();
         $request['stock_num'] = $request['modify_stock_num'];

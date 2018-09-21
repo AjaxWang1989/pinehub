@@ -15,6 +15,7 @@ use App\Repositories\OrderRepository;
 use App\Transformers\Mp\ShopPositionTransformer;
 use Dingo\Api\Http\Request;
 use App\Transformers\Mp\StoreSellStatisticsTransformer;
+use App\Http\Response\JsonResponse;
 
 class ShopsController extends Controller
 {
@@ -48,7 +49,7 @@ class ShopsController extends Controller
     }
 
     /**
-     *获取附近店铺
+     * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
     public function nearbyStores(Request $request){
@@ -64,24 +65,28 @@ class ShopsController extends Controller
      */
     public function storeSellStatistics(Request $request){
         $user = $this->user();
-        $userId = $user ? $user['id'] : 1;
-        $request = $request->all();
-        $orderStatistics = $this->orderRepository->orderStatistics($request,$userId);
-        $item['statics'] = $orderStatistics;
-        $bookPaymentAmount = $this->orderRepository->bookPaymentAmount($request,$userId);
-        $sitePaymentAmount = $this->orderRepository->sitePaymentAmount($request,$userId);
-        $sellMerchandiseNum = $this->orderItemRepository->sellMerchandiseNum($request,$userId);
-        $sellOrderNum = $this->orderRepository->sellOrderNum($request,$userId);
-        $sellTop = $this->orderItemRepository->sellTop($request,$userId);
-        $sellMerchandiseTop = $this->orderItemRepository->sellMerchandiseTop($request,$userId);
-        $item['reservation_order_amount'] = $bookPaymentAmount['total_amount'];
-        $item['store_order_amount'] = $sitePaymentAmount['total_amount'];
-        $item['merchandise_num'] = $sellMerchandiseNum['total_amount'];
-        $item['sell_point'] = '';
-        $item['order_num'] = count($sellOrderNum);
-        $item['sell_top'] = $sellTop;
-        $item['merchandise_top'] = $sellMerchandiseTop;
-        return $this->response()->array($item,new StoreSellStatisticsTransformer());
+        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        if ($shopUser){
+            $userId = $shopUser['id'];
+            $request = $request->all();
+            $orderStatistics = $this->orderRepository->orderStatistics($request,$userId);
+            $item['statics'] = $orderStatistics;
+            $bookPaymentAmount = $this->orderRepository->bookPaymentAmount($request,$userId);
+            $sitePaymentAmount = $this->orderRepository->sitePaymentAmount($request,$userId);
+            $sellMerchandiseNum = $this->orderItemRepository->sellMerchandiseNum($request,$userId);
+            $sellOrderNum = $this->orderRepository->sellOrderNum($request,$userId);
+            $sellTop = $this->orderItemRepository->sellTop($request,$userId);
+            $sellMerchandiseTop = $this->orderItemRepository->sellMerchandiseTop($request,$userId);
+            $item['reservation_order_amount'] = $bookPaymentAmount['total_amount'];
+            $item['store_order_amount'] = $sitePaymentAmount['total_amount'];
+            $item['merchandise_num'] = $sellMerchandiseNum['total_amount'];
+            $item['sell_point'] = '';
+            $item['order_num'] = count($sellOrderNum);
+            $item['sell_top'] = $sellTop;
+            $item['merchandise_top'] = $sellMerchandiseTop;
+            return $this->response()->array($item,new StoreSellStatisticsTransformer());
+        }
+        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**

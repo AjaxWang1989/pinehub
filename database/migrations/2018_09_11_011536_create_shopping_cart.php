@@ -17,7 +17,8 @@ class CreateShoppingCart extends Migration
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统appid');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
-            $table->unsignedInteger('user_id')->nullable()->default(null)->comment('买家会员id');
+            $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
+            $table->unsignedInteger('customer_id')->nullable()->default(null)->comment('买家id');
             $table->unsignedInteger('merchandise_id')->nullable()->default(null)->comment('产品id');
             $table->unsignedInteger('sku_product_id')->nullable()->default(null)->comment('规格产品ID');
             $table->unsignedInteger('quality')->default(1)->comment('订单产品数量');

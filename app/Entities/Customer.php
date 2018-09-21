@@ -107,6 +107,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
      */
     protected $fillable = [
         'app_id',
+        'mobile',
         'member_id',
         'platform_app_id',
         'type',
@@ -120,6 +121,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         'country',
         'nickname',
         'sex',
+        'privilege',
         'is_student_certified',
         'user_type',
         'user_status',
