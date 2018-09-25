@@ -41,8 +41,8 @@ class CreateCustomersTable extends Migration
             $table->unsignedInteger('score')->default(0)->comment('用户积分');
             $table->unsignedInteger('total_score')->default(0)->comment('用户总积分');
             $table->unsignedInteger('order_count')->default(0)->comment('订单数');
-            $table->string('channel', 32)->nullable()->default('')->comment('渠道来源');
-            $table->string('register_channel', 32)->nullable()->default('')->comment('注册渠道');
+            $table->unsignedTinyInteger('channel')->default(0)->comment('渠道来源 0-未知 1-微信 2-支付宝');
+            $table->unsignedTinyInteger('register_channel')->default(0)->comment('注册渠道:0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP');
             $table->json('tags')->default(null)->comment('标签');
             $table->timestamps();
             $table->softDeletes();

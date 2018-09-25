@@ -33,8 +33,8 @@ class CreateUsersTable extends Migration
             $table->timestamp('last_login_at')->nullable()->comment('最后登录时间');
             $table->unsignedTinyInteger('status')->default(1)->comment('用户状态0-账户冻结 1-激活状态 2-等待授权');
             $table->unsignedInteger('order_count')->default(0)->comment('订单数');
-            $table->string('channel', 32)->nullable()->default('')->comment('渠道来源');
-            $table->string('register_channel', 32)->nullable()->default('')->comment('注册渠道');
+            $table->unsignedTinyInteger('channel')->default(0)->comment('渠道来源 0-未知 1-微信 2-支付宝');
+            $table->unsignedTinyInteger('register_channel')->default(0)->comment('注册渠道 0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP');
             $table->json('tags')->default(null)->comment('标签');
             $table->enum('mobile_company', ['CT', 'CU', 'CM'])->comment('手机号码所属公司');
             $table->timestamps();

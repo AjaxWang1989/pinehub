@@ -79,8 +79,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserType($value)
  * @mixin \Eloquent
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
- *             B代表被冻结账户 W代表已注册，未激活的账户
  */
 class Customer extends Model implements Transformable
 {
@@ -96,6 +94,9 @@ class Customer extends Model implements Transformable
     const WECHAT_MINI_PROGRAM = 'WECHAT_MINI_PROGRAM';
     const ALIPAY_OPEN_PLATFORM = 'ALIPAY_OPEN_PLATFORM';
 
+    //注册：0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP
+
+    //渠道：0-未知 1-微信 2-支付宝'
     /**
      * The attributes that are mass assignable.
      *
