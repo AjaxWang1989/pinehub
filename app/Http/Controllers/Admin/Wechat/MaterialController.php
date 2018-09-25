@@ -36,14 +36,12 @@ class MaterialController extends Controller
     {
         $field = $request->input('file_field', 'file');
         $mediaId = app('wechat')->uploadMedia($request->input('type'), $request->file($field)->getPath());
+
         $material = [
-            'is_temp' => true,
+            'is_tmp' => true,
             'type' => $request->input('type'),
             'media_id' => $mediaId,
-            'content' => [
-                'expires'  => Carbon::now()->next(3)->timestamp,
-                'status'   => 1
-            ]
+            'expires'  => Carbon::now()->next(3)->timestamp,
         ];
 
         if($request->wantsJson()) {
