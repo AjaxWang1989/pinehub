@@ -1,12 +1,12 @@
 <?php
-
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 /**
  * Class CreateOrderItemsTable.
  */
-class CreateOrderItemsTable extends Migration
+class CreateOrderPurchaseItemsTable extends Migration
 {
 	/**
 	 * Run the migrations.
@@ -15,7 +15,7 @@ class CreateOrderItemsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('order_items', function(Blueprint $table) {
+		Schema::create('order_purchase_items', function(Blueprint $table) {
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统appid');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
@@ -40,7 +40,6 @@ class CreateOrderItemsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');
-            $table->index('customer_id');
             $table->index('shop_id');
             $table->index('order_id');
             $table->index('status');
@@ -54,6 +53,6 @@ class CreateOrderItemsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('order_items');
+		Schema::drop('order_purchase_items');
 	}
 }

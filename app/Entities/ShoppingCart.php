@@ -13,6 +13,11 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Auth\Authenticatable;
+use Laravel\Lumen\Auth\Authorizable;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 /*
  * App\Entities\ShoppingCart
  *
@@ -44,9 +49,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereUpdatedAt($value)
  * @mixin \Eloquent
  */
-class ShoppingCart extends Model implements Transformable
+class ShoppingCart extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
 
     protected $table = "shopping_cart";
 
@@ -57,6 +62,11 @@ class ShoppingCart extends Model implements Transformable
     public function shop():BelongsTo
     {
         return $this->belongsTo(Shop::class,'shop_id','id');
+    }
+
+    public function app()
+    {
+        return $this->belongsTo(App::class, 'app_id', 'id');
     }
 
     public function member() : BelongsTo
@@ -72,5 +82,9 @@ class ShoppingCart extends Model implements Transformable
     public function merchandise():BelongsTo
     {
         return $this->belongsTo(Merchandise::class,'merchandise_id','id');
+    }
+    public function getAuthPassword()
+    {
+        return Hash::make($this->sessionKey);
     }
 }

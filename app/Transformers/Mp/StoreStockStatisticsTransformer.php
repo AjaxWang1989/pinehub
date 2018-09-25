@@ -18,7 +18,7 @@ class StoreStockStatisticsTransformer extends TransformerAbstract
             'id'=> $model->merchandise->id,
             'name'=> $model->merchandise->name,
             'sell_price' => $model->merchandise->sellPrice,
-            'stock_num' => $model->merchandise->stockNum,
+            'stock_num' => $model->stockNum,
             'code' => $model->shop->code,
         ];
     }
