@@ -19,8 +19,6 @@ class CreateOrderItemsTable extends Migration
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统appid');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
-            $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
-            $table->unsignedInteger('customer_id')->nullable()->default(null)->comment('买家ID');
             $table->unsignedInteger('order_id')->comment('订单id');
             $table->string('code', 18)->comment('订单子项编码');
             $table->unsignedInteger('merchandise_id')->nullable()->default(null)->comment('产品id');
@@ -36,7 +34,7 @@ class CreateOrderItemsTable extends Migration
             $table->float('payment_amount')->default(0)->comment('实付');
             $table->timestamp('paid_at')->nullable()->default(null)->comment('支付时间');
             $table->unsignedInteger('status')->default(10)
-                ->comment('订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败');
+                ->comment('订单状态：1-待发货 2-配送中 3-已完成 4-申请中 5-退货中 6-已拒绝 ');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
             $table->timestamps();

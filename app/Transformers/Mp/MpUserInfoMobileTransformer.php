@@ -2,15 +2,15 @@
 /**
  * Created by PhpStorm.
  * User: Administrator
- * Date: 2018/9/5
- * Time: 1:16
+ * Date: 2018/9/20
+ * Time: 21:09
  */
 
 namespace App\Transformers\Mp;
 use League\Fractal\TransformerAbstract;
 use App\Entities\MpUser;
 
-class MpUserInfoTransformer extends TransformerAbstract
+class MpUserInfoMobileTransformer extends TransformerAbstract
 {
     public function transform(MpUser $model)
     {
@@ -24,6 +24,10 @@ class MpUserInfoTransformer extends TransformerAbstract
             'province' => $model->province,
             'city' => $model->city,
             'sex' => $model->sex,
+            'shop_id' => $model->shopId,
+            'mobile' => $model->member->mobile,
+            'vip_level' => $model->member->vipLevel,
+            'total_score'=> $model->member->totalScore,
         ];
     }
 }

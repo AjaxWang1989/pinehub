@@ -101,8 +101,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'user_name', 'mobile', 'password', 'nickname', 'sex', 'avatar', 'city', 'vip_level',
-        'last_login_at', 'status', 'mobile_company'
+        'app_id','mobile','user_name','nickname','real_name','password','sex','avatar','city','province',
+        'country','can_use_score','score','total_score','vip_level','last_login_at','status','order_count',
+        'channel','register_channel','tags','mobile_company'
     ];
 
     /**

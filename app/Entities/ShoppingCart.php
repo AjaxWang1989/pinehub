@@ -19,7 +19,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property string|null $appId 系统app id
  * @property int|null $shopId 店铺shop id
- * @property int|null $userId 买家会员id
+ * @property int|null $memberId 买家会员id
+ * @property int|null customerId 买家customerId
  * @property int|null $merchandiseId 商品信息merchandise id
  * @property int|null $skuProductId 产品sku product id
  * @property int $quality 订单产品数量
@@ -50,7 +51,7 @@ class ShoppingCart extends Model implements Transformable
     protected $table = "shopping_cart";
 
     protected $fillable =[
-        'app_id','shop_id','user_id','merchandise_id','sku_product_id','quality','sell_price','amount'
+        'app_id','shop_id','member_id','customer_id','merchandise_id','sku_product_id','quality','sell_price','amount'
     ];
 
     public function shop():BelongsTo
@@ -58,9 +59,14 @@ class ShoppingCart extends Model implements Transformable
         return $this->belongsTo(Shop::class,'shop_id','id');
     }
 
-    public function user():BelongsTo
+    public function member() : BelongsTo
     {
-        return $this->belongsTo(User::class,'user_id','id');
+        return $this->belongsTo(Member::class, 'member_id', 'id');
+    }
+
+    public function customer() : BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
     public function merchandise():BelongsTo

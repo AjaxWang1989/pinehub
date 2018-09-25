@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Repositories\Traits\Destruct;
+use Illuminate\Container\Container as Application;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -27,6 +28,29 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         'orderItemMerchandise.name',
         'code'
     ];
+    protected $hourStartAt ;
+    protected $hourEndAt;
+
+    protected $weekStartAt;
+    protected $weekEndAt;
+
+    protected $montStartAt;
+    protected $monthEndAt;
+
+    public function __construct(Application $app)
+    {
+        parent::__construct($app);
+        $this->hourStartAt = date('Y-m_d 00:00:00',time());
+        $this->hourEndAt = date('Y-m-d 23:59:59',time());
+
+        $this->weekStartAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
+        $this->weekEndAt = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+
+        $this->montStartAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
+        $this->monthEndAt = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+
+    }
+
     /**
      * Specify Model class name
      *
@@ -59,7 +83,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      */
     public function insertMerchandise(array $itemMerchandises)
     {
-        $item = DB::table('order_item_merchandises')->insert($itemMerchandises);
+        $item = DB::table('order_items')->insert($itemMerchandises);
         return $item;
     }
 
@@ -79,7 +103,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $sendTime['send_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])
+            return $order->with('orderItems')->where(['shop_id'=>$userId])
                 ->where('send_time', '>=', $startAt)
                 ->where('send_time', '<', $endAt)
                 ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION]);
@@ -102,7 +126,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $sendTime['send_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId])
+            return $order->with('orderItems')->where(['shop_id'=>$userId])
                 ->where('send_time', '>=', $startAt)
                 ->where('send_time', '<', $endAt)
                 ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);
@@ -119,7 +143,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     public function allOrders(string $status,int $userId,$limit = '15')
     {
         $this->scopeQuery(function (Order $order) use($status,$userId){
-            return $order->with('orderItemMerchandises')->where(['shop_id'=>$userId,'status'=>$status]);
+            return $order->with('orderItems')->where(['shop_id'=>$userId,'status'=>$status]);
         });
         return $this->paginate($limit);
     }
@@ -140,7 +164,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $request['send_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$request,$startAt,$endAt) {
-            return $order->with('orderItemMerchandises')
+            return $order->with('orderItems')
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
@@ -162,18 +186,18 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $limit =  null;
         if ($request['date'] == 'hour')
         {
-            $startAt = date('Y-m_d 00:00:00',time());
-            $endAt  = date('Y-m-d 23:59:59',time());
+            $startAt = $this->hourStartAt;
+            $endAt  = $this->hourEndAt;
             $limit = '24';
         }else if($request['date'] == 'week')
         {
-            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+            $startAt = $this->weekStartAt;
+            $endAt  = $this->weekEndAt;
             $limit = '7';
         }else if($request['date'] == 'month')
         {
-            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
-            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+            $startAt = $this->montStartAt;
+            $endAt  = $this->monthEndAt;
             $limit = '31';
         }
         $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt,$limit) {
@@ -199,16 +223,16 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = null;
         if ($request['date'] == 'hour')
         {
-            $startAt = date('Y-m_d 00:00:00',time());
-            $endAt  = date('Y-m-d 23:59:59',time());
+            $startAt = $this->hourStartAt;
+            $endAt  = $this->hourEndAt;
         }else if($request['date'] == 'week')
         {
-            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+            $startAt = $this->weekStartAt;
+            $endAt  = $this->weekEndAt;
         }else if($request['date'] == 'month')
         {
-            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
-            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+            $startAt = $this->montStartAt;
+            $endAt  = $this->monthEndAt;
         }
         $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
@@ -231,16 +255,16 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = null;
         if ($request['date'] == 'hour')
         {
-            $startAt = date('Y-m_d 00:00:00',time());
-            $endAt  = date('Y-m-d 23:59:59',time());
+            $startAt = $this->hourStartAt;
+            $endAt  = $this->hourEndAt;
         }else if($request['date'] == 'week')
         {
-            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+            $startAt = $this->weekStartAt;
+            $endAt  = $this->weekEndAt;
         }else if($request['date'] == 'month')
         {
-            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
-            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+            $startAt = $this->montStartAt;
+            $endAt  = $this->monthEndAt;
         }
         $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
@@ -263,16 +287,16 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = null;
         if ($request['date'] == 'hour')
         {
-            $startAt = date('Y-m_d 00:00:00',time());
-            $endAt  = date('Y-m-d 23:59:59',time());
+            $startAt = $this->hourStartAt;
+            $endAt  = $this->hourEndAt;
         }else if($request['date'] == 'week')
         {
-            $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-            $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+            $startAt = $this->weekStartAt;
+            $endAt  = $this->weekEndAt;
         }else if($request['date'] == 'month')
         {
-            $startAt = date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00'));
-            $endAt  = date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00'));
+            $startAt = $this->montStartAt;
+            $endAt  = $this->monthEndAt;
         }
         $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
             return $order->where(['shop_id'=>$userId])
@@ -291,8 +315,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $startAt = date('Y-m_d 00:00:00',time());
-        $endAt  = date('Y-m-d 23:59:59',time());
+        $startAt = $this->hourStartAt;
+        $endAt  = $this->hourEndAt;
 
         $this->scopeQuery(function (Order $order) use($request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
@@ -313,8 +337,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+        $startAt = $this->weekStartAt;
+        $endAt  = $this->weekEndAt;
 
         $this->scopeQuery(function (Order $order) use($request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
@@ -336,8 +360,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+        $startAt = $this->weekStartAt;
+        $endAt  = $this->weekEndAt;
 
         $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt,$limit){
             return $order->select('week',
@@ -359,8 +383,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $startAt = date('Y-m_d 00:00:00',time());
-        $endAt  = date('Y-m-d 23:59:59',time());
+        $startAt = $this->hourStartAt;
+        $endAt  = $this->hourEndAt;
 
         $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt){
             return $order->where(['shop_id'=>$request['store_id']])
@@ -379,8 +403,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+        $startAt = $this->weekStartAt;
+        $endAt  = $this->weekEndAt;
 
         $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt){
             return $order->where(['shop_id'=>$request['store_id']])
@@ -400,8 +424,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $startAt = date('Y-m-d 00:00:00', (time() - ((date('w') == 0 ? 7 : date('w')) - 1) * 24 * 3600));
-        $endAt  = date('Y-m-d 23:59:59', (time() + (7 - (date('w') == 0 ? 7 : date('w'))) * 24 * 3600));
+        $startAt = $this->weekStartAt;
+        $endAt  = $this->weekEndAt;
 
         $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt,$limit){
             return $order->select('week',

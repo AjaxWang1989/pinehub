@@ -5,6 +5,8 @@ namespace App\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use App\Entities\Traits\ModelAttributesAccess;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Class ActivityMerchandise.
@@ -36,13 +38,19 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class ActivityMerchandise extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['activity_id','shop_id','shop_merchandise_id','merchandise_id','product_id','stock_num',
+        'start_at','end_at'
+    ];
 
+    public function merchandise() : BelongsTo
+    {
+        return $this->belongsTo(Merchandise::class, 'merchandise_id', 'id');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use App\Entities\Traits\ModelAttributesAccess;
 
 /**
  * Class Activity.
@@ -34,13 +35,13 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Activity extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['app_id','shop_id','title','poster_img','description','start_at','end_at'];
 
 }

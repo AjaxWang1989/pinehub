@@ -23,7 +23,7 @@ class OrderStoreSendTransformer extends TransformerAbstract
             'total_amount' => $model->totalAmount,
             'pay_amount'  => $model->totalAmount,
             'comment' => $model->comment,
-            'order_item_merchandises' => $model->orderItemMerchandises,
+            'order_item_merchandises' => $model->orderItems,
         ];
     }
 }

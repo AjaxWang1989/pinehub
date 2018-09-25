@@ -38,6 +38,7 @@ class CreateOrderItemMerchandisesTable extends Migration
                 ->comment('订单状态：0-订单取消 10-已确定 20-已支付 30-已发货 40-已完成 ');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
+            $table->unsignedInteger('week', 255)->nullable()->default(null)->comment('星期');
             $table->timestamps();
             $table->index('customer_id');
             $table->index('shop_id');

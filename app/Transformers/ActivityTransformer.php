@@ -20,6 +20,7 @@ class ActivityTransformer extends TransformerAbstract
             'id'  => $model->id,
             'title'=>$model->title,
             'poster_img'=>$model->posterImg,
+            'description' => $model->description,
         ];
     }
 }

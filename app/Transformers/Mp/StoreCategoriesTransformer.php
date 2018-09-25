@@ -15,8 +15,7 @@ class StoreCategoriesTransformer extends TransformerAbstract
 {
     public function transform(ShopMerchandise $model){
         return [
-            'id'=>$model->category->id,
-            'name'=>$model->category->name,
+            $model
         ];
     }
 }

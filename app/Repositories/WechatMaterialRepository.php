@@ -5,11 +5,11 @@ namespace App\Repositories;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Interface OrderItemMerchandiseRepository.
+ * Interface WechatMaterialRepository.
  *
  * @package namespace App\Repositories;
  */
-interface OrderItemMerchandiseRepository extends RepositoryInterface
+interface WechatMaterialRepository extends RepositoryInterface
 {
     //
 }
