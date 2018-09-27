@@ -25,7 +25,7 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->get('/mvp/login/{code}', ['as' => 'user.mvp.login','uses' => 'AuthController@mvpLogin']);
         $router->get('/save/mobile/{code}', ['as' => 'user.save.mobile','uses' => 'AuthController@saveMobile']);
         $router->get('/new/activity', ['as' => 'user.new.activity','uses' => 'ActivityController@newActivity']);
-        $router->get('/new/activity/{activityId}/merchandise', ['as' => 'user.new.activity.merchandise','uses' => 'ActivityController@newActivityMerchandise']);
+        $router->get('/new/activity/{activityId}/merchandises', ['as' => 'user.new.activity.merchandises','uses' => 'ActivityController@newActivityMerchandises']);
         $router->get('/app/access/{appid}/{appsecret}', ['as' => 'user.app.access','uses' => 'AuthController@appAccess']);
         $router->get('/nearest/store', ['as' => 'user.nearest.store','uses' => 'ShopsController@nearestStore']);
         $router->get('/nearby/stores', ['as' => 'user.nearby.stores','uses' => 'ShopsController@nearbyStores']);

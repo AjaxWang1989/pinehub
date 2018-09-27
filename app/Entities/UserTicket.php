@@ -33,6 +33,10 @@ class UserTicket extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    protected $casts = [
+        'card_info' => 'json'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *

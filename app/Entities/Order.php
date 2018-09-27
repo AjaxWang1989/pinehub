@@ -23,6 +23,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $appId 系统app id
  * @property int|null $shopId 店铺id
  * @property int|null $memberId 买家会员id
+ * @property string $cardId 优惠券id
  * @property int|null $customerId 买家
  * @property int|null $merchandiseNum 此订单商品总数量
  * @property float $totalAmount 应付款
@@ -145,7 +146,7 @@ class Order extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'customer_id', 'merchandise_num','total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
+        'code', 'customer_id','card_id', 'merchandise_num','total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
         'receiver_district','receiver_name', 'receiver_address','receiver_mobile', 'send_time','comment','type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
         'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status','years','month','week','hour'
@@ -164,6 +165,11 @@ class Order extends Model implements Transformable
     public function orderItems() : HasMany
     {
         return $this->hasMany(OrderItem::class, 'order_id', 'id');
+    }
+
+    public function tickets():BelongsTo
+    {
+        return $this->BelongsTo(Card::class,'card_id','card_id');
     }
 
 //    public function orderItemMerchandises() : HasMany

@@ -62,13 +62,13 @@ class ActivityController extends Controller
      * @param int $activityId
      * @return mixed
      */
-    public function newActivityMerchandise(int $activityId)
+    public function newActivityMerchandises(int $activityId)
     {
         $user = $this->user();
         $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
         if ($shopUser){
             $userId = $shopUser['id'];
-            $item = $this->activityMerchandiseRepository->newActivityMerchandise($activityId,$userId);
+            $item = $this->activityMerchandiseRepository->newActivityMerchandises($activityId,$userId);
             return $this->response()->paginator($item,new ActivityMerchandiseTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));

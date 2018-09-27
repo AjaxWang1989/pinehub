@@ -15,14 +15,15 @@ class StoreOrdersSummaryTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
         return [
-            'id'=>$model->id,
-            'code' => $model->code,
-            'merchandise_num' => $model->merchandiseNum,
-            'payment_amount'=>$model->paymentAmount,
-            'total_amount' => $model->totalAmount,
-            'receiver_address'=>$model->receiverAddress,
-            'sell_point' => '',
-            'order_item_merchandises' => $model->orderItemMerchandises,
+            $model
+//            'id'=>$model->id,
+//            'code' => $model->code,
+//            'merchandise_num' => $model->merchandiseNum,
+//            'payment_amount'=>$model->paymentAmount,
+//            'total_amount' => $model->totalAmount,
+//            'receiver_address'=>$model->receiverAddress,
+//            'sell_point' => '',
+//            'order_item_merchandises' => $model->orderItemMerchandises,
         ];
     }
 }

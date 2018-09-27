@@ -57,4 +57,11 @@ trait ModelAttributesAccess
         }
         unset($this->attributes[$name], $this->relations[$name]);
     }
+
+//    public function scopeJsonWhere($query, $column, $operator = null, $value = null, $boolean = 'and') {
+//        $fields = explode('->', $column);
+//        $field = array_shift($fields);
+//        $key = $fields[0];
+//        return $query->where("{$field}->".$key, $operator, $value, $boolean);
+//    }
 }

@@ -15,15 +15,16 @@ class StatusOrdersTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
         return [
-            'id'=>$model->id,
-            'code' => $model->code,
-            'type' => $model->type,
-            'merchandise_num' => $model->merchandiseNum,
-            'payment_amount'=>$model->paymentAmount,
-            'total_amount' => $model->totalAmount,
-            'status' => $model->status,
-            'receiver_address'=>$model->receiverAddress,
-            'order_item_merchandises' => $model->orderItemMerchandises,
+            $model
+//            'id'=>$model->id,
+//            'code' => $model->code,
+//            'type' => $model->type,
+//            'merchandise_num' => $model->merchandiseNum,
+//            'payment_amount'=>$model->paymentAmount,
+//            'total_amount' => $model->totalAmount,
+//            'status' => $model->status,
+//            'receiver_address'=>$model->receiverAddress,
+//            'order_item_merchandises' => $model->orderItemMerchandises,
         ];
     }
 }

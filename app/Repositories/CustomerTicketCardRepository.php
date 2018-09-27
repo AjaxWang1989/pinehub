@@ -11,5 +11,11 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface CustomerTicketCardRepository extends RepositoryInterface
 {
-    //
+    /**
+     * @param int $status
+     * @param int $userId
+     * @param string $shoppingCartAmount
+     * @return mixed
+     */
+    public function userTickets(int $status,int $userId,string $shoppingCartAmount);
 }
