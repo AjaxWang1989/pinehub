@@ -60,7 +60,7 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      * @param int $categoryId
      * @param string $limit
      */
-    public function storeMerchandise(int $id,int $categoryId,$limit = '15'){
+    public function storeCategoryMerchandises(int $id,int $categoryId,$limit = '15'){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($id,$categoryId) {
             return $ShopMerchandise->with('merchandise')->where(['shop_id'=>$id,'category_id'=>$categoryId]);
         });

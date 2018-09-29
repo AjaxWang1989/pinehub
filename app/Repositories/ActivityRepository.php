@@ -11,5 +11,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface ActivityRepository extends RepositoryInterface
 {
-    //
+    public function newActivity();
 }

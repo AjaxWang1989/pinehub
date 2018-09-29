@@ -21,6 +21,7 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
             'sell_price' => $model->merchandise->sellPrice,
             'origin_price' => $model->merchandise->originPrice,
             'stock_num' => $model->stockNum,
+            'sell_num' => $model->sellNum,
             'main_image' => $model->merchandise->mainImage,
         ];
     }

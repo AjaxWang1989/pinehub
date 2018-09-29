@@ -46,7 +46,6 @@ class OrderController extends Controller
      */
     public function __construct(AppRepository $appRepository,OrderItemRepository $orderItemRepository ,ShopRepository $shopRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
     {
-        date_default_timezone_set("Asia/Shanghai");
         parent::__construct($request, $appRepository);
         $this->appRepository = $appRepository;
         $this->orderRepository = $orderRepository;

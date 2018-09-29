@@ -8,12 +8,12 @@
 
 namespace App\Transformers\Mp;
 use League\Fractal\TransformerAbstract;
-use App\Entities\WechatUser;
+use App\Entities\MpUser;
 use Carbon\Carbon;
 
 class MvpLoginTransformer extends TransformerAbstract
 {
-    public function transform(WechatUser $model)
+    public function transform(MpUser $model)
     {
         return [
             'token' => $model->token,

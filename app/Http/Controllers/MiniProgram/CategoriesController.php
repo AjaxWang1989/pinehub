@@ -79,9 +79,9 @@ class CategoriesController extends Controller
      * @param int $id
      * @param int $categoryId
      */
-    public function storeMerchandise(int $id ,int $categoryId)
+    public function storeCategoryMerchandise(int $id ,int $categoryId)
     {
-        $item = $this->shopMerchandiseRepository->storeMerchandise($id,$categoryId);
+        $item = $this->shopMerchandiseRepository->storeCategoryMerchandises($id,$categoryId);
         return $this->response->paginator($item,new StoreMerchandiseTransformer());
     }
 

@@ -103,9 +103,10 @@ class AuthController extends Controller
 
     public function mvpLogin(string $code)
     {
-        $mpSession = app('wechat')->miniProgram()->auth->session($code);
+//        $mpSession = app('wechat')->miniProgram()->auth->session($code);
+        $mpSession = ['open_id'=>'xcx0987654321'];
         if($mpSession && ($wechatUser = $this->mpUserRepository->findByField('platform_open_id', $mpSession['open_id'])->first())) {
-            $param = array('open_id'=>$wechatUser['open_id'],'password'=>$wechatUser['session_key']);
+            $param = array('platform_open_id'=>$wechatUser['platform_open_id'],'password'=>$wechatUser['session_key']);
             $token = Auth::attempt($param);
             $wechatUser['token'] = $token;
             return $this->response()->item($wechatUser, new MvpLoginTransformer());

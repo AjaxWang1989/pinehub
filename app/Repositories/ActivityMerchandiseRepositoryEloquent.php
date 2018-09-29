@@ -38,16 +38,14 @@ class ActivityMerchandiseRepositoryEloquent extends BaseRepository implements Ac
 
     /**
      * @param int $activityId
-     * @param int $userId
      * @param string $limit
      */
-    public function newActivityMerchandises(int $activityId,int $userId,$limit='15')
+    public function newActivityMerchandises(int $activityId,$limit='15')
     {
-        $this->scopeQuery(function (ActivityMerchandise $activityMerchandise) use ($activityId,$userId){
+        $this->scopeQuery(function (ActivityMerchandise $activityMerchandise) use ($activityId){
             return $activityMerchandise
                 ->with('merchandise')
-                ->where('activity_id',$activityId)
-                ->where('shop_id',$userId);
+                ->where('activity_id',$activityId);
         });
         return $this->paginate($limit);
     }
