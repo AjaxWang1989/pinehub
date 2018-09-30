@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\Wechat\ArticleCreateRequest;
 use App\Http\Requests\Admin\Wechat\ArticleUpdateRequest;
 use App\Http\Requests\Admin\Wechat\ForeverMaterialCreateRequest;
 use App\Http\Requests\Admin\Wechat\TemporaryMediaCreateRequest;
+use App\Repositories\WechatMaterialRepository;
 use App\Http\Response\JsonResponse;
 use Carbon\Carbon;
 use Dingo\Api\Http\Response as DingoResponse;
@@ -25,6 +26,13 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class MaterialController extends Controller
 {
+    protected $wechatMaterialRepository = null;
+
+    public function __construct(WechatMaterialRepository $wechatMaterialRepository)
+    {
+        parent::__construct();
+        $this->wechatMaterialRepository = $wechatMaterialRepository;
+    }
 
     /**
      * create new temporary media
@@ -36,17 +44,19 @@ class MaterialController extends Controller
     {
         $field = $request->input('file_field', 'file');
         $mediaId = app('wechat')->uploadMedia($request->input('type'), $request->file($field)->getPath());
-
         $material = [
+            'title' => $request->title ? $request->title : '',
+            'introduction' => $request->introduction ? $request->introduction : '',
             'is_tmp' => true,
             'type' => $request->input('type'),
             'media_id' => $mediaId,
             'expires'  => Carbon::now()->next(3)->timestamp,
         ];
-
         if($request->wantsJson()) {
             return $this->response($material);
         }
+
+        $this->wechatMaterialRepository->create($material);
 
         return redirect()->back()->with('message', '临时素材创建成功');
     }
@@ -59,9 +69,14 @@ class MaterialController extends Controller
         $attributes['app_id'] = $this->currentOfficialAccount->appId;
         $attributes['type'] = WECHAT_NEWS_MESSAGE;
         $attributes['media_id'] = $mediaId;
+        $attributes['title'] = $request->title ? $request->title : '';
+        $attributes['introduction'] = $request->introduction ? $request->introduction : '';
+        $attributes['is_tmp'] = false;
+
         if($request->wantsJson()) {
             return $this->response($attributes);
         }
+        $this->wechatMaterialRepository->create($attributes);
 
         return redirect()->back()->with('message', '图文素材创建成功');
 
@@ -107,7 +122,7 @@ class MaterialController extends Controller
             return $this->response(new JsonResponse($retData));
         }
 
-        return redirect()->back()->with('message', '临时素材创建成功');
+        return redirect()->back()->with('message', '永久素材创建成功');
     }
 
 
@@ -139,6 +154,9 @@ class MaterialController extends Controller
             return $this->response(new JsonResponse(['message' => '更新成功']));
         }
 
+        $item = $this->wechatMaterialRepository->findWhere(['media_id'=>$mediaId]);
+        $this->wechatMaterialRepository->update($attributes,$item['id']);
+
         return redirect()->back()->with('message', '更新成功');
     }
 
@@ -148,6 +166,9 @@ class MaterialController extends Controller
         if($request->wantsJson()) {
             return $this->response(new JsonResponse(['message' => '删除成功']));
         }
+
+        $item = $this->wechatMaterialRepository->findWhere(['media_id'=>$mediaId]);
+        $this->wechatMaterialRepository->delete($item['id']);
 
         return redirect()->back()->with('message', '删除成功');
     }
