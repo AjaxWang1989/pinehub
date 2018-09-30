@@ -48,6 +48,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $aliAppId 支付宝app ID
  * @property string|null $mtAppId 美团app id
  * @property string|null $wechatParamsQrcodeUrl 微信参数二维码url
+ * @property string|null $start_at 开售时间
+ * @property string|null $end_at   结业时间
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -128,7 +130,7 @@ class Shop extends Model implements Transformable
         'total_off_line_amount', 'today_off_line_amount', 'total_ordering_amount', 'today_ordering_amount', 'total_ordering_num',
         'today_ordering_num', 'total_order_write_off_num', 'total_order_write_off_num', 'total_order_write_off_amount',
         'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code', 'app_id', 'wechat_app_id', 'name', 'ali_app_id',
-        'mt_app_id'
+        'mt_app_id','start_at','end_at'
     ];
 
     protected $spatialFields = [

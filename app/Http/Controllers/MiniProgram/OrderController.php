@@ -16,6 +16,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\CardRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Repositories\MerchandiseRepository;
+use App\Repositories\OrderItemRepository;
 use App\Transformers\Mp\OrderTransformer;
 use App\Transformers\Mp\OrderStoreBuffetTransformer;
 use App\Transformers\Mp\OrderStoreSendTransformer;
@@ -30,7 +31,8 @@ class OrderController extends Controller
     protected $userTicketRepository = null;
     protected $shoppingCartRepository = null;
     protected $merchandiseRepository = null;
-    protected  $shopRepository = null;
+    protected $shopRepository = null;
+    protected $orderItemRepository = null;
 
     /**
      * OrderController constructor.
@@ -42,9 +44,8 @@ class OrderController extends Controller
      * @param OrderRepository $orderRepository
      * @param Request $request
      */
-    public function __construct(AppRepository $appRepository,ShopRepository $shopRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
+    public function __construct(AppRepository $appRepository,OrderItemRepository $orderItemRepository ,ShopRepository $shopRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
     {
-        date_default_timezone_set("Asia/Shanghai");
         parent::__construct($request, $appRepository);
         $this->appRepository = $appRepository;
         $this->orderRepository = $orderRepository;
@@ -52,6 +53,7 @@ class OrderController extends Controller
         $this->shoppingCartRepository = $shoppingCartRepository;
         $this->merchandiseRepository = $merchandiseRepository;
         $this->shopRepository = $shopRepository;
+        $this->orderItemRepository = $orderItemRepository;
     }
 
     /**
@@ -66,8 +68,9 @@ class OrderController extends Controller
         $orders['member_id'] = $user['member_id'];
         $orders['customer_id'] = $user['id'];
         $orders['open_id']  = $user['open_id'];
-        $cardRepository = $this->cardRepository->findWhere(['id'=>$orders['ticked_id']])->first();
-        $orders['discount_amount'] = $cardRepository ? $cardRepository['card_info']['discount'] : '';
+        $cardRepository = $this->cardRepository->findWhere(['card_id'=>$orders['card_id']])->first();
+        $orders['discount_amount'] = $cardRepository ? $cardRepository['card_info']['cash']['reduce_cost']/100 : '';
+        $orders['card_id'] = $cardRepository['card_id'];
         $orders['shop_id'] = $orders['store_id'];
         $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['customer_id'=>$user['id'],'shop_id'=>$orders['store_id']])->sum('amount');
         $shoppingCartMerchandiseNum = $this->shoppingCartRepository->findWhere(['customer_id'=>$user['id'],'shop_id'=>$orders['store_id']])->sum('quality');
@@ -75,7 +78,7 @@ class OrderController extends Controller
         $orders['total_amount'] = $shoppingCartAmount;
         $orders['status'] = Order::WAIT;
         $orders['years'] = date('Y',time());
-        $orders['month'] = date('m',time());
+        $orders['month'] = date('d',time());
         $orders['week']  = date('w',time()) ==0 ? 7 : date('w',time());
         $orders['hour']  = date('H',time());
         $ordersMerchandise = $this->orderRepository->create($orders);
@@ -114,6 +117,11 @@ class OrderController extends Controller
             $userId = $shopUser['id'];
             $sendTime = $request->all();
             $item = $this->orderRepository->storeBuffetOrders($sendTime,$userId);
+            $shopEndHour = $this->shopRepository->findwhere(['id'=>$userId])->first();
+            foreach ($item as $k => $v){
+                $item[$k]['shop_end_hour'] = $shopEndHour['end_at'];
+                $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+            }
             return $this->response()->paginator($item,new OrderStoreBuffetTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
@@ -131,11 +139,10 @@ class OrderController extends Controller
         if ($shopUser) {
             $userId = $shopUser['id'];
             $sendTime = $request->all();
-            if (empty($sendTime)){
-                $sendTime['send_start_time'] = date('Y-m-d 00:00:00',time());
-                $sendTime['send_end_time'] = date('Y-m-d 23:59:59',time());
-            }
             $item = $this->orderRepository->storeSendOrders($sendTime,$userId);
+            foreach ($item as $k => $v){
+                $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+            }
             return $this->response()->paginator($item,new OrderStoreSendTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
@@ -153,6 +160,9 @@ class OrderController extends Controller
         if ($shopUser){
             $userId = $shopUser['id'];
             $item = $this->orderRepository->allOrders($status,$userId);
+            foreach ($item as $k => $v){
+                $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+            }
             return $this->response()->paginator($item,new StatusOrdersTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
@@ -170,6 +180,12 @@ class OrderController extends Controller
             $userId = $shopUser['id'];
             $request = $request->all();
             $item = $this->orderRepository->storeOrdersSummary($request,$userId);
+            foreach ($item as $k => $v){
+                    $reduce_cost= $this->cardRepository->findWhere(['card_id'=>$v['card_id']])->first();
+                    $item[$k]['reduce_cost'] = $reduce_cost ? $reduce_cost['card_info']['cash']['base_info']['title'] : '无';
+                    $item[$k]['sell_point'] = '';
+                    $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+            }
             return $this->response()->paginator($item,new StoreOrdersSummaryTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));

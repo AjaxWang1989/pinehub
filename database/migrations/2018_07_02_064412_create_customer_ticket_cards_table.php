@@ -19,11 +19,12 @@ class CreateCustomerTicketCardsTable extends Migration
             $table->string('card_code', 12)->comment('核销码');
             $table->string('app_id', 16)->comment('应用id');
             $table->unsignedInteger('customer_id')->comment('客户id');
-            $table->boolean('used')->default(false)->comment('是否核销');
+            $table->unsignedTinyInteger('status')->default(0)->comment('0-不可用，1-可用，2-已使用，3-过期');
             $table->timestamps();
             $table->index('app_id');
             $table->index('card_id');
             $table->index('customer_id');
+            $table->index('status');
         });
     }
 

@@ -112,4 +112,11 @@ interface OrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function weekStatistics(array $request);
+
+    /**
+     * @param array $request
+     * @param int $userId
+     * @return mixed
+     */
+    public function orderDateHigh(array $request,int $userId);
 }

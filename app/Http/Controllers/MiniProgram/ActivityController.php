@@ -47,14 +47,8 @@ class ActivityController extends Controller
      */
     public function newActivity()
     {
-        $user = $this->user();
-        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
-        if ($shopUser){
-            $userId = $shopUser['id'];
-            $item = $this->activityRepository->findWhere(['shop_id'=>$userId])->first();
-            return $this->response()->item($item, new ActivityTransformer());
-        }
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
+        $item = $this->activityRepository->newActivity();
+        return $this->response()->item($item, new ActivityTransformer());
     }
 
     /**
@@ -62,15 +56,9 @@ class ActivityController extends Controller
      * @param int $activityId
      * @return mixed
      */
-    public function newActivityMerchandise(int $activityId)
+    public function newActivityMerchandises(int $activityId)
     {
-        $user = $this->user();
-        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
-        if ($shopUser){
-            $userId = $shopUser['id'];
-            $item = $this->activityMerchandiseRepository->newActivityMerchandise($activityId,$userId);
+            $item = $this->activityMerchandiseRepository->newActivityMerchandises($activityId);
             return $this->response()->paginator($item,new ActivityMerchandiseTransformer());
-        }
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 }

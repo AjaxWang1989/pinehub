@@ -25,14 +25,14 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->get('/mvp/login/{code}', ['as' => 'user.mvp.login','uses' => 'AuthController@mvpLogin']);
         $router->get('/save/mobile/{code}', ['as' => 'user.save.mobile','uses' => 'AuthController@saveMobile']);
         $router->get('/new/activity', ['as' => 'user.new.activity','uses' => 'ActivityController@newActivity']);
-        $router->get('/new/activity/{activityId}/merchandise', ['as' => 'user.new.activity.merchandise','uses' => 'ActivityController@newActivityMerchandise']);
+        $router->get('/new/activity/{activityId}/merchandises', ['as' => 'user.new.activity.merchandises','uses' => 'ActivityController@newActivityMerchandises']);
         $router->get('/app/access/{appid}/{appsecret}', ['as' => 'user.app.access','uses' => 'AuthController@appAccess']);
         $router->get('/nearest/store', ['as' => 'user.nearest.store','uses' => 'ShopsController@nearestStore']);
         $router->get('/nearby/stores', ['as' => 'user.nearby.stores','uses' => 'ShopsController@nearbyStores']);
         $router->get('/categories', ['as' => 'user.categories','uses' => 'CategoriesController@categories']);
         $router->get('/categories/{id}/merchandises', ['as' => 'user.categories.merchandises','uses' => 'CategoriesController@categoriesMerchandises']);
         $router->get('/store/{id}/categories', ['as' => 'user.store.categories','uses' => 'CategoriesController@storeCategories']);
-        $router->get('/store/{id}/merchandise/{categoryid}', ['as' => 'user.store.merchandise','uses' => 'CategoriesController@storeMerchandise']);
+        $router->get('/store/{id}/category/{categoryid}/merchandises', ['as' => 'user.store.category.merchandise','uses' => 'CategoriesController@storeCategoryMerchandise']);
         $router->get('/user/tickets/{status}', ['as' => 'user.user.tickets','uses' => 'UserController@UserTickets']);
         $router->post('/create/order', ['as' => 'user.create.order','uses' => 'OrderController@createOrder']);
         $router->post('/add/merchandise', ['as' => 'user.add.merchandise','uses' => 'ShoppingCartController@addMerchandise']);

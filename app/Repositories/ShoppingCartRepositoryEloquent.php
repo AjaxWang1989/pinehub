@@ -8,6 +8,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\ShoppingCart;
@@ -17,6 +18,7 @@ use App\Validators\ShoppingCartValidator;
 
 class ShoppingCartRepositoryEloquent extends BaseRepository implements ShoppingCartRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

@@ -20,6 +20,7 @@ class CreateActivitiesTable extends Migration
             $table->string('title', 16)->comment('活动名称');
             $table->string('poster_img')->comment('海报图片');
             $table->string('description', 1024)->default('')->comment('详情');
+            $table->unsignedInteger('status')->default(10)->comment('0 未开始 1 进行中 2 已结束');
             $table->timestamp('start_at')->nullable()->default(null)->comment('活动开始时间');
             $table->timestamp('end_at')->nullable()->default(null)->comment('活动结束时间');
             $table->timestamps();

@@ -21,6 +21,7 @@ class Controller extends BaseController
     protected  $appRepository = null;
     public function __construct(Request $request, AppRepository $appRepository)
     {
+        date_default_timezone_set("Asia/Shanghai");
         parent::__construct();
         $this->appRepository = $appRepository;
         $accessToken = $request->input('access_token', null);

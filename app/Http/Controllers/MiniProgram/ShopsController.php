@@ -70,7 +70,17 @@ class ShopsController extends Controller
             $userId = $shopUser['id'];
             $request = $request->all();
             $orderStatistics = $this->orderRepository->orderStatistics($request,$userId);
-            $item['statics'] = $orderStatistics;
+            $orderDateHigh  = $this->orderRepository->orderDateHigh($request,$userId);
+            $statics = [];
+            for ($i=0; $i < $orderDateHigh[$request['date']] ; $i++){
+                $statics[$i] = 0;
+                foreach ($orderStatistics as $k=>  $v) {
+                    if($v[$request['date']] == $i + 1){
+                        $statics[$i] = $v['total_amount'];
+                    }
+                }
+            }
+            $item['statics'] = $statics;
             $bookPaymentAmount = $this->orderRepository->bookPaymentAmount($request,$userId);
             $sitePaymentAmount = $this->orderRepository->sitePaymentAmount($request,$userId);
             $sellMerchandiseNum = $this->orderItemRepository->sellMerchandiseNum($request,$userId);
@@ -101,13 +111,34 @@ class ShopsController extends Controller
         $todaySellAmount = $this->orderRepository->todaySellAmount($request);
         $weekSellAmount = $this->orderRepository->weekSellAmount($request);
         $weekStatistics = $this->orderRepository->weekStatistics($request);
+
+        $weekBuyNumStatics = [];
+        for ($i=0; $i < 7 ; $i++){
+            $weekBuyNumStatics[$i] = 0;
+            foreach ($weekStatistics as $k=>  $v) {
+                if($v['week'] == $i + 1){
+                    $weekBuyNumStatics[$i] = $v['buy_num'];
+                }
+            }
+        }
+
         $sellAmount = $this->orderRepository->sellAmount($request);
+        $weekBuyNumAmount = [];
+        for ($i=0; $i < 7 ; $i++){
+            $weekBuyNumAmount[$i] = 0;
+            foreach ($sellAmount as $k=>  $v) {
+                if($v['week'] == $i + 1){
+                    $weekBuyNumAmount[$i] = $v['total_amount'];
+                }
+            }
+        }
+
         $item['today_buy_num'] = count($todayBuyNum);
         $item['week_buy_num'] = count($weekBuyNum);
         $item['today_sell_amount'] = $todaySellAmount['total_amount'];
         $item['week_sell_amount'] = $weekSellAmount['total_amount'];
-        $item['buy_mum'] = $weekStatistics;
-        $item['sell_amount'] = $sellAmount;
+        $item['buy_mum'] = $weekBuyNumStatics;
+        $item['sell_amount'] = $weekBuyNumAmount;
         return $this->response()->array($item,new StoreSellStatisticsTransformer());
     }
 

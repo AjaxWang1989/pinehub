@@ -20,8 +20,8 @@ class StoreMerchandiseTransformer extends TransformerAbstract
             'main_image'=> $model->merchandise->mainImage,
             'origin_price' => $model->merchandise->originPrice,
             'sell_price' => $model->merchandise->sellPrice,
-            'stock_num' => $model->merchandise->stockNum,
-            'sell_num' => $model->merchandise->sellNum,
+            'stock_num' => $model->stockNum,
+            'sell_num' => $model->sellNum,
         ];
     }
 }

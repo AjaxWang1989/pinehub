@@ -34,5 +34,22 @@ class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepos
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
+    /**
+     * @return mixed
+     */
+    public function newActivity(){
+        $nowTime = null;
+
+        $nowTime = date('Y-m-d H:i:s',time());
+
+        $this->scopeQuery(function (Activity $activity) use($nowTime){
+            return $activity
+                ->where('status',Activity::HAVE_IN_HAND)
+                ->where('start_at', '<=', $nowTime)
+                ->where('end_at', '>', $nowTime)
+                ->OrderBy('id','desc');
+        });
+        return $this->get()->first();
+    }
 }

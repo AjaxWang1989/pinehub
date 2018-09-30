@@ -38,14 +38,15 @@ class ShoppingCartController extends Controller
 
     /**
      * 加入购物车
-     * @param CreateRequest $request
+     * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
     public function addMerchandise(CreateRequest $request){
         $user = $this->user();
         $shoppingCart = $request->all();
         $merchandise = $this->merchandiseRepository->findWhere(['id'=>$shoppingCart['merchandise_id']])->first();
-        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'customer_id'=>$user['id']])->first();
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['store_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'customer_id'=>$user['id']])->first();
+        $shoppingCart['shop_id'] = $shoppingCart['store_id'];
         $shoppingCart['name'] = $merchandise['name'];
         $shoppingCart['customer_id'] = $user['id'];
         $shoppingCart['member_id'] = $user['member_id'];
@@ -70,7 +71,7 @@ class ShoppingCartController extends Controller
     public function reduceMerchandise(Request $request){
         $user = $this->user();
         $shoppingCart = $request->all();
-        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['shop_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'customer_id'=>$user['id']])->first();
+        $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['store_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'customer_id'=>$user['id']])->first();
         if ($shoppingMerchandise['quality'] != 1){
             $shoppingCart['quality'] = $shoppingMerchandise['quality']-1;
             $shoppingCart['amount'] = $shoppingMerchandise['sell_price'] * $shoppingCart['quality'];

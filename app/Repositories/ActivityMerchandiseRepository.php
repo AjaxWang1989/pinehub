@@ -13,8 +13,7 @@ interface ActivityMerchandiseRepository extends RepositoryInterface
 {
     /**
      * @param int $activityId
-     * @param int $userId
      * @return mixed
      */
-    public function newActivityMerchandise(int $activityId,int $userId);
+    public function newActivityMerchandises(int $activityId);
 }
