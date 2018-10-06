@@ -32,7 +32,7 @@ class FileTransformer extends TransformerAbstract
             'encrypt_method' => $model->encryptMethod,
             'endpoint'   => $model->endpoint,
             'path'       => $model->path,
-            'mime_type'       => $model->mimeType,
+            'mime_type'  => $model->mimeType,
             'extension'  => $model->extension,
             /* place your other model properties here */
             'created_at' => $model->createdAt,
