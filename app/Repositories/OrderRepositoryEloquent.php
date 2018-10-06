@@ -94,7 +94,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      */
 
-    public function storeBuffetOrders(array $sendTime,int $userId,$limit = '15')
+    public function storeBuffetOrders(array $sendTime,int $userId, $limit = '15')
     {
         $startAt = null;
         $endAt = null;
@@ -120,7 +120,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param string $limit
      * @return mixed
      */
-    public function storeSendOrders(array $sendTime,int $userId,$limit = '15')
+    public function storeSendOrders(array $sendTime,int $userId)
     {
         $startAt = null;
         $endAt = null;
@@ -137,7 +137,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where('send_time', '<', $endAt)
                 ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
     /**
