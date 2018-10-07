@@ -58,7 +58,7 @@ class ActivityController extends Controller
      */
     public function newActivityMerchandises(int $activityId)
     {
-            $item = $this->activityMerchandiseRepository->newActivityMerchandises($activityId);
-            return $this->response()->paginator($item,new ActivityMerchandiseTransformer());
+            $items = $this->activityMerchandiseRepository->newActivityMerchandises($activityId);
+            return $this->response()->paginator($items,new ActivityMerchandiseTransformer());
     }
 }

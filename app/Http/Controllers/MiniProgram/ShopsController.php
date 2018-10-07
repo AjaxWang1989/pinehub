@@ -55,8 +55,8 @@ class ShopsController extends Controller
     public function nearbyStores(Request $request){
         $lng = $request->input('lng');
         $lat = $request->input('lat');
-        $item = $this->shopRepository->nearBy($lng,$lat);
-        return $this->response()->paginator($item, new ShopPositionTransformer());
+        $items= $this->shopRepository->nearBy($lng,$lat);
+        return $this->response()->paginator($items, new ShopPositionTransformer());
     }
 
     /**
@@ -80,21 +80,21 @@ class ShopsController extends Controller
                     }
                 }
             }
-            $item['statics'] = $statics;
+            $items['statics'] = $statics;
             $bookPaymentAmount = $this->orderRepository->bookPaymentAmount($request,$userId);
             $sitePaymentAmount = $this->orderRepository->sitePaymentAmount($request,$userId);
             $sellMerchandiseNum = $this->orderItemRepository->sellMerchandiseNum($request,$userId);
             $sellOrderNum = $this->orderRepository->sellOrderNum($request,$userId);
             $sellTop = $this->orderItemRepository->sellTop($request,$userId);
             $sellMerchandiseTop = $this->orderItemRepository->sellMerchandiseTop($request,$userId);
-            $item['reservation_order_amount'] = $bookPaymentAmount['total_amount'];
-            $item['store_order_amount'] = $sitePaymentAmount['total_amount'];
-            $item['merchandise_num'] = $sellMerchandiseNum['total_amount'];
-            $item['sell_point'] = '';
-            $item['order_num'] = count($sellOrderNum);
-            $item['sell_top'] = $sellTop;
-            $item['merchandise_top'] = $sellMerchandiseTop;
-            return $this->response()->array($item,new StoreSellStatisticsTransformer());
+            $items['reservation_order_amount'] = $bookPaymentAmount['total_amount'];
+            $items['store_order_amount'] = $sitePaymentAmount['total_amount'];
+            $items['merchandise_num'] = $sellMerchandiseNum['total_amount'];
+            $items['sell_point'] = '';
+            $items['order_num'] = count($sellOrderNum);
+            $items['sell_top'] = $sellTop;
+            $items['merchandise_top'] = $sellMerchandiseTop;
+            return $this->response()->array($items,new StoreSellStatisticsTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
@@ -133,13 +133,13 @@ class ShopsController extends Controller
             }
         }
 
-        $item['today_buy_num'] = count($todayBuyNum);
-        $item['week_buy_num'] = count($weekBuyNum);
-        $item['today_sell_amount'] = $todaySellAmount['total_amount'];
-        $item['week_sell_amount'] = $weekSellAmount['total_amount'];
-        $item['buy_mum'] = $weekBuyNumStatics;
-        $item['sell_amount'] = $weekBuyNumAmount;
-        return $this->response()->array($item,new StoreSellStatisticsTransformer());
+        $items['today_buy_num'] = count($todayBuyNum);
+        $items['week_buy_num'] = count($weekBuyNum);
+        $items['today_sell_amount'] = $todaySellAmount['total_amount'];
+        $items['week_sell_amount'] = $weekSellAmount['total_amount'];
+        $items['buy_mum'] = $weekBuyNumStatics;
+        $items['sell_amount'] = $weekBuyNumAmount;
+        return $this->response()->array($items,new StoreSellStatisticsTransformer());
     }
 
 }

@@ -64,9 +64,9 @@ class PurchaseOrderController extends Controller
             $request = $request->all();
             $storePurchaseStatisticsAmount = $this->storePurchaseOrdersRepository->storePurchaseStatistics($request,$userId);
             $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($request,$userId);
-            $item['total_amount'] = $storePurchaseStatisticsAmount['total_amount'];
-            $item['orders'] = $storeOrders;
-            return $this->response()->array($item,new StorePurchaseOrdersTransformer);
+            $items['total_amount'] = $storePurchaseStatisticsAmount['total_amount'];
+            $items['orders'] = $storeOrders;
+            return $this->response()->array($items,new StorePurchaseOrdersTransformer);
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }

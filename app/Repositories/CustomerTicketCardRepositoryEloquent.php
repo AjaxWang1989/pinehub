@@ -43,7 +43,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
      * @param string $limit
      * @return mixed
      */
-    public function userTickets(int $status,int $userId,string $shoppingCartAmount,$limit='15'){
+    public function userTickets(int $status,int $userId,string $shoppingCartAmount){
         $shoppingCartAmount = $shoppingCartAmount*100;
         $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($status,$userId,$shoppingCartAmount) {
             return $customerTicketCard->where(['customer_id'=>$userId,'customer_ticket_cards.status'=>$status])
@@ -52,7 +52,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
                 ->where('cards.card_info->cash->date_info->begin_timestamp','<=',time())
                 ->where('cards.card_info->cash->date_info->end_timestamp','>',time());
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
     
 }

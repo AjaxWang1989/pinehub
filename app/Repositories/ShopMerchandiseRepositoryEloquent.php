@@ -42,7 +42,7 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      * @param string $limit
      */
 
-    public function storeCategories(int $id,$limit = '15'){
+    public function storeCategories(int $id){
         $this->scopeQuery(function (ShopMerchandise $ShopCategory) use($id) {
             return $ShopCategory->select([
                 DB::raw('category_id as id'),
@@ -52,7 +52,7 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
                 ->where(['shop_id'=>$id])
                 ->groupBy('category_id');
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
     /**
@@ -60,17 +60,17 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      * @param int $categoryId
      * @param string $limit
      */
-    public function storeCategoryMerchandises(int $id,int $categoryId,$limit = '15'){
+    public function storeCategoryMerchandises(int $id,int $categoryId){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($id,$categoryId) {
             return $ShopMerchandise->with('merchandise')->where(['shop_id'=>$id,'category_id'=>$categoryId]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
-    public function storeStockMerchandise($store,$limit = '15'){
+    public function storeStockMerchandise($store){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($store) {
             return $ShopMerchandise->with('merchandise')->where(['shop_id'=>$store['store_id'],'category_id'=>$store['category_id']]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 }

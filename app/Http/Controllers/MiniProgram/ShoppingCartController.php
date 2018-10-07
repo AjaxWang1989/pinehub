@@ -15,6 +15,7 @@ use App\Repositories\MerchandiseRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\ShoppingCartTransformer;
 use App\Http\Response\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class ShoppingCartController extends Controller
 {
@@ -42,6 +43,8 @@ class ShoppingCartController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function addMerchandise(CreateRequest $request){
+        $accessToken = $request->input('access_token', null);
+        $appId = Cache::get($accessToken);
         $user = $this->user();
         $shoppingCart = $request->all();
         $merchandise = $this->merchandiseRepository->findWhere(['id'=>$shoppingCart['merchandise_id']])->first();
@@ -51,6 +54,7 @@ class ShoppingCartController extends Controller
         $shoppingCart['customer_id'] = $user['id'];
         $shoppingCart['member_id'] = $user['member_id'];
         $shoppingCart['sell_price'] = $merchandise['sell_price'];
+        $shoppingCart['app_id'] = $appId;
         if ($shoppingMerchandise){
             $shoppingCart['quality'] = $shoppingMerchandise['quality']+1;
             $shoppingCart['amount'] = $merchandise['sell_price'] * $shoppingCart['quality'];
@@ -106,8 +110,8 @@ class ShoppingCartController extends Controller
     public function shoppingCartMerchandises(int $storeId){
         $user = $this->user();
         $userId =$user['id'];
-        $shoppingCartMerchandises  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId,$userId);
-        return $this->response()->paginator($shoppingCartMerchandises,new ShoppingCartTransformer);
+        $items  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId,$userId);
+        return $this->response()->paginator($items,new ShoppingCartTransformer);
     }
 
 }

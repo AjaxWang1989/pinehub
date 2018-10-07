@@ -49,8 +49,8 @@ class CategoriesController extends Controller
      */
     public function categories()
     {
-        $item = $this->categoryRepository->paginate();
-        return $this->response->paginator($item,new CategoriesTransformer);
+        $items = $this->categoryRepository->paginate();
+        return $this->response->paginator($items,new CategoriesTransformer);
     }
     /*
      * 根据分类获取所有商品信息
@@ -59,8 +59,8 @@ class CategoriesController extends Controller
 
     public function categoriesMerchandises(int $id)
     {
-      $item = $this->merchandiseCategoryRepository->merchandises($id);
-      return $this->response->paginator($item,new MerchandisesTransformer());
+      $items = $this->merchandiseCategoryRepository->merchandises($id);
+      return $this->response->paginator($items,new MerchandisesTransformer());
     }
 
     /*
@@ -70,8 +70,8 @@ class CategoriesController extends Controller
 
     public function storeCategories(int $id)
     {
-        $item = $this->shopMerchandiseRepository->storeCategories($id);
-        return $this->response->paginator($item,new StoreCategoriesTransformer);
+        $items = $this->shopMerchandiseRepository->storeCategories($id);
+        return $this->response->paginator($items,new StoreCategoriesTransformer);
     }
 
     /**
@@ -81,8 +81,8 @@ class CategoriesController extends Controller
      */
     public function storeCategoryMerchandise(int $id ,int $categoryId)
     {
-        $item = $this->shopMerchandiseRepository->storeCategoryMerchandises($id,$categoryId);
-        return $this->response->paginator($item,new StoreMerchandiseTransformer());
+        $items = $this->shopMerchandiseRepository->storeCategoryMerchandises($id,$categoryId);
+        return $this->response->paginator($items,new StoreMerchandiseTransformer());
     }
 
     /**
@@ -93,8 +93,8 @@ class CategoriesController extends Controller
     public function storeStockStatistics(Request $request)
     {
         $store = $request->all();
-        $item  = $this->shopMerchandiseRepository->storeStockMerchandise($store);
-        return $this->response()->paginator($item,new StoreStockStatisticsTransformer);
+        $items  = $this->shopMerchandiseRepository->storeStockMerchandise($store);
+        return $this->response()->paginator($items,new StoreStockStatisticsTransformer);
     }
 
     /**
