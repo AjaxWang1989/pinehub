@@ -42,7 +42,7 @@ class UserTicketRepositoryEloquent extends BaseRepository implements UserTicketR
      * @param string $limit
      * @return mixed
      */
-    public function userTickets(int $status,$userId,string $shoppingCartAmount,$limit='15'){
+    public function userTickets(int $status,$userId,string $shoppingCartAmount){
         $shoppingCartAmount = $shoppingCartAmount*100;
         $this->scopeQuery(function (UserTicket $userTicket) use($status,$userId,$shoppingCartAmount) {
             return $userTicket->where(['user_id'=>$userId,'user_tickets.status'=>$status])
@@ -51,7 +51,7 @@ class UserTicketRepositoryEloquent extends BaseRepository implements UserTicketR
                 ->where('cards.card_info->cash->date_info->begin_timestamp','<=',time())
                 ->where('cards.card_info->cash->date_info->end_timestamp','>',time());
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
     
 }

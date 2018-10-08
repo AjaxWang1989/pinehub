@@ -44,10 +44,10 @@ class ShoppingCartRepositoryEloquent extends BaseRepository implements ShoppingC
      * @return mixed
      */
 
-    public function shoppingCartMerchandises(int $storeId,$userId,$limit='15'){
+    public function shoppingCartMerchandises(int $storeId,$userId){
         $this->scopeQuery(function (ShoppingCart $shoppingCart) use($storeId,$userId) {
             return $shoppingCart->with('merchandise')->where(['customer_id'=>$userId,'shop_id'=>$storeId]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 }

@@ -70,7 +70,7 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
      * @param string $limit
      * @return mixed
      */
-    public function orderItemUser (int $userId,$limit='15')
+    public function orderItemUser (int $userId)
     {
         $this->scopeQuery(function (OrderItem $orderItem)use($userId){
             return $orderItem->select([
@@ -79,7 +79,7 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
                 ->where(['shop_id'=>$userId])
                 ->groupby('customer_id')->orderBy('total_amount');
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
     /**

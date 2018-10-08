@@ -45,4 +45,25 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
         });
     }
 
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function findMerchandises(string $name){
+        $this->scopeQuery(function (Merchandise $merchandise) use($name){
+            return $merchandise->where('name','like','%'.$name.'%');
+        });
+        return $this->get();
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function searchMerchandises(string $name){
+        $this->scopeQuery(function (Merchandise $merchandise) use($name){
+            return $merchandise->where('name','like','%'.$name.'%');
+        });
+        return $this->paginate();
+    }
 }

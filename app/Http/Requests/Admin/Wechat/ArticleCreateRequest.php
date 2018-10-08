@@ -27,6 +27,7 @@ class ArticleCreateRequest extends FormRequest
         return [
             //
             'title' => ['required', 'string'],
+            'introduction' => ['required', 'string'],
             'thumb_media_id' => ['required', 'string'],
             'author' => ['string'],
             'digest' => ['string'],

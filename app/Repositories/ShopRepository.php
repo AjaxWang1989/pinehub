@@ -29,5 +29,5 @@ interface ShopRepository extends RepositoryInterface
      * @param float $distance
      * @return Collection|Array
      * */
-    public function nearBy(float $lng, float $lat, float $distance = 15, $limit = 15);
+    public function nearBy(float $lng, float $lat, float $distance = 15);
 }

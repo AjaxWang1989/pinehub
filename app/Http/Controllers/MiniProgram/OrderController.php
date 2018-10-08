@@ -24,6 +24,7 @@ use App\Transformers\Mp\StatusOrdersTransformer;
 use App\Transformers\Mp\StoreOrdersSummaryTransformer;
 use App\Repositories\ShopRepository;
 use App\Http\Response\JsonResponse;
+use Illuminate\Support\Facades\Cache;
 
 class OrderController extends Controller
 {
@@ -63,8 +64,11 @@ class OrderController extends Controller
      */
     public function createOrder(Request $request)
     {
+        $accessToken = $request->input('access_token', null);
+        $appId = Cache::get($accessToken);
         $user = $this->user();
         $orders = $request->all();
+        $orders['app_id'] = $appId;
         $orders['member_id'] = $user['member_id'];
         $orders['customer_id'] = $user['id'];
         $orders['open_id']  = $user['open_id'];
@@ -87,6 +91,7 @@ class OrderController extends Controller
         //组装购物车数据存入订单表中
         foreach ($shoppingCart as $k => $v) {
             $merchandises = $this->merchandiseRepository->findWhere(['id'=>$v['merchandise_id']])->first();
+            $itemMerchandises[$k]['app_id'] = $appId;
             $itemMerchandises[$k]['shop_id'] = $v['shop_id'];
             $itemMerchandises[$k]['member_id'] = $v['member_id'];
             $itemMerchandises[$k]['customer_id'] = $v['customer_id'];
@@ -100,6 +105,7 @@ class OrderController extends Controller
             $itemMerchandises[$k]['quality'] = $v['quality'];
             $itemMerchandises[$k]['total_amount'] = $v['amount'];
             $itemMerchandises[$k]['status'] = 10;
+            $this->shoppingCartRepository->delete($v['id']);
         }
         $this->orderRepository->insertMerchandise($itemMerchandises);
         return $this->response()->item($ordersMerchandise,new OrderTransformer());
@@ -116,13 +122,13 @@ class OrderController extends Controller
         if ($shopUser){
             $userId = $shopUser['id'];
             $sendTime = $request->all();
-            $item = $this->orderRepository->storeBuffetOrders($sendTime,$userId);
+            $items = $this->orderRepository->storeBuffetOrders($sendTime,$userId);
             $shopEndHour = $this->shopRepository->findwhere(['id'=>$userId])->first();
-            foreach ($item as $k => $v){
-                $item[$k]['shop_end_hour'] = $shopEndHour['end_at'];
-                $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+            foreach ($items as $k => $v){
+                $items[$k]['shop_end_hour'] = $shopEndHour['end_at'];
+                $items[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
             }
-            return $this->response()->paginator($item,new OrderStoreBuffetTransformer());
+            return $this->response()->paginator($items,new OrderStoreBuffetTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
@@ -139,11 +145,11 @@ class OrderController extends Controller
         if ($shopUser) {
             $userId = $shopUser['id'];
             $sendTime = $request->all();
-            $item = $this->orderRepository->storeSendOrders($sendTime,$userId);
-            foreach ($item as $k => $v){
-                $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+            $items = $this->orderRepository->storeSendOrders($sendTime,$userId);
+            foreach ($items as $k => $v){
+                $items[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
             }
-            return $this->response()->paginator($item,new OrderStoreSendTransformer());
+            return $this->response()->paginator($items,new OrderStoreSendTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
@@ -159,11 +165,11 @@ class OrderController extends Controller
         $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
         if ($shopUser){
             $userId = $shopUser['id'];
-            $item = $this->orderRepository->allOrders($status,$userId);
-            foreach ($item as $k => $v){
-                $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+            $items = $this->orderRepository->allOrders($status,$userId);
+            foreach ($items as $k => $v){
+                $items[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
             }
-            return $this->response()->paginator($item,new StatusOrdersTransformer());
+            return $this->response()->paginator($items,new StatusOrdersTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
@@ -179,14 +185,14 @@ class OrderController extends Controller
         if ($shopUser){
             $userId = $shopUser['id'];
             $request = $request->all();
-            $item = $this->orderRepository->storeOrdersSummary($request,$userId);
-            foreach ($item as $k => $v){
+            $items = $this->orderRepository->storeOrdersSummary($request,$userId);
+            foreach ($items as $k => $v){
                     $reduce_cost= $this->cardRepository->findWhere(['card_id'=>$v['card_id']])->first();
-                    $item[$k]['reduce_cost'] = $reduce_cost ? $reduce_cost['card_info']['cash']['base_info']['title'] : '无';
-                    $item[$k]['sell_point'] = '';
-                    $item[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
+                    $items[$k]['reduce_cost'] = $reduce_cost ? $reduce_cost['card_info']['cash']['base_info']['title'] : '无';
+                    $items[$k]['sell_point'] = '';
+                    $items[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
             }
-            return $this->response()->paginator($item,new StoreOrdersSummaryTransformer());
+            return $this->response()->paginator($items,new StoreOrdersSummaryTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }

@@ -39,11 +39,11 @@ class MerchandiseCategoryRepositoryEloquent extends BaseRepository implements Me
      * @param int $id
      * @return $MerchandiseCategory
      */
-    public function merchandises(int $id,$limit = '15'){
+    public function merchandises(int $id){
         $this->scopeQuery(function (MerchandiseCategory $merchandiseCategory) use($id) {
             return $merchandiseCategory->with('merchandise')->where(['category_id' => $id]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
     
 }

@@ -94,7 +94,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      */
 
-    public function storeBuffetOrders(array $sendTime,int $userId,$limit = '15')
+    public function storeBuffetOrders(array $sendTime,int $userId)
     {
         $startAt = null;
         $endAt = null;
@@ -111,7 +111,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where('paid_at', '<', $endAt)
                 ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
     /**
@@ -120,7 +120,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param string $limit
      * @return mixed
      */
-    public function storeSendOrders(array $sendTime,int $userId,$limit = '15')
+    public function storeSendOrders(array $sendTime,int $userId)
     {
         $startAt = null;
         $endAt = null;
@@ -137,7 +137,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where('send_time', '<', $endAt)
                 ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
     /**
@@ -146,7 +146,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param string $limit
      * @return mixed
      */
-    public function allOrders(string $status,int $userId,$limit = '15')
+    public function allOrders(string $status,int $userId)
     {
         $this->scopeQuery(function (Order $order) use($status,$userId){
             return $order->select([
@@ -154,7 +154,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ])
                 ->where(['shop_id'=>$userId,'status'=>$status]);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
     /**
@@ -164,7 +164,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      */
 
-    public function storeOrdersSummary(array $request,int $userId,$limit = '15')
+    public function storeOrdersSummary(array $request,int $userId)
     {
         $startAt = null;
         $endAt = null;
@@ -182,7 +182,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where('orders.type',$request['type'])
                 ->where('orders.status',$request['status']);
         });
-        return $this->paginate($limit);
+        return $this->paginate();
     }
 
     /**

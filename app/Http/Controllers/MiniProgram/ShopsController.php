@@ -12,9 +12,12 @@ use App\Repositories\ShopRepository;
 use App\Repositories\AppRepository;
 use App\Repositories\OrderItemRepository;
 use App\Repositories\OrderRepository;
+use App\Repositories\MerchandiseRepository;
+use App\Repositories\ShopMerchandiseRepository;
 use App\Transformers\Mp\ShopPositionTransformer;
 use Dingo\Api\Http\Request;
 use App\Transformers\Mp\StoreSellStatisticsTransformer;
+use App\Transformers\Mp\StoreMerchandiseTransformer;
 use App\Http\Response\JsonResponse;
 
 class ShopsController extends Controller
@@ -22,18 +25,22 @@ class ShopsController extends Controller
     protected  $shopRepository = null;
     protected  $orderItemRepository = null;
     protected  $orderRepository = null;
+    protected  $merchandiseRepository = null;
+    protected  $shopMerchandiseRepository = null;
     /**
      * ShopsController constructor.
      * @param ShopRepository $shopRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(ShopRepository $shopRepository,OrderItemRepository $orderItemRepository ,OrderRepository $orderRepository ,AppRepository $appRepository, Request $request)
+    public function __construct(ShopRepository $shopRepository,ShopMerchandiseRepository $shopMerchandiseRepository,MerchandiseRepository $merchandiseRepository,OrderItemRepository $orderItemRepository ,OrderRepository $orderRepository ,AppRepository $appRepository, Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->shopRepository = $shopRepository;
         $this->orderItemRepository = $orderItemRepository;
         $this->orderRepository = $orderRepository;
+        $this->merchandiseRepository = $merchandiseRepository;
+        $this->shopMerchandiseRepository = $shopMerchandiseRepository;
     }
 
     /**
@@ -49,14 +56,15 @@ class ShopsController extends Controller
     }
 
     /**
+     * 获取附近所有店铺地址
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
     public function nearbyStores(Request $request){
         $lng = $request->input('lng');
         $lat = $request->input('lat');
-        $item = $this->shopRepository->nearBy($lng,$lat);
-        return $this->response()->paginator($item, new ShopPositionTransformer());
+        $items= $this->shopRepository->nearBy($lng,$lat);
+        return $this->response()->paginator($items, new ShopPositionTransformer());
     }
 
     /**
@@ -80,21 +88,21 @@ class ShopsController extends Controller
                     }
                 }
             }
-            $item['statics'] = $statics;
+            $items['statics'] = $statics;
             $bookPaymentAmount = $this->orderRepository->bookPaymentAmount($request,$userId);
             $sitePaymentAmount = $this->orderRepository->sitePaymentAmount($request,$userId);
             $sellMerchandiseNum = $this->orderItemRepository->sellMerchandiseNum($request,$userId);
             $sellOrderNum = $this->orderRepository->sellOrderNum($request,$userId);
             $sellTop = $this->orderItemRepository->sellTop($request,$userId);
             $sellMerchandiseTop = $this->orderItemRepository->sellMerchandiseTop($request,$userId);
-            $item['reservation_order_amount'] = $bookPaymentAmount['total_amount'];
-            $item['store_order_amount'] = $sitePaymentAmount['total_amount'];
-            $item['merchandise_num'] = $sellMerchandiseNum['total_amount'];
-            $item['sell_point'] = '';
-            $item['order_num'] = count($sellOrderNum);
-            $item['sell_top'] = $sellTop;
-            $item['merchandise_top'] = $sellMerchandiseTop;
-            return $this->response()->array($item,new StoreSellStatisticsTransformer());
+            $items['reservation_order_amount'] = $bookPaymentAmount['total_amount'];
+            $items['store_order_amount'] = $sitePaymentAmount['total_amount'];
+            $items['merchandise_num'] = $sellMerchandiseNum['total_amount'];
+            $items['sell_point'] = '';
+            $items['order_num'] = count($sellOrderNum);
+            $items['sell_top'] = $sellTop;
+            $items['merchandise_top'] = $sellMerchandiseTop;
+            return $this->response()->array($items,new StoreSellStatisticsTransformer());
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
@@ -133,13 +141,31 @@ class ShopsController extends Controller
             }
         }
 
-        $item['today_buy_num'] = count($todayBuyNum);
-        $item['week_buy_num'] = count($weekBuyNum);
-        $item['today_sell_amount'] = $todaySellAmount['total_amount'];
-        $item['week_sell_amount'] = $weekSellAmount['total_amount'];
-        $item['buy_mum'] = $weekBuyNumStatics;
-        $item['sell_amount'] = $weekBuyNumAmount;
-        return $this->response()->array($item,new StoreSellStatisticsTransformer());
+        $items['today_buy_num'] = count($todayBuyNum);
+        $items['week_buy_num'] = count($weekBuyNum);
+        $items['today_sell_amount'] = $todaySellAmount['total_amount'];
+        $items['week_sell_amount'] = $weekSellAmount['total_amount'];
+        $items['buy_mum'] = $weekBuyNumStatics;
+        $items['sell_amount'] = $weekBuyNumAmount;
+        return $this->response()->array($items,new StoreSellStatisticsTransformer());
     }
 
+    /**
+     * 今日下单搜索
+     * @param int $shopId
+     * @param Request $request
+     */
+    public function searchShopMerchandises(int $shopId ,Request $request){
+        if ($request['name']){
+            $merchandises = $this->merchandiseRepository->findMerchandises($request['name']);
+            $merchandisesIds = [];
+            foreach ($merchandises as $k => $v){
+                $merchandisesIds[$k] = $v['id'];
+            }
+            $items = $this->shopMerchandiseRepository->shopMerchandises($shopId,$merchandisesIds);
+            return $this->response->paginator($items,new StoreMerchandiseTransformer);
+        }else{
+            return $this->response(new JsonResponse(['message' => '搜索的商品名字不能为空']));
+        }
+    }
 }
