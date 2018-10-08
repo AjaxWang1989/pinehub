@@ -122,6 +122,17 @@ class MaterialController extends Controller
             return $this->response(new JsonResponse($retData));
         }
 
+        $articles = [
+            'title' => $title,
+            'introduction' => $description,
+            'is_tmp' => false,
+            'media_id' => $retData,
+            'url' => $url,
+            'type' => $type,
+        ];
+
+        $this->wechatMaterialRepository->create($articles);
+
         return redirect()->back()->with('message', '永久素材创建成功');
     }
 

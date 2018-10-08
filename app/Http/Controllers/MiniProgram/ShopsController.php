@@ -12,9 +12,12 @@ use App\Repositories\ShopRepository;
 use App\Repositories\AppRepository;
 use App\Repositories\OrderItemRepository;
 use App\Repositories\OrderRepository;
+use App\Repositories\MerchandiseRepository;
+use App\Repositories\ShopMerchandiseRepository;
 use App\Transformers\Mp\ShopPositionTransformer;
 use Dingo\Api\Http\Request;
 use App\Transformers\Mp\StoreSellStatisticsTransformer;
+use App\Transformers\Mp\StoreMerchandiseTransformer;
 use App\Http\Response\JsonResponse;
 
 class ShopsController extends Controller
@@ -22,18 +25,22 @@ class ShopsController extends Controller
     protected  $shopRepository = null;
     protected  $orderItemRepository = null;
     protected  $orderRepository = null;
+    protected  $merchandiseRepository = null;
+    protected  $shopMerchandiseRepository = null;
     /**
      * ShopsController constructor.
      * @param ShopRepository $shopRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(ShopRepository $shopRepository,OrderItemRepository $orderItemRepository ,OrderRepository $orderRepository ,AppRepository $appRepository, Request $request)
+    public function __construct(ShopRepository $shopRepository,ShopMerchandiseRepository $shopMerchandiseRepository,MerchandiseRepository $merchandiseRepository,OrderItemRepository $orderItemRepository ,OrderRepository $orderRepository ,AppRepository $appRepository, Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->shopRepository = $shopRepository;
         $this->orderItemRepository = $orderItemRepository;
         $this->orderRepository = $orderRepository;
+        $this->merchandiseRepository = $merchandiseRepository;
+        $this->shopMerchandiseRepository = $shopMerchandiseRepository;
     }
 
     /**
@@ -49,6 +56,7 @@ class ShopsController extends Controller
     }
 
     /**
+     * 获取附近所有店铺地址
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
@@ -142,4 +150,22 @@ class ShopsController extends Controller
         return $this->response()->array($items,new StoreSellStatisticsTransformer());
     }
 
+    /**
+     * 今日下单搜索
+     * @param int $shopId
+     * @param Request $request
+     */
+    public function searchShopMerchandises(int $shopId ,Request $request){
+        if ($request['name']){
+            $merchandises = $this->merchandiseRepository->findMerchandises($request['name']);
+            $merchandisesIds = [];
+            foreach ($merchandises as $k => $v){
+                $merchandisesIds[$k] = $v['id'];
+            }
+            $items = $this->shopMerchandiseRepository->shopMerchandises($shopId,$merchandisesIds);
+            return $this->response->paginator($items,new StoreMerchandiseTransformer);
+        }else{
+            return $this->response(new JsonResponse(['message' => '搜索的商品名字不能为空']));
+        }
+    }
 }

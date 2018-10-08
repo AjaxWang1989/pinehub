@@ -105,6 +105,7 @@ class OrderController extends Controller
             $itemMerchandises[$k]['quality'] = $v['quality'];
             $itemMerchandises[$k]['total_amount'] = $v['amount'];
             $itemMerchandises[$k]['status'] = 10;
+            $this->shoppingCartRepository->delete($v['id']);
         }
         $this->orderRepository->insertMerchandise($itemMerchandises);
         return $this->response()->item($ordersMerchandise,new OrderTransformer());

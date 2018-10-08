@@ -26,4 +26,11 @@ interface ShopMerchandiseRepository extends RepositoryInterface
      * @return mixed
      */
     public function storeStockMerchandise($store);
+
+    /**
+     * @param int $shopId
+     * @param array $merchandisesIds
+     * @return mixed
+     */
+    public function shopMerchandises(int $shopId,array $merchandisesIds);
 }

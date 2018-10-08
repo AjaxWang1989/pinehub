@@ -16,11 +16,13 @@ use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\ShoppingCartTransformer;
 use App\Http\Response\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use App\Repositories\ShopMerchandiseRepository;
 
 class ShoppingCartController extends Controller
 {
     protected $merchandiseRepository;
     protected $shoppingCartRepository;
+    protected $shopMerchandiseRepository;
 
     /**
      * ShoppingCartController constructor.
@@ -29,12 +31,13 @@ class ShoppingCartController extends Controller
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(ShoppingCartRepository $shoppingCartRepository,MerchandiseRepository $merchandiseRepository,AppRepository $appRepository,Request $request)
+    public function __construct(ShoppingCartRepository $shoppingCartRepository,ShopMerchandiseRepository $shopMerchandiseRepository,MerchandiseRepository $merchandiseRepository,AppRepository $appRepository,Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->appRepository = $appRepository;
         $this->merchandiseRepository = $merchandiseRepository;
         $this->shoppingCartRepository = $shoppingCartRepository;
+        $this->shopMerchandiseRepository = $shopMerchandiseRepository;
     }
 
     /**
@@ -47,6 +50,10 @@ class ShoppingCartController extends Controller
         $appId = Cache::get($accessToken);
         $user = $this->user();
         $shoppingCart = $request->all();
+        $shopMerchandise = $this->shopMerchandiseRepository->findWhere(['shop_id'=>$shoppingCart['store_id'],'merchandise_id'=>$shoppingCart['merchandise_id']])->first();
+        if ($shopMerchandise['stock_num'] <=0){
+            return $this->response(new JsonResponse(['message' => '此商品没有库存了']));
+        }
         $merchandise = $this->merchandiseRepository->findWhere(['id'=>$shoppingCart['merchandise_id']])->first();
         $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$shoppingCart['store_id'],'merchandise_id'=>$shoppingCart['merchandise_id'],'customer_id'=>$user['id']])->first();
         $shoppingCart['shop_id'] = $shoppingCart['store_id'];
