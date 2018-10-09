@@ -22,10 +22,10 @@ class GateWayService
     }
 
     public function has($gateway) {
-        if(preg_match("/{$this->domain}/", $gateway, $matches)) {
+        if(preg_match("/{$this->domain}/", $gateway, $matches) && $gateway !== $this->domain) {
             $gateway = substr($gateway, 0, strlen($gateway) - strlen($this->domain) - 1);
         }
-        return $this->gateways->search($gateway);
+        return $gateway === $this->domain || $this->gateways->search($gateway);
     }
 
     public function getGateway(string $gateway) {

@@ -35,11 +35,11 @@ return [
 //        'prefix' => null,
         'namespace' => 'Auth'
     ],
-//    [
-//        'gateway' => 'api.auth',
-//        'router' => \App\Routes\TestApiRoutes::class,
-//        'version' => 'v1',
-//        'namespace' => 'Test'
-//    ]
+    [
+        'gateway' => 'web.wxopen',
+        'router' => \App\Routes\WechatOpenPlatformRoutes::class,
+        'version' => 'v1',
+        'namespace' => 'Wechat'
+    ]
 
 ];

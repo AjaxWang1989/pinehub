@@ -20,11 +20,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
-/**
- * Class OrdersController.
- *
- * @package namespace App\Http\Controllers\Admin;
- */
 class OrdersController extends Controller
 {
     /**
