@@ -102,6 +102,7 @@ class ShoppingCartController extends Controller
     public function emptyMerchandise(int $storeId){
         $user = $this->user();
         $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$storeId,'customer_id'=>$user['id']]);
+        $item = '';
         foreach ($shoppingMerchandise as $v){
             $item = $this->shoppingCartRepository->delete($v['id']);
         }

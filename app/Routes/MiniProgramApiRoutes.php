@@ -51,5 +51,7 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->get('/store/code/order/merchandise/up', ['as' => 'user.store.code.order.merchandise.up','uses' => 'PurchaseOrderController@storeCodeOrderMerchandiseUp']);
         $router->get('/search/shop/merchandises/{shopId}', ['as' => 'user.search.shop.merchandises','uses' => 'ShopsController@searchShopMerchandises']);
         $router->get('/reserve/search/merchandises', ['as' => 'user.reserve.search.','uses' => 'CategoriesController@reserveSearchMerchandises']);
+        $router->get('/cancel/order/{id}', ['as' => 'user.cancel.order.','uses' => 'OrderController@cancelOrder']);
+        $router->get('/confirm/order/{id}', ['as' => 'user.confirm.order.','uses' => 'OrderController@confirmOrder']);
     }
 }

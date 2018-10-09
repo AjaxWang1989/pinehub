@@ -22,6 +22,8 @@ class CreateActivityMerchandisesTable extends Migration
             $table->unsignedInteger('product_id')->nullable()->default(null)->comment('sku单品ID');
             $table->integer('stock_num')->default(-1)->comment('参与活动的数量:-1无限制，大于0参与活动商品数量，0售罄');
             $table->integer('sell_num')->default(-1)->comment('已售出数量');
+            $table->string('label')->default('')->comment('产品标签');
+            $table->string('introduction')->default('')->comment('产品介绍');
             $table->timestamp('start_at')->nullable()->default(null)->comment('开售时间');
             $table->timestamp('end_at')->nullable()->default(null)->comment('结业时间');
             $table->timestamps();

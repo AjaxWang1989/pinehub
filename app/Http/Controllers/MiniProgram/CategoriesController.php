@@ -56,7 +56,7 @@ class CategoriesController extends Controller
     public function categories()
     {
         $items = $this->categoryRepository->paginate();
-        return $this->response->paginator($items,new CategoriesTransformer);
+        return $this->response()->paginator($items,new CategoriesTransformer);
     }
     /*
      * 根据分类获取所有商品信息
@@ -66,7 +66,7 @@ class CategoriesController extends Controller
     public function categoriesMerchandises(int $id)
     {
       $items = $this->merchandiseCategoryRepository->merchandises($id);
-      return $this->response->paginator($items,new MerchandisesTransformer());
+      return $this->response()->paginator($items,new MerchandisesTransformer());
     }
 
     /*
@@ -77,7 +77,7 @@ class CategoriesController extends Controller
     public function storeCategories(int $id)
     {
         $items = $this->shopMerchandiseRepository->storeCategories($id);
-        return $this->response->paginator($items,new StoreCategoriesTransformer);
+        return $this->response()->paginator($items,new StoreCategoriesTransformer);
     }
 
     /**
@@ -88,7 +88,7 @@ class CategoriesController extends Controller
     public function storeCategoryMerchandise(int $id ,int $categoryId)
     {
         $items = $this->shopMerchandiseRepository->storeCategoryMerchandises($id,$categoryId);
-        return $this->response->paginator($items,new StoreMerchandiseTransformer());
+        return $this->response()->paginator($items,new StoreMerchandiseTransformer());
     }
 
     /**
@@ -133,7 +133,7 @@ class CategoriesController extends Controller
     public function reserveSearchMerchandises(Request $request){
         if ($request['name']){
             $items = $this->merchandiseRepository->searchMerchandises($request['name']);
-            return $this->response->paginator($items,new ReserveSearchMerchandisesTransformer());
+            return $this->response()->paginator($items,new ReserveSearchMerchandisesTransformer());
         }else{
             return $this->response(new JsonResponse(['message' => '搜索的商品名字不能为空']));
         }

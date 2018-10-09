@@ -197,4 +197,32 @@ class OrderController extends Controller
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
+    /**
+     * 取消订单
+     * @param int $id
+     */
+    public function cancelOrder(int $id){
+        $items = $this->orderItemRepository->findWhere(['order_id'=>$id]);
+        foreach ($items as $v){
+            $this->orderItemRepository->delete($v['id']);
+        }
+        $item = $this->orderRepository->delete($id);
+        return $this->response(new JsonResponse(['delete_count' => $item]));
+    }
+
+    /**
+     * 确认订单
+     * @param int $id
+     * @return mixed
+     */
+    public function confirmOrder(int $id){
+        $status = ['status'=>Order::COMPLETED];
+        $items = $this->orderItemRepository->findWhere(['order_id'=>$id]);
+        foreach ($items as $v){
+            $this->orderItemRepository->update($status,$v['id']);
+        }
+        $item = $this->orderRepository->update($status,$id);
+        return $this->response(new JsonResponse(['confirm_status' => $item['status']]));
+    }
+
 }

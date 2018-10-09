@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $productId sku单品ID
  * @property int $stockNum 参与活动的数量:-1无限制，大于0参与活动商品数量，0售罄
  * @property int $sellNum  售出数量
+ * @property string|null $label 产品标签
+ * @property string|null $introduction 产品介绍
  * @property string|null $startAt 开售时间
  * @property string|null $endAt 结业时间
  * @property \Carbon\Carbon|null $createdAt
@@ -47,7 +49,7 @@ class ActivityMerchandise extends Model implements Transformable
      * @var array
      */
     protected $fillable = ['activity_id','shop_id','shop_merchandise_id','merchandise_id','product_id','stock_num','sell_num',
-        'start_at','end_at'
+        'start_at','end_at','label','introduction'
     ];
 
     public function merchandise() : BelongsTo
