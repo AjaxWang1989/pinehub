@@ -320,41 +320,48 @@
             var amount =  parseFloat($(".input-money")[0].innerHTML);
             $(this).addClass('weui-btn_disabled');
             $(this).attr('disable', true);
+            let order = { };
+            order['total_amount'] = amount;
+            order['payment_amount'] = amount;
             $.ajax({
                 url:"{{ $paymentApi }}",
                 type:"POST",
                 headers:{
                     accept: "{{ $accept }}",
                 },
-                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'open_id' : '{{$openId}}' },
+                data: order,
                 beforeSend: function(){
 
                 },
                 success:function(data) {
                     $(this).removeClass('weui-btn_disabled');
                     $(this).removeAttr('disable');
-                    let $data =data.data;
-                    $data['timestamp'] = $data['timeStamp'];
-                    $data['success'] = function (res) {
-                        if(res === 'get_brand_wcpay_request:ok') {
+                    if(data['data']['return_code'] === 'FAIL') {
+                        alert(data['return_msg']);
+                    }else{
 
-                        }else if (res === 'get_brand_wcpay_request:cancel') {
-                            $(this).removeClass('weui-btn_disabled');
-                            $(this).removeAttr('disable');
-                        }else if(res === 'get_brand_wcpay_request:fail'){
-                            $(this).removeClass('weui-btn_disabled');
-                            $(this).removeAttr('disable');
+                        let $data =data['data']['sdk_config'];
+                        //alert(JSON.stringify(data['data']));
+                        $data['timeStamp'] = $data['timestamp'];
+                        $data['success'] = function (res) {
+                            if(res === 'get_brand_wcpay_request:ok') {
+
+                            }else if (res === 'get_brand_wcpay_request:cancel') {
+
+                            }else if(res === 'get_brand_wcpay_request:fail'){
+
+                            }
+
+                        };
+                        $data['error'] = function (error) {
+
                         }
-
-                    };
-                    $data['error'] = function (error) {
-                        $(this).removeClass('weui-btn_disabled');
-                        $(this).removeAttr('disable');
+                        wx.chooseWXPay($data);
                     }
-                    wx.chooseWXPay($data);
+
                 },
-                error: function(){
-                    alert('error');
+                error: function(XMLHttpRequest, textStatus, errorThrown){
+                    alert(textStatus);
                 }
             });
         });

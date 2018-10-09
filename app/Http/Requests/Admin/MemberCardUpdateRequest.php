@@ -13,7 +13,7 @@ class MemberCardUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,8 @@ class MemberCardUpdateRequest extends FormRequest
     {
         return [
             //
+            'sync' => ['required', 'boolean'],
+            'member_info' => ['required', 'array']
         ];
     }
 }

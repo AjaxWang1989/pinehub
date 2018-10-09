@@ -25,7 +25,6 @@ class WechatConfigCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appId = app(AppManager::class)->currentApp->id;
-        $model->whereWechatBindApp($appId);
-        return $model;
+        return $model->whereWechatBindApp($appId);
     }
 }

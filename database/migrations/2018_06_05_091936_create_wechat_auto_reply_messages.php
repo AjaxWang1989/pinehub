@@ -16,7 +16,7 @@ class CreateWechatAutoReplyMessages extends Migration
         //
         Schema::create('wechat_auto_reply_messages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('app_id', 28)->comment('微信app ID');
+            $table->string('app_id', 32)->comment('微信app ID');
             $table->string('name', 16)->nullable()->default(null)->comment('规则名称');
             $table->boolean('focus_reply')->default(null)->comment('关注回复');
             $table->enum('type', [WECHAT_TEXT_MESSAGE, WECHAT_IMAGE_MESSAGE, WECHAT_VIDEO_MESSAGE, WECHAT_NEWS_MESSAGE,

@@ -25,7 +25,6 @@ class OpenPlatformController extends Controller
         $appId = $request->input('app_id', null);
         switch($scope) {
             case USER_AUTH_BASE:{
-                $accessToken = app('wechat')->openPlatformOfficialAccountAccessToken($appId);
                 break;
             }
             case USER_AUTH_INFO: {

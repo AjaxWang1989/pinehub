@@ -5,9 +5,13 @@ namespace App\Entities;
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Hash;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-
+use Illuminate\Auth\Authenticatable;
+use Laravel\Lumen\Auth\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 /**
  * App\Entities\WechatUser
@@ -16,7 +20,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $appId 系统应用appid
  * @property int|null $userId 用户手机
  * @property string|null $wechatAppId 微信公众平台、小程序、开放app id
- * @property string $type OFFICE_ACCOUNT 公众平台， 
+ * @property string $type OFFICE_ACCOUNT 公众平台，
  *             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序
  * @property string|null $unionId union id
  * @property string $openId open id
@@ -56,9 +60,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereWechatAppId($value)
  * @mixin \Eloquent
  */
-class WechatUser extends Model implements Transformable
+class WechatUser extends Model  implements AuthenticatableContract, AuthorizableContract, Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
 
     protected $casts = [
         'expires_at' => 'date',
@@ -93,5 +97,10 @@ class WechatUser extends Model implements Transformable
     public function orders()
     {
         return $this->hasMany(Order::class, 'open_id', 'open_id')->where('type', 'WECHAT_PAY');
+    }
+
+    public function getAuthPassword()
+    {
+        return Hash::make($this->sessionKey);
     }
 }

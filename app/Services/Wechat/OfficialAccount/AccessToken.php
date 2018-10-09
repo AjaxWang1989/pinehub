@@ -8,6 +8,7 @@
 
 namespace App\Services\Wechat\OfficialAccount;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 /**
  * the official account access token struct
@@ -37,6 +38,21 @@ class AccessToken implements \ArrayAccess
     public function __construct(array $accessToken)
     {
         $this->accessToken = $accessToken;
+    }
+
+
+    public function __get($name)
+    {
+        // TODO: Implement __get() method.\
+        $key = upperCaseSplit($name, '_');
+        return $this->accessToken[$key];
+    }
+
+    public function __isset($name)
+    {
+        // TODO: Implement __isset() method.
+        $key = upperCaseSplit($name, '_');
+        return isset($this->accessToken[$key]);
     }
 
     /**

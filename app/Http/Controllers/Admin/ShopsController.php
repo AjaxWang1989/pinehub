@@ -2,17 +2,24 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\App;
+use App\Entities\Role;
+use App\Entities\ShopManager;
 use App\Http\Response\JsonResponse;
 
-use App\Repositories\UserRepository;
+use App\Repositories\SellerRepository;
+use App\Repositories\ShopManagerRepository;
 use App\Services\AppManager;
+use App\Utils\GeoHash;
 use Dingo\Api\Http\Request;
+use Illuminate\Http\Request as IlluminateRequest;
 use Exception;
 use App\Http\Requests\Admin\ShopCreateRequest;
 use App\Http\Requests\Admin\ShopUpdateRequest;
 use App\Transformers\ShopTransformer;
 use App\Transformers\ShopItemTransformer;
 use App\Repositories\ShopRepository;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Response;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
@@ -29,19 +36,23 @@ class ShopsController extends Controller
      */
     protected $repository;
 
-    protected $userRepository;
+    protected $sellerRepository;
+
+    protected $shopManagerRepository;
 
 
     /**
      * ShopsController constructor.
      *
      * @param ShopRepository $repository
-     * @param UserRepository $userRepository
+     * @param SellerRepository $sellerRepository
+     * @param ShopManagerRepository $shopManagerRepository
      */
-    public function __construct(ShopRepository $repository, UserRepository $userRepository)
+    public function __construct(ShopRepository $repository, SellerRepository $sellerRepository, ShopManagerRepository $shopManagerRepository)
     {
         $this->repository = $repository;
-        $this->userRepository = $userRepository;
+        $this->sellerRepository = $sellerRepository;
+        $this->shopManagerRepository = $shopManagerRepository;
         parent::__construct();
 
     }
@@ -67,21 +78,24 @@ class ShopsController extends Controller
      * 获取店铺老板/经理人的用户信息
      * @param string $mobile
      * @param string $name
-     * @return User
+     * @return ShopManager
      * @throws
      * */
-    protected function getOwner(string $mobile, string $name)
+    protected function getManager(string $mobile, string $name)
     {
-        $user = $this->userRepository->findWhere(['mobile' => $mobile])->first();
-        if(!$user){
-            $user = $this->userRepository->create([
+        $shopManager = $this->shopManagerRepository->findWhere(['mobile' => $mobile])->first();
+        if(!$shopManager){
+            $shopManager = $this->shopManagerRepository->create([
                 'user_name' => $mobile,
                 'password' => password($mobile),
                 'real_name' => $name,
                 'mobile' => $mobile
             ]);
+            $seller = $this->sellerRepository->find($shopManager->id);
+            $role = Role::whereSlug(Role::SELLER)->first(['id']);
+            $seller->roles()->attach($role->id);
         }
-        return $user;
+        return $shopManager;
     }
 
     /**
@@ -98,9 +112,9 @@ class ShopsController extends Controller
         $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'description', 'status']);
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
-        $data['user_id'] = $this->getOwner($request->input('manager_mobile'), $request->input('manager_name'))->id;
+        $data['user_id'] = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'))->id;
         if($request->input('lat', null) && $request->input('lng', null)){
-            $data['position'] = new PointType($request->input('lat'), $request->input('lng'));
+            $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
         $data['wechat_app_id'] = $appManager->officialAccount->appId;
@@ -121,17 +135,16 @@ class ShopsController extends Controller
     }
 
 
-    public function paymentQRCode(Request $request, int $id)
+    public function paymentQRCode( int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
-        $appManager = app(AppManager::class);
-        $size = $request->input('size', null);
-        if($shop && $appManager->currentApp && $size !== null && $size > 0) {
-           $url = webUriGenerator('/payment/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
+        $size = $request->input('size', 200);
+        if($shop  && $size !== null && $size > 0) {
+           $url  = webUriGenerator('/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
            $url .= "?shop_id={$shop->id}";
-           $url .= "&selected_appid={$appManager->currentApp->id}";
+           $url .= "&selected_appid={$shop->appId}";
            $qrCode = QrCode::format('png')->size($size)->generate($url);
-            if($request->wantsJson()) {
+           if($request->wantsJson()) {
                 $qrCode = base64_encode($qrCode);
                 return $this->response(new JsonResponse([
                     'qr_code' => 'data:image/png;base64, '.$qrCode
@@ -139,36 +152,45 @@ class ShopsController extends Controller
             }else{
                 return Response::create($qrCode)->header('Content-Type', 'image/png');
             }
-           return $this->response(new JsonResponse([
-               'qr_code' => 'data:image/png;base64, '.$qrCode
-           ]));
         }else{
-            return $this->response()->error('参数错误');
+            if($request->wantsJson()) {
+                return $this->response(new JsonResponse([
+                    'message' => '失败 '
+                ]));
+            }else{
+                return Response::create(['message' => '失败 ']);
+            }
         }
     }
 
-    public function officialAccountQRCode(Request $request, int $id)
+    public function officialAccountQRCode(int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
-        $appManager = app(AppManager::class);
-        $size = $request->input('size', null);
-        if($shop && $appManager->currentApp && $size !== null && $size > 0) {
-            $data = "\{
-                'app_id': {$shop->appId},
-                'shop_id': {$shop->id}
-            \}";
-            $qrCode = app('wechat')->openPlatform()->officialAccount($shop->wechatAppId)->qrcode->url(base64_encode($data));
-            if($request->wantsJson()) {
-                $qrCode = base64_encode($qrCode);
-                return $this->response(new JsonResponse([
-                    'qr_code' => 'data:image/png;base64, '.$qrCode
-                ]));
-            }else{
-                return Response::create($qrCode)->header('Content-Type', 'image/png');
+        if($shop) {
+            $url = $shop->wechatParamsQrcodeUrl;
+            if(!$url) {
+                $data = [
+                    'app_id' => $shop->appId,
+                    'shop_id' => $shop->id
+                ];
+                $currentApp = App::find($shop->appId);
+                $result = app('wechat')->openPlatform()->officialAccount($currentApp->wechatAppId, $currentApp->officialAccount->authorizerRefreshToken)
+                    ->qrcode->forever(base64_encode(json_encode($data)));
+                if(!isset($result['ticket'])) {
+                    throw new Exception('无法生成参数二维码');
+                }
+                $url = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$result['ticket']}";
+                $shop->wechatParamsQrcodeUrl = $url;
+                $shop->save();
             }
 
+            if($request->wantsJson()) {
+                return $this->response(new JsonResponse(['url' => $url]));
+            }else{
+                return redirect($url);
+            }
         }else{
-            return $this->response()->error('参数错误');
+            return new Response('错误');
         }
     }
 
@@ -221,9 +243,9 @@ class ShopsController extends Controller
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
         if(isset($data['user_id']) && $data['user_id'] && $request->input('manager_mobile', null) && $request->input('manager_name', null))
-            $data['user_id'] = $this->getOwner($request->input('manager_mobile'), $request->input('manager_name'))->id;
+            $data['user_id'] = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'))->id;
         if($request->input('lat', null) && $request->input('lng', null)){
-            $data['position'] = new PointType($request->input('lat'), $request->input('lng'));
+            $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
 
@@ -268,7 +290,8 @@ class ShopsController extends Controller
     public function __destruct()
     {
         $this->repository = null;
-        $this->userRepository = null;
+        $this->shopManagerRepository = null;
+        $this->sellerRepository = null;
         parent::__destruct(); // TODO: Change the autogenerated stub
     }
 }

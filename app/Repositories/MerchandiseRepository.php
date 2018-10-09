@@ -11,5 +11,15 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface MerchandiseRepository extends RepositoryInterface
 {
-    //
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function findMerchandises(string $name);
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function searchMerchandises(string $name);
 }

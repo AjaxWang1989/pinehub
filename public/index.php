@@ -9,8 +9,11 @@
 | is ready to receive HTTP / Console requests from the environment.
 |
 */
+
+define('APP_START_TIME', microtime());
+
 $app = require __DIR__.'/../bootstrap/app.php';
-\Illuminate\Support\Facades\Log::debug('run app');
+
 /*
 |--------------------------------------------------------------------------
 | Run The Application

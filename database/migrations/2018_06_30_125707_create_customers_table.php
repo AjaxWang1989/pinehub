@@ -16,7 +16,8 @@ class CreateCustomersTable extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统应用appid');
-            $table->unsignedInteger('user_id')->nullable()->default(null)->comment('会员id');
+            $table->string('mobile', 11)->nullable()->default(null)->comment('手机号码');
+            $table->unsignedInteger('member_id')->nullable()->default(null)->comment('会员id');
             $table->string('platform_app_id', 32)->nullable()->default(null)->comment('微信公众平台、小程序、开放app id');
             $table->string('type')->default('WECHAT_OFFICIAL_ACCOUNT')->comment('WECHAT_OFFICE_ACCOUNT 公众平台，
             WECHAT_OPEN_PLATFORM 微信开放平台 WECHAT_MINI_PROGRAM 微信小程序 ALIPAY_OPEN_PLATFORM  支付宝开发平台 SELF 平台客户');
@@ -40,8 +41,8 @@ class CreateCustomersTable extends Migration
             $table->unsignedInteger('score')->default(0)->comment('用户积分');
             $table->unsignedInteger('total_score')->default(0)->comment('用户总积分');
             $table->unsignedInteger('order_count')->default(0)->comment('订单数');
-            $table->string('channel', 32)->nullable()->default('')->comment('渠道来源');
-            $table->string('register_channel', 32)->nullable()->default('')->comment('注册渠道');
+            $table->unsignedTinyInteger('channel')->default(0)->comment('渠道来源 0-未知 1-微信 2-支付宝');
+            $table->unsignedTinyInteger('register_channel')->default(0)->comment('注册渠道:0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP');
             $table->json('tags')->default(null)->comment('标签');
             $table->timestamps();
             $table->softDeletes();
@@ -50,6 +51,7 @@ class CreateCustomersTable extends Migration
             $table->index('union_id');
             $table->index('platform_open_id');
             $table->index('sex');
+            $table->unique(['app_id', 'type', 'platform_app_id', 'platform_open_id']);
         });
     }
 

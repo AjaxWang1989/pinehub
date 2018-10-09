@@ -27,7 +27,7 @@ class ProvinceCreateRequest extends FormRequest
             //
             'code' => ['required'],
             'name' => ['required'],
-            'country_id' => ['exist:countries,id']
+            'country_id' => ['exists:countries,id']
         ];
     }
 }

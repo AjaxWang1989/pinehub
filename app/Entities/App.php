@@ -15,7 +15,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\App
  *
  * @property string $id app id
- * @property int|null $userId 应用拥有者
  * @property string $secret 应用secret
  * @property string $name 应用名称
  * @property string $logo 应用logo
@@ -26,8 +25,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\AppUser[] $appUsers
- * @property-read \App\Entities\WechatConfig|null $miniProgram
- * @property-read \App\Entities\WechatConfig|null $officialAccount
+ * @property-read \App\Entities\MiniProgram|null $miniProgram
+ * @property-read \App\Entities\OfficialAccount|null $officialAccount
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereCreatedAt($value)
@@ -42,6 +41,15 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereWechatAppId($value)
  * @mixin \Eloquent
+ * @property int|null $ownerUserId 应用拥有者
+ * @property string $concatPhoneNum 联系电话
+ * @property-read \App\Entities\User|null $owner
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereConcatPhoneNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOwnerUserId($value)
+ * @property string $contactName 联系人名称
+ * @property string $contactPhoneNum 联系电话
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactPhoneNum($value)
  */
 class App extends Model implements Transformable
 {
@@ -59,21 +67,30 @@ class App extends Model implements Transformable
      */
     protected $fillable = [
         'id',
+        'owner_user_id',
         'name',
         'secret',
         'logo',
+        'contact_phone_num',
+        'contact_name',
         'wechat_app_id',
-        'mini_app_id'
+        'mini_app_id',
+        'open_app_id'
     ];
+
+    public function owner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'owner_user_id', 'id');
+    }
 
     public function officialAccount(): BelongsTo
     {
-        return $this->belongsTo(WechatConfig::class, 'wechat_app_id', 'app_id')->where('type', WECHAT_OFFICIAL_ACCOUNT);
+        return $this->belongsTo(OfficialAccount::class, 'wechat_app_id', 'app_id')->where('type', WECHAT_OFFICIAL_ACCOUNT);
     }
 
     public function miniProgram(): BelongsTo
     {
-        return $this->belongsTo(WechatConfig::class, 'mini_app_id', 'app_id')->where('type', WECHAT_MINI_PROGRAM);
+        return $this->belongsTo(MiniProgram::class, 'mini_app_id', 'app_id')->where('type', WECHAT_MINI_PROGRAM);
     }
 
     public function appUsers() : HasMany

@@ -12,7 +12,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  *
  * @property int $id
  * @property int|null $shopId 店铺ID
- * @property int|null $buyerUserId 买家ID
+ * @property int|null $memberId 买家会员id
+ * @property int|null $customerId 买家ID
  * @property int $orderId 订单id
  * @property int $orderItemId 子订单id
  * @property string|null $postNo 物流订单号
@@ -20,9 +21,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $postName 物流公司名称
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereBuyerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereMemberId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereOrderItemId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost wherePostCode($value)

@@ -11,19 +11,25 @@ namespace App\Routes;
 
 use App\Http\Middleware\Cross;
 use Dingo\Api\Routing\Router;
-use Illuminate\Support\Facades\Log;
+use Dingo\Api\Http\Request;
 use Laravel\Lumen\Application;
 
 class ApiRoutes extends Routes
 {
-    public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null)
+    const VERSIONS = [
+        'V1' => 'v1'
+    ];
+    public function __construct(Application $app, $version = null, $namespace = null, $prefix = null, $domain = null, string $auth = null)
     {
-        parent::__construct($app, $version, $namespace, $prefix, $domain);
+        parent::__construct($app, $version, $namespace, $prefix, $domain, $auth);
+        $this->auth = $this->auth ? $this->auth : 'api';
+        config(['auth.defaults.guard' => $this->auth]);
+        config(['api.domain' => $domain]);
         $this->router = $this->app->make('api.router');
         $this->app->middleware(Cross::class);
     }
 
-    protected function routesRegister()
+    protected function routesRegister($version = null)
     {
         $second = [];
         if($this->prefix){
@@ -33,10 +39,13 @@ class ApiRoutes extends Routes
         if($this->domain){
             $second['domain'] = $this->domain;
         }
+        $this->version = $version ? $version : $this->version;
 
-        $second['middleware'] = ['cross', 'auth.meta'];
+        $second['middleware'] = ['cross', 'auth.meta:'.$this->auth];
+
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
+
             $router->any('/', function (Request $request) use ($self){
                 return 'web api version '.$self->version.', host domain '.$request->getHost();
             });
@@ -55,7 +64,7 @@ class ApiRoutes extends Routes
             });
 
             $namespace = $this->namespace;
-            $router->group(['namespace' => $namespace], function () use($router){
+            $router->group(['namespace' => $namespace], function () use($router) {
                 $this->routes($router);
             });
         });
@@ -66,12 +75,7 @@ class ApiRoutes extends Routes
      * */
     protected function routes($router)
     {
-//        $router->group(['middleware' => ['api.auth']], function () use($router){
-//            $router->get("/self/info", [
-//                'as' => 'self.info',
-//                'uses' => 'MyselfController@selfInfo'
-//            ]);
-//        });
+
     }
 
     protected function boot()

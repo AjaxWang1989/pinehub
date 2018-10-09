@@ -7,7 +7,7 @@ use Tests\TestCase;
 class AdminShop extends TestCase
 {
     /**
-     * A basic test example.
+     * A basic Test example.
      *
      * @return void
      */

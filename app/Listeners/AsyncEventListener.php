@@ -16,5 +16,6 @@ class AsyncEventListener implements ShouldQueue
 {
     use InteractsWithQueue;
 
+
     public $queue = "async.event.listener";
 }

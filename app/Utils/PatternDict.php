@@ -47,9 +47,13 @@ define('HTTP_METHOD_OPTIONS', 'OPTIONS');
 
 define('SEGMENT_MAX_LENGTH', 1000);
 define('ORDER_SEGMENT_MAX_LENGTH', 100);
+
 define('ORDER_CODE_FORMAT', 'YmdHis');
 define('SHOP_CODE_FORMAT', 'Ymd');
 define('SHOP_CODE_SEGMENT_MAX_LENGTH', 100);
+
+define('MERCHANDISE_SEGMENT_MAX_LENGTH', 100);
+define('MERCHANDISE_CODE_FORMAT', 'YmdHis');
 
 define('ONE_DAY_SECONDS', 86400);
 
@@ -58,9 +62,11 @@ define('USER_AUTH_INFO', 'user_info');
 
 define('MEMBER_CARD', 'member_card');
 
-define('COUPON_CARD', 'coupon_card');
+define('COUPON_CARD', 'general_coupon');
 define('GROUPON_CARD', 'groupon');
 define('DISCOUNT_CARD', 'discount');
+define('CASH_CARD', 'cash');
+define('GIFT_CARD', 'gift');
 
 define('WECHAT_THUMB_MESSAGE', 'thumb');
 

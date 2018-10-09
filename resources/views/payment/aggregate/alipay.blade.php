@@ -336,7 +336,7 @@
                 headers:{
                     accept: "{{ $accept }}",
                 },
-                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount, 'buyer_id': '{{ $userId }}'},
+                data:{'total_amount': amount, 'discount_amount': 0, 'payment_amount': amount},
                 beforeSend: function(){
                     AlipayJSBridge.call('showLoading', {
                         text: '支付中······',
@@ -345,9 +345,9 @@
                 success:function(data) {
                     //location.href = data.data.redirect;
                     console.log(JSON.stringify(data.data));
-                    alert(JSON.stringify(data.data));
+                    // alert(JSON.stringify(data.data));
+                    AlipayJSBridge.call('hideLoading');
                     if(!!data.data && !!data.data.trade_no){
-                        AlipayJSBridge.call('hideLoading');
                         AlipayJSBridge.call("tradePay", {
                             tradeNO: data.data.trade_no
                         }, function(result) {
@@ -378,6 +378,7 @@
                     }
                 },
                 error: function(error){
+                    AlipayJSBridge.call('hideLoading');
                     alert(error);
                 }
             });

@@ -32,7 +32,7 @@ class ScoreRuleCreateRequest extends FormRequest
                 ScoreRule::ORDER_COUNT_RULE, ScoreRule::SUBSCRIBE_RULE])],
             'expires_at' => ['date'],
             'notice_user' => ['required', 'boolean'],
-            'rule' => ['json']
+            'rule' => ['array']
         ];
     }
 }

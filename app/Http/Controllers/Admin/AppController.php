@@ -19,15 +19,18 @@ use App\Http\Requests\Admin\AppLogoImageRequest;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
 use Dingo\Api\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class AppController extends Controller
 {
+    use AppManagerTrait;
+    //定义repository 处理model层数据
     protected $appRepository  = null;
-    public function __construct(FileRepository $fileModel, AppRepository $appRepository)
+
+    public function __construct(FileRepository $fileModel, AppRepository $appRepository, Request $request)
     {
         parent::__construct($fileModel);
         $this->appRepository = $appRepository;
+        $this->parseApp($request, $appRepository);
     }
 
     public function uploadLogo(AppLogoImageRequest $request, string $driver = "default")
@@ -65,10 +68,4 @@ class AppController extends Controller
         return $this->response(new JsonResponse(['delete_count' => $result]));
     }
 
-    public function selectApp(int $id, Request $request)
-    {
-        $token = $request->input('token', null);
-        Cache::set(CURRENT_APP_PREFIX.$token, $id);
-        return $this->response(new JsonResponse(['message' => '选择APP']));
-    }
 }

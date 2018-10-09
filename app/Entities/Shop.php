@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -46,6 +47,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $wechatAppId 微信app ID
  * @property string|null $aliAppId 支付宝app ID
  * @property string|null $mtAppId 美团app id
+ * @property string|null $wechatParamsQrcodeUrl 微信参数二维码url
+ * @property string|null $start_at 开售时间
+ * @property string|null $end_at   结业时间
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -102,8 +106,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatParamsQrcodeUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop within($geometryColumn, $polygon)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop near($lng, $lat, $distance)
  */
 class Shop extends Model implements Transformable
 {
@@ -123,7 +129,8 @@ class Shop extends Model implements Transformable
         'user_id', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'position', 'total_amount', 'today_amount',
         'total_off_line_amount', 'today_off_line_amount', 'total_ordering_amount', 'today_ordering_amount', 'total_ordering_num',
         'today_ordering_num', 'total_order_write_off_num', 'total_order_write_off_num', 'total_order_write_off_amount',
-        'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code'
+        'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code', 'app_id', 'wechat_app_id', 'name', 'ali_app_id',
+        'mt_app_id','start_at','end_at'
     ];
 
     protected $spatialFields = [
@@ -165,9 +172,16 @@ class Shop extends Model implements Transformable
         return $this->belongsToMany(Order::class, 'order_items', 'shop_id', 'order_id');
     }
 
-    public function waitWriteOffBuyers()
+    public function waitWriteOffCustomers()
     {
         return $this->orders && $this->orders->count() > 0 ? $this->orders->where('status', Order::PAID)
-                   ->pluck('buyer_user_id') : null;
+                   ->pluck('customer_id') : null;
+    }
+
+    public function scopeNear(Builder $query, float $lng, float $lat, float $distance) {
+        $rate = 111.1;
+        $where = "MBRContains(LineString(Point({$lng} + {$distance} / ({$rate} / COS(RADIANS({$lat}))), {$lat} + 
+        {$distance} / {$rate}  ), Point({$lng} - {$distance} / ( {$rate} / COS(RADIANS({$lat}))), {$lat} - {$distance} / {$rate})),position)";
+        return $query->whereRaw($where);
     }
 }

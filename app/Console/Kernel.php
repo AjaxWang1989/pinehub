@@ -6,6 +6,7 @@ use App\Console\Commands\Console\TestMakeCommand;
 use App\Console\Commands\HashEncrypt;
 use App\Console\Commands\JWTGenerateCommand;
 use App\Console\Commands\ModelsCommand;
+use App\Console\Commands\WechatAccessTokenRefreshCommand;
 use Illuminate\Auth\Console\AuthMakeCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Database\Console\Factories\FactoryMakeCommand;
@@ -30,6 +31,7 @@ use App\Console\Commands\Console\RuleMakeCommand;
 use App\Console\Commands\Console\VendorPublishCommand;
 use Illuminate\Routing\Console\ControllerMakeCommand;
 use Illuminate\Routing\Console\MiddlewareMakeCommand;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -67,7 +69,8 @@ class Kernel extends ConsoleKernel
         ConfigClearCommand::class,
         JWTGenerateCommand::class,
         ModelsCommand::class,
-        TestMakeCommand::class
+        TestMakeCommand::class,
+        WechatAccessTokenRefreshCommand::class
     ];
 
     /**
@@ -79,5 +82,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //
+        Log::debug('schedule start');
+        $schedule->command('wechat.access.token:refresh')->dailyAt('00:00');
+        Log::debug('schedule end');
     }
 }

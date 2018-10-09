@@ -59,7 +59,7 @@ class SKUProduct extends Model implements Transformable
      */
     protected $fillable = [
         'code', 'name', 'main_image', 'images', 'origin_price', 'cost_price', 'sell_price', 'factory_price',
-        'stock_num', 'sell_num', 'status', 'merchandise_id'
+        'stock_num', 'sell_num', 'status', 'merchandise_id', 'capacity'
     ];
 
     public function merchandise() : BelongsTo

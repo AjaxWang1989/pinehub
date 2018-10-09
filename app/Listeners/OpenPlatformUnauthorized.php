@@ -2,8 +2,11 @@
 
 namespace App\Listeners;
 
+use App\Entities\App;
+use App\Entities\WechatConfig;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Overtrue\LaravelWeChat\Events\OpenPlatform\Unauthorized;
 
 class OpenPlatformUnauthorized
 {
@@ -20,11 +23,20 @@ class OpenPlatformUnauthorized
     /**
      * Handle the event.
      *
-     * @param  object  $event
+     * @param  Unauthorized  $event
      * @return void
      */
-    public function handle($event)
+    public function handle(Unauthorized $event)
     {
         //
+        $wechatAppId = $event->getAuthorizerAppid();
+        $app = App::whereWechatAppId($wechatAppId)->first();
+        if($app) {
+            $app->wechatAppId = null;
+            $app->save();
+        }
+        $wechat = WechatConfig::whereAppId($wechatAppId)->first();
+        $wechat->wechatBindApp = null;
+        $wechat->save();
     }
 }

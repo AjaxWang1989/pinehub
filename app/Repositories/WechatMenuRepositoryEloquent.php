@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Criteria\Admin\WechatMenuCriteria;
 use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -30,10 +31,12 @@ class WechatMenuRepositoryEloquent extends BaseRepository implements WechatMenuR
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        $this->pushCriteria(WechatMenuCriteria::class);
     }
     
 }

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\ScoreRuleCriteria;
+use App\Entities\ScoreRule;
 use App\Http\Response\JsonResponse;
 
+use App\Services\AppManager;
 use Exception;
 use App\Http\Requests\Admin\ScoreRuleCreateRequest;
 use App\Http\Requests\Admin\ScoreRuleUpdateRequest;
@@ -38,12 +40,17 @@ class ScoreRulesController extends Controller
 
     /**
      * Display a listing of the resource.
-     *
+     * @param string $type
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(string $type = null)
     {
         $this->repository->pushCriteria(ScoreRuleCriteria::class);
+        if($type === 'general') {
+            $this->repository->findWhere(['type'=> ScoreRule::GENERAL_RULE]);
+        }elseif ($type === 'special') {
+            $this->repository->findWhere([['type', '>', ScoreRule::SPECIAL_RULE]]);
+        }
         $scoreRules = $this->repository->paginate();
 
         if (request()->wantsJson()) {
@@ -65,7 +72,9 @@ class ScoreRulesController extends Controller
      */
     public function store(ScoreRuleCreateRequest $request)
     {
-        $scoreRule = $this->repository->create($request->all());
+        $data = $request->all();
+        $data['app_id'] = app(AppManager::class)->currentApp->id;
+        $scoreRule = $this->repository->create($data);
 
         $response = [
             'message' => 'ScoreRule created.',

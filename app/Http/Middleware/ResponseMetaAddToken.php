@@ -4,8 +4,11 @@ namespace App\Http\Middleware;
 
 use Carbon\Carbon;
 use Closure;
+use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
@@ -40,16 +43,36 @@ class ResponseMetaAddToken
     public function handle($request, Closure $next, $guard = null)
     {
         $token = $this->auth->guard($guard)->getToken();
-        if(!$token) {
-            return $next($request);
+        $response = $next($request);
+
+        if($token && is_object($token)) {
+            $token = $token->get();
+            $token = Cache::get($token, null);
         }
-        $token = Cache::get($token);
-        if(!$token) {
-            return $next($request);
-        }
-        return with($next($request), function (Response $response) use ($token){
-            $response->addMeta('token', $token);
+        if($token && $request->wantsJson()) {
+            return tap($response, function (&$response) use ($token){
+                if($response instanceof Response){
+                    $response->meta('token', $token);
+                }else{
+                    if($response instanceof Response || $response instanceof \Illuminate\Http\Response) {
+                        $data = $response->getOriginalContent();
+                    }elseif($response instanceof \Symfony\Component\HttpFoundation\Response) {
+                        $data = $response->getContent();
+
+                        $data = json_decode($data);
+                    }
+
+                    $data = $data instanceOf Arrayable ? $data->toArray() : $data;
+                    $data['meta'] = [
+                        'token' => $token
+                    ];
+                    $response->setContent(json_encode($data));
+                }
+                return $response;
+            });
+        }else{
             return $response;
-        });
+        }
+
     }
 }

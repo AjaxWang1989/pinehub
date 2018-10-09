@@ -48,8 +48,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\App[] $apps
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Customer[] $customers
  * @property-read \App\Entities\MemberCard $memberCard
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAvatar($value)
@@ -103,8 +101,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'user_name', 'mobile', 'password', 'nickname', 'sex', 'avatar', 'city', 'vip_level',
-        'last_login_at', 'status', 'mobile_company'
+        'app_id','mobile','user_name','nickname','real_name','password','sex','avatar','city','province',
+        'country','can_use_score','score','total_score','vip_level','last_login_at','status','order_count',
+        'channel','register_channel','tags','mobile_company'
     ];
 
     /**
@@ -122,16 +121,6 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             ->withTimestamps();
     }
 
-    public function orderItems() : HasMany
-    {
-        return $this->hasMany(OrderItem::class, 'buyer_user_id', 'id');
-    }
-
-    public function orders() : BelongsToMany
-    {
-        return $this->belongsToMany(Order::class, 'order_items', 'buyer_user_id', 'order_id' );
-    }
-
     public function apps() : BelongsToMany
     {
         return $this->belongsToMany(App::class, 'app_users', 'user_id', 'app_id');
@@ -142,20 +131,35 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $this->hasMany(Customer::class, 'user_id', 'id');
     }
 
-    public function officialAccountCustomer() : Customer
+    /**
+     * @return  Customer|null
+     * */
+    public function officialAccountCustomer()
     {
         return $this->customers ? $this->customers->where('type',
-            WECHAT_OFFICIAL_ACCOUNT)->first( ) : null;
+            'WECHAT_OFFICIAL_ACCOUNT')->first( ) : null;
     }
 
-    public function miniProgramCustomer() : Customer
+    /**
+     * @return  Customer|null
+     * */
+    public function miniProgramCustomer()
     {
         return $this->customers ? $this->customers->where('type',
-            WECHAT_MINI_PROGRAM)->first( ) : null;
+            'WECHAT_MINI_PROGRAM')->first( ) : null;
     }
 
     public function memberCard(): HasOne
     {
         return $this->hasOne(MemberCard::class, 'user_id', 'id');
+    }
+
+    public function ordersNum()
+    {
+        $count = 0;
+        foreach ($this->customers as $customer){
+            $count += $customer->orders->count();
+        }
+        return $count;
     }
 }

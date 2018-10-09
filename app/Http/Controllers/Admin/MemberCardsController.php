@@ -8,6 +8,7 @@ use App\Events\SyncMemberCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
 use App\Services\AppManager;
+use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\MemberCardCreateRequest;
 use App\Http\Requests\Admin\MemberCardUpdateRequest;
@@ -16,6 +17,7 @@ use App\Transformers\MemberCardItemTransformer;
 use App\Repositories\CardRepository as MemberCardRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class MemberCardsController.
@@ -73,13 +75,16 @@ class MemberCardsController extends Controller
         $appManager = app(AppManager::class);
         $data['card_type'] = Card::MEMBER_CARD;
         $data['app_id'] = $appManager->currentApp->id;
-//        $data['wechat_app_id'] = $appManager->officialAccount->appId;
-//        $data['ali_app_id'] = $appManager->aliPayOpenPlatform->config['app_id'];
+        $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
         $data['status'] = Card::CHECK_ING;
         $data['sync'] = $request->input('sync', false) ? Card::SYNC_NO_NEED : Card::SYNC_ING;
         $data['card_info'] = $request->input('member_info');
         $memberCard = $this->repository->create($data);
-        Event::fire(new SyncMemberCardInfoEvent($memberCard));
+        if(isset($data['card_info']['background_material_id'])) {
+            unset($data['card_info']['background_material_id']);
+        }
+        if($data['wechat_app_id'] && $data['sync'])
+            Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
         $response = [
             'message' => 'MemberCard created.',
             'data'    => $memberCard->toArray(),
@@ -139,8 +144,19 @@ class MemberCardsController extends Controller
     public function update(MemberCardUpdateRequest $request, $id)
     {
        $data['card_info'] = $request->input('member_info');
-       $memberCard = $this->repository->update($data, $id);
-       Event::fire(new SyncMemberCardInfoEvent($memberCard));
+       Log::debug('card info', $data);
+       $memberCard = $this->repository->find($id);
+       tap($memberCard, function (Card $card) use($data) {
+           $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
+           $card->save();
+       });
+       if(isset($data['card_info']['base_info']['date_info']))
+           $data['card_info']['base_info']['date_info']['type'] = 1;
+       if(isset($data['card_info']['background_material_id'])) {
+           unset($data['card_info']['background_material_id']);
+       }
+
+       Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
        $response = [
            'message' => 'MemberCard updated.',
            'data'    => $memberCard->toArray(),

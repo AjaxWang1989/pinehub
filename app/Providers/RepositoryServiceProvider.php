@@ -45,6 +45,31 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\MemberCardRepository::class, \App\Repositories\MemberCardRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\CustomerTicketCardRepository::class, \App\Repositories\CustomerTicketCardRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\CardRepository::class, \App\Repositories\CardRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MemberRepository::class, \App\Repositories\MemberRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\OfficialAccountRepository::class, \App\Repositories\OfficialAccountRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MiniProgramRepository::class, \App\Repositories\MiniProgramRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\TicketRepository::class, \App\Repositories\TicketRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\SellerRepository::class, \App\Repositories\SellerRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ShopManagerRepository::class, \App\Repositories\ShopManagerRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\CategoryRepository::class, \App\Repositories\CategoryRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MerchandiseCategoryRepository::class, \App\Repositories\MerchandiseCategoryRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MerchandiseRepository::class, \App\Repositories\MerchandiseRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\OrderGiftRepository::class, \App\Repositories\OrderGiftRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MiniProgramPageRepository::class, \App\Repositories\MiniProgramPageRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MiniProgramTemplateRepository::class, \App\Repositories\MiniProgramTemplateRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MiniProgramDraftRepository::class, \App\Repositories\MiniProgramDraftRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WechatUserRepository::class, \App\Repositories\WechatUserRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ShopMerchandiseRepository::class, \App\Repositories\ShopMerchandiseRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ActivityRepository::class, \App\Repositories\ActivityRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ActivityMerchandiseRepository::class, \App\Repositories\ActivityMerchandiseRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\MpUserRepository::class, \App\Repositories\MpuserRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\UserTicketRepository::class, \App\Repositories\UserTicketRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ShoppingCartRepository::class, \App\Repositories\ShoppingCartRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\ShopMerchandiseStockModifyRepository::class, \App\Repositories\ShopMerchandiseStockModifyRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\OrderItemRepository::class, \App\Repositories\OrderItemRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\StorePurchaseOrdersRepository::class, \App\Repositories\StorePurchaseOrdersRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\OrderPurchaseItemsRepository::class, \App\Repositories\OrderPurchaseItemsRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WechatMaterialRepository::class, \App\Repositories\WechatMaterialRepositoryEloquent::class);
         //:end-bindings:
         Log::debug("repository bindings\n");
     }

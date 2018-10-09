@@ -9,6 +9,7 @@ use App\Services\AppManager;
 use App\Services\FileService;
 use App\Services\UIDGeneratorService;
 use Dingo\Api\Http\Request;
+use Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Filesystem\FilesystemServiceProvider;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\{
 use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
+use Laravoole\LaravooleServiceProvider;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
 use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
@@ -47,7 +49,7 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('not_exists', function($attribute, $value, $parameters)
         {
             return DB::table($parameters[0])
-                    ->where($attribute, '=', $value)
+                    ->where($parameters[1], '=', $value)
                     ->count()<1;
         });
 
@@ -86,5 +88,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AppManager::class, function (Application $app) {
             return new AppManager($app);
         });
+       // $this->app->register(LaravooleServiceProvider::class);
+        $this->app->register(LaravelSServiceProvider::class);
     }
 }

@@ -46,13 +46,13 @@ class WechatServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('wechat', function () {
+        $this->app->singleton('wechat', function (Application $app) {
             return new WechatService([
                 'official_account' => [],
                 'open_platform'  => [],
                 'mini_program'   => [],
                 'payment'        => config('wechat.payment.default')
-            ]);
+            ], $app->make(AppManager::class));
         });
 
         $this->app->singleton('current_official_account', function(Application $app) {

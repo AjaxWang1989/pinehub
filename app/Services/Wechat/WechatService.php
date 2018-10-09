@@ -10,7 +10,7 @@ namespace App\Services\Wechat;
 
 
 use App\Entities\Customer;
-use App\Entities\WechatUser;
+use App\Entities\Order;
 use App\Exceptions\WechatMaterialArticleUpdateException;
 use App\Exceptions\WechatMaterialDeleteException;
 use App\Exceptions\WechatMaterialListException;
@@ -25,12 +25,15 @@ use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
 use App\Services\Wechat\Components\OfficialAccountAuthorizerInfo;
 use App\Services\Wechat\OfficialAccount\AccessToken;
 use EasyWeChat\Factory;
-use EasyWeChat\Kernel\Http\StreamResponse;
 use EasyWeChat\Kernel\Messages\Article;
-use EasyWeChat\OfficialAccount\Server\Guard;
+use EasyWeChat\Kernel\ServerGuard as Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
-use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\CacheBridge;
+//use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
+use App\Services\Wechat\OpenPlatform\OpenPlatformAccessToken as OPAccessToken;
+use Psr\Http\Message\ResponseInterface;
+use EasyWeChat\Payment\Application as Payment;
+use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application as MiniProgram;
 
 class WechatService
 {
@@ -38,17 +41,33 @@ class WechatService
 
     protected $officeAccount = null;
 
+    /**
+     * @var MiniProgram
+     * */
     protected $miniProgram = null;
 
+    /**
+     * @var Payment
+     * */
     protected $payment = null;
 
     protected $openPlatform = null;
 
-    public function __construct(array  $config = [])
+    protected $appManager = null;
+
+    /**
+     * @param array $config
+     * @param AppManager $appManager
+     * */
+    public function __construct(array $config = [], AppManager $appManager = null)
     {
         $this->config = $config;
+        $this->appManager = $appManager;
     }
 
+    /**
+     * @param array $config
+     * */
     public function setConfig(array  $config)
     {
         $this->config = $config;
@@ -58,12 +77,12 @@ class WechatService
     {
 
         if(!$this->officeAccount) {
-            if($this->config['official_account']['app_secret']) {
+            if(isset($this->config['official_account']['app_secret'])) {
                 $this->officeAccount= Factory::officialAccount($this->config['official_account']);
             }else{
-                $appManager = app(AppManager::class);
-                $appId = $appManager->officialAccount->appId;
-                $this->officeAccount = $this->openPlatform()->officialAccount($appId);
+                $appId = $this->appManager->officialAccount()->appId;
+                $this->officeAccount = $this->openPlatform()->officialAccount($appId,
+                    $this->appManager->officialAccount->authorizerRefreshToken);
             }
         }
 
@@ -89,9 +108,14 @@ class WechatService
         return new Authorizer($authorizer['authorization_info']);
     }
 
-    public function openPlatformComponentAccess()
+    /**
+     * @param bool $refresh
+     * @return  ComponentAccessToken
+     * @throws
+     * */
+    public function openPlatformComponentAccess(bool $refresh = false)
     {
-        $token = $this->openPlatform()->access_token->getToken();
+        $token = $this->openPlatform()->access_token->getToken($refresh);
         return new ComponentAccessToken($token);
     }
 
@@ -105,11 +129,12 @@ class WechatService
         }
     }
 
-    public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
+    public function openPlatformComponentAuthPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
     {
         $redirect = $this->openPlatform()->config['oauth']['callback'];
         $redirect = str_replace('{appId}', $appId, $redirect);
         $redirect .= "?token={$token}";
+
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
         if($type) {
             switch ($type) {
@@ -137,6 +162,12 @@ class WechatService
         return $url;
     }
 
+
+
+    /**
+     * @return mixed
+     * @throws
+     * */
     public function materialStats()
     {
         $stats = $this->officeAccount()->material->stats();
@@ -147,6 +178,13 @@ class WechatService
     }
 
 
+    /**
+     * @param string $type
+     * @param int $offset
+     * @param int $limit
+     * @return mixed
+     * @throws
+     * */
     public function materialList(string $type, int $offset, int $limit)
     {
         $result = $this->officeAccount()->material->list($type, $offset, $limit);
@@ -171,6 +209,12 @@ class WechatService
         return $result['media_id'];
     }
 
+    /**
+     * @param string $type
+     * @param string $path
+     * @return mixed
+     * @throws
+     * */
     public function uploadMedia(string $type, string $path)
     {
         $result  = $this->officeAccount()->media->upload($type, $path);
@@ -180,6 +224,13 @@ class WechatService
         return $result['media_id'];
     }
 
+    /**
+     * @param string $mediaId
+     * @param Article $article
+     * @param int $index
+     * @return mixed
+     * @throws
+     * */
     public function updateArticle(string $mediaId, Article $article, int $index = 0) {
         $article['media_id'] = $mediaId;
         $result = $this->officeAccount()->material->updateArticle($mediaId, $article, $index);
@@ -190,6 +241,14 @@ class WechatService
         return true;
     }
 
+    /**
+     * @param string $type
+     * @param string $path
+     * @param string $title
+     * @param string $des
+     * @return mixed
+     * @throws
+     * */
     public function uploadMaterial(string $type, string $path, string $title = null, string  $des = null)
     {
         $result = null;
@@ -226,6 +285,11 @@ class WechatService
         return $result;
     }
 
+    /**
+     * @param string $mediaId
+     * @return mixed
+     * @throws
+     * */
     public function deleteMaterial(string  $mediaId)
     {
         $result = $this->officeAccount()->material->delete($mediaId);
@@ -235,6 +299,12 @@ class WechatService
         return true;
     }
 
+    /**
+     * @param string $mediaId
+     * @param bool $isTemp
+     * @return mixed
+     * @throws
+     * */
     public function material(string  $mediaId, bool $isTemp = false)
     {
         if($isTemp) {
@@ -258,20 +328,58 @@ class WechatService
 
     public function payment()
     {
-        if(!$this->payment)
+        if(!$this->payment){
             $this->payment = Factory::payment($this->config['payment']);
+        } else {
+            $this->payment->config->merge($this->config['payment']);
+        }
         return $this->payment;
     }
 
+    public function jssdk(string  $prepayId, string $paymentAppId)
+    {
+        return $this->payment($paymentAppId)->jssdk->sdkConfig($prepayId);
+    }
+    /**
+     * @param Order|array
+     * @param string $paymentAppId
+     * @param string $device
+     * @return array|string|Object|ResponseInterface
+     * @throws
+     * */
+    public function unify($order, string  $paymentAppId, $device = 'WEB')
+    {
+        $this->config['payment']['app_id'] = $paymentAppId;
+        $payment = $this->payment();
+        if($order instanceof Order) {
+            $unifyData = [
+                'body' => '扫码支付',
+                'out_trade_no' => $order->code,
+                'total_fee' => $order->paymentAmount * 100,
+                'spbill_create_ip' => $order->ip, // 可选，如不传该参数，SDK 将会自动获取相应 IP 地址
+                'notify_url' => $this->config['payment']['notify_url'], // 支付结果通知网址，如果不设置则会使用配置里的默认地址
+                'trade_type' => 'JSAPI',
+                'openid' => $order->openId,
+                'device_info' => $device
+            ];
+        }else{
+            $unifyData = $order;
+        }
+
+        return $payment->order->unify($unifyData);
+    }
+
+    /**
+     * @return  MiniProgram
+     * */
     public function miniProgram()
     {
         if(!$this->miniProgram){
-            if($this->config['mini_program']['app_secret']) {
+            if(isset($this->config['mini_program']['app_secret'])) {
                 $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
             }else{
-                $appManager = app(AppManager::class);
-                $appId = $appManager->miniProgram->appId;
-                $this->miniProgram = $this->openPlatform()->miniProgram($appId);
+                $appId = $this->appManager->miniProgram()->appId;
+                $this->miniProgram = $this->openPlatform()->miniProgram($appId, $this->appManager->miniProgram->authorizerRefreshToken);
             }
         }
         $this->setWechatApplication($this->miniProgram, app());
@@ -338,142 +446,184 @@ class WechatService
         return $this->openPlatform()->server;
     }
 
-    public function officeAccountServerHandle()
+    /**
+     * @param string $appId
+     * @return mixed
+     * @throws
+     * */
+    public function officeAccountServerHandle(string  $appId)
     {
-        $this->officeAccountServer()->push(function ($message) {
-            return $this->serverMessageHandle($this->officeAccountServer(), $message);
+        $server = $this->officeAccountServer();
+        $server->push(function ($message, $server)use($appId) {
+            return $this->serverMessageHandle($server, $message, $appId);
         });
-        return $this->officeAccountServer()->serve();
+        return $server->serve();
     }
 
-    public function miniProgramServerHandle()
+    /**
+     * @param string $appId
+     * @return mixed
+     * @throws
+     * */
+    public function miniProgramServerHandle(string  $appId)
     {
-
-        $this->miniProgramServer()->push(function ($message) {
-           $this->serverMessageHandle($this->miniProgramServer(), $message);
+        $server = $this->miniProgramServer();
+        $server->push(function ($message) use($server, $appId){
+           $this->serverMessageHandle($server, $message, $appId);
         });
 
-        return $this->miniProgramServer()->serve();
+        return $server->serve();
     }
 
-    public function openPlatformServerHandle()
+
+    /**
+     * @param string $appId
+     * @return mixed
+     * @throws
+     * */
+    public function openPlatformServerHandle(string $appId)
     {
-        $this->openPlatformServer()->push(function ($message) {
-            $this->serverMessageHandle($this->openPlatformServer(), $message);
+        $server = $this->openPlatformServer();
+        $server->push(function ($message) use($appId, $server) {
+            $this->serverMessageHandle($server, $message, $appId);
         });
-
-        return $this->openPlatformServer()->serve();
+        return $server->serve();
     }
 
-    protected function serverMessageHandle(Guard $server, $message)
+    /**
+     * @param Guard $server
+     * @param  array $message
+     * @param string $appId
+     * @return mixed
+     * @throws
+     * */
+    protected function serverMessageHandle(Guard $server, array $message, string $appId)
     {
+        $payload = [
+            'app_id' => $appId,
+            'message' => $message
+        ];
         switch ($message['MsgType']) {
-            case WECHAT_TEXT_MESSAGE: {
-                return $server->dispatch();
-                break;
-            }
-            case WECHAT_IMAGE_MESSAGE: {
-                return $server->dispatch();
-                break;
-            }
-            case WECHAT_VOICE_MESSAGE: {
-                return $server->dispatch();
-                break;
-            }
             case WECHAT_EVENT_MESSAGE: {
-                return $server->dispatch($message['Event'], $message);
+                return $server->dispatch($message['Event'], $payload);
                 break;
             }
-            case OPEN_PLATFORM_COMPONENT_VERIFY_TICKET: {
-                return $server->dispatch($message['Event'], $message);
-                break;
-            }
+            case WECHAT_TEXT_MESSAGE:
+            case WECHAT_IMAGE_MESSAGE:
+            case WECHAT_VOICE_MESSAGE:
             default:
                 return app(EchoStrHandler::class)->handle($message);
                 break;
         }
     }
 
+    /**
+     * @return AccessToken
+     * @throws
+     * */
     public function officialAccountAccessToken()
     {
         $accessToken = $this->officeAccount()->access_token->getToken();
         return (new AccessToken($accessToken));
     }
 
+    /**
+     * @param $openId
+     * @return Customer
+     * @throws
+     * */
     public function officialAccountUser($openId)
     {
+        $appManager = app(AppManager::class);
+        $customer = Customer::whereAppId($appManager->currentApp->id)
+            ->wherePlatformAppId($this->officeAccount()->config['app_id'])
+            ->whereType(Customer::WECHAT_OFFICE_ACCOUNT)
+            ->wherePlatformOpenId($openId)->first();
+        if($customer) {
+            return $customer;
+        }
         $user = $this->officeAccount()->user->get($openId);
-        $wechatUser = new Customer();
-        $wechatUser->platformAppId = $this->officeAccount()->config->get('app_id');
-        $wechatUser->appId = app('currentApp') ? app('currentApp')->appId : null;
-        $wechatUser->platformOpenId = $user['openid'];
+        $customer = new Customer();
+        $customer->platformAppId = $this->officeAccount()->config->get('app_id');
+        $customer->appId = app(AppManager::class)->currentApp ? app(AppManager::class)->currentApp->id : null;
+        $customer->platformOpenId = $user['openid'];
         if(isset($user['unionid'])) {
-            $wechatUser->unionId = $user['unionid'];
+            $customer->unionId = $user['unionid'];
         }
 
         if(isset($user['nickname'])){
-            $wechatUser->nickname = $user['nickname'];
+            $customer->nickname = $user['nickname'];
         }
 
         if(isset($user['province'])){
-            $wechatUser->province = $user['province'];
+            $customer->province = $user['province'];
         }
 
         if(isset($user['city'])){
-            $wechatUser->city = $user['city'];
+            $customer->city = $user['city'];
         }
 
         if(isset($user['country'])){
-            $wechatUser->country = $user['country'];
+            $customer->country = $user['country'];
         }
 
         if(isset($user['headimgurl'])) {
-            $wechatUser->avatar = $user['headimgurl'];
+            $customer->avatar = $user['headimgurl'];
         }
 
         if(isset($user['privilege'])) {
-            $wechatUser->privilege = $user['privilege'];
+            $customer->privilege = $user['privilege'];
         }
 
         if(isset($user['subscribe'])) {
-            $wechatUser->subscribe = $user['subscribe'];
+            $customer->subscribe = $user['subscribe'];
         }
 
         if(isset($user['subscribeScene'])) {
-            $wechatUser->subscribeScene = $user['subscribe_scene'];
+            $customer->subscribeScene = $user['subscribe_scene'];
         }
 
         if(isset($user['subscribe_time'])) {
-            $wechatUser->subscribeTime = date('Y-m-d h:i:s', $user['subscribe_time']);
+            $customer->subscribeTime = date('Y-m-d h:i:s', $user['subscribe_time']);
         }
 
         if(isset($user['remark'])) {
-            $wechatUser->remark = $user['remark'];
+            $customer->remark = $user['remark'];
         }
 
         if(isset($user['groupid'])) {
-            $wechatUser->groupId = $user['groupid'];
+            $customer->groupId = $user['groupid'];
         }
 
         if(isset($user['tagid_list'])) {
-            $wechatUser->tagidList = $user['tagid_list'];
+            $customer->tagidList = $user['tagid_list'];
         }
 
         if(isset($user['qr_scene'])) {
-            $wechatUser->qrScene = $user['qr_scene'];
+            $customer->qrScene = $user['qr_scene'];
         }
 
         if(isset($user['qr_scene_str'])) {
-            $wechatUser->qrSceneStr = $user['qr_scene_str'];
+            $customer->qrSceneStr = $user['qr_scene_str'];
         }
 
-        return $wechatUser;
+        return $customer;
     }
 
-    public function openPlatformOfficialAccountAccessToken(string   $appId)
+    /**
+     * @param bool $refresh
+     * @return mixed
+     * @throws
+     * */
+    public function openPlatformOfficialAccountAccessToken(bool $refresh = false)
     {
-        $accessToken = $this->openPlatform()->officialAccount($appId)->access_token->getToken();
-        return (new AccessToken($accessToken));
+        $accessToken = $this->officeAccount()->access_token->getToken($refresh);
+        return (new OPAccessToken($accessToken));
+    }
+
+    public function card(string $type, array $data)
+    {
+        return $this->officeAccount()->card->create($type, $data);
     }
 
 }

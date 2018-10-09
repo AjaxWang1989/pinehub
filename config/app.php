@@ -71,6 +71,7 @@ return [
         'EasyWeChat' => '\Overtrue\LaravelWeChat\Facade',
         //'Validator' => 'Illuminate\Support\Facades\Validator',
         'auth.meta' => '\App\Http\Middleware\ResponseMetaAddToken',
-        'QRCode'    => '\SimpleSoftwareIO\QrCode\Facades\QrCode'
+        'QRCode'    => '\SimpleSoftwareIO\QrCode\Facades\QrCode',
+        'ticket'    => \App\Http\Middleware\Ticket::class
     ]
 ];

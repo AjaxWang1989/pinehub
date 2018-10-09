@@ -25,7 +25,6 @@ class ScoreRuleCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appManager = app(AppManager::class);
-        $model->whereAppId($appManager->currentApp->id);
-        return $model;
+        return $model->whereAppId($appManager->currentApp->id);
     }
 }

@@ -30,6 +30,7 @@ class MemberCardRepositoryEloquent extends BaseRepository implements MemberCardR
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {

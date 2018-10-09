@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Events\WechatAuthAccessTokenRefreshEvent;
 use App\Repositories\Traits\Destruct;
+use Illuminate\Support\Facades\Event;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\WechatConfig;
@@ -35,10 +37,14 @@ class WechatConfigRepositoryEloquent extends BaseRepository implements WechatCon
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        WechatConfig::created(function (WechatConfig &$account) {
+            Event::fire(new WechatAuthAccessTokenRefreshEvent($account));
+        });
     }
 
 }

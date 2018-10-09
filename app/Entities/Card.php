@@ -12,16 +12,16 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\Card
  *
  * @property int $id
- * @property string|null $cardId 卡券id
+ * @property string $cardId 卡券id
  * @property string|null $wechatAppId 微信app id
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
  * @property string $cardType 卡券类型
  * @property array $cardInfo 卡券信息
- * @property int|null $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功'
  * @property int $status 0-审核中 1-审核通过 2-审核未通过
- * @property \Carbon\Carbon $beginAt
- * @property \Carbon\Carbon $endAt
+ * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
+ * @property \Carbon\Carbon $beginAt 开始日期
+ * @property \Carbon\Carbon $endAt 结束时间
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -56,11 +56,12 @@ class Card extends Model implements Transformable
     const CHECK_FAILED = 2;
 
     //'member_card','coupon_card','discount','groupon','gift'
-    const MEMBER_CARD = 'member_card';
-    const COUPON_CARD = 'coupon_card';
-    const DISCOUNT = 'discount';
-    const GROUPON = 'groupon';
-    const GIFT = 'gift';
+    const MEMBER_CARD = MEMBER_CARD;
+    const COUPON_CARD = COUPON_CARD;
+    const DISCOUNT = DISCOUNT_CARD;
+    const GROUPON = GROUPON_CARD;
+    const GIFT = GIFT_CARD;
+    const CASH = CASH_CARD;
 
     protected $casts = [
         'card_info' => 'json',
@@ -90,5 +91,4 @@ class Card extends Model implements Transformable
     {
         return $this->belongsTo(App::class, 'app_id', 'id');
     }
-
 }

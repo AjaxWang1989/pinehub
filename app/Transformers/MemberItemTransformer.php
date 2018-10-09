@@ -2,9 +2,8 @@
 
 namespace App\Transformers;
 
-use App\Entities\WechatUser;
 use League\Fractal\TransformerAbstract;
-use App\Entities\User as MemberItem;
+use App\Entities\Member as MemberItem;
 
 /**
  * Class MemberItemTransformer.
@@ -35,11 +34,14 @@ class MemberItemTransformer extends TransformerAbstract
             'app_id' => $model->appId,
             'channel' => $model->channel,
             'register_channel' => $model->registerChannel,
-            'order_count' => $model->orderCount,
+            'orders_count' => $model->ordersNum(),
             'tags'  => $model->tags,
             'score' => $model->score,
             'card' => '待开发',
             'status' => $model->status,
+            'country' => $model->country? $model->country['name'] : null,
+            'province' => $model->province? $model->province['name'] : null,
+            'city' => $model->city? $model->city['name'] : null,
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,

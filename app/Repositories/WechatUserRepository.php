@@ -12,4 +12,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface WechatUserRepository extends RepositoryInterface
 {
     //
+//    public function  a();
 }

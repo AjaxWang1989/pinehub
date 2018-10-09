@@ -25,7 +25,7 @@ class AuthData extends ChargeBaseData
     /**
      * 业务请求参数的集合，最大长度不限，除公共参数外所有请求参数都必须放在这个参数中传递
      *
-     * @return string
+     * @return array
      */
     protected function getBizContent()
     {
@@ -40,17 +40,22 @@ class AuthData extends ChargeBaseData
         return $content;
     }
 
+    /**
+     * @throws
+     * */
     protected function checkDataParam()
     {
+
         if(!is_array($this->scopes)) {
             $this->scopes = explode(',', $this->scopes);
         }
+
         foreach ($this->scopes as $scope){
             if(!in_array($scope, ['auth_base', 'auth_user'])){
                 throw new PayException('scope错误');
             }
         }
-       Log::debug('state ', [$this->state, $this->state === null]);
+
        if($this->state === null){
            throw new PayException('state错误');
        }

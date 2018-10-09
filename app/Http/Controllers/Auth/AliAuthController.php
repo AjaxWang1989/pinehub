@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Entities\Customer;
 use App\Repositories\CustomerRepository;
+use App\Services\AppManager;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,25 +24,28 @@ class AliAuthController extends Controller
     //
     public function oauth2(Request $request)
     {
+        $token = app('alipay')->getToken();
+        $appManager = app(AppManager::class);
+        $appId = $appManager->currentApp->id;
+        $aliAppId = config('ali.payment.app_id');
         $redirect = $request->input('redirect_uri', null);
-        if(($token = $this->session->get('ali.oauth.token')) && isset($token['user_id'])) {
-            Log::debug('session cache token ', $token);
-        }else{
-            $authCode = $request->input('auth_code', null);
-            $token = app('ali.oauth.token')->charge(['grant_type' => 'authorization_code', 'code' => $authCode])->getToken();
-            $this->session->put('ali.oauth.token', $token);
-        }
-        $this->customerRepository->updateOrCreate(['platform_open_id' => $token['user_id']], [
-            'app_id' => $request->input('selected_appid', null),
-            'platform_app_id' => config('ali.payment.app_id'),
-            'type' => 'ALIPAY_OPEN_PLATFORM',
+        $customer = $this->customerRepository->updateOrCreate([
+            'app_id' => $appId,
+            'platform_app_id' => $aliAppId,
+            'type' => Customer::ALIPAY_OPEN_PLATFORM,
+            'platform_open_id' => $token['user_id']
+        ], [
+            'app_id' => $appId,
+            'platform_app_id' => $aliAppId,
+            'type' => Customer::ALIPAY_OPEN_PLATFORM,
             'platform_open_id' => $token['user_id']
         ]);
+        session(['customer' => $customer]);
         if($redirect) {
             if(count(parse_query($redirect)) > 0){
-                $append = "&buyer_id={$token['user_id']}";
+                $append = "&customer_id={$token['user_id']}";
             }else{
-                $append = "?buyer_id={$token['user_id']}";
+                $append = "?customer_id={$token['user_id']}";
             }
             return redirect("{$redirect}{$append}");
         }

@@ -10,9 +10,6 @@ namespace App\Routes;
 
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Session;
 use Laravel\Lumen\Application;
 use Laravel\Lumen\Routing\Router;
 
@@ -24,11 +21,13 @@ class WebRoutes extends Routes
         $this->router = $this->app->router;
     }
 
-    protected function routesRegister()
+    protected function routesRegister($version = null)
     {
         $second = [];
         if($this->prefix){
             $second['prefix'] = $this->prefix;
+        }else{
+            $second['prefix'] = $version;
         }
 
         if($this->domain){
@@ -45,7 +44,7 @@ class WebRoutes extends Routes
             tap($router, function (Router $router) {
                 $this->subRoutes($router);
                 $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request) {
-                    return "pinehub official service";
+                    exit( phpinfo() );
                 });
             });
 

@@ -4,17 +4,23 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
+use Illuminate\Auth\Authenticatable;
+use Laravel\Lumen\Auth\Authorizable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 /**
  * App\Entities\Customer
  *
  * @property int $id
  * @property string|null $appId 系统应用appid
- * @property int|null $userId 会员id
+ * @property string|null $mobile 手机号码
+ * @property int|null $memberId 会员id
  * @property string|null $platformAppId 微信公众平台、小程序、开放app id
  * @property string $type WECHAT_OFFICE_ACCOUNT 公众平台，
  *             WECHAT_OPEN_PLATFORM 微信开放平台 WECHAT_MINI_PROGRAM 微信小程序 ALIPAY_OPEN_PLATFORM  支付宝开发平台 SELF 平台客户
@@ -31,7 +37,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $privilege 微信特权信息
  * @property int $isStudentCertified 是否是学生
  * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户
  *             B代表被冻结账户 W代表已注册，未激活的账户
  * @property int $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
  * @property int $canUseScore 用户可用积分
@@ -44,8 +50,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read \App\Entities\Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
- * @property-read \App\Entities\User|null $user
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereCanUseScore($value)
@@ -57,6 +63,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereIsCertified($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereIsStudentCertified($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereMemberId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereNickname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereOrderCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer wherePlatformAppId($value)
@@ -73,21 +81,27 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUnionId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserType($value)
  * @mixin \Eloquent
  */
-class Customer extends Model implements Transformable
+class Customer extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
 
     protected $casts = [
         'session_key_expires_at' => 'date',
         'privilege' => 'json',
         'tags' => 'array'
     ];
+    const WECHAT_OFFICE_ACCOUNT = 'WECHAT_OFFICE_ACCOUNT';
+    const WECHAT_OPEN_PLATFORM = 'WECHAT_OPEN_PLATFORM';
+    const WECHAT_MINI_PROGRAM = 'WECHAT_MINI_PROGRAM';
+    const ALIPAY_OPEN_PLATFORM = 'ALIPAY_OPEN_PLATFORM';
 
+    //注册：0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP
+
+    //渠道：0-未知 1-微信 2-支付宝'
     /**
      * The attributes that are mass assignable.
      *
@@ -95,7 +109,8 @@ class Customer extends Model implements Transformable
      */
     protected $fillable = [
         'app_id',
-        'user_id',
+        'mobile',
+        'member_id',
         'platform_app_id',
         'type',
         'union_id',
@@ -108,6 +123,7 @@ class Customer extends Model implements Transformable
         'country',
         'nickname',
         'sex',
+        'privilege',
         'is_student_certified',
         'user_type',
         'user_status',
@@ -121,13 +137,23 @@ class Customer extends Model implements Transformable
         'tags'
     ];
 
-    public function user() : BelongsTo
+    public function member() : BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(Member::class, 'member_id', 'id');
+    }
+
+    public function app()
+    {
+        return $this->belongsTo(App::class, 'app_id', 'id');
     }
 
     public function orders() : HasMany
     {
-        return $this->hasMany(Order::class, 'buy_user_id', 'id');
+        return $this->hasMany(Order::class, 'customer_id', 'id');
+    }
+
+    public function getAuthPassword()
+    {
+        return Hash::make($this->sessionKey);
     }
 }

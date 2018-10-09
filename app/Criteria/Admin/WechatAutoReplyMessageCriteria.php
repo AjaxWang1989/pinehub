@@ -5,6 +5,7 @@ namespace App\Criteria\Admin;
 use App\Entities\WechatAutoReplyMessage;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
+use App\Services\AppManager;
 
 /**
  * Class WechatAutoReplyMessageCriteria.
@@ -24,7 +25,6 @@ class WechatAutoReplyMessageCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appId = app(AppManager::class)->officialAccount->appId;
-        $model->whereAppId($appId);
-        return $model;
+        return $model->whereAppId($appId);
     }
 }

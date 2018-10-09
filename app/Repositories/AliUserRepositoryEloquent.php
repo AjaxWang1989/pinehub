@@ -31,6 +31,7 @@ class AliUserRepositoryEloquent extends BaseRepository implements AliUserReposit
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {

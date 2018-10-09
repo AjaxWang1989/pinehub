@@ -3,13 +3,14 @@
 namespace App\Events;
 
 use App\Entities\Card;
-use Illuminate\Broadcasting\Channel;
+use EasyWeChat\MiniProgram\Application as MiniProgram;
+use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application as OpenPlatformMiniProgram;
+use EasyWeChat\OfficialAccount\Application as OfficialAccount;
+use EasyWeChat\OpenPlatform\Authorizer\OfficialAccount\Application as OpenPlatformOfficialAccount;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class SyncMemberCardInfoEvent
 {
@@ -17,15 +18,26 @@ class SyncMemberCardInfoEvent
 
     public $memberCard = null;
 
+    public $memberInfo = [];
+
+    /**
+     * @var MiniProgram|OpenPlatformMiniProgram|OfficialAccount|OpenPlatformOfficialAccount
+     * */
+    public $wechat = null;
+
     /**
      * Create a new event instance.
      * @param Card $card
+     * @param array $memberInfo
+     * @param MiniProgram|OpenPlatformMiniProgram|OfficialAccount|OpenPlatformOfficialAccount
      * @return void
      */
-    public function __construct(Card $card)
+    public function __construct(Card $card, array $memberInfo = [], $wechat = null)
     {
         //
         $this->memberCard = $card;
+        $this->memberInfo = $memberInfo;
+        $this->wechat = $wechat;
     }
 
     /**

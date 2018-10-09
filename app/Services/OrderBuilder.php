@@ -11,6 +11,7 @@ namespace App\Services;
 
 use App\Entities\Merchandise;
 use App\Entities\Order;
+use App\Entities\OrderItem;
 use App\Entities\SKUProduct;
 use App\Entities\User;
 use App\Repositories\MerchandiseRepositoryEloquent;
@@ -57,7 +58,7 @@ class OrderBuilder implements InterfaceServiceHandler
     /**
      * @var User|null
      * */
-    protected $buyer = null;
+   // protected $buyer = null;
 
     /**
      * @var MerchandiseRepositoryEloquent|null
@@ -86,6 +87,12 @@ class OrderBuilder implements InterfaceServiceHandler
         $this->orderItemMerchandise = $orderItemMerchandise;
     }
 
+    public function setInput(array  $input)
+    {
+        $this->input = collect($input);
+        return $this;
+    }
+
     /**
      * @return Order
      * @throws
@@ -93,7 +100,7 @@ class OrderBuilder implements InterfaceServiceHandler
     public function handle()
     {
         // TODO: Implement handle() method.
-        $this->buyer = $this->buyer ? $this->buyer : $this->auth->user();
+        //$this->buyer = $this->buyer ? $this->buyer : $this->auth->user();
         $order = $this->input->only([
             'total_amount',
             'discount_amount',
@@ -102,17 +109,25 @@ class OrderBuilder implements InterfaceServiceHandler
             'receiver_district',
             'receiver_address',
             'type',
-            'pay_type'
+            'pay_type',
+            'open_id',
+            'app_id',
+            'wechat_app_id',
+            'ali_app_id',
+            'customer_id',
+            'ip',
+            'member_id'
         ]);
         $order['status'] = Order::WAIT;
-        if($order['type'] === Order::OFF_LINE_PAY) {
+        if((int)$order['type'] === Order::OFF_LINE_PAY) {
             $orderItem = [
-                'total_amount' => $order['total_amount'],
-                'discount_amount' => $order['discount_amount'],
-                'payment_amount'  => $order['payment_amount'],
+                'total_amount' => $order->get('total_amount'),
+                'discount_amount' => $order->get('discount_amount', 0),
+                'payment_amount'  => $order->get('payment_amount'),
                 'shop_id'   => (isset($this->input['shop_id']) ? $this->input['shop_id'] : null),
-                'buyer_user_id' => $this->buyer ? $this->buyer->id : null,
-                'status' => Order::WAIT
+                'customer_id' => $order->get('customer_id'),
+                'status' => $order->get('status'),
+                'member_id' => $order->get('member_id')
             ];
             $orderItem = collect($orderItem);
             $orderItems = collect();
@@ -125,21 +140,32 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems = $this->buildOrderItems($orderItems);
             $this->checkOrder($orderItems, $order);
         }
-        /**
-         *@var Order
-         * */
+
         return DB::transaction(function () use($order, $orderItems){
+            /**
+             *@var Order $orderModel
+             * */
             $orderModel = $this->order->create($order->toArray());
             if($orderModel && $orderItems) {
                 $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['order_id'] = $orderModel->id;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);
+                    /**
+                     *@var OrderItem $orderItemModel
+                     * */
                     $orderItemModel = $this->orderItem->create($orderItem->except(['order_item_product'])
                         ->toArray());
-                    if(isset($orderItem['order_item_product'])){
-                        $orderItem['order_item_product']['order_id'] = $orderModel->id;
-                        $orderItem['order_item_product']['order_item_id'] = $orderItemModel->id;
-                        $this->orderItemMerchandise->create($orderItem->only(['order_item_product'])->toArray());
+                    $product = $orderItem->get('order_item_product', null);
+
+                    if($product){
+                        tap($product, function (Collection $product) use(&$orderModel,&$orderItemModel) {
+                            $product->put('order_id', $orderModel->id);
+                            $product->put('order_item_id', $orderItemModel->id);
+                            $product->put('customer_id', $orderModel->customerId);
+                            $product->put('member_id', $orderModel->memberId);
+                            $this->orderItemMerchandise->create($product->toArray());
+                        });
+
                     }
                 });
             }
@@ -154,12 +180,12 @@ class OrderBuilder implements InterfaceServiceHandler
             if(isset($orderItem['sku_product_id'])) {
                 $product = $this->skuProduct->find($orderItem['sku_product_id']);
                 $orderItemProduct = $this->buildOrderItemProduct($product, $orderItem['quality']);
-                $subOrder = $this->buildOrderItem($product, $orderItem['quality']);
+                $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['customer_id']);
                 $subOrder['order_item_product'] = $orderItemProduct;
             }elseif (isset($orderItem['merchandise_id'])) {
                 $goods = $this->merchandise->find($orderItem['merchandise_id']);
                 $orderItemProduct = $this->buildOrderItemProduct($goods, $orderItem['quality']);
-                $subOrder = $this->buildOrderItem($goods, $orderItem['quality']);
+                $subOrder = $this->buildOrderItem($goods, $orderItem['quality'], $orderItem['customer_id']);
                 $subOrder['order_item_product'] = $orderItemProduct;
             }
             if($subOrder){
@@ -172,15 +198,15 @@ class OrderBuilder implements InterfaceServiceHandler
     protected function checkOrder(Collection $orderItems, $order) {
         $errors = null;
         \Log::debug('order items total amount sum :'.$orderItems->sum('total_amount').' order total amount '.$order['total_amount']);
-        if ($orderItems->sum('total_amount') != $order['total_amount']) {
+        if ($orderItems->sum('total_amount') != $order->get('total_amount', 0)) {
             $errors = new MessageBag([
                 'total_amount' => '订单总金额有误无法提交'
             ]);
-        } elseif ($orderItems->sum('discount_amount') != $order['discount_amount']) {
+        } elseif ($orderItems->sum('discount_amount') != $order->get('discount_amount', 0)) {
             $errors = new MessageBag([
                 'discount_amount' => '订单优惠金额有误无法提交'
             ]);
-        } elseif ( $orderItems->sum('payment_amount') != $order['payment_amount'] ) {
+        } elseif ( $orderItems->sum('payment_amount') != $order->get('payment_amount', 0) ) {
             $errors = new MessageBag([
                 'payment_amount' => '订单实际支付金额有误无法提交'
             ]);
@@ -194,15 +220,15 @@ class OrderBuilder implements InterfaceServiceHandler
     protected function checkOrderItem (Collection $orderItem, array $input)
     {
         $errors = null;
-        if($input['total_amount'] !== $orderItem['total_amount']) {
+        if($input['total_amount'] !== $orderItem->get('total_amount', 0)) {
             $errors = new MessageBag([
                 'total_amount' => '子订单总金额有误无法提交'
             ]);
-        } elseif ($input['discount_amount'] !== $orderItem['discount_amount'] ) {
+        } elseif ($input['discount_amount'] !== $orderItem->get('discount_amount', 0) ) {
             $errors = new MessageBag([
                 'discount_amount' => '子订单优惠金额有误无法提交'
             ]);
-        } elseif ($input['payment_amount'] !== $orderItem['payment_amount']) {
+        } elseif ($input['payment_amount'] !== $orderItem->get('payment_amount', 0)) {
             $errors = new MessageBag([
                 'payment_amount' => '子订单实际支付金额有误无法提交'
             ]);
@@ -217,11 +243,12 @@ class OrderBuilder implements InterfaceServiceHandler
      * 创建order_items表单项
      * @param SKUProduct|Merchandise|Model $model
      * @param int $quality
+     * @param $customerId
      * @return Collection
      * */
-    protected function buildOrderItem($model, int $quality)
+    protected function buildOrderItem($model, int $quality, $customerId = null)
     {
-        $data['buyer_user_id'] = $this->buyer->id;
+        $data['customer_id'] = $customerId;
         $data['shop_id'] = isset($this->input['shop_id']) ? $this->input['shop_id'] : null;
         $data['total_amount'] =  $model->sellPrice * $quality;
         $data['discount_amount'] = 0;

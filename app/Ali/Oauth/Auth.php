@@ -50,7 +50,7 @@ class Auth extends AliBaseStrategy
     /**
      * 返回可发起h5支付的请求
      * @param array $data
-     * @return array
+     * @return string
      * @throws
      */
     protected function retData(array $data)

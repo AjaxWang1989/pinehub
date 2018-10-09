@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -17,7 +18,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $appName 微信公众号或者小程序名称
  * @property string|null $token 微信token
  * @property string|null $aesKey 微信EncodingAESKey
- * @property string $type OFFICIAL_ACCOUNT 公众平台， 
+ * @property string $type OFFICIAL_ACCOUNT 公众平台，
  *             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序
  * @property string $mode 公众号模式
  * @property string|null $wechatBindApp 微信公众号绑定的应用程序或者小程序绑定的应用
@@ -28,7 +29,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $principalName 公众号的主体名称
  * @property string|null $qrcodeUrl 二维码图片的URL，开发者最好自行也进行保存
  * @property string|null $authCode
- * @property string|null $authCodeExpiresIn
+ * @property \Carbon\Carbon $authCodeExpiresIn
  * @property string|null $authInfoType
  * @property string|null $componentAccessToken 第三方平台access_token
  * @property \Carbon\Carbon $componentAccessTokenExpiresIn 有效期，为2小时
@@ -40,13 +41,14 @@ use Prettus\Repository\Traits\TransformableTrait;
  *             3代表已资质认证通过但还未通过名称认证，4代表已资质认证通过、还未通过名称认证，但通过了新浪微博认证，5代表已资质认证通过、还未通过名称认证，但通过了腾讯微博认证
  * @property array $businessInfo 用以了解以下功能的开通状况（0代表未开通，1代表已开通）： open_store:是否开通微信门
  *             店功能 open_scan:是否开通微信扫商品功能 open_pay:是否开通微信支付功能 open_card:是否开通微信卡券功能 open_shake:是否开通微信摇一摇功能
- * @property array $funcInfo 公众号授权给开发者的权限集列表，ID为1到15时分别代表： 1.消息管理权限 
- *             2.用户管理权限 3.帐号服务权限 4.网页服务权限 5.微信小店权限 6.微信多客服权限 7.群发与通知权限 8.微信卡券权限 9.微信扫一扫权限 10.微信连WIFI权限 11.素材管理权限 
+ * @property array $funcInfo 公众号授权给开发者的权限集列表，ID为1到15时分别代表： 1.消息管理权限
+ *             2.用户管理权限 3.帐号服务权限 4.网页服务权限 5.微信小店权限 6.微信多客服权限 7.群发与通知权限 8.微信卡券权限 9.微信扫一扫权限 10.微信连WIFI权限 11.素材管理权限
  *             12.微信摇周边权限 13.微信门店权限 14.微信支付权限 15.自定义菜单权限 请注意： 1）该字段的返回不会考虑公众号是否具备该权限集的权限（因为可能部分具备），请根据公众号的
  *             帐号类型和认证情况，来判断公众号的接口权限
  * @property array $miniProgramInfo 可根据这个字段判断是否为小程序类型授权
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
+ * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\WechatMenu $menu
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAesKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAlias($value)
@@ -79,6 +81,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereVerifyTypeInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereWechatBindApp($value)
  * @mixin \Eloquent
+ * @property  1.消息管理权限
+ *             2.用户管理权限 3.帐号服务权限 4.网页服务权限 5.微信小店权限 6.微信多客服权限 7.群发与通知权限 8.微信卡券权限 9.微信扫一扫权限 10.微信连WIFI权限 11.素材管理权限 
+ *             12.微信摇周边权限 13.微信门店权限 14.微信支付权限 15.自定义菜单权限 请注意： 1）该字段的返回不会考虑公众号是否具备该权限集的权限（因为可能部分具备），请根据公众号的
+ *             帐号类型和认证情况，来判断公众号的接口权限
  */
 class WechatConfig extends Model implements Transformable
 {
@@ -91,7 +97,8 @@ class WechatConfig extends Model implements Transformable
         'func_info' => 'json',
         'mini_program_info'  => 'json',
         'component_access_token_expires_in' => 'date',
-        'authorizer_access_token_expires_in' => 'date'
+        'authorizer_access_token_expires_in' => 'date',
+        'auth_code_expires_in' => 'date'
     ];
 
     /**
@@ -112,4 +119,8 @@ class WechatConfig extends Model implements Transformable
         return $this->hasOne(WechatMenu::class, 'app_id', 'app_id');
     }
 
+    public function app() :BelongsTo
+    {
+        return $this->belongsTo(App::class, 'wechat_bind_app', 'id');
+    }
 }

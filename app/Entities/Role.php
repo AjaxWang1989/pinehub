@@ -10,7 +10,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
 
 /**
- * App\Entities\Role
+ * App\Entities\AdminRole
  *
  * @property int $id
  * @property string $slug 角色标识
@@ -38,6 +38,8 @@ class Role extends Model implements Transformable
     const TESTER     = 'tester.administer';
     const CUSTOMER     = 'customer';
     const MEMBER     = 'member';
+    const SHOP_MANAGER = 'shop.manager';
+    const SELLER = 'seller';
     const STRANGER =  'stranger';
     /**
      * The attributes that are mass assignable.

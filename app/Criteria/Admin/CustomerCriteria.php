@@ -23,11 +23,11 @@ class CustomerCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        return tap($model, function (Customer $customer) {
+        return with($model, function (Customer &$customer) {
             $appManager = app(AppManager::class);
             $appId = $appManager->currentApp->id;
-            $customer->whereAppId($appId)
-                ->groupBy('user_id');
+            return $customer->whereAppId($appId);
+//                ->groupBy('member_id');
         });
     }
 }

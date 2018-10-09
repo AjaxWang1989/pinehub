@@ -28,5 +28,12 @@ class AliOauthServiceProvider extends ServiceProvider
             $chargeContext->initCharge(Config::ALI_OAUTH_TOKEN, $config);
             return $chargeContext;
         });
+
+        $this->app->singleton('ali.user.info', function (){
+            $chargeContext = new OauthChargeContext();
+            $config = config('ali.payment');
+            $chargeContext->initCharge(Config::ALI_USER_SHARE, $config);
+            return $chargeContext;
+        });
     }
 }

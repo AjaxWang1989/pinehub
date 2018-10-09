@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\CardCriteria;
+use App\Entities\Card;
+use App\Entities\Ticket;
 use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
 use App\Services\AppManager;
+use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\CardCreateRequest;
 use App\Http\Requests\Admin\CardUpdateRequest;
@@ -80,11 +83,19 @@ class CardsController extends Controller
     public function store(CardCreateRequest $request)
     {
         $appManager = app(AppManager::class);
-        $data = $request->except(['sync']);
+        $data['card_info'] = $request->input('ticket_info');
         $data['app_id'] = $appManager->currentApp->id;
-        $card = $this->repository->create($request->all());
+        $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
+        $data['begin_at'] = $request->input('begin_at');
+        $data['end_at'] = $request->input('end_at');
+        $data['card_type'] = $request->input('ticket_type');
+        $card = $this->repository->create($data);
         if ($request->input('sync', false)) {
-            Event::fire(new SyncTicketCardInfoEvent($card));
+            $ticket = new Ticket(with($card, function (Card $card) {
+                return $card->toArray();
+            }));
+            $ticket->exists = true;
+            Event::fire(new SyncTicketCardInfoEvent($ticket, [], app('wechat')->officeAccount()));
         }
         $response = [
             'message' => 'Card created.',
@@ -144,10 +155,24 @@ class CardsController extends Controller
      */
     public function update(CardUpdateRequest $request, $id)
     {
-       $data = $request->except(['sync']);
-       $card = $this->repository->update($data, $id);
+       $data['card_type'] = $request->input('ticket_type');
+       $data['card_info'] = $request->input('ticket_info');
+       $data['begin_at'] = $request->input('begin_at', null);
+       $data['end_at'] = $request->input('end_at', null);
+       $card = $this->repository->find($id);
+       tap($card, function (Card $card) use($data){
+          $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
+          $card->cardType = $data['card_type'];
+          $card->beginAt  = $data['begin_at'];
+          $card->endAt    = $data['end_at'];
+          $card->save();
+       });
        if($request->input('sync', false)) {
-           Event::fire(new SyncTicketCardInfoEvent($card));
+           $ticket = new Ticket(with($card, function (Card $card) {
+               return $card->toArray();
+           }));
+           $ticket->exists = true;
+           Event::fire(new SyncTicketCardInfoEvent($ticket, $data['card_info'], app('wechat')->officeAccount()));
        }
        $response = [
            'message' => 'Card updated.',
@@ -160,6 +185,32 @@ class CardsController extends Controller
        }
 
        return redirect()->back()->with('message', $response['message']);
+    }
+
+    /**
+     * @param int $id
+     * @return Response
+     * @throws
+     * */
+    public function unavailable(int $id)
+    {
+        $result = $this->repository->update(['status' => Ticket::UNAVAILABLE], $id);
+        if($result) {
+            $result = app('wechat')->officeAccount()->card->reduceStock($result->cardId, $result->cardInfo['base_info']['sku']['quantity']);
+            if($result['errcode'] !== 0) {
+                $this->response()->error('同步失败', HTTP_STATUS_NOT_MODIFIED);
+            }else{
+                return $this->response(new JsonResponse(['message' => '设置成功，卡券已经失效']));
+            }
+        }else{
+            $this->response()->error('设置失败', HTTP_STATUS_NOT_MODIFIED);
+        }
+    }
+
+    public function qrCode(int $id)
+    {
+        $ticket = $this->repository->find($id);
+
     }
 
 

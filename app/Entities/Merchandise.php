@@ -31,6 +31,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Category[] $categories
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\SKUProduct[] $skuProducts
@@ -58,9 +59,13 @@ class Merchandise extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    const UP = 1;
+    const DOWN = 0;
+
     protected $casts = [
         'images' => 'array'
     ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -68,7 +73,7 @@ class Merchandise extends Model implements Transformable
      */
     protected $fillable = [
         'code', 'name', 'main_image', 'images', 'preview', 'detail', 'origin_price', 'cost_price', 'sell_price', 'factory_price',
-        'stock_num', 'sell_num', 'status'
+        'stock_num', 'sell_num', 'status', 'capacity'
     ];
 
     public function orderItems() : HasMany
@@ -84,5 +89,11 @@ class Merchandise extends Model implements Transformable
     public function skuProducts() : HasMany
     {
         return $this->hasMany(SKUProduct::class, 'merchandise_id', 'id');
+    }
+
+    public function categories() : BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'merchandise_categories',
+            'merchandise_id', 'category_id');
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Entities\MemberCard;
+use App\Entities\Card as MemberCard;
 
 /**
  * Class MemberCardTransformer.
@@ -15,7 +15,7 @@ class MemberCardTransformer extends TransformerAbstract
     /**
      * Transform the MemberCard entity.
      *
-     * @param \App\Entities\MemberCard $model
+     * @param MemberCard $model
      *
      * @return array
      */
@@ -23,11 +23,16 @@ class MemberCardTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-
+            'card_type' => $model->cardType,
+            'member_info' => $model->cardInfo,
+            'app_id' => $model->appId,
+            'wechat_app_id' => $model->wechatAppId,
+            'status' => $model->status,
+            'sync' => $model->sync,
             /* place your other model properties here */
 
-            'created_at' => $model->created_at,
-            'updated_at' => $model->updated_at
+            'created_at' => $model->createdAt,
+            'updated_at' => $model->updatedAt
         ];
     }
 }

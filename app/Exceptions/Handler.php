@@ -18,11 +18,11 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-//        AuthorizationException::class,
-//        HttpException::class,
-//        ModelNotFoundException::class,
-//        ValidationException::class,
-//        TokenExpiredException::class
+        AuthorizationException::class,
+        HttpException::class,
+        ModelNotFoundException::class,
+        ValidationException::class,
+        TokenExpiredException::class
     ];
 
     /**
@@ -48,6 +48,7 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+//        return app('api.http.handler')->render($request, $e);
         return parent::render($request, $e);
     }
 }

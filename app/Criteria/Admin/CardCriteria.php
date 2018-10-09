@@ -4,6 +4,7 @@ namespace App\Criteria\Admin;
 
 use App\Entities\Card;
 use App\Services\AppManager;
+use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
@@ -25,9 +26,15 @@ class CardCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appManager = app(AppManager::class);
-        $model->whereAppId($appManager->currentApp->id)
-            ->whereWechatAppId($appManager->officialAccount->appId)
-            ->whereIn('card_type', [Card::GROUPON, Card::DISCOUNT, Card::COUPON_CARD, Card::GIFT]);
-        return $model;
+        $model = $model->whereAppId($appManager->currentApp->id);
+        if($appManager->officialAccount)
+            $model = $model->whereWechatAppId($appManager->officialAccount->appId);
+        $cardType = Request::input('card_type', null);
+        if($cardType) {
+            return $model->whereCardType($cardType);
+        }else{
+            return $model->whereIn('card_type', [Card::GROUPON, Card::DISCOUNT, Card::COUPON_CARD, Card::GIFT, Card::CASH]);
+        }
+
     }
 }

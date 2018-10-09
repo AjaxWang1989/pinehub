@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Traits\Destruct;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\OrderItemMerchandise;
@@ -15,7 +15,7 @@ use App\Validators\OrderItemMerchandiseValidator;
  */
 class OrderItemMerchandiseRepositoryEloquent extends BaseRepository implements OrderItemMerchandiseRepository
 {
-    use Destruct;
+
     /**
      * Specify Model class name
      *
@@ -30,10 +30,11 @@ class OrderItemMerchandiseRepositoryEloquent extends BaseRepository implements O
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

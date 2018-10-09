@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Entities\AuthSecretKey;
 use App\Entities\User;
+use App\Http\Response\JsonResponse;
 use App\Http\Response\UpdateResponse;
 use App\Repositories\UserRepositoryEloquent;
 use App\Transformers\Api\UpdateResponseTransformer;
@@ -15,6 +16,8 @@ use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -46,8 +49,22 @@ class AuthController extends Controller
     public function getPublicKey()
     {
         $item = new AuthSecretKey();
-
         return $this->response()->item($item, new AuthPublicKeyTransformer());
+    }
+
+    public function refreshToken()
+    {
+        if(Auth::getToken()){
+            $token = Auth::refresh();
+            $tokenMeta =  [
+                'token' =>$token,
+                'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
+                'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
+            ];
+            return $this->response(new JsonResponse($tokenMeta));
+        }else{
+            $this->response()->error('用户未登录', 400);
+        }
     }
 
     /**
@@ -66,8 +83,11 @@ class AuthController extends Controller
         }else{
             if($input = $this->validate($request, self::RULES,self::MESSAGES)) {
                 $input['app_id'] = isset($input['app_id']) ? $input['app_id'] : null;
-                if(!($token = Auth::attempt($input))){;
-                    $this->response()->error('登录密码与手机不匹配无法登录！', HTTP_STATUS_NOT_FOUND);
+                if(!$input['app_id']) {
+                    isset($input['app_id']);
+                }
+                if(!($token = Auth::attempt($input))){
+                    $this->response()->error('登录密码与手机不匹配无法登录!', HTTP_STATUS_NOT_FOUND);
                 }
                 $user = JWTAuth::toUser($token);
                 tap($user, function ( User $user) {
@@ -129,5 +149,10 @@ class AuthController extends Controller
             }
         }
         return null;
+    }
+
+
+    public function  testLogin(){
+        return '测试';
     }
 }

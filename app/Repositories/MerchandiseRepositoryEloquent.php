@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Criteria\Admin\MerchandiseCriteria;
 use App\Repositories\Traits\Destruct;
+use App\Services\AppManager;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\Merchandise;
@@ -26,14 +28,42 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
         return Merchandise::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+//        $this->pushCriteria(app(MerchandiseCriteria::class));
+        Merchandise::creating(function (Merchandise $merchandise){
+            $merchandise->appId = app(AppManager::class)->currentApp->id;
+            $merchandise->code = app('uid.generator')->getUid(MERCHANDISE_CODE_FORMAT, MERCHANDISE_SEGMENT_MAX_LENGTH);
+            return $merchandise;
+        });
     }
-    
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function findMerchandises(string $name){
+        $this->scopeQuery(function (Merchandise $merchandise) use($name){
+            return $merchandise->where('name','like','%'.$name.'%');
+        });
+        return $this->get();
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function searchMerchandises(string $name){
+        $this->scopeQuery(function (Merchandise $merchandise) use($name){
+            return $merchandise->where('name','like','%'.$name.'%');
+        });
+        return $this->paginate();
+    }
 }

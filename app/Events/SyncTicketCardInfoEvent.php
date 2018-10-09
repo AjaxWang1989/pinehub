@@ -2,7 +2,11 @@
 
 namespace App\Events;
 
-use App\Entities\Card;
+use App\Entities\Ticket;
+use EasyWeChat\MiniProgram\Application as MiniProgram;
+use EasyWeChat\OpenPlatform\Authorizer\MiniProgram\Application as OpenPlatformMiniProgram;
+use EasyWeChat\OfficialAccount\Application as OfficialAccount;
+use EasyWeChat\OpenPlatform\Authorizer\OfficialAccount\Application as OpenPlatformOfficialAccount;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -12,17 +16,33 @@ class SyncTicketCardInfoEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $card = null;
+    /**
+     * @var Ticket
+     * */
+    public $ticket = null;
+
+    public $ticketInfo = null;
+
+    /**
+     * @var MiniProgram|OpenPlatformMiniProgram|OfficialAccount|OpenPlatformOfficialAccount
+     * */
+    public $wechat = null;
+
     /**
      * Create a new event instance.
-     * @param Card $card
+     * @param Ticket $ticket
+     * @param array $ticketInfo
+     * @param MiniProgram|OpenPlatformMiniProgram|OfficialAccount|OpenPlatformOfficialAccount
      * @return void
      */
-    public function __construct(Card $card)
+    public function __construct(Ticket $ticket, array $ticketInfo, $wechat = null)
     {
         //
-        $this->card = $card;
+        $this->ticket = $ticket;
+        $this->ticketInfo = $ticketInfo;
+        $this->wechat = $wechat;
     }
+
 
     /**
      * Get the channels the event should broadcast on.

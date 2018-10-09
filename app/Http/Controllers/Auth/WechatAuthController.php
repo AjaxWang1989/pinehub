@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Repositories\CustomerRepository;
+use App\Services\AppManager;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 
 class WechatAuthController extends Controller
@@ -25,22 +27,21 @@ class WechatAuthController extends Controller
 
     public function oauth2(Request $request)
     {
-        $openId = null;
-        $accessToken = null;
-        $scope = $request->get('scope', USER_AUTH_BASE);
-
-        if($scope === USER_AUTH_BASE) {
-            $accessToken = app('wechat')->officialAccountAccessToken();
-        }
-        if ($accessToken) {
-            $openId = $accessToken->openId;
-        }
+        $accessToken = app('wechat')->officeAccount()->oauth->getAccessToken($request->input('code'));
+        $openId = $accessToken['openid'];
         $customer = app('wechat')->officialAccountUser($openId);
         if ($customer) {
             $openId = $customer->platformOpenId;
         }
 
-        $this->customerRepository->updateOrCreate(['platform_open_id' => $customer->openId], $customer->toArray());
+        $customer->appId = app(AppManager::class)->currentApp->id;
+
+        $customer = $this->customerRepository->updateOrCreate([
+            'app_id' => $customer->appId,
+            'platform_app_id' => $customer->platformAppId,
+            'platform_open_id' => $customer->platformOpenId
+        ], $customer->toArray());
+        session(['customer' => $customer]);
         $redirect = $request->input('redirect_uri', null);
         if($redirect) {
             if(count(parse_query($redirect)) > 0){

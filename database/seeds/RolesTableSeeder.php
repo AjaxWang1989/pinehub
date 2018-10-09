@@ -44,6 +44,12 @@ class RolesTableSeeder extends Seeder
         ],[
             'slug' => 'app.owner',
             'display_name' => '应用拥有者'
+        ],[
+            'slug' => 'seller',
+            'display_name' => '分销员'
+        ], [
+            'slug' => 'shop.manager',
+            'display_name' => '店铺经营者'
         ]] as $item){
             factory(\App\Entities\Role::class, 1)->create($item);
         }

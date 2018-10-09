@@ -11,7 +11,7 @@ use App\Http\Requests\Admin\MemberCreateRequest;
 use App\Http\Requests\Admin\MemberUpdateRequest;
 use App\Transformers\MemberTransformer;
 use App\Transformers\MemberItemTransformer;
-use App\Repositories\UserRepository as MemberRepository;
+use App\Repositories\MemberRepository;
 use App\Http\Controllers\Controller;
 
 /**

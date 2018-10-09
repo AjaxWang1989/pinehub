@@ -42,4 +42,26 @@ trait ModelAttributesAccess
         }
         return null;
     }
+
+    public function __isset($name)
+    {
+        // TODO: Implement __isset() method.
+        return !!$this->{$name};
+    }
+
+    public function __unset($name)
+    {
+        // TODO: Implement __unset() method.
+        if(!$this->getAttribute($name)) {
+            $name = upperCaseSplit($name, '_');
+        }
+        unset($this->attributes[$name], $this->relations[$name]);
+    }
+
+//    public function scopeJsonWhere($query, $column, $operator = null, $value = null, $boolean = 'and') {
+//        $fields = explode('->', $column);
+//        $field = array_shift($fields);
+//        $key = $fields[0];
+//        return $query->where("{$field}->".$key, $operator, $value, $boolean);
+//    }
 }

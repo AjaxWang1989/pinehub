@@ -13,6 +13,7 @@ namespace App\Services;
 use App\Entities\Order;
 use App\Repositories\OrderRepositoryEloquent;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Payment\Notify\PayNotifyInterface;
 
 class PaymentNotify implements PayNotifyInterface
@@ -28,20 +29,27 @@ class PaymentNotify implements PayNotifyInterface
     {
         // TODO: Implement notifyProcess() method.
         $order = $this->order->findWhere(['code' => $data['order_no']])->first();
-        $order->status = Order::PAID;
-        $order->paidAt = Carbon::now();
         $this->offLinePayOrder($order);
-        tap($order, function (Order $order){
+        $order->transactionId = $data['transaction_id'];
+        if($data['trade_state'] === 'success'){
+            $order->tradeStatus = Order::TRADE_SUCCESS;
+            $order->status = Order::PAID;
+            $order->paidAt = Carbon::now();
+        } else {
+            $order->status = Order::PAY_FAILED;
+            $order->tradeStatus = Order::TRADE_FAILED;
+        }
+        tap($order, function (Order $order)use($data){
             $result = $order->save();
             if($result) {
                 //发送模版消息
-                $data=[];
+                $orderData=[];
                 if($order->type !== Order::OFF_LINE_PAY){
-                    $data['signed_at'] = $order->signedAt;
-                    $data['consigned_at'] = $order->consignedAt;
+                    $orderData['signed_at'] = $order->signedAt;
+                    $orderData['consigned_at'] = $order->consignedAt;
                 }
-                $data['status'] = $order->status;
-                $order->orderItems()->update($data);
+                $orderData['status'] = $order->status;
+                $order->orderItems()->update($orderData);
             }
         });
     }
