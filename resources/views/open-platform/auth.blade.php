@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>扫码支付</title>
+        <title>微信公众号授权</title>
         <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport"/>
         <link rel="stylesheet" type="text/css"  href="https://res.wx.qq.com/open/libs/weui/1.1.2/weui.min.css">
     </head>

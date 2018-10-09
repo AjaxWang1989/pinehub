@@ -70,7 +70,7 @@ class AppManager
                 return $app->officialAccount;
             });
 
-            $this->miniProgram = with($this->currentApp, function (App $app){
+            $this->miniProgram = with($this->currentApp, function (App $app) {
                 return $app->miniProgram;
             });
         }
