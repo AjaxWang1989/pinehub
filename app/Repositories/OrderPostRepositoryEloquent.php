@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\OrderPostRepository;
 use App\Entities\OrderPost;
 use App\Validators\OrderPostValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\OrderPostValidator;
  */
 class OrderPostRepositoryEloquent extends BaseRepository implements OrderPostRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

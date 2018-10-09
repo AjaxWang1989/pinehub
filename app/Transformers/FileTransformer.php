@@ -23,7 +23,17 @@ class FileTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
+            'name'       => $model->name,
+            'driver'     => $model->driver,
+            'src'        => $model->src,
+            'bucket'     => $model->bucket,
+            'encrypt'    => $model->encrypt,
+            'encrypt_key'=> $model->encryptKey,
+            'encrypt_method' => $model->encryptMethod,
+            'endpoint'   => $model->endpoint,
             'path'       => $model->path,
+            'mime_type'       => $model->mimeType,
+            'extension'  => $model->extension,
             /* place your other model properties here */
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt

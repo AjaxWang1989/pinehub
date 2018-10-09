@@ -32,6 +32,18 @@ class RolesTableSeeder extends Seeder
             'slug' => 'tester.administer',
             'display_name' => '系统测试员',
             'group_id' => 1
+        ],[
+            'slug' => 'customer',
+            'display_name' => '客户'
+        ],[
+            'slug' => 'member' ,
+            'display_name' => '会员'
+        ],[
+            'slug' => 'stranger',
+            'display_name' => '访客'
+        ],[
+            'slug' => 'app.owner',
+            'display_name' => '应用拥有者'
         ]] as $item){
             factory(\App\Entities\Role::class, 1)->create($item);
         }

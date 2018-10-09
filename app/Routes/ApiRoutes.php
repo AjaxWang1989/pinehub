@@ -10,6 +10,7 @@ namespace App\Routes;
 
 
 use App\Http\Middleware\Cross;
+use Dingo\Api\Routing\Router;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 
@@ -32,13 +33,18 @@ class ApiRoutes extends Routes
         if($this->domain){
             $second['domain'] = $this->domain;
         }
-        Log::debug('set cross');
-        $second['middleware'] = ['cross'];
-        $this->router->version($this->version, $second, function ($router){
+
+        $second['middleware'] = ['cross', 'auth.meta'];
+        $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
+            $router->any('/', function (Request $request) use ($self){
+                return 'web api version '.$self->version.', host domain '.$request->getHost();
+            });
+
             $router->get('/version', function (Request $request) use ($self){
                 return 'web api version '.$self->version.', host domain '.$request->getHost();
             });
+
             $namespace = $this->namespace;
             if($this->namespace){
                 $namespace = $this->namespace.($this->subNamespace ? $this->subNamespace : '');

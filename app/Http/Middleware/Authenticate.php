@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Factory as Auth;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class Authenticate
 {
@@ -38,7 +40,6 @@ class Authenticate
         if ($this->auth->guard($guard)->guest()) {
             return response('Unauthorized.', HTTP_STATUS_UNAUTHORIZED);
         }
-
         return $next($request);
     }
 }

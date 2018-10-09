@@ -20,25 +20,12 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\County[] $counties
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Province[] $provinces
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
- * @property-read integer  citiesCount
- * @property-read integer  provincesCount
- * @property-read integer  countiesCount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class Country extends Model implements Transformable
 {

@@ -10,34 +10,75 @@ namespace App\Services;
 
 
 use App\Entities\App;
+use App\Entities\WechatConfig;
 use App\Repositories\AppRepository;
+use App\Services\AliPay\AliPayOpenPlatform;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Lumen\Application;
+use EasyWeChat\OpenPlatform\Application as OpenPlatform;
 
+/**
+ * @property App $currentApp
+ * @property WechatConfig $officialAccount
+ * @property WechatConfig $miniProgram
+ * @property OpenPlatform $openPlatform
+ * @property AliPayOpenPlatform $aliPayOpenPlatform
+ * */
 class AppManager
 {
+    /**
+     * @var App|null
+     * */
     protected $currentApp = null;
 
+    /**
+     * @var Application|null
+     * */
     protected $app = null;
 
+    /**
+     * @var WechatConfig|null
+     * */
     protected $officialAccount = null;
 
+    /**
+     * @var OpenPlatform|null
+     * */
     protected $openPlatform = null;
 
+    protected $aliPayOpenPlatform = null;
+
+    /**
+     * @var WechatConfig|null
+     * */
     protected $miniProgram = null;
 
-    public function __construct(Application $app, AppRepository $repository)
+    public function __construct(Application $app)
     {
         $this->app = $app;
-        $request = $app->make('request');
-        $appId = $request->input('app_id', null);
+        $repository = $app->make(AppRepository::class);
+        $this->openPlatform = $this->app->make('wechat')->openPlatform();
+        $request = Request::capture();
+        $appId = $request->header('selected_appid', null);
+        $appId = $appId ? $appId : $request->query('selected_appid', null);
+
         if($appId) {
             $this->currentApp = $repository->find($appId);
             $this->officialAccount = with($this->currentApp, function (App $app){
                 return $app->officialAccount;
             });
+
             $this->miniProgram = with($this->currentApp, function (App $app) {
                 return $app->miniProgram;
             });
         }
+        $this->aliPayOpenPlatform = new AliPayOpenPlatform(config('ali.payment'));
+    }
+
+    public function __get($name)
+    {
+        // TODO: Implement __get() method.
+        return $this->{$name};
     }
 }

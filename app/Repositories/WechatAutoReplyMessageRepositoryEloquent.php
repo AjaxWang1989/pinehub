@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\WechatAutoReplyMessageRepository;
 use App\Entities\WechatAutoReplyMessage;
-use App\Validators\WechatAutoReplyMessageValidator;
 
 /**
  * Class WechatAutoReplyMessageRepositoryEloquent.
@@ -15,6 +14,7 @@ use App\Validators\WechatAutoReplyMessageValidator;
  */
 class WechatAutoReplyMessageRepositoryEloquent extends BaseRepository implements WechatAutoReplyMessageRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

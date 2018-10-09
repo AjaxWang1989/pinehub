@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\RoleRepository;
 use App\Entities\Role;
 use App\Validators\RoleValidator;
 
@@ -15,6 +15,7 @@ use App\Validators\RoleValidator;
  */
 class RoleRepositoryEloquent extends BaseRepository implements RoleRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

@@ -16,12 +16,12 @@ class CreateWechatTemplateMessages extends Migration
         //
         Schema::create('wechat_template_messages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('template_id')->comment('模版消息id');
-            $table->string('app_id')->comment('微信 app id');
+            $table->string('template_id', 16)->comment('模版消息id');
+            $table->string('app_id', 28)->comment('微信 app id');
             $table->text('content')->comment('消息模版内容');
             $table->string('primary_industry')->comment('模板所属行业的一级行业');
             $table->string('deputy_industry')->comment('模板所属行业的二级行业');
-            $table->string('title')->comment('模板标题');
+            $table->string('title', 16)->comment('模板标题');
             $table->timestamps();
             $table->index('template_id');
             $table->index('app_id');

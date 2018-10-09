@@ -10,9 +10,11 @@ namespace App\Routes;
 
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Laravel\Lumen\Application;
+use Laravel\Lumen\Routing\Router;
 
 class WebRoutes extends Routes
 {
@@ -37,15 +39,24 @@ class WebRoutes extends Routes
             $second['namespace']  = $this->namespace.($this->subNamespace ? $this->subNamespace : '');
         }
         $this->router->group($second, function ($router){
-            $this->subRoutes($router);
-            $router->get('/', function (Request $request){
-                return "pinehub official service";
+            /**
+             * @var Router
+             * */
+            tap($router, function (Router $router) {
+                $this->subRoutes($router);
+                $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request) {
+                    return "pinehub official service";
+                });
             });
+
         });
     }
 
     protected function subRoutes($router)
     {
-        $router->addRoute(['GET', 'POST'], '/{server}/serve', 'Wechat\MessageServerController@serve');
+        tap($router, function (Router $router) {
+            $router->addRoute(['GET', 'POST'], '/{server}/serve', 'Wechat\MessageServerController@serve');
+        });
+
     }
 }

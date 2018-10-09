@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\WechatMenuRepository;
 use App\Entities\WechatMenu;
-use App\Validators\WechatMenuValidator;
 
 /**
  * Class WechatMenuRepositoryEloquent.
@@ -15,6 +14,7 @@ use App\Validators\WechatMenuValidator;
  */
 class WechatMenuRepositoryEloquent extends BaseRepository implements WechatMenuRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

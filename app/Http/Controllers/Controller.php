@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\Wechat\WechatService;
+use App\Http\Resources\WechatConfig;
 use Dingo\Api\Routing\Helpers;
-use Illuminate\Contracts\Session\Session;
 use Illuminate\Session\SessionManager;
 use Laravel\Lumen\Routing\Controller as BaseController;
 
@@ -19,13 +18,24 @@ class Controller extends BaseController
     protected $session ;
 
     /**
-     * @var WechatService
+     * @var WechatConfig
      * */
-    protected $currentWechat = null;
+    protected $currentOfficialAccount;
+
+    /**
+     * @var WechatConfig
+     * */
+    protected $currentMiniProgram;
+
+    protected $wechat = null;
+
 
     public function __construct()
     {
-        $this->currentWechat = app('current_wechat');
+        $this->currentOfficialAccount = app('current_official_account');
+        $this->currentMiniProgram = app('current_mini_program');
+        $this->wechat = app('wechat');
+        $this->session = app()->has('session') ?  app('session') : null;
     }
 
     protected function response($data = null)
@@ -35,5 +45,24 @@ class Controller extends BaseController
 
     public function getList(){
 
+    }
+
+    public function __destruct()
+    {
+        // TODO: Implement __destruct() method.
+        $this->response = null;
+        $this->user = null;
+        $this->currentOfficialAccount = null;
+        $this->currentMiniProgram = null;
+        $this->auth = null;
+        $this->session = null;
+        $this->scopes = null;
+        $this->api = null;
+        $this->middleware = null;
+        $this->rateLimit = null;
+        $this->throttles = null;
+        $this->authenticationProviders = null;
+        $this->wechat = null;
+        $this->session = null;
     }
 }

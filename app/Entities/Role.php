@@ -27,36 +27,18 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string $displayName 角色显示名称
- * @property int|null $groupId 部门组织id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 角色显示名称
- * @property int|null $groupId 部门组织id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 角色显示名称
- * @property int|null $groupId 部门组织id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 角色显示名称
- * @property int|null $groupId 部门组织id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 角色显示名称
- * @property int|null $groupId 部门组织id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class Role extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
-    const SUPPER_ADMIN = 'super.admin';
-    const PLATFORM_ADMIN = 'platform.admin';
-    const FNL_ADMIN    = 'fnl.admin';
-    const GK_ADMIN     = 'gk.admin';
-    const FNL_USER     = 'fnl.user';
-    const GK_USER     = 'gk.user';
+
+    const SUPPER_ADMIN = 'super.administer';
+    const SYS_ADMIN = 'sys.administer';
+    const DEVELOPER    = 'developer.administer';
+    const TESTER     = 'tester.administer';
+    const CUSTOMER     = 'customer';
+    const MEMBER     = 'member';
+    const STRANGER =  'stranger';
     /**
      * The attributes that are mass assignable.
      *

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\AliUserRepository;
@@ -15,6 +16,7 @@ use App\Validators\AliUserValidator;
  */
 class AliUserRepositoryEloquent extends BaseRepository implements AliUserRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

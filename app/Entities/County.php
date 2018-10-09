@@ -33,31 +33,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\County whereProvinceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\County whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property int $cityId 城市ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property int $cityId 城市ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property int $cityId 城市ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property int $cityId 城市ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property int $cityId 城市ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class County extends Model implements Transformable
 {

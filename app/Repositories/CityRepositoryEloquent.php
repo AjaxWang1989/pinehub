@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\CityRepository;
@@ -15,6 +16,15 @@ use App\Validators\CityValidator;
  */
 class CityRepositoryEloquent extends BaseRepository implements CityRepository
 {
+    use Destruct;
+    protected $fieldSearchable = [
+        'code' => '=',
+        'name' => 'like',
+        'province.code' => '=',
+        'province.name' => 'like',
+        'country.code'  => '=',
+        'country.name'  => 'like'
+    ];
     /**
      * Specify Model class name
      *

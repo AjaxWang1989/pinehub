@@ -23,7 +23,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Country $country
  * @property-read \App\Entities\Province $province
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
- * @property-read integer  countiesCount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\City whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\City whereCountryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\City whereCreatedAt($value)
@@ -32,26 +31,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\City whereProvinceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\City whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int $countryId 国家ID
- * @property int $provinceId 省份ID
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class City extends Model implements Transformable
 {

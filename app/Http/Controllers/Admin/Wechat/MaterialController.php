@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Wechat;
 
-use App\Entities\WechatConfig;
 use App\Http\Requests\Admin\Wechat\ArticleCreateRequest;
 use App\Http\Requests\Admin\Wechat\ArticleUpdateRequest;
 use App\Http\Requests\Admin\Wechat\ForeverMaterialCreateRequest;
@@ -17,8 +16,6 @@ use \Illuminate\Http\Response;
 use Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -28,14 +25,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class MaterialController extends Controller
 {
-    /**
-     * MaterialsController constructor.
-     *
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * create new temporary media
@@ -69,7 +58,7 @@ class MaterialController extends Controller
     {
         $article =new Article($request->all());
         $mediaId = app('wechat')->uploadArticle($article);
-        $attributes['app_id'] = $this->currentWechat->appId;
+        $attributes['app_id'] = $this->currentOfficialAccount->appId;
         $attributes['type'] = WECHAT_NEWS_MESSAGE;
         $attributes['media_id'] = $mediaId;
         if($request->wantsJson()) {

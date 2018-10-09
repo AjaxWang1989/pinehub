@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Repositories\WechatUserRepositoryEloquent;
+use App\Repositories\CustomerRepository;
 use function GuzzleHttp\Psr7\parse_query;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log;
+
 
 class WechatAuthController extends Controller
 {
     //
-    protected $wechatUser = null;
-    public function __construct(WechatUserRepositoryEloquent $eloquent)
+    protected $customerRepository = null;
+    public function __construct(CustomerRepository $repository)
     {
-        $this->wechatUser = $eloquent;
+        $this->customerRepository = $repository;
         $this->session = app('session');
     }
 
@@ -35,11 +35,12 @@ class WechatAuthController extends Controller
         if ($accessToken) {
             $openId = $accessToken->openId;
         }
-        $wechatUser = app('wechat')->officialAccountUser($openId);
-        if ($wechatUser) {
-            $openId = $wechatUser->openId;
+        $customer = app('wechat')->officialAccountUser($openId);
+        if ($customer) {
+            $openId = $customer->platformOpenId;
         }
-        $this->wechatUser->updateOrCreate(['open_id' => $wechatUser->openId]);
+
+        $this->customerRepository->updateOrCreate(['platform_open_id' => $customer->openId], $customer->toArray());
         $redirect = $request->input('redirect_uri', null);
         if($redirect) {
             if(count(parse_query($redirect)) > 0){

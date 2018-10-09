@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\AppRepository;
@@ -15,6 +16,7 @@ use App\Validators\AppValidator;
  */
 class AppRepositoryEloquent extends BaseRepository implements AppRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *
@@ -33,6 +35,10 @@ class AppRepositoryEloquent extends BaseRepository implements AppRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        App::creating(function (App &$app) {
+            $app->id = uniqid('kdy');
+            $app->secret = str_random(32);
+        });
     }
     
 }

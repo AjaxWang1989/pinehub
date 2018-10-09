@@ -40,11 +40,24 @@ class WechatPaymentController extends Controller
             $openId = app('session')->get('open_id');
             $openId =$openId ? $openId : $request->input('open_id', null);
             $shop = $this->shopModel->find($request->input('shop_id'));
-            return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId,
-                'shop' => $shop, 'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
+            return view('payment.aggregate.wechatpay')->with([
+                'type' => Order::WECHAT_PAY,
+                'openId' => $openId,
+                'shop' => $shop,
+                'paymentApi' => $paymentApi,
+                'config' => $config,
+                'accept' => $accept,
+                'app_id' => $request->input('selected_appid', null)
+            ]);
         }catch (\Exception $exception) {
-            return view('payment.aggregate.wechatpay')->with(['type' => Order::WECHAT_PAY, 'openId' => $openId,
-                'paymentApi' => $paymentApi, 'config' => $config, 'accept' => $accept]);
+            return view('payment.aggregate.wechatpay')->with([
+                'type' => Order::WECHAT_PAY,
+                'openId' => $openId,
+                'paymentApi' => $paymentApi,
+                'config' => $config,
+                'accept' => $accept,
+                'app_id' => $request->input('selected_appid', null)
+            ]);
         }
     }
 

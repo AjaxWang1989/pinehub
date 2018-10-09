@@ -5,15 +5,14 @@ namespace App\Providers;
 use App\Ali\Oauth\AliOauthServiceProvider;
 use App\Http\Middleware\Cross;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
+use App\Services\AppManager;
 use App\Services\FileService;
 use App\Services\UIDGeneratorService;
 use Dingo\Api\Http\Request;
-use Grimzy\LaravelMysqlSpatial\SpatialServiceProvider;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Events\QueryExecuted;
-use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Filesystem\FilesystemServiceProvider;
-use Illuminate\Redis\RedisServiceProvider;
+//use Illuminate\Redis\RedisServiceProvider;
 use Illuminate\Support\Facades\{
     DB, Log, Validator
 };
@@ -21,8 +20,9 @@ use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
+use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
-use Prettus\Repository\Providers\RepositoryServiceProvider as PRepositoryServiceProvider;
+use Prettus\Repository\Providers\RepositoryServiceProvider;
 use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
 use Overtrue\LaravelWeChat\ServiceProvider as WechatLumenServiceProvider;
 
@@ -67,16 +67,15 @@ class AppServiceProvider extends ServiceProvider
             return Request::capture();
         });
         laravelToLumen($this->app)->middleware(Cross::class);
-        $this->app->register(RedisServiceProvider::class);
+        //$this->app->register(RedisServiceProvider::class);
         $this->app->register(JWTAuthServiceProvider::class);
         $this->app->register(JwtAuthGuardServiceProvider::class);
-        $this->app->register(RepositoryServiceProvider::class);
         $this->app->register(WechatLumenServiceProvider::class);
-        //$this->app->register(SpatialServiceProvider::class);
         $this->app->register(AliOauthServiceProvider::class);
         $this->app->register(FilesystemServiceProvider::class);
         $this->app->register(AliOssServiceProvider::class);
-        $this->app->register(PRepositoryServiceProvider::class);
+        $this->app->register(RepositoryServiceProvider::class);
+        $this->app->register(QrCodeServiceProvider::class);
         $this->app->singleton('uid.generator', function () {
             return new UIDGeneratorService();
         });
@@ -84,5 +83,8 @@ class AppServiceProvider extends ServiceProvider
             $this->app->register(IdeHelperServiceProvider::class);
             $this->app->register(ApiDocGeneratorServiceProvider::class);
         }
+        $this->app->singleton(AppManager::class, function (Application $app) {
+            return new AppManager($app);
+        });
     }
 }

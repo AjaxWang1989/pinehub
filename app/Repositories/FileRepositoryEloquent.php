@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\FileRepository;
@@ -15,6 +16,7 @@ use App\Validators\FileValidator;
  */
 class FileRepositoryEloquent extends BaseRepository implements FileRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

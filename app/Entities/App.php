@@ -2,36 +2,92 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class App.
+ * App\Entities\App
  *
- * @package namespace App\Entities;
+ * @property string $id app id
+ * @property int|null $userId 应用拥有者
+ * @property string $secret 应用secret
+ * @property string $name 应用名称
+ * @property string $logo 应用logo
+ * @property string|null $wechatAppId 微信公众号appid
+ * @property string|null $miniAppId 小程序appid
+ * @property string|null $openAppId api创建open platform appid
+ * @property \Carbon\Carbon|null $createdAt
+ * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $deletedAt
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\AppUser[] $appUsers
+ * @property-read \App\Entities\WechatConfig|null $miniProgram
+ * @property-read \App\Entities\WechatConfig|null $officialAccount
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\User[] $users
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereLogo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereMiniAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOpenAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereSecret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereWechatAppId($value)
+ * @mixin \Eloquent
  */
 class App extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'id',
+        'name',
+        'secret',
+        'logo',
+        'wechat_app_id',
+        'mini_app_id'
+    ];
 
     public function officialAccount(): BelongsTo
     {
-        $this->belongsTo(WechatConfig::class, 'wechat_app_id', 'app_id')->where('type', WECHAT_OFFICIAL_ACCOUNT);
+        return $this->belongsTo(WechatConfig::class, 'wechat_app_id', 'app_id')->where('type', WECHAT_OFFICIAL_ACCOUNT);
     }
 
     public function miniProgram(): BelongsTo
     {
-        $this->belongsTo(WechatConfig::class, 'wechat_app_id', 'app_id')->where('type', WECHAT_MINI_PROGRAMg);
+        return $this->belongsTo(WechatConfig::class, 'mini_app_id', 'app_id')->where('type', WECHAT_MINI_PROGRAM);
     }
 
+    public function appUsers() : HasMany
+    {
+        return $this->hasMany(AppUser::class, 'app_id', 'id');
+    }
+
+    public function users() : BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'app_users', 'app_id', 'user_id');
+    }
+
+    public function orders() : HasMany
+    {
+        return $this->hasMany(Order::class, 'app_id', 'id');
+    }
 }

@@ -9,6 +9,7 @@
 namespace App\Services\Wechat;
 
 
+use App\Entities\Customer;
 use App\Entities\WechatUser;
 use App\Exceptions\WechatMaterialArticleUpdateException;
 use App\Exceptions\WechatMaterialDeleteException;
@@ -17,7 +18,11 @@ use App\Exceptions\WechatMaterialShowException;
 use App\Exceptions\WechatMaterialStatsException;
 use App\Exceptions\WechatMaterialUploadException;
 use App\Exceptions\WechatMaterialUploadTypeException;
+use App\Services\AppManager;
 use App\Services\Wechat\Components\Authorizer;
+use App\Services\Wechat\Components\ComponentAccessToken;
+use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
+use App\Services\Wechat\Components\OfficialAccountAuthorizerInfo;
 use App\Services\Wechat\OfficialAccount\AccessToken;
 use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Http\StreamResponse;
@@ -25,6 +30,7 @@ use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\OfficialAccount\Server\Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
 use Illuminate\Support\Facades\Log;
+use Overtrue\LaravelWeChat\CacheBridge;
 
 class WechatService
 {
@@ -38,7 +44,12 @@ class WechatService
 
     protected $openPlatform = null;
 
-    public function __construct(array  $config)
+    public function __construct(array  $config = [])
+    {
+        $this->config = $config;
+    }
+
+    public function setConfig(array  $config)
     {
         $this->config = $config;
     }
@@ -46,15 +57,29 @@ class WechatService
     public function officeAccount()
     {
 
-        if(!$this->officeAccount)
-            $this->officeAccount= Factory::officialAccount($this->config['official_account']);
+        if(!$this->officeAccount) {
+            if($this->config['official_account']['app_secret']) {
+                $this->officeAccount= Factory::officialAccount($this->config['official_account']);
+            }else{
+                $appManager = app(AppManager::class);
+                $appId = $appManager->officialAccount->appId;
+                $this->officeAccount = $this->openPlatform()->officialAccount($appId);
+            }
+        }
+
+        $this->setWechatApplication($this->officeAccount, app());
+
         return ($this->officeAccount);
     }
 
     public function openPlatform()
     {
         if(!$this->openPlatform)
-            $this->openPlatform= Factory::openPlatform($this->config['open_platform']);
+            $this->openPlatform= Factory::openPlatform([]);
+        if(!empty($this->config['open_platform'])) {
+            $this->openPlatform->config->merge($this->config['open_platform']);
+        }
+        $this->setWechatApplication($this->openPlatform, app());
         return ($this->openPlatform);
     }
 
@@ -64,10 +89,27 @@ class WechatService
         return new Authorizer($authorizer['authorization_info']);
     }
 
-    public function openPlatformComponentLoginPage(string $type = 'all', string $appId = null)
+    public function openPlatformComponentAccess()
     {
-        $redirect = $this->openPlatform->config['oauth']['callback'];
-        $redirect .= $appId ? "?app_id={$appId}" : "";
+        $token = $this->openPlatform()->access_token->getToken();
+        return new ComponentAccessToken($token);
+    }
+
+    public function getOpenPlatformAuthorizer(string $appId)
+    {
+        $info = $this->openPlatform()->getAuthorizer($appId);
+        if(isset($info['MiniProgramInfo'])) {
+            return new MiniProgramAuthorizerInfo($info);
+        }else{
+            return new OfficialAccountAuthorizerInfo($info);
+        }
+    }
+
+    public function openPlatformComponentLoginPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
+    {
+        $redirect = $this->openPlatform()->config['oauth']['callback'];
+        $redirect = str_replace('{appId}', $appId, $redirect);
+        $redirect .= "?token={$token}";
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
         if($type) {
             switch ($type) {
@@ -88,10 +130,11 @@ class WechatService
         if($type) {
             $url .="&auth_type={$type}";
         }
-        if($appId) {
-            $url .= "&biz_appid={$appId}";
+
+        if($bizAppid) {
+            $url .= "&biz_appid={$bizAppid}";
         }
-        return redirect($url);
+        return $url;
     }
 
     public function materialStats()
@@ -131,7 +174,6 @@ class WechatService
     public function uploadMedia(string $type, string $path)
     {
         $result  = $this->officeAccount()->media->upload($type, $path);
-
         if(isset($result['errcode'])) {
             throw new WechatMaterialUploadException($result['errmsg'], HTTP_STATUS_INTERNAL_SERVER_ERROR);
         }
@@ -195,7 +237,6 @@ class WechatService
 
     public function material(string  $mediaId, bool $isTemp = false)
     {
-        Log::debug('is template '.($isTemp ? 'yes' : 'no'));
         if($isTemp) {
             $result = $this->officeAccount()->media->get($mediaId);
         } else {
@@ -207,6 +248,14 @@ class WechatService
         return $result;
     }
 
+    protected function setWechatApplication($app, $laravelApp)
+    {
+        if (config('wechat.defaults.use_laravel_cache')) {
+            $app['cache'] = new CacheBridge($laravelApp['cache.store']);
+        }
+        $app['request'] = $laravelApp['request'];
+    }
+
     public function payment()
     {
         if(!$this->payment)
@@ -216,8 +265,16 @@ class WechatService
 
     public function miniProgram()
     {
-        if(!$this->miniProgram)
-            $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
+        if(!$this->miniProgram){
+            if($this->config['mini_program']['app_secret']) {
+                $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
+            }else{
+                $appManager = app(AppManager::class);
+                $appId = $appManager->miniProgram->appId;
+                $this->miniProgram = $this->openPlatform()->miniProgram($appId);
+            }
+        }
+        $this->setWechatApplication($this->miniProgram, app());
         return $this->miniProgram;
     }
 
@@ -346,10 +403,10 @@ class WechatService
     public function officialAccountUser($openId)
     {
         $user = $this->officeAccount()->user->get($openId);
-        $wechatUser = new WechatUser();
-        $wechatUser->wechatAppId = $this->officeAccount()->config->get('app_id');
+        $wechatUser = new Customer();
+        $wechatUser->platformAppId = $this->officeAccount()->config->get('app_id');
         $wechatUser->appId = app('currentApp') ? app('currentApp')->appId : null;
-        $wechatUser->openId = $user['openid'];
+        $wechatUser->platformOpenId = $user['openid'];
         if(isset($user['unionid'])) {
             $wechatUser->unionId = $user['unionid'];
         }

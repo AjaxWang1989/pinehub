@@ -18,7 +18,7 @@ class FileService implements InterfaceServiceHandler
     {
         $args = func_get_args();
         $method = $args[0];
-        $args = array_shift($args);
+        array_shift($args);
         if($method === 'upload') {
             list($request, $path, $disk) = $args;
             return $this->upload($request, $path, $disk);
@@ -33,11 +33,13 @@ class FileService implements InterfaceServiceHandler
     protected function upload(Request $request, string $path, string  $disk = 'oss')
     {
         $path = ends_with('/', $path)? $path : $path.'/';
-        $file = $request->file('file');
-        $result = $file->store($path);
-        $path = Storage::url($result);
-        if($path) {
-            return $path;
+        $path = trim($path, '/');
+        $fileField = $request->input('file_field', 'file');
+        $file = $request->file($fileField);
+        $result = $file->store($path, ['disk' => $disk]);
+        //$path = Storage::url($result);
+        if($result) {
+            return $result;
         }else{
             return false;
         }

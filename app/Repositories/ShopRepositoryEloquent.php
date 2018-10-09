@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Entities\Country;
+use App\Repositories\Traits\Destruct;
 use App\Validators\Admin\ShopsValidator;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -15,11 +16,17 @@ use App\Entities\Shop;
  */
 class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
 {
+    use Destruct;
     protected $fieldSearchable = [
-        'country.name',
-        'province.name',
-        'city.name',
-        'county.name'
+        'name' => 'like',
+        'status' => '=',
+        'country.name' => 'like',
+        'province.name' => 'like',
+        'city.name' => 'like',
+        'county.name' => 'like',
+        'country_id' => '=',
+        'city_id' => '=',
+        'province_id' => '=',
     ];
     /**
      * Specify Model class name

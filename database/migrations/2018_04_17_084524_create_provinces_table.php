@@ -17,7 +17,7 @@ class CreateProvincesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('country_id')->comment('国家ID');
             $table->string('code', 6)->comment('省份编码');
-            $table->string('name')->comment('省份名称');
+            $table->string('name', 16)->comment('省份名称');
             $table->timestamps();
             $table->index('code');
             $table->index('country_id');

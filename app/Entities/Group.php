@@ -22,21 +22,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string $displayName 部门名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 部门名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 部门名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 部门名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string $displayName 部门名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class Group extends Model implements Transformable
 {

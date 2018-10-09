@@ -2,14 +2,14 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class OrderPost.
+ * App\Entities\OrderPost
  *
- * @package namespace App\Entities;
  * @property int $id
  * @property int|null $shopId 店铺ID
  * @property int|null $buyerUserId 买家ID
@@ -31,55 +31,10 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int|null $shopId 店铺ID
- * @property int|null $buyerUserId 买家ID
- * @property int $orderId 订单id
- * @property int $orderItemId 子订单id
- * @property string|null $postNo 物流订单号
- * @property string|null $postCode 收货地址邮编
- * @property string|null $postName 物流公司名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int|null $shopId 店铺ID
- * @property int|null $buyerUserId 买家ID
- * @property int $orderId 订单id
- * @property int $orderItemId 子订单id
- * @property string|null $postNo 物流订单号
- * @property string|null $postCode 收货地址邮编
- * @property string|null $postName 物流公司名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int|null $shopId 店铺ID
- * @property int|null $buyerUserId 买家ID
- * @property int $orderId 订单id
- * @property int $orderItemId 子订单id
- * @property string|null $postNo 物流订单号
- * @property string|null $postCode 收货地址邮编
- * @property string|null $postName 物流公司名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int|null $shopId 店铺ID
- * @property int|null $buyerUserId 买家ID
- * @property int $orderId 订单id
- * @property int $orderItemId 子订单id
- * @property string|null $postNo 物流订单号
- * @property string|null $postCode 收货地址邮编
- * @property string|null $postName 物流公司名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property int|null $shopId 店铺ID
- * @property int|null $buyerUserId 买家ID
- * @property int $orderId 订单id
- * @property int $orderItemId 子订单id
- * @property string|null $postNo 物流订单号
- * @property string|null $postCode 收货地址邮编
- * @property string|null $postName 物流公司名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
  */
 class OrderPost extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.

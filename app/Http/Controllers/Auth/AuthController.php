@@ -9,10 +9,12 @@ use App\Repositories\UserRepositoryEloquent;
 use App\Transformers\Api\UpdateResponseTransformer;
 use App\Transformers\AuthenticateTransformer;
 use App\Transformers\AuthPublicKeyTransformer;
+use Carbon\Carbon;
 use \Dingo\Api\Http\Request;
 use App\Http\Controllers\Controller;
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -56,11 +58,14 @@ class AuthController extends Controller
      * */
     public function authenticate(Request $request)
     {
+        $user = null;
+        $token = null;
         if($this->auth()->check()){
             $token = Auth::refresh();
-            return $this->response()->item($this->user(), new AuthenticateTransformer)->addMeta('token' , $token);
+            $user = $this->user();
         }else{
-            if($input = $this->validate($request, self::RULES,self::MESSAGES)){
+            if($input = $this->validate($request, self::RULES,self::MESSAGES)) {
+                $input['app_id'] = isset($input['app_id']) ? $input['app_id'] : null;
                 if(!($token = Auth::attempt($input))){;
                     $this->response()->error('登录密码与手机不匹配无法登录！', HTTP_STATUS_NOT_FOUND);
                 }
@@ -74,10 +79,15 @@ class AuthController extends Controller
                     $user->lastLoginAt = date('Y-m-d h:m:s');
                     $user->save();
                 });
-
-                return $this->response()->item($user, new AuthenticateTransformer)->addMeta('token', $token);
             }
         }
+        $tokenMeta =  [
+            'token' =>$token,
+            'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
+            'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
+        ];
+        Cache::set($token, $tokenMeta, config('jwt.refresh_ttl'));
+        return $this->response()->item($user, new AuthenticateTransformer)->addMeta('token' , $tokenMeta);
         return null;
     }
 

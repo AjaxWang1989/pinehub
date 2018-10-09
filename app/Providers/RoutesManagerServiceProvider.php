@@ -11,6 +11,8 @@ use App\Routes\PaymentRoutes;
 use App\Routes\Routes;
 use App\Routes\WebApiRoutes;
 use App\Routes\WebRoutes;
+use App\Routes\WechatRoutes;
+use Illuminate\Http\Response;
 use Illuminate\Routing\Router;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -81,8 +83,15 @@ class RoutesManagerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->request = Request::capture();
-        Log::debug('url '. $this->request->fullUrl());
+        Log::debug('request data ',[
+            'url' => $this->request->fullUrl(),
+            'method' => $this->request->method()
+        ]);
         $this->host = $this->request->getHost();
+        if(preg_match(IP_REGEX, $this->host)) {
+            exit('不能直接使用ip访问本站的！');
+            //return Response::create(['message' => '不能直接使用ip访问本站的！'])->send();
+        }
         list( $domain, $prefix) = domainAndPrefix($this->request);
         $this->prefix = $prefix;
         $this->domain = $domain;
@@ -195,6 +204,14 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         ];
                         break;
                     }
+                    case env('WEB_OPEN_PLATFORM_PREFIX'):{
+                        $this->config = [
+                            'domain' => $this->host,
+                            'version' => env('WEB_VERSION'),
+                            'prefix'  => env('WEB_OPEN_PLATFORM_PREFIX')
+                        ];
+                        break;
+                    }
                     default:{
                         $this->config = [
                             'domain' => $this->host,
@@ -290,7 +307,13 @@ class RoutesManagerServiceProvider extends ServiceProvider
                         });
                         break;
                     }
-
+                    case env('WEB_OPEN_PLATFORM_PREFIX'):{
+                        $this->app->singleton('app.routes',function (){
+                            return new WechatRoutes($this->app, $this->config['version'], 'Wechat',
+                                $this->config['prefix'], $this->config['domain']);
+                        });
+                        break;
+                    }
                     default: {
                         $this->app->singleton('app.routes',function (){
                             return new WebRoutes($this->app, $this->config['version'] , null,

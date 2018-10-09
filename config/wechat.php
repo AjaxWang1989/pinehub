@@ -33,7 +33,7 @@ return [
          */
         'log' => [
             'level' => env('WECHAT_LOG_LEVEL', 'debug'),
-            'file' => env('WECHAT_LOG_FILE', storage_path('logs/wechat.log')),
+            'file' => storage_path(env('WECHAT_LOG_FILE', 'logs/wechat.log')),
         ],
     ],
 
@@ -46,7 +46,7 @@ return [
          */
          'open_platform' => [
              'uri' => 'serve',
-             'action' => Overtrue\LaravelWeChat\Controllers\OpenPlatformController::class,
+             'action' => \App\Http\Controllers\Wechat\OpenPlatformController::class,
              'attributes' => [
                  'prefix' => 'open-platform',
                  'middleware' => null,
@@ -72,7 +72,7 @@ return [
              */
              'oauth' => [
                  'scopes'   => array_map('trim', explode(',', env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_SCOPES', 'snsapi_userinfo'))),
-                 'callback' => env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_CALLBACK', '/examples/oauth_callback.php'),
+                 'callback' => webUriGenerator(env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '/examples/oauth_callback.php')),
              ],
         ],
     ],
@@ -86,6 +86,9 @@ return [
              'secret'  => env('WECHAT_OPEN_PLATFORM_SECRET', ''),
              'token'   => env('WECHAT_OPEN_PLATFORM_TOKEN', ''),
              'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
+             'oauth' => [
+                 'callback' => webUriGenerator(env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '/examples/oauth_callback.php'), '', env('WEB_DOMAIN')),
+             ],
          ],
      ],
 

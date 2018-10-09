@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\WechatUserRepository;
 use App\Entities\WechatUser;
-use App\Validators\WechatUserValidator;
 
 /**
  * Class WechatUserRepositoryEloquent.
@@ -15,6 +14,7 @@ use App\Validators\WechatUserValidator;
  */
 class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *
@@ -29,6 +29,7 @@ class WechatUserRepositoryEloquent extends BaseRepository implements WechatUserR
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws
      */
     public function boot()
     {

@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\TakeOutCarRepository;
 use App\Entities\TakeOutCar;
-use App\Validators\TakeOutCarValidator;
 
 /**
  * Class TakeOutCarRepositoryEloquent.
@@ -15,6 +14,7 @@ use App\Validators\TakeOutCarValidator;
  */
 class TakeOutCarRepositoryEloquent extends BaseRepository implements TakeOutCarRepository
 {
+    use Destruct;
     /**
      * Specify Model class name
      *

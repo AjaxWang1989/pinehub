@@ -14,6 +14,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\Merchandise
  *
  * @property int $id
+ * @property string|null $appId 系统appid
  * @property string $code 产品编号
  * @property string $name 产品名称
  * @property string $mainImage 主图
@@ -33,6 +34,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\SKUProduct[] $skuProducts
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCreatedAt($value)
@@ -51,56 +53,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property string $mainImage 主图
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property string $mainImage 主图
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property string $mainImage 主图
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property string $mainImage 主图
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
- * @property string $mainImage 主图
- * @property float $originPrice 原价
- * @property float $sellPrice 售价
- * @property float $costPrice 成本价格
- * @property float $factoryPrice 工厂价格
- * @property int $stockNum 库存
- * @property int $sellNum 已售出数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property string|null $deletedAt
  */
 class Merchandise extends Model implements Transformable
 {
