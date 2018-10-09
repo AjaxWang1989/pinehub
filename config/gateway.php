@@ -17,6 +17,7 @@ return [
     'web' => [
         'image' => env('IMAGE_WEB_GATEWAY', 'image'),
         'oauth' => env('OAUTH_WEB_GATEWAY', 'oauth'),
-        'wxopen' => env('WECHAT_OPEN_PLATFORM_WEB_GATEWAY', 'wxopen')
+        'wxopen' => env('WECHAT_OPEN_PLATFORM_WEB_GATEWAY', 'wxopen'),
+        'h5' => env('H5_WEB_GATEWAY', 'h5')
     ]
 ];
