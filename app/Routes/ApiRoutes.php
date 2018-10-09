@@ -11,7 +11,7 @@ namespace App\Routes;
 
 use App\Http\Middleware\Cross;
 use Dingo\Api\Routing\Router;
-use Illuminate\Support\Facades\Log;
+use Dingo\Api\Http\Request;
 use Laravel\Lumen\Application;
 
 class ApiRoutes extends Routes
