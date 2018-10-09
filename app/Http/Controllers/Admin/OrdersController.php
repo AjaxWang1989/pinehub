@@ -20,7 +20,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 
-class OldOrdersController extends Controller
+class OrdersController extends Controller
 {
     /**
      * @var OrderRepository
