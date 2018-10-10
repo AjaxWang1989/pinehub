@@ -22,8 +22,8 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
             'origin_price' => $model->merchandise->originPrice,
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
-            'label' => explode(',',$model->label),
-            'introduction' => $model->introduction,
+            'tags' => explode(',',$model->tags),
+            'describe' => $model->describe,
             'main_image' => $model->merchandise->mainImage,
         ];
     }
