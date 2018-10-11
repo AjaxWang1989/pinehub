@@ -162,16 +162,12 @@ class OrderController extends Controller
 
     public function orders(string  $status){
         $user = $this->user();
-        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
-        if ($shopUser){
-            $userId = $shopUser['id'];
-            $items = $this->orderRepository->allOrders($status,$userId);
+        $customerId = $user['id'];
+            $items = $this->orderRepository->orders($status,$customerId);
             foreach ($items as $k => $v){
                 $items[$k]['order_item_merchandises'] = $this->orderItemRepository->OrderItemMerchandises($v['id']);
             }
             return $this->response()->paginator($items,new StatusOrdersTransformer());
-        }
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**

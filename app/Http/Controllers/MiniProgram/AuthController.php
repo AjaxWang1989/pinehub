@@ -103,13 +103,12 @@ class AuthController extends Controller
 
     public function mvpLogin(string $code)
     {
-//        $mpSession = app('wechat')->miniProgram()->auth->session($code);
-        $mpSession = ['open_id'=>'xcx0987654321'];
-        if($mpSession && ($wechatUser = $this->mpUserRepository->findByField('platform_open_id', $mpSession['open_id'])->first())) {
-            $param = array('platform_open_id'=>$wechatUser['platform_open_id'],'password'=>$wechatUser['session_key']);
+        $mpSession = app('wechat')->miniProgram()->auth->session($code);
+        if($mpSession && ($mpUser = $this->mpUserRepository->findByField('platform_open_id', $mpSession['open_id'])->first())) {
+            $param = array('platform_open_id'=>$mpUser['platform_open_id'],'password'=>$mpUser['session_key']);
             $token = Auth::attempt($param);
             $wechatUser['token'] = $token;
-            return $this->response()->item($wechatUser, new MvpLoginTransformer());
+            return $this->response()->item($mpUser, new MvpLoginTransformer());
         }
         return $this->response(new JsonResponse(['user_info' => $mpSession]));
     }
@@ -122,16 +121,16 @@ class AuthController extends Controller
     public function saveMobile(string $code)
     {
         $mpSession = app('wechat')->miniProgram()->auth->session($code);
-        if($mpSession && ($wechatUser = $this->wechatUserRepository->findByField('open_id', $mpSession['open_id']))) {
+        if($mpSession && ($mpUser = $this->wechatUserRepository->findByField('open_id', $mpSession['open_id']))) {
             $userMobile = $this->userRepository->findWhere(['mobile'=>$mpSession['mobile']])->first();
             if ($userMobile){
                 return $this->response(new JsonResponse(['user_info' => true]));
             }else{
-                $wechatUser['mobile'] = $mpSession['mobile'];
-                $wechatUser = $wechatUser->toArray($wechatUser);
-                $userCreate = $this->userRepository->create($wechatUser);
+                $mpUser['mobile'] = $mpSession['mobile'];
+                $mpUser = $mpUser->toArray($mpUser);
+                $userCreate = $this->userRepository->create($mpUser);
                 $customerUpdate = ['mobile'=>$mpSession['mobile'],'member_id'=>$userCreate['id']];
-                $item = $this->mpUserRepository->update($customerUpdate,$wechatUser['id']);
+                $item = $this->mpUserRepository->update($customerUpdate,$mpUser['id']);
                 return $this->response(new JsonResponse(['user_info' => true]));
             }
         }

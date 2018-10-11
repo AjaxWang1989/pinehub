@@ -104,7 +104,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
             return $order->select([
-                DB::raw('orders.id,orders.code,orders.status,orders.receiver_name,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount')
+                DB::raw('orders.id,orders.code,orders.status,orders.receiver_name,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount,orders.created_at')
             ])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
@@ -130,7 +130,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
             return $order->select([
-                DB::raw('orders.id,orders.code,orders.status,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount')
+                DB::raw('orders.id,orders.code,orders.status,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount,orders.created_at,')
                 ])
                 ->where(['shop_id'=>$userId])
                 ->where('send_time', '>=', $startAt)
@@ -146,13 +146,23 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param string $limit
      * @return mixed
      */
-    public function allOrders(string $status,int $userId)
+    public function orders(string $status,int $customerId)
     {
-        $this->scopeQuery(function (Order $order) use($status,$userId){
+        $where = [];
+        if ($status == 'success'){
+            $status = 300;
+            $where = ['customer_id'=>$customerId,'status'=>$status];
+        }elseif ($status == 'completed'){
+            $status = 500;
+            $where = ['customer_id'=>$customerId,'status'=>$status];
+        }elseif ($status == 'all'){
+            $where = ['customer_id'=>$customerId];
+        }
+        $this->scopeQuery(function (Order $order) use($where){
             return $order->select([
-                    DB::raw('id,code,type,merchandise_num,payment_amount,total_amount,status,receiver_address')
+                    DB::raw('id,code,type,merchandise_num,payment_amount,total_amount,status,receiver_address,created_at')
                 ])
-                ->where(['shop_id'=>$userId,'status'=>$status]);
+                ->where($where);
         });
         return $this->paginate();
     }

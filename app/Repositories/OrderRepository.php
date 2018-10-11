@@ -39,7 +39,7 @@ interface OrderRepository extends RepositoryInterface
      * @param $userId
      * @return mixed
      */
-    public function allOrders(string $status,int $userId);
+    public function orders(string $status,int $customerId);
 
     /**
      * @param array $request
