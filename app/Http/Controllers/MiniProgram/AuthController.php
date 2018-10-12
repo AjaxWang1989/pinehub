@@ -24,6 +24,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Response\JsonResponse;
+use Illuminate\Support\Facades\Session;
+use App\Services\Wechat\MpBizDataCrypt;
 
 class AuthController extends Controller
 {
@@ -55,11 +57,32 @@ class AuthController extends Controller
     public function registerUser(CreateRequest $request)
     {
         $mpUser = $request->all();
-        $mpUser = $this->mpUserRepository->create($mpUser);
-        $param = array('platform_app_id'=>$mpUser['platform_app_id'],'password'=>$mpUser['session_key']);
-        $token = Auth::attempt($param);
-        $mpUser['token'] = $token;
-        return $this->response()->item($mpUser, new MpUserTransformer());
+        $accessToken = $request->input('access_token', null);
+        $session = cache($accessToken.'_session');
+        $miniAppId = $this->appRepository->findWhere(['id'=>cache($accessToken)])->first();
+        $mp = new MpBizDataCrypt($miniAppId['mini_app_id'], $session['session_key']);
+        $errCode = $mp->decryptData($mpUser['encryptedData'], $mpUser['iv'], $data );
+        if ($errCode == 0) {
+            $data=json_decode($data,true);
+            $mpUser['app_id'] = cache($accessToken);
+            $mpUser['platform_app_id'] = $miniAppId['mini_app_id'];
+            $mpUser['union_id'] = $data['unionId'];
+            $mpUser['platform_open_id'] = $data['openId'];
+            $mpUser['session_key'] = $session['session_key'];
+            $mpUser['avatar'] = $data['avatarUrl'];
+            $mpUser['country'] = $data['country'];
+            $mpUser['province'] = $data['province'];
+            $mpUser['city'] = $data['city'];
+            $mpUser['sex'] = $data['gender'];
+            $mpUser = $this->mpUserRepository->create($mpUser);
+            $param = array('platform_app_id'=>$mpUser['platform_app_id'],'password'=>$mpUser['session_key']);
+            $token = Auth::attempt($param);
+            $mpUser['token'] = $token;
+            return $this->response()->item($mpUser, new MpUserTransformer());
+        } else {
+            return $this->response(new JsonResponse(['err_code' => $errCode]));
+        }
+
     }
 
     /**
@@ -101,13 +124,15 @@ class AuthController extends Controller
      * @return \Dingo\Api\Http\Response
      */
 
-    public function mvpLogin(string $code)
+    public function mvpLogin(string $code, Request $request)
     {
+        $accessToken = $request->input('access_token', null);
         $mpSession = app('wechat')->miniProgram()->auth->session($code);
+        cache([$accessToken.'_session'=> $mpSession], 60);
         if($mpSession && ($mpUser = $this->mpUserRepository->findByField('platform_open_id', $mpSession['open_id'])->first())) {
             $param = array('platform_open_id'=>$mpUser['platform_open_id'],'password'=>$mpUser['session_key']);
             $token = Auth::attempt($param);
-            $wechatUser['token'] = $token;
+            $mpUser['token'] = $token;
             return $this->response()->item($mpUser, new MvpLoginTransformer());
         }
         return $this->response(new JsonResponse(['user_info' => $mpSession]));
@@ -118,22 +143,25 @@ class AuthController extends Controller
      * @param string $code
      * @return \Dingo\Api\Http\Response
      */
-    public function saveMobile(string $code)
+    public function saveMobile(Request $request)
     {
-        $mpSession = app('wechat')->miniProgram()->auth->session($code);
-        if($mpSession && ($mpUser = $this->wechatUserRepository->findByField('open_id', $mpSession['open_id']))) {
-            $userMobile = $this->userRepository->findWhere(['mobile'=>$mpSession['mobile']])->first();
-            if ($userMobile){
-                return $this->response(new JsonResponse(['user_info' => true]));
-            }else{
-                $mpUser['mobile'] = $mpSession['mobile'];
-                $mpUser = $mpUser->toArray($mpUser);
-                $userCreate = $this->userRepository->create($mpUser);
-                $customerUpdate = ['mobile'=>$mpSession['mobile'],'member_id'=>$userCreate['id']];
-                $item = $this->mpUserRepository->update($customerUpdate,$mpUser['id']);
-                return $this->response(new JsonResponse(['user_info' => true]));
-            }
+        $user = $this->user();
+        $mpUser = $request->all();
+        $accessToken = $request->input('access_token', null);
+        $session = cache($accessToken.'_session');
+        $miniAppId = $this->appRepository->findWhere(['id'=>cache($accessToken)])->first();
+        $mp = new MpBizDataCrypt($miniAppId['mini_app_id'], $session['session_key']);
+        $errCode = $mp->decryptData($mpUser['encryptedData'], $mpUser['iv'], $data );
+        if ($errCode == 0){
+            $data=json_decode($data,true);
+            $user['mobile'] = $data['phoneNumber'];
+            $user = $user->toArray($user);
+            $userCreate = $this->userRepository->create($user);
+            $customerUpdate = ['mobile'=>$user['mobile'],'member_id'=>$userCreate['id']];
+            $item = $this->mpUserRepository->update($customerUpdate,$mpUser['id']);
+            return $this->response(new JsonResponse(['user_info' => $item]));
+        }else{
+            return $this->response(new JsonResponse(['err_code' => $errCode]));
         }
-        return $this->response(new JsonResponse(['user_info' => $mpSession]));
     }
 }
