@@ -9,9 +9,11 @@
 namespace App\Services\Wechat;
 
 
+use App\Services\AppManager;
+
 class MpBizDataCrypt
 {
-    private $appid;
+    private $app;
     private $sessionKey;
 
     const OK = 0;
@@ -23,12 +25,12 @@ class MpBizDataCrypt
     /**
      * 构造函数
      * @param $sessionKey string 用户在小程序登录后获取的会话密钥
-     * @param $appid string 小程序的appid
+     * @param $app AppManager
      */
-    public function __construct( $appid, $sessionKey)
+    public function __construct( $app, $sessionKey)
     {
         $this->sessionKey = $sessionKey;
-        $this->appid = $appid;
+        $this->app = $app;
     }
 
     /**
@@ -37,18 +39,18 @@ class MpBizDataCrypt
      * @param $iv string 与用户数据一同返回的初始向量
      * @param $data string 解密后的原文
      *
-     * @return int 成功0，失败返回对应的错误码
+     * @return array 成功0，失败返回对应的错误码
      */
-    public function decryptData( $encryptedData, $iv, &$data )
+    public function decryptData( $encryptedData, $iv )
     {
         if (strlen($this->sessionKey) != 24) {
-            return MpBizDataCrypt::ILLEGAL_AESKEY;
+            return [self::ILLEGAL_AESKEY, null];
         }
         $aesKey=base64_decode($this->sessionKey);
 
 
         if (strlen($iv) != 24) {
-            return MpBizDataCrypt::ILLEGAL_IV;
+            return [self::ILLEGAL_IV, null];
         }
         $aesIV=base64_decode($iv);
 
@@ -59,13 +61,15 @@ class MpBizDataCrypt
         $dataObj=json_decode( $result );
         if( $dataObj  == NULL )
         {
-            return MpBizDataCrypt::ILLEGAL_BUFFER;
+            return [self::ILLEGAL_BUFFER, null];
         }
-        if( $dataObj->watermark->appid != $this->appid )
+        if($this->app->miniProgram && $dataObj->watermark->appid != $this->app->miniProgram->appId )
         {
-            return MpBizDataCrypt::ILLEGAL_BUFFER;
+            return [self::ILLEGAL_BUFFER, null];
         }
-        $data = $result;
-        return MpBizDataCrypt::OK;
+        $data = json_decode($result, true);
+        $data['session_key'] = $this->sessionKey;
+        $data['app_id'] = $this->app->id;
+        return [self::OK, $data];
     }
 }

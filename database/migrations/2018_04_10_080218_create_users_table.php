@@ -26,6 +26,7 @@ class CreateUsersTable extends Migration
             $table->string('city', 16)->nullable()->comment('城市');
             $table->string('province', 16)->nullable()->comment('省份');
             $table->string('country', 16)->nullable()->comment('国家');
+            $table->float('balance')->default('0')->comment('用户余额');
             $table->unsignedInteger('can_use_score')->default(0)->comment('用户可用积分');
             $table->unsignedInteger('score')->default(0)->comment('用户积分');
             $table->unsignedInteger('total_score')->default(0)->comment('用户总积分');

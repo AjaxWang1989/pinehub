@@ -18,5 +18,4 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface MpUserRepository extends RepositoryInterface
 {
     //
-//    public function  a();
 }

@@ -33,6 +33,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $country 国家
  * @property int $canUseScore 用户可用积分
  * @property int $score 用户积分
+ * @property double|null $balance 用户余额
  * @property int $totalScore 用户总积分
  * @property int $vipLevel VIP等级
  * @property \Carbon\Carbon $lastLoginAt 最后登录时间
@@ -103,7 +104,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     protected $fillable = [
         'app_id','mobile','user_name','nickname','real_name','password','sex','avatar','city','province',
         'country','can_use_score','score','total_score','vip_level','last_login_at','status','order_count',
-        'channel','register_channel','tags','mobile_company'
+        'channel','register_channel','tags','mobile_company','balance'
     ];
 
     /**

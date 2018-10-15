@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 use App\Http\Requests\CreateRequest;
+use App\Services\AppManager;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
 use App\Repositories\MerchandiseRepository;
@@ -46,11 +47,13 @@ class ShoppingCartController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function addMerchandise(CreateRequest $request){
-        $accessToken = $request->input('access_token', null);
-        $appId = Cache::get($accessToken);
+        $appId = app(AppManager::class)->getAppId();
         $user = $this->user();
         $shoppingCart = $request->all();
-        $shopMerchandise = $this->shopMerchandiseRepository->findWhere(['shop_id'=>$shoppingCart['store_id'],'merchandise_id'=>$shoppingCart['merchandise_id']])->first();
+        $shopMerchandise = $this->shopMerchandiseRepository->findWhere([
+            'shop_id'=>$shoppingCart['store_id'],
+            'merchandise_id'=>$shoppingCart['merchandise_id']
+        ])->first();
         if ($shopMerchandise['stock_num'] <=0){
             return $this->response(new JsonResponse(['message' => '此商品没有库存了']));
         }

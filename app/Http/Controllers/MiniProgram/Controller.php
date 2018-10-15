@@ -12,6 +12,7 @@ use App\Entities\MpUser;
 use App\Http\Controllers\Controller as BaseController;
 use App\Repositories\AppRepository;
 use App\Services\AppManager;
+use Illuminate\Support\Facades\Request as LRequest;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -38,5 +39,33 @@ class Controller extends BaseController
         if(isset($app)) {
             app(AppManager::class)->setCurrentApp($app);
         }
+    }
+
+    public function session() {
+        $accessToken = LRequest::input('access_token', null);
+        $session = [];
+        if($accessToken){
+            $session = Cache::get($accessToken.'_session');
+        }else{
+            $user  = Auth::user();
+            if($user) {
+                with($user, function (MpUser $user) use(&$session){
+                    $session['session_key'] = $user->sessionKey;
+                    $session['open_id'] = $user->platformOpenId;
+                    return $user;
+                });
+            }else{
+                $session = null;
+            }
+
+        }
+        return $session;
+    }
+
+    /**
+     * @return MpUser
+     * */
+    public function mpUser() {
+        return $this->user();
     }
 }

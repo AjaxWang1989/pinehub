@@ -24,6 +24,7 @@ class MpUserInfoTransformer extends TransformerAbstract
             'province' => $model->province,
             'city' => $model->city,
             'sex' => $model->sex,
+            'ticket_num' => $model->ticketNum,
         ];
     }
 }

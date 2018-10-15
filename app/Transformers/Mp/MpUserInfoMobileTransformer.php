@@ -24,10 +24,11 @@ class MpUserInfoMobileTransformer extends TransformerAbstract
             'province' => $model->province,
             'city' => $model->city,
             'sex' => $model->sex,
-            'shop_id' => $model->shopId,
+            'ticket_num' => $model->ticketNum,
             'mobile' => $model->member->mobile,
             'vip_level' => $model->member->vipLevel,
             'total_score'=> $model->member->totalScore,
+            'balance' => $model->member->balance,
         ];
     }
 }

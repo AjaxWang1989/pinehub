@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Entities\WechatConfig;
 use App\Repositories\WechatConfigRepositoryEloquent;
 use App\Services\AppManager;
+use App\Services\Wechat\MpBizDataCrypt;
 use App\Services\Wechat\WechatService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
@@ -61,6 +62,12 @@ class WechatServiceProvider extends ServiceProvider
 
         $this->app->singleton('current_mini_program', function(Application $app) {
             return $app->make(AppManager::class)->miniProgram;
+        });
+
+        $this->app->singleton('bizDataCrypt', function (Application $app, array $paramters) {
+            $appManger = $paramters[0];
+            $sessionKey = $paramters[1];
+            return new MpBizDataCrypt($appManger, $sessionKey);
         });
     }
 }
