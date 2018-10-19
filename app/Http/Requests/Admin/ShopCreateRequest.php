@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Entities\Shop;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class ShopCreateRequest extends FormRequest
 {
@@ -25,7 +27,7 @@ class ShopCreateRequest extends FormRequest
     {
         return [
             //
-            'name'           => [ 'string', 'size:32'],
+            'name'           => ['string', 'max:16'],
             'user_id'        => ['integer', 'exists:users,id'],
             'description'    => ['string'],
             'country_id'     => ['required', 'integer', 'exists:countries,id'],
@@ -37,7 +39,7 @@ class ShopCreateRequest extends FormRequest
             'lat'            => ['required', 'numeric'],
             'manager_mobile' => ['regex:'.MOBILE_PATTERN, 'not_exists:users,mobile'],
             'manager_name'   => ['string', 'max:16'],
-            'status'         => ['integer', 'in:0,1,2,3']
+            'status'         => ['integer', Rule::in(Shop::STATUS_WAIT,Shop::STATUS_OPEN,Shop::STATUS_CLOSE,Shop::STATUS_LOCK)]
         ];
     }
 }

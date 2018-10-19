@@ -249,7 +249,7 @@ class OrderBuilder implements InterfaceServiceHandler
             function ( Collection $orderItem){
             $subOrder = null;
             if(isset($orderItem['sku_product_id']) && $orderItem['sku_product_id']) {
-                if($orderItem['activity_id']) {
+                if($orderItem['activity_merchandises_id']) {
 //                    $repository = app()->make(ActivityMerchandiseRepository::class);
 //                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
 //                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
@@ -273,21 +273,21 @@ class OrderBuilder implements InterfaceServiceHandler
                 $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['customer_id']);
                 $subOrder = $subOrder->merge( $orderItemProduct);
             }elseif (isset($orderItem['merchandise_id'])) {
-                if($orderItem['activity_id']) {
+                if($orderItem['activity_merchandises_id']) {
                     $repository = app()->make(ActivityMerchandiseRepository::class);
                     $goods = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
-                        return $merchandise->whereMerchandiseId($orderItem['merchandise_id']);
+                        return $merchandise->with('merchandise')->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
                 }elseif($orderItem['shop_id']) {
                     $repository = app()->make(ShopMerchandiseRepository::class);
                     $goods = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
-                        return $merchandise->whereMerchandiseId($orderItem['merchandise_id']);
+                        return $merchandise->with('merchandise')->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
+
                 }else{
                     $repository = $this->merchandise;
                     $goods = $repository->find($orderItem['merchandise_id']);
                 }
-
                 if(!$goods) {
                     throw new NotFoundResourceException('购买产品不存在！');
                 }
@@ -295,7 +295,6 @@ class OrderBuilder implements InterfaceServiceHandler
                 $subOrder = $this->buildOrderItem($goods, $orderItem['quality'], $orderItem['customer_id']);
                 $subOrder = $subOrder->merge( $orderItemProduct);
             }
-
             if($subOrder){
                 $this->checkOrderItem($subOrder, $orderItem->toArray());
             }
@@ -363,8 +362,7 @@ class OrderBuilder implements InterfaceServiceHandler
             ]));
         }
 
-
-        $this->merchandise($model, $quality);
+//        $this->merchandise($model, $quality);
 
         $data['customer_id'] = $customerId;
         $data['shop_id'] = isset($this->input['shop_id']) ? $this->input['shop_id'] : null;
@@ -394,20 +392,30 @@ class OrderBuilder implements InterfaceServiceHandler
             $this->merchandise($model, $quality);
         }
 
-        $data = $model->only([
+        $data['quality'] = $quality;
+        $merchandise = null;
+        if ($model instanceof SKUProduct) {
+            $data['merchandise_id'] = $model->merchandiseId;
+            $data['sku_product_id'] = $model->id;
+            $merchandise = $model->merchandise;
+        }elseif ($model instanceof Merchandise) {
+            $data['merchandise_id'] = $model->id;
+            $merchandise = $model;
+        }elseif ($model instanceof ShopMerchandise) {
+            $data['merchandise_id'] = $model->merchandiseId;
+            $merchandise = $model->merchandise;
+        }elseif ($model instanceof ShopProduct) {
+            $data['merchandise_id'] = $model->merchandiseId;
+            $data['sku_product_id'] = $model->skuProductId;
+            $merchandise = $model->merchandise;
+        }
+        $data = array_merge($data, $merchandise->only([
             'origin_price',
             'sell_price',
             'cost_price',
             'main_image',
             'name'
-        ]);
-        $data['quality'] = $quality;
-        if ($model instanceof SKUProduct) {
-            $data['merchandise_id'] = $model->merchandiseId;
-            $data['sku_product_id'] = $model->id;
-        }elseif ($model instanceof Merchandise) {
-            $data['merchandise_id'] = $model->id;
-        }
+        ]));
         return collect($data);
     }
 

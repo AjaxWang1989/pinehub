@@ -115,6 +115,10 @@ class Shop extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess, SpatialTrait;
 
+    const STATUS_WAIT  = 0;
+    const STATUS_OPEN  = 1;
+    const STATUS_CLOSE = 2;
+    const STATUS_LOCK  = 3;
     /**
      * @var Collection
      * */

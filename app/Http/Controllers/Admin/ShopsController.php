@@ -65,13 +65,7 @@ class ShopsController extends Controller
     public function index()
     {
         $shops = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($shops, new ShopItemTransformer());
-        }
-
-        return view('shops.index', compact('shops'));
+        return $this->response()->paginator($shops, new ShopItemTransformer());
     }
 
     /**
@@ -117,21 +111,13 @@ class ShopsController extends Controller
             $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
+
         $data['wechat_app_id'] = $appManager->officialAccount->appId;
         $data['ali_app_id'] = $appManager->aliPayOpenPlatform->config['app_id'];
 
         $shop = $this->repository->create($data);
-        $response = [
-            'message' => 'Shop created.',
-            'data'    => $shop->toArray(),
-        ];
 
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($shop, new ShopTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($shop, new ShopTransformer());
     }
 
 
@@ -204,13 +190,8 @@ class ShopsController extends Controller
     public function show($id)
     {
         $shop = $this->repository->find($id);
+        return $this->response()->item($shop, new ShopTransformer());
 
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($shop, new ShopTransformer());
-        }
-
-        return view('shops.show', compact('shop'));
     }
 
     /**
@@ -250,18 +231,7 @@ class ShopsController extends Controller
         }
 
        $shop = $this->repository->update($data, $id);
-
-       $response = [
-           'message' => 'Shop updated.',
-           'data'    => $shop->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($shop, new ShopTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($shop, new ShopTransformer());
     }
 
 

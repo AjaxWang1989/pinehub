@@ -9,7 +9,9 @@
 namespace App\Http\Response;
 
 
-class UpdateResponse
+use Illuminate\Contracts\Support\Arrayable;
+
+class UpdateResponse implements Arrayable
 {
     protected $content = [];
 
@@ -20,6 +22,11 @@ class UpdateResponse
 
     public function content()
     {
+        return $this->content;
+    }
+    public function toArray()
+    {
+        // TODO: Implement toArray() method.
         return $this->content;
     }
 }

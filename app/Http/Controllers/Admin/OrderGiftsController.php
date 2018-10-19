@@ -60,13 +60,7 @@ class OrderGiftsController extends Controller
             Log::debug('order gift type '.$type);
             return $model;
         })->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($orderGifts, new OrderGiftItemTransformer());
-        }
-
-        return view('orderGifts.index', compact('orderGifts'));
+        return $this->response()->paginator($orderGifts, new OrderGiftItemTransformer());
     }
 
     /**
@@ -82,18 +76,7 @@ class OrderGiftsController extends Controller
     {
         $data = $request->all();
         $orderGift = $this->repository->create($data);
-
-        $response = [
-            'message' => 'OrderGift created.',
-            'data'    => $orderGift->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($orderGift, new OrderGiftTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($orderGift, new OrderGiftTransformer());
     }
 
     /**
@@ -106,13 +89,7 @@ class OrderGiftsController extends Controller
     public function show($id)
     {
         $orderGift = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($orderGift, new OrderGiftTransformer());
-        }
-
-        return view('orderGifts.show', compact('orderGift'));
+        return $this->response()->item($orderGift, new OrderGiftTransformer());
     }
 
     /**
@@ -135,7 +112,7 @@ class OrderGiftsController extends Controller
      * @param  OrderGiftUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */

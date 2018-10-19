@@ -52,13 +52,7 @@ class MemberCardsController extends Controller
     public function index()
     {
         $memberCards = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($memberCards, new MemberCardItemTransformer());
-        }
-
-        return view('memberCards.index', compact('memberCards'));
+        return $this->response()->paginator($memberCards, new MemberCardItemTransformer());
     }
 
     /**
@@ -85,17 +79,7 @@ class MemberCardsController extends Controller
         }
         if($data['wechat_app_id'] && $data['sync'])
             Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
-        $response = [
-            'message' => 'MemberCard created.',
-            'data'    => $memberCard->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($memberCard, new MemberCardTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($memberCard, new MemberCardTransformer());
     }
 
     /**
@@ -108,13 +92,7 @@ class MemberCardsController extends Controller
     public function show($id)
     {
         $memberCard = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($memberCard, new MemberCardTransformer());
-        }
-
-        return view('memberCards.show', compact('memberCard'));
+        return $this->response()->item($memberCard, new MemberCardTransformer());
     }
 
     /**
@@ -182,14 +160,6 @@ class MemberCardsController extends Controller
     {
         $deleted = $this->repository->delete($id);
 
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'MemberCard deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'MemberCard deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }

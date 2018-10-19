@@ -22,6 +22,7 @@ class CreateOrdersTable extends Migration
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺id');
+            $table->unsignedInteger('activity_merchandises_id')->nullable()->default(null)->comment('新品预定商品id');
             $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
             $table->string('card_id', 32)->comment('优惠券id');
             $table->unsignedInteger('customer_id')->nullable()->default(null)->comment('买家');
@@ -45,7 +46,7 @@ class CreateOrdersTable extends Migration
             $table->timestamp('send_time')->nullable()->default(null)->comment('配送时间');
             $table->string('comment', 255)->nullable()->default(null)->comment('备注');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
-            $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手');
+            $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手  5-活动商品订单');
             $table->unsignedMediumInteger('post_type')->default(0)->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
             $table->boolean('score_settle')->default(false)->comment('积分是否已经结算');
             $table->string('post_no', 32)->nullable()->default(null)->comment('快递编号');

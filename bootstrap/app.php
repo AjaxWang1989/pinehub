@@ -91,7 +91,7 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
 | totally optional, so you are not required to uncomment this line.
 |
 */
-
+ $app->register(App\Providers\AppServiceProvider::class);
  $app->register(\App\Providers\ConfigServiceProvider::class);
  $app->register(\App\Providers\AliasesLoaderServiceProvider::class);
  $app->register(\App\Providers\GatewayServiceProvider::class);
@@ -100,7 +100,6 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\Illuminate\Foundation\Providers\FoundationServiceProvider::class);
  $app->register(\App\Providers\WechatServiceProvider::class);
  $app->register(\App\Providers\AliPayServiceProvider::class);
- $app->register(App\Providers\AppServiceProvider::class);
  $app->register(App\Providers\AuthServiceProvider::class);
  $app->register(App\Providers\EventServiceProvider::class);
  $app->register(\App\Providers\PaymentServiceProvider::class);

@@ -78,7 +78,7 @@ class WechatService
 
         if(!$this->officeAccount) {
             if(isset($this->config['official_account']['app_secret'])) {
-                $this->officeAccount= Factory::officialAccount($this->config['official_account']);
+                $this->officeAccount = Factory::officialAccount($this->config['official_account']);
             }else{
                 $appId = $this->appManager->officialAccount()->appId;
                 $this->officeAccount = $this->openPlatform()->officialAccount($appId,

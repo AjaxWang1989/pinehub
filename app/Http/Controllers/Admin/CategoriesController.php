@@ -45,12 +45,7 @@ class CategoriesController extends Controller
     {
         $categories = $this->repository->paginate();
 
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($categories, new CategoryItemTransformer());
-        }
-
-        return view('categories.index', compact('categories'));
+        return $this->response()->paginator($categories, new CategoryItemTransformer());
     }
 
     /**
@@ -65,18 +60,7 @@ class CategoriesController extends Controller
     public function store(CategoryCreateRequest $request)
     {
         $category = $this->repository->create($request->all());
-
-        $response = [
-            'message' => 'Category created.',
-            'data'    => $category->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($category, new CategoryTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($category, new CategoryTransformer());
     }
 
     /**

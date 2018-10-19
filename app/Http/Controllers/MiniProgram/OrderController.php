@@ -81,6 +81,7 @@ class OrderController extends Controller
         $orders = $request->all();
         $orders['app_id'] = $user->appId;
         $orders['member_id'] = $user->memberId;
+        $orders['wechat_app_id'] = $user->platformAppId;
         $orders['customer_id'] = $user->id;
         $orders['open_id']  = $user->platformOpenId;
         $customerTicketRecord = $user->ticketRecords()->with('card')
@@ -105,6 +106,7 @@ class OrderController extends Controller
         $orders['hour']  = date('H',time());
         $orderItems = [];
         foreach ($shoppingCarts as $k => $v) {
+            $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
             $orderItems[$k]['shop_id'] = $v['shop_id'];
             $orderItems[$k]['member_id'] = $v['member_id'];
             $orderItems[$k]['customer_id'] = $v['customer_id'];
@@ -118,11 +120,18 @@ class OrderController extends Controller
 //            $this->shoppingCartRepository->delete($v['id']);
         }
         $orders['order_items'] = $orderItems;
-        $order_insert = $this->app->make('order.builder')->setInput($orders)->handle();
-        return $order_insert;
-
-        $this->orderRepository->insertMerchandise($itemMerchandises);
-        return $this->response()->item($ordersMerchandise,new OrderTransformer());
+        $order = $this->app->make('order.builder')->setInput($orders)->handle();
+        $result = app('wechat')->unify($order, $order->wechatAppId);
+        $order->status = Order::MAKE_SURE;
+        $order->save();
+        if($result['return_code'] === 'SUCCESS'){
+            $order->status = Order::PAID;
+            $order->save();
+            $sdkConfig = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
+            $result['sdk_config'] = $sdkConfig;
+        }
+        return $this->response(new JsonResponse($result));
+//        return $this->response()->item($ordersMerchandise,new OrderTransformer());
     }
 
     /**

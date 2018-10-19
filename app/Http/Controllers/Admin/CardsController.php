@@ -62,13 +62,7 @@ class CardsController extends Controller
     public function index()
     {
         $cards = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($cards, new CardItemTransformer());
-        }
-
-        return view('cards.index', compact('cards'));
+        return $this->response()->paginator($cards, new CardItemTransformer());
     }
 
     /**
@@ -97,17 +91,7 @@ class CardsController extends Controller
             $ticket->exists = true;
             Event::fire(new SyncTicketCardInfoEvent($ticket, [], app('wechat')->officeAccount()));
         }
-        $response = [
-            'message' => 'Card created.',
-            'data'    => $card->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($card, new CardTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($card, new CardTransformer());
     }
 
     /**
@@ -120,13 +104,7 @@ class CardsController extends Controller
     public function show($id)
     {
         $card = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($card, new CardTransformer());
-        }
-
-        return view('cards.show', compact('card'));
+        return $this->response()->item($card, new CardTransformer());
     }
 
     /**
@@ -174,17 +152,7 @@ class CardsController extends Controller
            $ticket->exists = true;
            Event::fire(new SyncTicketCardInfoEvent($ticket, $data['card_info'], app('wechat')->officeAccount()));
        }
-       $response = [
-           'message' => 'Card updated.',
-           'data'    => $card->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($card, new CardTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+       return $this->response()->item($card, new CardTransformer());
     }
 
     /**

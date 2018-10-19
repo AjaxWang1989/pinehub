@@ -85,11 +85,11 @@ if(!function_exists('config_path')){
 if(!function_exists('mobileCompany')){
     function mobileCompany(string $mobile)
     {
-        if(preg_grep(CM_MOBILE_PATTERN, $mobile)){
+        if(preg_grep(CM_MOBILE_PATTERN, [$mobile])){
             return CHINA_MOBILE;
-        }elseif (preg_grep(CT_MOBILE_PATTERN, $mobile)){
+        }elseif (preg_grep(CT_MOBILE_PATTERN, [$mobile])){
             return CHINA_TEL;
-        }elseif (preg_grep(CU_MOBILE_PATTERN, $mobile)){
+        }elseif (preg_grep(CU_MOBILE_PATTERN, [$mobile])){
             return CHINA_UNION;
         }else{
             return UNKNOWN;

@@ -59,10 +59,17 @@ class AppManager
 
     public $ttl = 60;
 
+    public $uid = null;
+
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $repository = $app->make(AppRepository::class);
+        $this->uid = md5(microtime(true));
+        $this->reset();
+    }
+
+    public function reset() {
+        $repository = $this->app->make(AppRepository::class);
         $appId = $this->getAppId();
         if($appId) {
             $this->currentApp = $repository->find($appId);
@@ -88,6 +95,7 @@ class AppManager
     public function setCurrentApp($currentApp)
     {
         $this->currentApp = $currentApp;
+        $this->reset();
         return $this;
     }
 
