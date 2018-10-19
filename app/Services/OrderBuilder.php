@@ -13,12 +13,18 @@ use App\Entities\Merchandise;
 use App\Entities\Order;
 use App\Entities\OrderItem;
 use App\Entities\SKUProduct;
+use App\Entities\ShopMerchandise;
+use App\Entities\ShopProduct;
+use App\Entities\ActivityMerchandise;
 use App\Entities\User;
+use App\Repositories\ActivityMerchandiseRepository;
 use App\Repositories\MerchandiseRepositoryEloquent;
 use App\Repositories\OrderItemMerchandiseRepositoryEloquent;
 use App\Repositories\OrderItemRepositoryEloquent;
 use App\Repositories\OrderPostRepositoryEloquent;
 use App\Repositories\OrderRepositoryEloquent;
+use App\Repositories\ShopMerchandiseRepository;
+use App\Repositories\ShopProductRepository;
 use App\Repositories\SKUProductRepositoryEloquent;
 use Dingo\Api\Auth\Auth;
 use Dingo\Api\Exception\ValidationHttpException;
@@ -27,6 +33,8 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
+use function PHPSTORM_META\type;
+use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class OrderBuilder implements InterfaceServiceHandler
 {
@@ -75,6 +83,11 @@ class OrderBuilder implements InterfaceServiceHandler
      * */
     protected $auth = null;
 
+    protected $updateStockNumSqlContainer = [
+        'sku' => [],
+        'merchandise' => []
+    ];
+
     public function __construct(Collection $input, $auth, OrderRepositoryEloquent $order,MerchandiseRepositoryEloquent $merchandise,
                                 OrderItemRepositoryEloquent $orderItem = null,SKUProductRepositoryEloquent $skuProduct = null,
                                 OrderItemMerchandiseRepositoryEloquent $orderItemMerchandise =null, OrderPostRepositoryEloquent $orderPost = null)
@@ -85,6 +98,8 @@ class OrderBuilder implements InterfaceServiceHandler
         $this->orderPost = $orderPost;
         $this->orderItem = $orderItem;
         $this->orderItemMerchandise = $orderItemMerchandise;
+        $this->merchandise = $merchandise;
+        $this->skuProduct = $skuProduct;
     }
 
     public function setInput(array  $input)
@@ -102,6 +117,18 @@ class OrderBuilder implements InterfaceServiceHandler
         // TODO: Implement handle() method.
         //$this->buyer = $this->buyer ? $this->buyer : $this->auth->user();
         $order = $this->input->only([
+            'receiver_name',
+            'receiver_mobile',
+            'comment',
+            'send_time',
+            'card_id',
+            'shop_id',
+            'merchandise_num',
+            'status',
+            'years',
+            'month',
+            'week',
+            'hour',
             'total_amount',
             'discount_amount',
             'payment_amount',
@@ -118,6 +145,7 @@ class OrderBuilder implements InterfaceServiceHandler
             'ip',
             'member_id'
         ]);
+
         $order['status'] = Order::WAIT;
         if((int)$order['type'] === Order::OFF_LINE_PAY) {
             $orderItem = [
@@ -133,63 +161,143 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems = collect();
             $orderItems->push($orderItem);
         }else{
-            $orderItems = $this->input->only(['order_items']);
+            $orderItems = $this->input['order_items'];
+            if(is_array($orderItems)) {
+                $orderItems = collect($orderItems);
+            }
+            $orderItems = $orderItems->map(function ($orderItem) {
+                return is_array($orderItem) ? collect($orderItem) : $orderItem;
+            });
         }
 
         if($orderItems && $orderItems->count()){
             $orderItems = $this->buildOrderItems($orderItems);
             $this->checkOrder($orderItems, $order);
         }
-
         return DB::transaction(function () use($order, $orderItems){
             /**
              *@var Order $orderModel
              * */
             $orderModel = $this->order->create($order->toArray());
             if($orderModel && $orderItems) {
-                $orderItems->map(function (Collection $orderItem) use($orderModel) {
-                    $orderItem['order_id'] = $orderModel->id;
+                $orderItems = $orderItems->map(function (Collection $orderItem) use($orderModel) {
+                    $orderItem['app_id'] =  $orderModel->appId;
+                    $orderItem['status'] =  $orderModel->status;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);
-                    /**
-                     *@var OrderItem $orderItemModel
-                     * */
-                    $orderItemModel = $this->orderItem->create($orderItem->except(['order_item_product'])
-                        ->toArray());
-                    $product = $orderItem->get('order_item_product', null);
-
-                    if($product){
-                        tap($product, function (Collection $product) use(&$orderModel,&$orderItemModel) {
-                            $product->put('order_id', $orderModel->id);
-                            $product->put('order_item_id', $orderItemModel->id);
-                            $product->put('customer_id', $orderModel->customerId);
-                            $product->put('member_id', $orderModel->memberId);
-                            $this->orderItemMerchandise->create($product->toArray());
-                        });
-
-                    }
+                    return new OrderItem($orderItem->toArray());
                 });
+                $orderModel->orderItems()->saveMany($orderItems);
             }
+
+            $this->updateStockNum();
+
             return $orderModel;
         });
     }
 
+    protected function updateStockNum() {
+
+        $skuSQLs = collect($this->updateStockNumSqlContainer['sku'])->map(/**
+         * @param SKUProduct|ShopProduct $sku
+         * @return string
+         */
+            function ( $sku) {
+                if(get_class($sku) === SKUProduct::class) {
+                    return /** @lang text */
+                        "UPDATE `sku_products` SET `stock_num` = {$sku->stockNum} WHERE `id` = {$sku->id}";
+                }elseif(get_class($sku) === ShopProduct::class){
+                    return /** @lang text */
+                        "UPDATE `shop_products` SET `stock_num` = {$sku->stockNum} WHERE `id` = {$sku->id}";
+                }
+
+        })->toArray();
+
+        $merchandiseSQLs = collect($this->updateStockNumSqlContainer['merchandise'])->map(/**
+         * @param Merchandise|ShopMerchandise|ActivityMerchandise $merchandise
+         * @return string
+         */
+            function ($merchandise) {
+            switch(get_class($merchandise)) {
+                case Merchandise::class: {
+                    return /** @lang text */
+                        "UPDATE `merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                    break;
+                }
+                case ShopMerchandise::class: {
+                    return /** @lang text */
+                        "UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                    break;
+                }
+                case ActivityMerchandise::class: {
+                    return /** @lang text */
+                        "UPDATE `activity_merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                    break;
+                }
+            }
+        })->toArray();
+        $updateSQLs = array_merge($skuSQLs, $merchandiseSQLs);
+        $sqlStr = implode(';', $updateSQLs);
+        DB::update(DB::raw($sqlStr));
+    }
+
     protected function buildOrderItems (Collection $orderItems)
     {
-        return $orderItems->map(function (Collection $orderItem){
+        return $orderItems->map(/**
+         * @param Collection $orderItem
+         * @return Collection|null|static
+         */
+            function ( Collection $orderItem){
             $subOrder = null;
-            if(isset($orderItem['sku_product_id'])) {
-                $product = $this->skuProduct->find($orderItem['sku_product_id']);
+            if(isset($orderItem['sku_product_id']) && $orderItem['sku_product_id']) {
+                if($orderItem['activity_id']) {
+//                    $repository = app()->make(ActivityMerchandiseRepository::class);
+//                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
+//                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
+//                    })->first();
+
+                }elseif($orderItem['shop_id']) {
+                    $repository = app()->make(ShopProductRepository::class);
+                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
+                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
+                    })->first();
+                }else{
+                    $repository =$this->skuProduct->with('merchandise');
+                    $product = $repository->find($orderItem['sku_product_id']);
+                }
+
+                if(!$product) {
+                    throw new NotFoundResourceException('购买子产品不存在！');
+                }
+
                 $orderItemProduct = $this->buildOrderItemProduct($product, $orderItem['quality']);
                 $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['customer_id']);
-                $subOrder['order_item_product'] = $orderItemProduct;
+                $subOrder = $subOrder->merge( $orderItemProduct);
             }elseif (isset($orderItem['merchandise_id'])) {
-                $goods = $this->merchandise->find($orderItem['merchandise_id']);
+                if($orderItem['activity_id']) {
+                    $repository = app()->make(ActivityMerchandiseRepository::class);
+                    $goods = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
+                        return $merchandise->whereMerchandiseId($orderItem['merchandise_id']);
+                    })->first();
+                }elseif($orderItem['shop_id']) {
+                    $repository = app()->make(ShopMerchandiseRepository::class);
+                    $goods = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
+                        return $merchandise->whereMerchandiseId($orderItem['merchandise_id']);
+                    })->first();
+                }else{
+                    $repository = $this->merchandise;
+                    $goods = $repository->find($orderItem['merchandise_id']);
+                }
+
+                if(!$goods) {
+                    throw new NotFoundResourceException('购买产品不存在！');
+                }
                 $orderItemProduct = $this->buildOrderItemProduct($goods, $orderItem['quality']);
                 $subOrder = $this->buildOrderItem($goods, $orderItem['quality'], $orderItem['customer_id']);
-                $subOrder['order_item_product'] = $orderItemProduct;
+                $subOrder = $subOrder->merge( $orderItemProduct);
             }
+
             if($subOrder){
-                $this->checkOrderItem($subOrder, $orderItem);
+                $this->checkOrderItem($subOrder, $orderItem->toArray());
             }
             return $subOrder ? $subOrder : $orderItem;
         });
@@ -202,15 +310,16 @@ class OrderBuilder implements InterfaceServiceHandler
             $errors = new MessageBag([
                 'total_amount' => '订单总金额有误无法提交'
             ]);
-        } elseif ($orderItems->sum('discount_amount') != $order->get('discount_amount', 0)) {
-            $errors = new MessageBag([
-                'discount_amount' => '订单优惠金额有误无法提交'
-            ]);
-        } elseif ( $orderItems->sum('payment_amount') != $order->get('payment_amount', 0) ) {
+        } elseif ( $orderItems->sum('payment_amount') - $order->get('discount_amount', 0)  != $order->get('payment_amount', 0) ) {
             $errors = new MessageBag([
                 'payment_amount' => '订单实际支付金额有误无法提交'
             ]);
         }
+//        elseif ($orderItems->sum('discount_amount') != $order->get('discount_amount', 0)) {
+//            $errors = new MessageBag([
+//                'discount_amount' => '订单优惠金额有误无法提交'
+//            ]);
+//        }
         if($errors) {
             \Log::debug('errors', $errors->toArray());
             throw new ValidationHttpException($errors);
@@ -248,6 +357,15 @@ class OrderBuilder implements InterfaceServiceHandler
      * */
     protected function buildOrderItem($model, int $quality, $customerId = null)
     {
+        if($model->stockNum < $quality) {
+            throw new ValidationHttpException(new MessageBag([
+                'quality' => 'SKU库存不足'
+            ]));
+        }
+
+
+        $this->merchandise($model, $quality);
+
         $data['customer_id'] = $customerId;
         $data['shop_id'] = isset($this->input['shop_id']) ? $this->input['shop_id'] : null;
         $data['total_amount'] =  $model->sellPrice * $quality;
@@ -264,11 +382,24 @@ class OrderBuilder implements InterfaceServiceHandler
      * */
     protected function buildOrderItemProduct ($model, int $quality)
     {
+        if($model->stockNum < $quality) {
+            throw new ValidationHttpException(new MessageBag([
+                'quality' => 'SKU库存不足'
+            ]));
+        }
+        if(get_class($model) === SKUProduct::class) {
+            $this->skuProduct($model, $quality);
+            $this->merchandise($model->merchandise, $quality);
+        }else {
+            $this->merchandise($model, $quality);
+        }
+
         $data = $model->only([
             'origin_price',
             'sell_price',
             'cost_price',
-            'main_image'
+            'main_image',
+            'name'
         ]);
         $data['quality'] = $quality;
         if ($model instanceof SKUProduct) {
@@ -278,5 +409,32 @@ class OrderBuilder implements InterfaceServiceHandler
             $data['merchandise_id'] = $model->id;
         }
         return collect($data);
+    }
+
+    /**
+     * @param SKUProduct|ShopProduct $model
+     * @param int $quality
+     * */
+    protected function skuProduct($model, int $quality){
+        $sku = isset($this->updateStockNumSqlContainer['sku'][$model->code]) ? $this->updateStockNumSqlContainer['sku'][$model->code] : null;
+        if(!$sku) {
+            $sku = $this->updateStockNumSqlContainer['sku'][$model->code] = $model;
+        }
+        $sku->stockNum -= $quality;
+    }
+
+
+    /**
+     * @param Merchandise|ShopMerchandise|ActivityMerchandise $model
+     * @param int $quality
+     * */
+    protected function merchandise($model, int $quality){
+        $merchandise = isset($this->updateStockNumSqlContainer['merchandise'][$model->code]) ?
+            $this->updateStockNumSqlContainer['merchandise'][$model->code] : null;
+        if(!$merchandise) {
+            $this->updateStockNumSqlContainer['merchandise'][$model->code] = $model;
+            $merchandise = $model;
+        }
+        $merchandise->stockNum -= $quality;
     }
 }
