@@ -119,18 +119,7 @@ class OrderGiftsController extends Controller
     public function update(OrderGiftUpdateRequest $request, $id)
     {
        $orderGift = $this->repository->update($request->all(), $id);
-
-       $response = [
-           'message' => 'OrderGift updated.',
-           'data'    => $orderGift->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($orderGift, new OrderGiftTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($orderGift, new OrderGiftTransformer());
     }
 
 
@@ -144,15 +133,6 @@ class OrderGiftsController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'OrderGift deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'OrderGift deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }
