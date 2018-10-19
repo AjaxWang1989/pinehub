@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Wechat;
 
 use App\Entities\WechatMenu;
 use App\Exceptions\WechatMenuDeleteException;
-use App\Http\Controllers\Admin\AppManagerTrait;
+use App\Http\Controllers\Admin\ControllerTrait;
 use App\Http\Requests\Admin\Wechat\MenuUpdateRequest;
 use App\Http\Response\JsonResponse;
 use App\Repositories\AppRepository;
@@ -26,7 +26,7 @@ use Illuminate\Support\Collection;
  */
 class MenuController extends Controller
 {
-    use AppManagerTrait;
+    use ControllerTrait;
     /**
      * @var MenusRepository
      */

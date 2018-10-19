@@ -8,19 +8,27 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Entities\Administrator;
 use App\Repositories\AppRepository;
 use App\Services\AppManager;
 use Dingo\Api\Http\Request;
 
-trait AppManagerTrait
+trait ControllerTrait
 {
     public function parseApp(Request $request, AppRepository $repository)
     {
-        $appId = $request->header('selected_appid', null);
-        $appId = $appId ? $appId : $request->query('selected_appid', null);
-        $appId = $appId ? $appId : (app()->has('session') ? app('session')->get('selected_appid') : null);
+        $appId = $request->header('project_id', null);
+        $appId = $appId ? $appId : $request->query('project_id', null);
+        $appId = $appId ? $appId : (app()->has('session') ? app()->make('session')->get('project_id') : null);
         $currentApp = $repository->find($appId);
         if($currentApp)
             app(AppManager::class)->setCurrentApp($currentApp);
+    }
+
+    /**
+     * @return Administrator
+     * */
+    public function administrator() {
+        return $this->user();
     }
 }

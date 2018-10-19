@@ -37,8 +37,14 @@ class BackendApiRoutes extends ApiRoutes
                 /**
                  * @var  LumenRouter|DingoRouter $router
                  * */
+                $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
+                $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
+                $router->get('/logout', ['as' => 'administrator.logout', 'uses' => 'AuthController@logout']);
+
+
                 $router->get('/users',['as' => 'users.list', 'uses' => 'UsersController@getUsers']);
                 $router->get('/user/{id}',['as' => 'user.detail', 'uses' => 'UsersController@getUserDetail']);
+
                 //登录用户信息路由
                 $router->get('/self/info', ['as' => 'self.info', 'uses' => 'MySelfController@selfInfo']);
                 $router->put('/change/password', ['as' => 'change.password', 'uses' => 'MySelfController@changePassword']);

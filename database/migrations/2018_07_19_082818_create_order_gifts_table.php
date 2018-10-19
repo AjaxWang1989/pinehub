@@ -15,13 +15,13 @@ class CreateOrderGiftsTable extends Migration
     {
         Schema::create('order_gifts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 16)->comment('名称');
-            $table->string('app_id', 16)->comment('系统应用id');
+            $table->unsignedInteger('activity_id')->comment('活动ID');
             $table->string('type', 16)->comment('支付活动方式：满减送 PAY_FULL/支付礼包 PAY_GIFT');
-            $table->timestamp('begin_at')->comment('开始时间');
-            $table->timestamp('end_at')->comment('结束时间');
-            $table->tinyInteger('status')->default(0)->comment('状态：0-未开始 1-进行中 2-结束 3-失效');
-            $table->json('gift')->comment('礼包json：{discount:0.9, cost: 10.00, ticket_id: XXX, score: 10, condition: { least_amount: 100}}');
+            $table->unsignedInteger('ticket_id')->nullable()->default(null)->comment('优惠券id');
+            $table->float('discount')->default(0)->comment('折扣');
+            $table->float('cost')->default(0)->comment('抵用金额');
+            $table->float('least_amount')->default(0)->comment('最低消费');
+            $table->unsignedInteger('score')->default(0)->comment('积分');
             $table->timestamps();
             $table->index('app_id');
             $table->index('type');
