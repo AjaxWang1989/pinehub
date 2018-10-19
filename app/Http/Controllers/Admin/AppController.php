@@ -22,7 +22,7 @@ use Dingo\Api\Http\Request;
 
 class AppController extends Controller
 {
-    use AppManagerTrait;
+    use ControllerTrait;
     //定义repository 处理model层数据
     protected $appRepository  = null;
 

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Ali\Oauth\AliOauthServiceProvider;
+use App\Entities\User;
+use App\Entities\Role;
 use App\Http\Middleware\Cross;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
 use App\Services\AppManager;
@@ -13,14 +15,12 @@ use Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Filesystem\FilesystemServiceProvider;
-//use Illuminate\Redis\RedisServiceProvider;
 use Illuminate\Support\Facades\{
     DB, Log, Validator
 };
 use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
-use Laravoole\LaravooleServiceProvider;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
 use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
@@ -46,6 +46,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(Factory::class, function () {
             return $this->app['filesystem'];
         });
+
         Validator::extend('not_exists', function($attribute, $value, $parameters)
         {
             return DB::table($parameters[0])
@@ -55,6 +56,25 @@ class AppServiceProvider extends ServiceProvider
 
         Validator::extend('file_exist', function ($attribute, $value, $parameters) {
             return file_exists($value);
+        });
+
+        Validator::extend('mobile', function ($attribute, $value, $parameters) {
+            return preg_match(MOBILE_PATTERN, $value);
+        });
+
+        Validator::extend('roles', function ($attribute, $value, $parameters) {
+            $user = User::with('roles')->where($attribute, $value)->first();
+            $roles = [];
+            foreach ($parameters as $key => $value) {
+                if(property_exists(Role::class, $value)) {
+                    $role = eval(Role::class.$value);
+                    $roles[] = $role;
+                } else {
+                    return false;
+                }
+            }
+
+            return $user->roles->whereIn('slug', $roles)->count() > 0;
         });
     }
     /**

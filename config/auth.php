@@ -14,7 +14,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => env('AUTH_GUARD', 'api'),
+        'guard' => env('AUTH_GUARD', 'backend'),
     ],
 
     /*
@@ -36,7 +36,8 @@ return [
 
     'guards' => [
         'api' => ['driver' => 'jwt-auth', 'provider' => 'users'],
-        'mp'  => ['driver' => 'jwt-auth', 'provider' => 'mp']
+        'mp'  => ['driver' => 'jwt-auth', 'provider' => 'mp'],
+        'backend' => ['driver' => 'jwt-auth', 'provider' => 'administrator']
     ],
 
     /*
@@ -65,6 +66,10 @@ return [
         'mp' => [
             'driver' => 'eloquent',
             'model' => \App\Entities\MpUser::class
+        ],
+        'administrator' => [
+            'driver' => 'eloquent',
+            'model' => \App\Entities\Administrator::class
         ]
     ],
 
