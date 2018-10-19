@@ -41,11 +41,27 @@ class Activity extends Model implements Transformable
     const NOT_BEGINNING = 0;
     const HAVE_IN_HAND  = 1;
     const FINISHED      = 2;
+    const INVALID = 3;
+
+    const NEW_PRODUCT_ACTIVITY = 'NEW_PRODUCT';
+    const PAY_FULL = "PAY_FULL";
+    const PAY_GIFT = "PAY_GIFT";
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['app_id','shop_id','title','poster_img','description','start_at','end_at','status'];
+    protected $fillable = [
+        'app_id',
+        'shop_id',
+        'type',
+        'title',
+        'poster_img',
+        'description',
+        'start_at',
+        'end_at',
+        'status'
+    ];
 
 }
