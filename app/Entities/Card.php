@@ -17,7 +17,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
  * @property string $cardType 卡券类型
- * @property array $cardInfo 卡券信息
+ * @property array  $cardInfo 卡券信息
  * @property int $status 0-审核中 1-审核通过 2-审核未通过
  * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
  * @property \Carbon\Carbon $beginAt 开始日期

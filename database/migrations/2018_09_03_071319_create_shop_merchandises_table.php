@@ -16,6 +16,7 @@ class CreateShopMerchandisesTable extends Migration
         Schema::create('shop_merchandises', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('shop_id')->comment('店铺id');
+            $table->float('sell_price')->default(0)->comment('售价');
             $table->unsignedInteger('merchandise_id')->comment('商品ID');
             $table->unsignedInteger('category_id')->comment('分类ID');
             $table->unsignedInteger('product_id')->nullable()->default(null)->comment('sku单品ID');

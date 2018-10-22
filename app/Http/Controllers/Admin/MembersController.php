@@ -47,13 +47,7 @@ class MembersController extends Controller
     public function index()
     {
         $members = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($members, new MemberItemTransformer());
-        }
-
-        return view('members.index', compact('members'));
+        return $this->response()->paginator($members, new MemberItemTransformer());
     }
 
     /**

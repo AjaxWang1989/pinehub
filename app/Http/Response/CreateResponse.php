@@ -9,7 +9,9 @@
 namespace App\Http\Response;
 
 
-class CreateResponse
+use EasyWeChat\Kernel\Contracts\Arrayable;
+
+class CreateResponse implements Arrayable
 {
     protected $content = [];
 
@@ -20,6 +22,12 @@ class CreateResponse
 
     public function content()
     {
+        return $this->content;
+    }
+
+    public function toArray()
+    {
+        // TODO: Implement toArray() method.
         return $this->content;
     }
 }

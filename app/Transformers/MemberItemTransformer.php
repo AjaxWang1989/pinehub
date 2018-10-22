@@ -39,9 +39,9 @@ class MemberItemTransformer extends TransformerAbstract
             'score' => $model->score,
             'card' => '待开发',
             'status' => $model->status,
-            'country' => $model->country? $model->country['name'] : null,
-            'province' => $model->province? $model->province['name'] : null,
-            'city' => $model->city? $model->city['name'] : null,
+            'country' => $model->country ? $model->country : null,
+            'province' => $model->province? $model->province : null,
+            'city' => $model->city? $model->city : null,
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,

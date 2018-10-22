@@ -23,7 +23,6 @@ class CreateOrderGiftsTable extends Migration
             $table->float('least_amount')->default(0)->comment('最低消费');
             $table->unsignedInteger('score')->default(0)->comment('积分');
             $table->timestamps();
-            $table->index('app_id');
             $table->index('type');
         });
     }

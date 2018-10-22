@@ -31,7 +31,7 @@ class RegisterRequest extends FormRequest
     public function rules()
     {
         return [
-            'mobile' => ['required', 'mobile', 'not_exist:users,mobile'],
+            'mobile' => ['required', 'mobile', 'not_exists:users,mobile'],
             'password' => ['required']
         ];
     }

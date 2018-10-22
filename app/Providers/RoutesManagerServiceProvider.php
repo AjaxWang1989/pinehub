@@ -11,8 +11,9 @@ use Illuminate\Session\SessionManager;
 use Illuminate\Session\SessionServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
+use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
+use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RoutesManagerServiceProvider extends ServiceProvider
 {
@@ -67,7 +68,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
         }
         $this->app['isApiServer'] = $this->app->make('api.gateways')->has($this->gateway);
 
-
+        $this->app->register(JWTAuthServiceProvider::class);
+        $this->app->register(JwtAuthGuardServiceProvider::class);
         $this->registerRouter();
         $this->registerServices();
         
@@ -134,6 +136,9 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
                 $auth = isset($route['auth']) ? $route['auth'] : null ;
                 $domain = $this->gateway;
+                if(isset($route['provider']) && $route['provider']) {
+                    $this->app->register($route['provider']);
+                }
                 if($auth){
                     $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain, $auth);
                 }else{

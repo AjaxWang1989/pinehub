@@ -82,18 +82,18 @@ class AuthController extends Controller
     {
         $user = null;
         $token = null;
-        if ($this->auth()->check()) {
-            $token = app()->make('api.auth')->refresh();
+        if (Auth::check()) {
+            $token = Auth::refresh();
             $user = $this->user();
         } else {
             if ($input = $this->validate($request, self::RULES, self::MESSAGES)) {
                 $input['app_id'] = isset($input['app_id']) ? $input['app_id'] : null;
 
-                if (!($token = app()->make('api.auth')->attempt($input))) {
+                if (!($token = Auth::attempt($input))) {
                     $this->response()->error('登录密码与手机不匹配无法登录!',
                         HTTP_STATUS_NOT_FOUND);
                 }
-                $user = app()->make('api.auth')->toUser($token);
+                $user = Auth::toUser($token);
                 tap($user, function (User $user) {
                     if ($user->status === User::FREEZE_ACCOUNT) {
                         $this->response()->error('该用户已经冻结账号无法登录',
@@ -122,18 +122,14 @@ class AuthController extends Controller
      * @return Response
      * @throws
      * */
-    public function logout()
+    public function logout(Request $request)
     {
-        if(!app()->make('api.auth')->check()) {
+        if(!Auth::check()) {
             throw new HttpException(HTTP_STATUS_UNAUTHORIZED, '用户未登录', null,
                 [], AUTH_NOT_LOGIN);
         }
-        Auth::logout();
-        if (!Auth::check()) {
-            return $this->response(new UpdateResponse('退出成功'));
-        } else {
-            throw new UpdateResourceFailedException('退出失败', null, [], AUTH_LOGOUT_FAIL);
-        }
+        Auth::logout(false);
+        return $this->response(new UpdateResponse('退出成功'));
     }
 
     public function testLogin()

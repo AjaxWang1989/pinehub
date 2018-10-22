@@ -48,7 +48,7 @@ class ShoppingCartController extends Controller
      */
     public function addMerchandise(CreateRequest $request){
         $appId = app(AppManager::class)->getAppId();
-        $user = $this->user();
+        $user = $this->mpUser();
         $shoppingCart = $request->all();
         $shopMerchandise = $this->shopMerchandiseRepository->findWhere([
             'shop_id'=>$shoppingCart['store_id'],

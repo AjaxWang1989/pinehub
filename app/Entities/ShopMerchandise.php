@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $shopId 店铺id
  * @property int $merchandiseId 商品ID
+ * * @property float $sellPrice 售价
  * @property int $CategoryId 商品ID
  * @property int|null $productId sku单品ID
  * @property int $stockNum 库存数量
@@ -46,7 +47,7 @@ class ShopMerchandise extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'shop_id','merchandise_id','category_id','product_id','stock_num','sell_num'
+        'shop_id','merchandise_id','category_id','product_id','stock_num','sell_num','sell_price'
     ];
 
     public function category() : BelongsTo

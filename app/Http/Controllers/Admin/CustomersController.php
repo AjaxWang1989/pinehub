@@ -48,13 +48,7 @@ class CustomersController extends Controller
     {
         $this->repository->pushCriteria(CustomerCriteria::class);
         $customers = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($customers, new CustomerItemTransformer());
-        }
-
-        return view('customers.index', compact('customers'));
+        return $this->response()->paginator($customers, new CustomerItemTransformer());
     }
 
     /**

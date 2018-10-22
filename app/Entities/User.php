@@ -129,7 +129,12 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 
     public function customers() : HasMany
     {
-        return $this->hasMany(Customer::class, 'user_id', 'id');
+        return $this->hasMany(Customer::class, 'member_id', 'id');
+    }
+
+    public function orders() : HasMany
+    {
+        return $this->hasMany(Order::class,'member_id','id');
     }
 
     /**

@@ -23,9 +23,7 @@ use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
 use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
-use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
 use Prettus\Repository\Providers\RepositoryServiceProvider;
-use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
 use Overtrue\LaravelWeChat\ServiceProvider as WechatLumenServiceProvider;
 
 
@@ -90,8 +88,6 @@ class AppServiceProvider extends ServiceProvider
         });
         laravelToLumen($this->app)->middleware(Cross::class);
         //$this->app->register(RedisServiceProvider::class);
-        $this->app->register(JWTAuthServiceProvider::class);
-        $this->app->register(JwtAuthGuardServiceProvider::class);
         $this->app->register(WechatLumenServiceProvider::class);
         $this->app->register(AliOauthServiceProvider::class);
         $this->app->register(FilesystemServiceProvider::class);

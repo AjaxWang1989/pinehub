@@ -4,12 +4,9 @@ namespace App\Repositories;
 
 use App\Criteria\Admin\OrderGiftCriteria;
 use App\Services\AppManager;
-use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\OrderGiftRepository;
 use App\Entities\OrderGift;
-use App\Validators\OrderGiftValidator;
 
 /**
  * Class OrderGiftRepositoryEloquent.
@@ -25,6 +22,7 @@ class OrderGiftRepositoryEloquent extends BaseRepository implements OrderGiftRep
      */
     public function model()
     {
+        new OrderGift();
         return OrderGift::class;
     }
 
@@ -38,10 +36,10 @@ class OrderGiftRepositoryEloquent extends BaseRepository implements OrderGiftRep
     {
         $this->pushCriteria(app(RequestCriteria::class));
         $this->pushCriteria(OrderGiftCriteria::class);
-        OrderGift::creating(function (OrderGift $gift) {
-            $gift->appId = app(AppManager::class)->currentApp->id;
-            return $gift;
-        });
+//        OrderGift::creating(function (OrderGift $gift) {
+//            $gift->appId = app(AppManager::class)->currentApp->id;
+//            return $gift;
+//        });
     }
 
 }

@@ -18,7 +18,8 @@ return [
         'router' => \App\Routes\BackendApiRoutes::class,
         'version' => 'v1',
 //        'prefix' => null,
-        'namespace' => 'Admin'
+        'namespace' => 'Admin',
+        'provider' => \App\Providers\BackendServiceProvider::class
     ],
     [
         'gateway' => 'api.mp',
@@ -26,7 +27,8 @@ return [
         'version' => 'v1',
 //        'prefix' => null,
         'namespace' => 'MiniProgram',
-        'auth' => 'mp'
+        'auth' => 'mp',
+        'provider' => null
     ],
     [
         'gateway' => 'api.h5',

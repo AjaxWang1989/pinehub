@@ -48,13 +48,7 @@ class MerchandisesController extends Controller
     public function index()
     {
         $merchandises = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($merchandises, new MerchandiseItemTransformer());
-        }
-
-        return view('merchandises.index', compact('merchandises'));
+        return $this->response()->paginator($merchandises, new MerchandiseItemTransformer());
     }
 
     /**
@@ -74,17 +68,7 @@ class MerchandisesController extends Controller
         tap($merchandise, function (Merchandise $merchandise) use($categories){
             $merchandise->categories()->sync($categories);
         });
-        $response = [
-            'message' => 'Merchandise created.',
-            'data'    => $merchandise->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($merchandise, new MerchandiseTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($merchandise, new MerchandiseTransformer());
     }
 
     /**
@@ -98,12 +82,7 @@ class MerchandisesController extends Controller
     {
         $merchandise = $this->repository->find($id);
 
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($merchandise, new MerchandiseTransformer());
-        }
-
-        return view('merchandises.show', compact('merchandise'));
+        return $this->response()->item($merchandise, new MerchandiseTransformer());
     }
 
     /**
@@ -126,7 +105,7 @@ class MerchandisesController extends Controller
      * @param  MerchandiseUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
@@ -138,17 +117,7 @@ class MerchandisesController extends Controller
         tap($merchandise, function (Merchandise $merchandise) use($categories){
             $merchandise->categories()->sync($categories);
         });
-       $response = [
-           'message' => 'Merchandise updated.',
-           'data'    => $merchandise->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($merchandise, new MerchandiseTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($merchandise, new MerchandiseTransformer());
     }
 
 
@@ -162,16 +131,7 @@ class MerchandisesController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'Merchandise deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'Merchandise deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 
     public function uploadMerchandiseImage(MerchandiseImageRequest $request, string $driver="default")

@@ -13,9 +13,11 @@ use App\Http\Requests\Admin\RegisterRequest;
 use App\Http\Response\JsonResponse;
 use App\Repositories\AdministratorRepository;
 use App\Repositories\AppRepository;
+use App\Repositories\UserRepository;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller {
     use ControllerTrait;
@@ -36,7 +38,7 @@ class AuthController extends Controller {
 
     public function __construct(AdministratorRepository $administratorRepository, AppRepository $appRepository, Request $request)
     {
-        parent::__construct(null);
+        parent::__construct(app(UserRepository::class));
 
         $this->administratorRepository = $administratorRepository;
         $this->parseApp($request, $appRepository);
@@ -54,8 +56,8 @@ class AuthController extends Controller {
     {
         $user = $request->all();
         $user['mobile_company'] = mobileCompany($user['mobile']);
+        $user['user_name'] = $user['mobile'];
         $user['password'] = password($user['password'], true);
-        $user = $this->userRepository->create($user);
         $user = $this->administratorRepository->create($user);
         if($user) {
             return $this->response(new JsonResponse([

@@ -9,7 +9,10 @@
 namespace App\Http\Controllers\MiniProgram;
 
 
+use App\Entities\CustomerTicketCard;
+use App\Entities\MemberCard;
 use App\Entities\Order;
+use App\Entities\ShoppingCart;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
 use App\Repositories\OrderRepository;
@@ -17,6 +20,8 @@ use App\Repositories\CardRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Repositories\MerchandiseRepository;
 use App\Repositories\OrderItemRepository;
+use App\Repositories\MemberCardRepository;
+use App\Repositories\CustomerTicketCardRepository;
 use App\Transformers\Mp\OrderTransformer;
 use App\Transformers\Mp\OrderStoreBuffetTransformer;
 use App\Transformers\Mp\OrderStoreSendTransformer;
@@ -24,6 +29,8 @@ use App\Transformers\Mp\StatusOrdersTransformer;
 use App\Transformers\Mp\StoreOrdersSummaryTransformer;
 use App\Repositories\ShopRepository;
 use App\Http\Response\JsonResponse;
+use Illuminate\Database\Eloquent\Collection;
+use Laravel\Lumen\Application;
 use Illuminate\Support\Facades\Cache;
 
 class OrderController extends Controller
@@ -34,6 +41,9 @@ class OrderController extends Controller
     protected $merchandiseRepository = null;
     protected $shopRepository = null;
     protected $orderItemRepository = null;
+    protected $app = null;
+    protected $memberCardRepository = null;
+    protected $customerTicketCardRepository = null;
 
     /**
      * OrderController constructor.
@@ -45,7 +55,7 @@ class OrderController extends Controller
      * @param OrderRepository $orderRepository
      * @param Request $request
      */
-    public function __construct(AppRepository $appRepository,OrderItemRepository $orderItemRepository ,ShopRepository $shopRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
+    public function __construct(AppRepository $appRepository,CustomerTicketCardRepository $customerTicketCardRepository,MemberCardRepository $memberCardRepository,Application $app,OrderItemRepository $orderItemRepository ,ShopRepository $shopRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->appRepository = $appRepository;
@@ -55,6 +65,9 @@ class OrderController extends Controller
         $this->merchandiseRepository = $merchandiseRepository;
         $this->shopRepository = $shopRepository;
         $this->orderItemRepository = $orderItemRepository;
+        $this->app = $app;
+        $this->memberCardRepository = $memberCardRepository;
+        $this->customerTicketCardRepository = $customerTicketCardRepository;
     }
 
     /**
@@ -64,51 +77,61 @@ class OrderController extends Controller
      */
     public function createOrder(Request $request)
     {
-        $accessToken = $request->input('access_token', null);
-        $appId = Cache::get($accessToken);
-        $user = $this->user();
+        $user = $this->mpUser();
         $orders = $request->all();
-        $orders['app_id'] = $appId;
-        $orders['member_id'] = $user['member_id'];
-        $orders['customer_id'] = $user['id'];
-        $orders['open_id']  = $user['open_id'];
-        $cardRepository = $this->cardRepository->findWhere(['card_id'=>$orders['card_id']])->first();
-        $orders['discount_amount'] = $cardRepository ? $cardRepository['card_info']['cash']['reduce_cost']/100 : '';
-        $orders['card_id'] = $cardRepository['card_id'];
+        $orders['app_id'] = $user->appId;
+        $orders['member_id'] = $user->memberId;
+        $orders['wechat_app_id'] = $user->platformAppId;
+        $orders['customer_id'] = $user->id;
+        $orders['open_id']  = $user->platformOpenId;
+        $customerTicketRecord = $user->ticketRecords()->with('card')
+            ->where(['card_id'=>$orders['card_id'],'status'=>CustomerTicketCard::STATUS_ON,'active'=>CustomerTicketCard::ACTIVE_ON ])
+            ->orderBy('id', 'asc')
+            ->first();
+        if ($customerTicketRecord){
+            $card = $customerTicketRecord['card'];
+            $orders['discount_amount'] = $card ? $card['card_info']['cash']['reduce_cost']/100 : '';
+            $orders['card_id'] = $card['card_id'];
+        }else{
+            return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+        }
         $orders['shop_id'] = $orders['store_id'];
-        $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['customer_id'=>$user['id'],'shop_id'=>$orders['store_id']])->sum('amount');
-        $shoppingCartMerchandiseNum = $this->shoppingCartRepository->findWhere(['customer_id'=>$user['id'],'shop_id'=>$orders['store_id']])->sum('quality');
-        $orders['merchandise_num'] = $shoppingCartMerchandiseNum;
-        $orders['total_amount'] = $shoppingCartAmount;
-        $orders['status'] = Order::WAIT;
+        $shoppingCarts = $this->shoppingCartRepository->findWhere(['customer_id'=>$user->id,'shop_id'=>$orders['store_id']]);
+        $orders['merchandise_num'] = $shoppingCarts->sum('quality');
+        $orders['total_amount'] = $shoppingCarts->sum('amount');
+        $orders['payment_amount'] = $orders['total_amount'] - $orders['discount_amount'];
         $orders['years'] = date('Y',time());
         $orders['month'] = date('d',time());
         $orders['week']  = date('w',time()) ==0 ? 7 : date('w',time());
         $orders['hour']  = date('H',time());
-        $ordersMerchandise = $this->orderRepository->create($orders);
-        $shoppingCart = $this->shoppingCartRepository->findWhere(['customer_id'=>$user['id'],'shop_id'=>$orders['store_id']]);
-        $itemMerchandises = [];
-        //组装购物车数据存入订单表中
-        foreach ($shoppingCart as $k => $v) {
-            $merchandises = $this->merchandiseRepository->findWhere(['id'=>$v['merchandise_id']])->first();
-            $itemMerchandises[$k]['app_id'] = $appId;
-            $itemMerchandises[$k]['shop_id'] = $v['shop_id'];
-            $itemMerchandises[$k]['member_id'] = $v['member_id'];
-            $itemMerchandises[$k]['customer_id'] = $v['customer_id'];
-            $itemMerchandises[$k]['order_id'] = $ordersMerchandise['id'];
-            $itemMerchandises[$k]['merchandise_id'] = $v['merchandise_id'];
-            $itemMerchandises[$k]['name'] = $merchandises['name'];
-            $itemMerchandises[$k]['main_image'] = $merchandises['main_image'];
-            $itemMerchandises[$k]['origin_price'] = $merchandises['origin_price'];
-            $itemMerchandises[$k]['sell_price'] = $merchandises['sell_price'];
-            $itemMerchandises[$k]['cost_price'] = $merchandises['cost_price'];
-            $itemMerchandises[$k]['quality'] = $v['quality'];
-            $itemMerchandises[$k]['total_amount'] = $v['amount'];
-            $itemMerchandises[$k]['status'] = 10;
-            $this->shoppingCartRepository->delete($v['id']);
+        $orderItems = [];
+        foreach ($shoppingCarts as $k => $v) {
+            $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
+            $orderItems[$k]['shop_id'] = $v['shop_id'];
+            $orderItems[$k]['member_id'] = $v['member_id'];
+            $orderItems[$k]['customer_id'] = $v['customer_id'];
+            $orderItems[$k]['merchandise_id'] = $v['merchandise_id'];
+            $orderItems[$k]['quality'] = $v['quality'];
+            $orderItems[$k]['total_amount'] = $v['amount'];
+            $orderItems[$k]['discount_amount'] = 0;
+            $orderItems[$k]['payment_amount'] = $v['amount'];
+            $orderItems[$k]['sku_product_id'] = $v['sku_product_id'];
+            $orderItems[$k]['status'] = Order::WAIT;
+//            $this->shoppingCartRepository->delete($v['id']);
         }
-        $this->orderRepository->insertMerchandise($itemMerchandises);
-        return $this->response()->item($ordersMerchandise,new OrderTransformer());
+        $orders['order_items'] = $orderItems;
+        $order = $this->app->make('order.builder')->setInput($orders)->handle();
+        $result = app('wechat')->unify($order, $order->wechatAppId);
+        $order->status = Order::MAKE_SURE;
+        $order->save();
+        if($result['return_code'] === 'SUCCESS'){
+            $order->status = Order::PAID;
+            $order->save();
+            $sdkConfig = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
+            $result['sdk_config'] = $sdkConfig;
+        }
+        return $this->response(new JsonResponse($result));
+//        return $this->response()->item($ordersMerchandise,new OrderTransformer());
     }
 
     /**

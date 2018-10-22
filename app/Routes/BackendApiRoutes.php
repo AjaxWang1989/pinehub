@@ -73,7 +73,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->post('/member/card', ['as' => 'member.card.create', 'uses' => 'MemberCardsController@store']);
                 $router->get('/member/card/{id}', ['as' => 'member.card.show', 'uses' => 'MemberCardsController@show']);
                 $router->put('/member/card/{id}', ['as' => 'member.card.update', 'uses' => 'MemberCardsController@update']);
-                $router->delete('/member/card/{id}', ['as' => 'member.card.delete', 'uses' => 'MemberCardsController@destory']);
+                $router->delete('/member/card/{id}', ['as' => 'member.card.delete', 'uses' => 'MemberCardsController@destroy']);
 
                 $router->post('/groupon/ticket', ['as' => 'groupon-ticket.create', 'middleware' => ['ticket:groupon'],  'uses' => 'CardsController@store']);
                 $router->post('/discount/ticket', ['as' => 'discount-ticket.create', 'middleware' => ['ticket:discount'], 'uses' => 'CardsController@store']);
@@ -145,7 +145,7 @@ class BackendApiRoutes extends ApiRoutes
 
                 $router->post('order-gift', ['as' => 'order-gift.create', 'uses' => 'OrderGiftsController@store']);
                 $router->put('order-gift/{id}', ['as' => 'order-gift.update', 'uses' => 'OrderGiftsController@update']);
-                $router->get('order-gifts', ['as' => 'order-gift.list', 'uses' => 'OrderGiftsController@index']);
+                $router->get('order-gifts/{type}', ['as' => 'order-gift.list', 'uses' => 'OrderGiftsController@index']);
                 $router->get('order-gift/{id}', ['as' => 'order-gift.show', 'uses' => 'OrderGiftsController@show']);
             });
 

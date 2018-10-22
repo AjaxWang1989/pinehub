@@ -25,6 +25,7 @@ class MpUserInfoMobileTransformer extends TransformerAbstract
             'city' => $model->city,
             'sex' => $model->sex,
             'ticket_num' => $model->ticketNum,
+            'shop_id' => $model->shopId,
             'mobile' => $model->member->mobile,
             'vip_level' => $model->member->vipLevel,
             'total_score'=> $model->member->totalScore,

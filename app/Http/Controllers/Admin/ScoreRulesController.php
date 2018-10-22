@@ -52,13 +52,7 @@ class ScoreRulesController extends Controller
             $this->repository->findWhere([['type', '>', ScoreRule::SPECIAL_RULE]]);
         }
         $scoreRules = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($scoreRules, new ScoreRuleItemTransformer());
-        }
-
-        return view('scoreRules.index', compact('scoreRules'));
+        return $this->response()->paginator($scoreRules, new ScoreRuleItemTransformer());
     }
 
     /**
@@ -75,18 +69,7 @@ class ScoreRulesController extends Controller
         $data = $request->all();
         $data['app_id'] = app(AppManager::class)->currentApp->id;
         $scoreRule = $this->repository->create($data);
-
-        $response = [
-            'message' => 'ScoreRule created.',
-            'data'    => $scoreRule->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($scoreRule, new ScoreRuleTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($scoreRule, new ScoreRuleTransformer());
     }
 
     /**
@@ -99,13 +82,7 @@ class ScoreRulesController extends Controller
     public function show($id)
     {
         $scoreRule = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($scoreRule, new ScoreRuleTransformer());
-        }
-
-        return view('scoreRules.show', compact('scoreRule'));
+        return $this->response()->item($scoreRule, new ScoreRuleTransformer());
     }
 
     /**
@@ -128,25 +105,14 @@ class ScoreRulesController extends Controller
      * @param  ScoreRuleUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
     public function update(ScoreRuleUpdateRequest $request, $id)
     {
        $scoreRule = $this->repository->update($request->all(), $id);
-
-       $response = [
-           'message' => 'ScoreRule updated.',
-           'data'    => $scoreRule->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($scoreRule, new ScoreRuleTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+       return $this->response()->item($scoreRule, new ScoreRuleTransformer());
     }
 
 
@@ -160,15 +126,6 @@ class ScoreRulesController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'ScoreRule deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'ScoreRule deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }

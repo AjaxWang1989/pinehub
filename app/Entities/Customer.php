@@ -152,6 +152,11 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         return $this->hasMany(Order::class, 'customer_id', 'id');
     }
 
+    public function ticketRecords() : HasMany
+    {
+        return $this->hasMany(CustomerTicketCard::class, 'customer_id', 'id');
+    }
+
     public function getAuthPassword()
     {
         return Hash::make($this->sessionKey);

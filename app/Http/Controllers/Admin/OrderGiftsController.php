@@ -60,13 +60,7 @@ class OrderGiftsController extends Controller
             Log::debug('order gift type '.$type);
             return $model;
         })->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($orderGifts, new OrderGiftItemTransformer());
-        }
-
-        return view('orderGifts.index', compact('orderGifts'));
+        return $this->response()->paginator($orderGifts, new OrderGiftItemTransformer());
     }
 
     /**
@@ -82,18 +76,7 @@ class OrderGiftsController extends Controller
     {
         $data = $request->all();
         $orderGift = $this->repository->create($data);
-
-        $response = [
-            'message' => 'OrderGift created.',
-            'data'    => $orderGift->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($orderGift, new OrderGiftTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($orderGift, new OrderGiftTransformer());
     }
 
     /**
@@ -106,13 +89,7 @@ class OrderGiftsController extends Controller
     public function show($id)
     {
         $orderGift = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($orderGift, new OrderGiftTransformer());
-        }
-
-        return view('orderGifts.show', compact('orderGift'));
+        return $this->response()->item($orderGift, new OrderGiftTransformer());
     }
 
     /**
@@ -135,25 +112,14 @@ class OrderGiftsController extends Controller
      * @param  OrderGiftUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
     public function update(OrderGiftUpdateRequest $request, $id)
     {
        $orderGift = $this->repository->update($request->all(), $id);
-
-       $response = [
-           'message' => 'OrderGift updated.',
-           'data'    => $orderGift->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($orderGift, new OrderGiftTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($orderGift, new OrderGiftTransformer());
     }
 
 
@@ -167,15 +133,6 @@ class OrderGiftsController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'OrderGift deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'OrderGift deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }

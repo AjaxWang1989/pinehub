@@ -23,17 +23,14 @@ class OrderGiftTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-            'app_id' => $model->appId,
             /* place your other model properties here */
-            'name' => $model->name,
+            'activity_id' => $model->activityId,
+            'ticket_id' => $model->typticketId,
+            'discount' => $model->discount,
+            'cost' => $model->cost,
+            'least_amount' => $model->least_amount,
+            'score' => $model->score,
             'type' => $model->type,
-            'status' => $model->status,
-            'begin_at' => $model->beginAt,
-            'end_at' => $model->endAt,
-            'gift' => $model->gift,
-            'tickets' => $model->tickets(),
-            'created_at' => $model->createdAt,
-            'updated_at' => $model->updatedAt
         ];
     }
 }

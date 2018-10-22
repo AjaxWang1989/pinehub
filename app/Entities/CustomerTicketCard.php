@@ -15,7 +15,13 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $cardId 卡券card id
  * @property string $cardCode 核销码
  * @property string $appId 应用id
+ *  * @property int $isGiveByFriend 是否朋友赠送
+ * @property string|null $friendOpenId 好友微信open id
  * @property int $customerId 客户id
+ * @property string|null $openId 微信open id
+ * @property string|null $unionId 微信open id
+ * @property string|null $outerStr 领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加Addcard接口中自定义该字段的字符串值。
+ * @property int $active 是否激活
  * @property int $status 0-不可用，1-可用，2-已使用，3-过期
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
@@ -36,6 +42,14 @@ class CustomerTicketCard extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    const STATUS_off = 0;
+    const STATUS_ON = 1;
+    const STATUS_USE = 2;
+    const STATUS_EXPIRE = 3;
+
+    const ACTIVE_ON = 1;
+    const ACTIVE_OFF = 0;
+
     protected $casts = [
         'card_info' => 'json'
     ];
@@ -49,6 +63,12 @@ class CustomerTicketCard extends Model implements Transformable
         'card_code',
         'app_id',
         'customer_id',
+        'is_give_by_friend',
+        'friend_open_id',
+        'open_id',
+        'union_id',
+        'outer_str',
+        'active',
         'status'
     ];
 

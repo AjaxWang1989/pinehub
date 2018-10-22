@@ -15,6 +15,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $id
  * @property string|null $appId 系统appid
  * @property int|null $shopId 店铺ID
+ * @property int|null $activityMerchandisesId 新品活动商品id
  * @property int|null $memberId 买家会员id
  * @property int|null $customerId 买家ID
  * @property int $orderId 订单id
@@ -78,7 +79,7 @@ class OrderItem extends Model implements Transformable
     protected $fillable = [
         'app_id','shop_id','member_id','customer_id','order_id','code','merchandise_id','sku_product_id','name',
         'main_image','origin_price','sell_price','cost_price','quality','total_amount','discount_amount','payment_amount',
-        'paid_at','status','signed_at','consigned_at'
+        'paid_at','status','signed_at','consigned_at','activity_merchandises_id'
     ];
 
     public function member() : BelongsTo
