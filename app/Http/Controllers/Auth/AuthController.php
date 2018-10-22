@@ -108,12 +108,13 @@ class AuthController extends Controller
             }
         }
         $tokenMeta = [
-            'token' => $token,
+            'value' => $token,
             'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
-            'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
+            't ' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
         ];
-        app()->make('cache')->set($token, $tokenMeta, config('jwt.refresh_ttl'));
-        return $this->response()->item($user, new AuthenticateTransformer)->addMeta('token', $tokenMeta);
+        return $this->response()
+            ->item($user, new AuthenticateTransformer)
+            ->addMeta('token', $tokenMeta);
     }
 
     /**
