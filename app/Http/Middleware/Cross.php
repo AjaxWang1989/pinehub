@@ -19,7 +19,7 @@ class Cross
     {
         if($request->method() === HTTP_METHOD_OPTIONS) {
             $response = app(Factory::class)->created();
-            return $this->setHeader($response);
+            return $this->setHeader($response, $request);
         }
         $response = $next($request);
         $this->setHeader($response, $request);
