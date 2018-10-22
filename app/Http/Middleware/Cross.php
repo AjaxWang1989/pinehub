@@ -22,13 +22,14 @@ class Cross
             return $this->setHeader($response);
         }
         $response = $next($request);
-        $this->setHeader($response);
+        $this->setHeader($response, $request);
         return $response;
     }
 
-    private function setHeader( &$response ) {
+    private function setHeader( &$response, $request) {
 
         if(method_exists($response, 'header')) {
+            $origin = $request->header('ORIGIN', $origin);
             $response->header('Access-Control-Allow-Origin', '*');
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
             $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
