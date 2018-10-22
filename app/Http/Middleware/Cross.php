@@ -29,8 +29,8 @@ class Cross
     private function setHeader( &$response, $request) {
 
         if(method_exists($response, 'header')) {
-            $origin = $request->header('ORIGIN', $origin);
-            $response->header('Access-Control-Allow-Origin', '*');
+            $origin = $request->header('ORIGIN', '*');
+            $response->header('Access-Control-Allow-Origin', $origin);
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
             $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
             $response->header('Access-Control-Allow-Credentials', 'true');
