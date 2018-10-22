@@ -32,11 +32,10 @@ class AuthenticateTransformer extends TransformerAbstract
             'sex'        => $model->sex,
             'avatar'     => $model->avatar,
             'city'       => $model->city,
-            'token' => $model->token,
             'last_login_at' => $model->lastLoginAt,
             'status'        => $model->status,
             'vip_level'     => $model->vipLevel,
-            'created_at' => $model->createdAt,
+            'created_at' => $model->createdAt
         ];
     }
 }
