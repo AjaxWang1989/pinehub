@@ -41,7 +41,7 @@ class ApiRoutes extends Routes
         }
         $this->version = $version ? $version : $this->version;
 
-        $second['middleware'] = ['cross', 'auth.meta:'.$this->auth];
+        $second['middleware'] = ['cross'];
 
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;

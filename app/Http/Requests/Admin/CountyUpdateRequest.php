@@ -13,7 +13,7 @@ class CountyUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,11 @@ class CountyUpdateRequest extends FormRequest
     {
         return [
             //
+            'name' => ['required'],
+            'code' => ['required'],
+            'country_id' => ['exists:countries,id'],
+            'province_id' => ['exists:provinces,id'],
+            'city_id' => ['exists:cities,id']
         ];
     }
 }

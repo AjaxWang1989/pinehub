@@ -37,11 +37,15 @@ class BackendApiRoutes extends ApiRoutes
               /**
                * @var  LumenRouter|DingoRouter $router
                * */
-              $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
-              $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
+               $router->get('/public/key',['as'=>'administrator.public.key','uses'=>'AuthController@getPublicKey']);
+               $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
+               $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
             });
 
             $router->group($attributes, function ($router) {
+                /**
+                 * @var  LumenRouter|DingoRouter $router
+                 * */
                 $router->get('/logout', ['as' => 'administrator.logout', 'uses' => 'AuthController@logout']);
                 $router->get('/users',['as' => 'users.list', 'uses' => 'UsersController@getUsers']);
                 $router->get('/user/{id}',['as' => 'user.detail', 'uses' => 'UsersController@getUserDetail']);
@@ -155,7 +159,7 @@ class BackendApiRoutes extends ApiRoutes
             $router->get('/country/{id}', ['as' => 'country.detail', 'uses' => 'CountriesController@show']);
             $router->post('/country', ['as' => 'country.create', 'uses' => 'CountriesController@store']);
             $router->put('/country/{id}', ['as' => 'country.update', 'uses' => 'CountriesController@update']);
-            $router->delete('/country/{id}', ['as' =>'country.delete', 'uses' => 'CountriesController@destory']);
+            $router->delete('/country/{id}', ['as' =>'country.delete', 'uses' => 'CountriesController@destroy']);
 
             $router->get('/country/{countryId}/provinces', ['as' => 'province.list.country', 'uses' => 'ProvincesController@index']);
             $router->get('/provinces', ['as' => 'province.list', 'uses' => 'ProvincesController@index']);

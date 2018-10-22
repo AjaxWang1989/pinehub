@@ -48,15 +48,9 @@ class OrdersController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(OrderSearchCriteria::class);
-        $orders = $this->repository->with(['orderItems.orderMerchandise',
+        $orders = $this->repository->with(['orderItems.merchandise',
             'orderItems.shop', 'customer', 'member'])->paginate(\Illuminate\Support\Facades\Request::input('limit', PAGE_LIMIT));
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($orders, new OrderItemTransformer());
-        }
-
-        return view('orders.index', compact('orders'));
+        return $this->response()->paginator($orders, new OrderItemTransformer());
     }
 
     /**
@@ -94,14 +88,8 @@ class OrdersController extends Controller
      */
     public function show($id)
     {
-        $order = $this->repository->with(['orderItems.orderMerchandise', 'orderItems.shop', 'customer', 'member'])->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($order, new OrderTransformer());
-        }
-
-        return view('orders.show', compact('order'));
+        $order = $this->repository->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member'])->find($id);
+        return $this->response()->item($order, new OrderTransformer());
     }
 
     /**
@@ -124,7 +112,7 @@ class OrdersController extends Controller
      * @param  OrderUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
@@ -184,15 +172,6 @@ class OrdersController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'Order deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'Order deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use App\Entities\OrderItem;
-use App\Entities\OrderItemMerchandise;
+use App\Entities\Merchandise;
 use League\Fractal\TransformerAbstract;
 use App\Entities\Order;
 
@@ -27,8 +27,8 @@ class OrderItemTransformer extends TransformerAbstract
             'id'         => (int) $model->id,
             'transaction_id' => $model->transactionId,
             'order_items' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
-                $data = $orderItem->orderMerchandise ?
-                    with($orderItem->orderMerchandise, function (OrderItemMerchandise $merchandise){
+                $data = $orderItem->merchandise ?
+                    with($orderItem->merchandise, function (Merchandise $merchandise){
                         $data = $merchandise->only(['name', 'merchandise_id', 'sku_product_id',
                             'main_image', 'sell_price', 'quality']);
                         $data['sell_price'] = number_format($data['sell_price'], 2);

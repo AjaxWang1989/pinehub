@@ -13,7 +13,7 @@ class CityUpdateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,6 +25,10 @@ class CityUpdateRequest extends FormRequest
     {
         return [
             //
+            'code' => ['required'],
+            'name' => ['required'],
+            'country_id' => ['exists:countries,id'],
+            'province_id' => ['exists:provinces,id']
         ];
     }
 }

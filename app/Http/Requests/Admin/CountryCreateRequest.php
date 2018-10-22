@@ -25,7 +25,7 @@ class CountryCreateRequest extends FormRequest
     {
         return [
             //
-            'code' => ['required', 'string', 'regex:[0-9]{1,6}'],
+            'code' => ['required', 'string', 'regex:/^[0-9]{1,6}$/'],
             'name' => ['required', 'string', 'max:32']
         ];
     }

@@ -73,13 +73,7 @@ class CitiesController extends Controller
             }
         }
         $cities = $this->repository->with(['province', 'country'])->withCount('counties')->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($cities, new CityItemTransformer());
-        }
-
-        return view('cities.index', compact('cities'));
+        return $this->response()->paginator($cities, new CityItemTransformer());
     }
 
     /**
@@ -101,18 +95,7 @@ class CitiesController extends Controller
             $data['country_id'] = $province->countryId;
         }
         $city = $this->repository->create($data);
-
-        $response = [
-            'message' => 'City created.',
-            'data'    => $city->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($city, new CityTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($city, new CityTransformer());
     }
 
     /**
@@ -125,13 +108,7 @@ class CitiesController extends Controller
     public function show($id)
     {
         $city = $this->repository->withCount('counties')->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($city, new CityTransformer());
-        }
-
-        return view('cities.show', compact('city'));
+        return $this->response()->item($city, new CityTransformer());
     }
 
     /**
@@ -154,25 +131,14 @@ class CitiesController extends Controller
      * @param  CityUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
     public function update(CityUpdateRequest $request, $id)
     {
        $city = $this->repository->update($request->all(), $id);
-
-       $response = [
-           'message' => 'City updated.',
-           'data'    => $city->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($city, new CityTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($city, new CityTransformer());
     }
 
 
@@ -186,15 +152,6 @@ class CitiesController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'City deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'City deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }

@@ -53,13 +53,7 @@ class ProvincesController extends Controller
         }
 
         $provinces = $this->repository->withCount(['counties', 'cities'])->with('country')->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($provinces, new ProvinceItemTransformer());
-        }
-
-        return view('provinces.index', compact('provinces'));
+        return $this->response()->paginator($provinces, new ProvinceItemTransformer());
     }
 
     /**
@@ -76,18 +70,7 @@ class ProvincesController extends Controller
         $data = $request->all();
         $data['country_id'] = isset($data['country_id']) && $data['country_id'] ? $data['country_id'] : $countryId;
         $province = $this->repository->create($request->all());
-
-        $response = [
-            'message' => 'Province created.',
-            'data'    => $province->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($province, new ProvinceTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($province, new ProvinceTransformer());
     }
 
     /**
@@ -100,13 +83,7 @@ class ProvincesController extends Controller
     public function show($id)
     {
         $province = $this->repository->with('country')->withCount(['cities', 'counties'])->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($province, new ProvinceTransformer());
-        }
-
-        return view('provinces.show', compact('province'));
+        return $this->response()->item($province, new ProvinceTransformer());
     }
 
     /**
@@ -129,25 +106,14 @@ class ProvincesController extends Controller
      * @param  ProvinceUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
     public function update(ProvinceUpdateRequest $request, $id)
     {
        $province = $this->repository->with('country')->withCount(['cities', 'counties'])->update($request->all(), $id);
-
-       $response = [
-           'message' => 'Province updated.',
-           'data'    => $province->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($province, new ProvinceTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+       return $this->response()->item($province, new ProvinceTransformer());
     }
 
 
@@ -161,15 +127,6 @@ class ProvincesController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'Province deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'Province deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }
