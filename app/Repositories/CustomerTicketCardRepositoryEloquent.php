@@ -48,9 +48,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
         $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($status,$userId,$shoppingCartAmount) {
             return $customerTicketCard->where(['customer_id'=>$userId,'customer_ticket_cards.status'=>$status])
                 ->join('cards', 'customer_ticket_cards.card_id', '=', 'cards.card_id')
-                ->where('cards.card_info->cash->least_cost', '<=', $shoppingCartAmount)
-                ->where('cards.card_info->cash->date_info->begin_timestamp','<=',time())
-                ->where('cards.card_info->cash->date_info->end_timestamp','>',time());
+                ->where('cards.card_info->least_cost', '<=', $shoppingCartAmount);
         });
         return $this->paginate();
     }
