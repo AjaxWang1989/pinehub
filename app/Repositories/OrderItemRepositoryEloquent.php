@@ -188,7 +188,7 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
     public function OrderItemMerchandises(int $id){
         $this->scopeQuery(function (OrderItem $orderItem) use($id) {
             return $orderItem->select([
-                DB::raw('name,sell_price,quality,total_amount')
+                DB::raw('name,sell_price,quality,total_amount,main_image')
             ])
                 ->where(['order_id'=>$id]);
         });

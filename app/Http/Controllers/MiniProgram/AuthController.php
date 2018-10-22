@@ -85,14 +85,9 @@ class AuthController extends Controller
     {
         $user = $this->mpUser();
         $user['ticket_num'] = count($this->customerTicketCardRepository->findWhere(['customer_id'=>$user['id']]));
-        if ($user['member_id']){
-            $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
-            $user['shop_id'] = $shopUser['id'];
-            return $this->response()->item($user, new MpUserInfoMobileTransformer());
-        }else{
-            return $this->response()->item($user, new MpUserInfoTransformer());
-        }
-
+        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        $user['shop_id'] = $shopUser['id'];
+        return $this->response()->item($user, new MpUserInfoMobileTransformer());
     }
 
     /**

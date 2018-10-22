@@ -102,7 +102,7 @@ class CategoriesController extends Controller
      * @param  CategoryUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */

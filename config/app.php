@@ -70,7 +70,7 @@ return [
         'JWTAuth' => '\Tymon\JWTAuth\Facades\JWTAuth',
         'EasyWeChat' => '\Overtrue\LaravelWeChat\Facade',
         //'Validator' => 'Illuminate\Support\Facades\Validator',
-        'auth.meta' => '\App\Http\Middleware\ResponseMetaAddToken',
+//        'auth.meta' => '\App\Http\Middleware\ResponseMetaAddToken',
         'QRCode'    => '\SimpleSoftwareIO\QrCode\Facades\QrCode',
         'ticket'    => \App\Http\Middleware\Ticket::class
     ]

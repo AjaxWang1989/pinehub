@@ -44,13 +44,7 @@ class CountriesController extends Controller
     public function index()
     {
         $countries = $this->repository->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($countries, new CountryItemTransformer());
-        }
-
-        return view('countries.index', compact('countries'));
+        return $this->response()->paginator($countries, new CountryItemTransformer());
     }
 
     /**
@@ -65,18 +59,7 @@ class CountriesController extends Controller
     public function store(CountryCreateRequest $request)
     {
         $country = $this->repository->create($request->all());
-
-        $response = [
-            'message' => 'Country created.',
-            'data'    => $country->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($country, new CountryTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($country, new CountryTransformer());
     }
 
     /**
@@ -89,13 +72,7 @@ class CountriesController extends Controller
     public function show($id)
     {
         $country = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($country, new CountryTransformer());
-        }
-
-        return view('countries.show', compact('country'));
+        return $this->response()->item($country, new CountryTransformer());
     }
 
     /**
@@ -118,25 +95,14 @@ class CountriesController extends Controller
      * @param  CountryUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
     public function update(CountryUpdateRequest $request, $id)
     {
        $country = $this->repository->update($request->all(), $id);
-
-       $response = [
-           'message' => 'Country updated.',
-           'data'    => $country->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($country, new CountryTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+       return $this->response()->item($country, new CountryTransformer());
     }
 
 
@@ -150,15 +116,6 @@ class CountriesController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => 'Country deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'Country deleted.');
+        return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }

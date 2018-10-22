@@ -71,13 +71,7 @@ class CountiesController extends Controller
             }
         }
         $counties = $this->repository->with(['city', 'province', 'country'])->paginate();
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->paginator($counties, new CountyItemTransformer());
-        }
-
-        return view('counties.index', compact('counties'));
+        return $this->response()->paginator($counties, new CountyItemTransformer());
     }
 
     /**
@@ -100,17 +94,7 @@ class CountiesController extends Controller
         }
         $county = $this->repository->create($data);
 
-        $response = [
-            'message' => 'County created.',
-            'data'    => $county->toArray(),
-        ];
-
-        if ($request->wantsJson()) {
-
-            return $this->response()->item($county, new CountyTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($county, new CountyTransformer());
     }
 
     /**
@@ -123,13 +107,7 @@ class CountiesController extends Controller
     public function show($id)
     {
         $county = $this->repository->find($id);
-
-        if (request()->wantsJson()) {
-
-            return $this->response()->item($county, new CountyTransformer());
-        }
-
-        return view('counties.show', compact('county'));
+        return $this->response()->item($county, new CountyTransformer());
     }
 
     /**
@@ -152,25 +130,14 @@ class CountiesController extends Controller
      * @param  CountyUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      *
      * @throws Exception
      */
     public function update(CountyUpdateRequest $request, $id)
     {
        $county = $this->repository->update($request->all(), $id);
-
-       $response = [
-           'message' => 'County updated.',
-           'data'    => $county->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($county, new CountyTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+       return $this->response()->item($county, new CountyTransformer());
     }
 
 

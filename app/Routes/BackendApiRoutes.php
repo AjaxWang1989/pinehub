@@ -37,6 +37,7 @@ class BackendApiRoutes extends ApiRoutes
                 /**
                  * @var  LumenRouter|DingoRouter $router
                  * */
+                $router->get('/public/key',['as'=>'administrator.public.key','uses'=>'AuthController@getPublicKey']);
                 $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
                 $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
                 $router->get('/logout', ['as' => 'administrator.logout', 'uses' => 'AuthController@logout']);
@@ -154,7 +155,7 @@ class BackendApiRoutes extends ApiRoutes
             $router->get('/country/{id}', ['as' => 'country.detail', 'uses' => 'CountriesController@show']);
             $router->post('/country', ['as' => 'country.create', 'uses' => 'CountriesController@store']);
             $router->put('/country/{id}', ['as' => 'country.update', 'uses' => 'CountriesController@update']);
-            $router->delete('/country/{id}', ['as' =>'country.delete', 'uses' => 'CountriesController@destory']);
+            $router->delete('/country/{id}', ['as' =>'country.delete', 'uses' => 'CountriesController@destroy']);
 
             $router->get('/country/{countryId}/provinces', ['as' => 'province.list.country', 'uses' => 'ProvincesController@index']);
             $router->get('/provinces', ['as' => 'province.list', 'uses' => 'ProvincesController@index']);
