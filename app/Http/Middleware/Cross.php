@@ -19,23 +19,24 @@ class Cross
     {
         if($request->method() === HTTP_METHOD_OPTIONS) {
             $response = app(Factory::class)->created();
-            return $this->setHeader($response);
+            return $this->setHeader($response, $request);
         }
         $response = $next($request);
-        $this->setHeader($response);
+        $this->setHeader($response, $request);
         return $response;
     }
 
-    private function setHeader( &$response ) {
-
+    private function setHeader( &$response, $request) {
+        $origin = $request->header('ORIGIN', '*');
         if(method_exists($response, 'header')) {
-            $response->header('Access-Control-Allow-Origin', '*');
+            $response->header('Access-Control-Allow-Origin', $origin);
             $response->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept');
             $response->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS');
             $response->header('Access-Control-Allow-Credentials', 'true');
             return $response;
         }else{
-            header('Access-Control-Allow-Origin:*');
+
+            header('Access-Control-Allow-Origin:'.$origin);
             header('Access-Control-Allow-Headers:Origin, Content-Type, Cookie, Accept');
             header('Access-Control-Allow-Methods:GET, POST, PATCH, PUT, DELETE, OPTIONS');
             header('Access-Control-Allow-Credentials:true');

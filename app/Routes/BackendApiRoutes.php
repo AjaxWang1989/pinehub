@@ -33,16 +33,20 @@ class BackendApiRoutes extends ApiRoutes
                 $attributes['middleware'] = ['api.auth'];
             }
 
+            $router->group([], function($router) {
+              /**
+               * @var  LumenRouter|DingoRouter $router
+               * */
+               $router->get('/public/key',['as'=>'administrator.public.key','uses'=>'AuthController@getPublicKey']);
+               $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
+               $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
+            });
+
             $router->group($attributes, function ($router) {
                 /**
                  * @var  LumenRouter|DingoRouter $router
                  * */
-                $router->get('/public/key',['as'=>'administrator.public.key','uses'=>'AuthController@getPublicKey']);
-                $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
-                $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
                 $router->get('/logout', ['as' => 'administrator.logout', 'uses' => 'AuthController@logout']);
-
-
                 $router->get('/users',['as' => 'users.list', 'uses' => 'UsersController@getUsers']);
                 $router->get('/user/{id}',['as' => 'user.detail', 'uses' => 'UsersController@getUserDetail']);
 
