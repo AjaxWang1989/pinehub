@@ -3,10 +3,14 @@
 namespace App\Providers;
 
 use App\Exceptions\ApiHttpExceptionHandler;
+use App\Exceptions\HttpValidationException;
+use App\Exceptions\TokenOverDateException;
+use Dingo\Api\Exception\ValidationHttpException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 
 class ApiExceptionHandlerServiceProvider extends ServiceProvider
@@ -28,6 +32,11 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                     ->header('Access-Control-Allow-Credentials', 'true');
                 if(Request::method() === HTTP_METHOD_OPTIONS) {
                     return $responseSender->send();
+                }
+                if($exception instanceof TokenExpiredException) {
+                    $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
+                }elseif ($exception instanceof ValidationHttpException) {
+                    $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
                 }
                 return $this->app->make('api.http.handler')->handle($exception);
             });

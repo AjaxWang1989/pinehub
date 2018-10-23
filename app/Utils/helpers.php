@@ -111,6 +111,27 @@ if(!function_exists('generatorUID')){
     }
 }
 
+if(!function_exists('buildUrl')) {
+    function buildUrl(string $gateway, $path, array $params = [], array  $query = [], string  $proto = 'http://') {
+        foreach ($params as $key => $param) {
+            $search[] = '/({'.$key.'})|({'.$key.'?})/';
+            $replace[] = $param;
+        }
+
+        if(isset($search) && isset($replace)) {
+            $path = preg_replace($search, $replace, $path);
+        }
+
+        if($path){
+            $path = trim($path, '/');
+            $host = trim(gateway($gateway), '/');
+            return $proto.$host.'/'.$path .'?'. http_build_query($query);
+        }else{
+            return null;
+        }
+    }
+}
+
 if(!function_exists('apiUrlGenerator')) {
     function apiUrlGenerator(string $gateway, string $name, array $params = [], array $query = [], string $version = null) {
         $router = app('api.router');

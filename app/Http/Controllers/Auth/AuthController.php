@@ -107,10 +107,11 @@ class AuthController extends Controller
                 });
             }
         }
+        $now = Carbon::now(config('app.timezone'));
         $tokenMeta = [
             'value' => $token,
-            'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
-            't ' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
+            'ttl' => $now->addMinute(config('jwt.ttl')),
+            'refresh_ttl' => $now->addMinute(config('jwt.refresh_ttl'))
         ];
         return $this->response()
             ->item($user, new AuthenticateTransformer)
