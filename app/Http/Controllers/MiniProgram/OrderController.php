@@ -135,7 +135,9 @@ class OrderController extends Controller
             $orderItems[$k]['status'] = Order::WAIT;
             $deleteId[] = $v['id'];
         }
-        return $this->shoppingCartRepository->delete($deleteId);
+        $delete = ShoppingCart::destroy($deleteId);
+
+        return $delete;
         $orders['order_items'] = $orderItems;
         $order = $this->app->make('order.builder')->setInput($orders)->handle();
         $result = app('wechat')->unify($order, $order->wechatAppId);
