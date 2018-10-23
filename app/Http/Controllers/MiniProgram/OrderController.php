@@ -15,6 +15,7 @@ use App\Entities\Order;
 use App\Entities\ShoppingCart;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
+use App\Http\Requests\MiniProgram\OrderCreateRequest;
 use App\Repositories\OrderRepository;
 use App\Repositories\CardRepository;
 use App\Repositories\ShoppingCartRepository;
@@ -75,7 +76,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function createOrder(Request $request)
+    public function createOrder(OrderCreateRequest $request)
     {
         $user = $this->mpUser();
         $orders = $request->all();
@@ -119,6 +120,7 @@ class OrderController extends Controller
         $orders['week']  = date('w',time()) ==0 ? 7 : date('w',time());
         $orders['hour']  = date('H',time());
         $orderItems = [];
+        $deleteId = [];
         foreach ($shoppingCarts as $k => $v) {
             $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
             $orderItems[$k]['shop_id'] = $v['shop_id'];
@@ -131,8 +133,9 @@ class OrderController extends Controller
             $orderItems[$k]['payment_amount'] = $v['amount'];
             $orderItems[$k]['sku_product_id'] = $v['sku_product_id'];
             $orderItems[$k]['status'] = Order::WAIT;
-//            $this->shoppingCartRepository->delete($v['id']);
+            $deleteId[] = $v['id'];
         }
+        return $this->shoppingCartRepository->delete($deleteId);
         $orders['order_items'] = $orderItems;
         $order = $this->app->make('order.builder')->setInput($orders)->handle();
         $result = app('wechat')->unify($order, $order->wechatAppId);

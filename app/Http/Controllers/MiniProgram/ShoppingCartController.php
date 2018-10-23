@@ -8,7 +8,7 @@
 
 namespace App\Http\Controllers\MiniProgram;
 
-use App\Http\Requests\CreateRequest;
+use App\Http\Requests\MiniProgram\ShoppingCartCreateRequest;
 use App\Services\AppManager;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
@@ -49,7 +49,7 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function addMerchandise(CreateRequest $request){
+    public function addMerchandise(ShoppingCartCreateRequest $request){
         $user = $this->mpUser();
         $shoppingCart = $request->all();
 
@@ -115,7 +115,7 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function reduceMerchandise(Request $request){
+    public function reduceMerchandise(ShoppingCartCreateRequest $request){
         $user = $this->mpUser();
         $shoppingCart = $request->all();
 
