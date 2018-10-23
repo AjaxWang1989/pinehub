@@ -182,6 +182,7 @@ class OrderBuilder implements InterfaceServiceHandler
             if($orderModel && $orderItems) {
                 $orderItems = $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['app_id'] =  $orderModel->appId;
+                    $orderItem['member_id'] =  $orderModel->memberId;
                     $orderItem['status'] =  $orderModel->status;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);
                     return new OrderItem($orderItem->toArray());
@@ -204,10 +205,10 @@ class OrderBuilder implements InterfaceServiceHandler
             function ( $sku) {
                 if(get_class($sku) === SKUProduct::class) {
                     return /** @lang text */
-                        "UPDATE `sku_products` SET `stock_num` = {$sku->stockNum} WHERE `id` = {$sku->id}";
+                        "UPDATE `sku_products` SET `stock_num` = {$sku->stockNum},`sell_num` = {$sku->sellNum} WHERE `id` = {$sku->id}";
                 }elseif(get_class($sku) === ShopProduct::class){
                     return /** @lang text */
-                        "UPDATE `shop_products` SET `stock_num` = {$sku->stockNum} WHERE `id` = {$sku->id}";
+                        "UPDATE `shop_products` SET `stock_num` = {$sku->stockNum},`sell_num` = {$sku->sellNum} WHERE `id` = {$sku->id}";
                 }
 
         })->toArray();
@@ -220,17 +221,17 @@ class OrderBuilder implements InterfaceServiceHandler
             switch(get_class($merchandise)) {
                 case Merchandise::class: {
                     return /** @lang text */
-                        "UPDATE `merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                        "UPDATE `merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
                     break;
                 }
                 case ShopMerchandise::class: {
                     return /** @lang text */
-                        "UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                        "UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
                     break;
                 }
                 case ActivityMerchandise::class: {
                     return /** @lang text */
-                        "UPDATE `activity_merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                        "UPDATE `activity_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
                     break;
                 }
             }
@@ -429,6 +430,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $sku = $this->updateStockNumSqlContainer['sku'][$model->code] = $model;
         }
         $sku->stockNum -= $quality;
+        $sku->sellNum += $quality;
     }
 
 
@@ -444,5 +446,6 @@ class OrderBuilder implements InterfaceServiceHandler
             $merchandise = $model;
         }
         $merchandise->stockNum -= $quality;
+        $merchandise->sellNum += $quality;
     }
 }

@@ -95,6 +95,7 @@ class OrderController extends Controller
         }else{
             return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
         }
+
         $orders['shop_id'] = $orders['store_id'] ? $orders['store_id'] : null;
         if (isset($orders['store_id']) && $orders['store_id']){
             $shoppingCarts = $this->shoppingCartRepository->findWhere(['customer_id'=>$user->id,'shop_id'=>$orders['store_id']]);
