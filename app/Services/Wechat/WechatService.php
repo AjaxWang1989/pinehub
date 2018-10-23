@@ -136,7 +136,6 @@ class WechatService
     {
         $callback = $this->openPlatform()->config['oauth']['callback'];
         $redirect = $callback(['appId' => $appId], ['token' => $token]);
-        dd($redirect);
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
         if($type) {
             switch ($type) {

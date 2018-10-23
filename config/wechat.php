@@ -88,7 +88,7 @@ return [
              'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
              'oauth' => [
                  'callback' => function(array $param = [], array $query = []) {
-                     return buildUrl('web.wxopen', env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', 'open-platform.auth.callback'), $param, $query);
+                     return buildUrl('web.wxopen', env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '{appId}/auth'), $param, $query);
                  }
 
              ],
