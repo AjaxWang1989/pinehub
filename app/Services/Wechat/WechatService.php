@@ -28,6 +28,7 @@ use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\Kernel\ServerGuard as Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
+use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\CacheBridge;
 //use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
 use App\Services\Wechat\OpenPlatform\OpenPlatformAccessToken as OPAccessToken;
@@ -124,8 +125,8 @@ class WechatService
 
     public function getOpenPlatformAuthorizer(string $appId)
     {
-        $info = $this->openPlatform()->getAuthorizer($appId);
-        if(isset($info['MiniProgramInfo'])) {
+        $info = (array)$this->openPlatform()->getAuthorizer($appId);
+        if(isset($info['authorizer_info']['MiniProgramInfo'])) {
             return new MiniProgramAuthorizerInfo($info);
         }else{
             return new OfficialAccountAuthorizerInfo($info);
@@ -134,10 +135,8 @@ class WechatService
 
     public function openPlatformComponentAuthPage(string $appId = null,string $token = null, string $type = 'all', string $bizAppid = null)
     {
-        $redirect = $this->openPlatform()->config['oauth']['callback'];
-        $redirect = str_replace('{appId}', $appId, $redirect);
-        $redirect .= "?token={$token}";
-
+        $callback = $this->openPlatform()->config['oauth']['callback'];
+        $redirect = $callback(['appId' => $appId], ['token' => $token]);
         $url = $this->openPlatform()->getPreAuthorizationUrl($redirect);
         if($type) {
             switch ($type) {

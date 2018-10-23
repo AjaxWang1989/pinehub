@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Entities\WechatConfig;
 use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
+use App\Services\Wechat\Components\MiniProgramAuthorizerInfo;
+use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\Authorized;
 use Illuminate\Support\Facades\Cache;
 use App\Entities\App;
@@ -44,6 +46,9 @@ class OpenPlatformAuthorized
         $this->componentAuthorized($event);
     }
 
+    /**
+     * @throws
+     * */
     protected function componentAuthorized(Authorized $authorized)
     {
         $payload = $authorized->payload;

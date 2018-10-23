@@ -72,7 +72,7 @@ return [
              */
              'oauth' => [
                  'scopes'   => array_map('trim', explode(',', env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_SCOPES', 'snsapi_userinfo'))),
-                 'callback' => '',//webUriGenerator(env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '/examples/oauth_callback.php')),
+                 'callback' => ''
              ],
         ],
     ],
@@ -87,7 +87,10 @@ return [
              'token'   => env('WECHAT_OPEN_PLATFORM_TOKEN', ''),
              'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
              'oauth' => [
-                 'callback' => '',//webUriGenerator(env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '/examples/oauth_callback.php'), '', env('WEB_DOMAIN')),
+                 'callback' => function(array $param = [], array $query = []) {
+                     return buildUrl('web.wxopen', env('WECHAT_OPEN_PLATFORM_OAUTH_CALLBACK', '{appId}/auth'), $param, $query);
+                 }
+
              ],
          ],
      ],
