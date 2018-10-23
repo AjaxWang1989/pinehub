@@ -31,7 +31,7 @@ class AppItemTransformer extends TransformerAbstract
             'logo' => $model->logo,
             /* place your other model properties here */
             'open_platform_auth_url' => buildUrl('web.wxopen', 'auth', [], [
-                'app_id' => $model->id, 'token' => app('request')->input('token', null), 'type' => 'all'
+                'app_id' => $model->id, 'token' =>  app('tymon.jwt.auth')->getToken(), 'type' => 'all'
             ]),
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
