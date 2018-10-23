@@ -5,6 +5,7 @@ namespace App\Transformers;
 use Illuminate\Support\Facades\Auth;
 use League\Fractal\TransformerAbstract;
 use App\Entities\App as AppItem;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * Class AppItemTransformer.
@@ -22,6 +23,7 @@ class AppItemTransformer extends TransformerAbstract
      */
     public function transform(AppItem $model)
     {
+        dump(JWTAuth::getToken());
         return [
             'id'         => $model->id,
             'name' => $model->name,
