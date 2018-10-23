@@ -106,7 +106,6 @@ class OpenPlatformAuthorized
             $config->verifyTypeInfo = $authInfo->getVerifyTypeInfo();
             $config->miniProgramInfo = $authInfo->getMiniProgramInfo();
             $config->type = $config->miniProgramInfo ? WECHAT_MINI_PROGRAM : WECHAT_OFFICIAL_ACCOUNT;
-            Log::info('auth info ', $config->toArray());
             $config->save();
             if($appId) {
                 if($config->type === WECHAT_OFFICIAL_ACCOUNT){

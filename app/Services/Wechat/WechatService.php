@@ -28,6 +28,7 @@ use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\Kernel\ServerGuard as Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
+use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\CacheBridge;
 //use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
 use App\Services\Wechat\OpenPlatform\OpenPlatformAccessToken as OPAccessToken;
@@ -125,6 +126,7 @@ class WechatService
     public function getOpenPlatformAuthorizer(string $appId)
     {
         $info = $this->openPlatform()->getAuthorizer($appId);
+        Log::info('authorizer info', [$info]);
         if(isset($info['MiniProgramInfo'])) {
             return new MiniProgramAuthorizerInfo($info);
         }else{
