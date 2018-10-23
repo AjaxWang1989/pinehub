@@ -23,7 +23,7 @@ class AppItemTransformer extends TransformerAbstract
      */
     public function transform(AppItem $model)
     {
-        dump(app('tymon.jwt.auth')->getToken());
+        dump((string)app('tymon.jwt.auth')->getToken());
         return [
             'id'         => $model->id,
             'name' => $model->name,
