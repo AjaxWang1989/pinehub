@@ -99,6 +99,7 @@ class WechatService
             $this->openPlatform->config->merge($this->config['open_platform']);
         }
         $this->setWechatApplication($this->openPlatform, app());
+        dump($this->openPlatform->config->all());
         return ($this->openPlatform);
     }
 
