@@ -35,4 +35,12 @@ class StoreStockListRequest extends FormRequest
             'store_id' => 'required|int',
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'category_id.required.int' => '店铺分类id不能为空且要是整型',
+            'store_id.required.int' => '店铺id不能为空且要是整型',
+        ];
+    }
 }

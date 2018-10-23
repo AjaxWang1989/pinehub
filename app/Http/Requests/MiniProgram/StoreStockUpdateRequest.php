@@ -33,10 +33,21 @@ class StoreStockUpdateRequest extends FormRequest
         return [
             //
             'merchandise_id' => 'required|int',
-            'primary_stock_num' => 'required|int',
-            'modify_stock_num' => 'required|int',
+            'primary_stock_num' => 'required|numeric',
+            'modify_stock_num' => 'required|numeric',
             'reason' => 'string',
             'comment' => 'string'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'merchandise_id.required.int' => '商品id不能为空且要是整型',
+            'primary_stock_num.required.int' => '原库存不能为空切必须是数字',
+            'modify_stock_num.required.int' => '修改后库存不能为空切必须是数字',
+            'reason.string' => '原因格式不是字符串类型',
+            'comment.string' => '备注格式不是字符串类型'
         ];
     }
 

@@ -37,4 +37,13 @@ class ShoppingCartCreateRequest extends FormRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'merchandise_id.required.int' => '商品id不能为空且格式要为整型',
+            'store_id.int' => '店铺id不是整型',
+            'activity_merchandises_id.int' => '不是整型'
+        ];
+    }
+
 }

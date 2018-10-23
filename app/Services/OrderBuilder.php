@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Entities\Merchandise;
+use App\Entities\ShoppingCart;
 use App\Entities\Order;
 use App\Entities\OrderItem;
 use App\Entities\SKUProduct;
@@ -77,6 +78,11 @@ class OrderBuilder implements InterfaceServiceHandler
      * @var SKUProductRepositoryEloquent|null
      * */
     protected $skuProduct = null;
+
+    /**
+     * @var array $shoppingCartIds
+     */
+    protected $shoppingCartIds = [];
 
     /**
      * @var Auth
@@ -162,6 +168,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems->push($orderItem);
         }else{
             $orderItems = $this->input['order_items'];
+            $this->shoppingCartIds = $this->input['shopping_cart_ids'];
             if(is_array($orderItems)) {
                 $orderItems = collect($orderItems);
             }
@@ -174,7 +181,9 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems = $this->buildOrderItems($orderItems);
             $this->checkOrder($orderItems, $order);
         }
-        return DB::transaction(function () use($order, $orderItems){
+        $shoppingCartIds = $this->shoppingCartIds;
+
+        return DB::transaction(function () use($order, $orderItems ,$shoppingCartIds){
             /**
              *@var Order $orderModel
              * */
@@ -192,8 +201,14 @@ class OrderBuilder implements InterfaceServiceHandler
 
             $this->updateStockNum();
 
+//            $this->delete($shoppingCartIds);
+
             return $orderModel;
         });
+    }
+
+    protected function delete(array $shoppingCartIds){
+        ShoppingCart::destroy($shoppingCartIds);
     }
 
     protected function updateStockNum() {
@@ -251,10 +266,10 @@ class OrderBuilder implements InterfaceServiceHandler
             $subOrder = null;
             if(isset($orderItem['sku_product_id']) && $orderItem['sku_product_id']) {
                 if($orderItem['activity_merchandises_id']) {
-//                    $repository = app()->make(ActivityMerchandiseRepository::class);
-//                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
-//                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
-//                    })->first();
+                    $repository = app()->make(ActivityMerchandiseRepository::class);
+                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
+                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
+                    })->first();
 
                 }elseif($orderItem['shop_id']) {
                     $repository = app()->make(ShopProductRepository::class);

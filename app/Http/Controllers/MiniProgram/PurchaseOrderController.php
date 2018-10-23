@@ -64,9 +64,8 @@ class PurchaseOrderController extends Controller
             $request = $request->all();
             $storePurchaseStatisticsAmount = $this->storePurchaseOrdersRepository->storePurchaseStatistics($request,$userId);
             $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($request,$userId);
-            $items['total_amount'] = $storePurchaseStatisticsAmount['total_amount'];
-            $items['orders'] = $storeOrders;
-            return $this->response()->array($items,new StorePurchaseOrdersTransformer);
+            return $this->response()->paginator($storeOrders,new StorePurchaseOrdersTransformer)->addMeta('total_amount',
+                $storePurchaseStatisticsAmount['total_amount']);
         }
         return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }

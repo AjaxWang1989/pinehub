@@ -75,6 +75,13 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             $order->code =  app('uid.generator')->getUid(ORDER_CODE_FORMAT, ORDER_SEGMENT_MAX_LENGTH);
             return $order;
         });
+
+        Order::updated(function (Order &$order) {
+            if($order->getOriginal('status') !== $order->status) {
+                $order->orderItems()->update(['status' => $order->status]);
+            }
+        });
+
     }
 
     /**
@@ -179,8 +186,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $startAt = $request['send_start_time'];
-        $endAt = $request['send_end_time'];
+        $startAt = $request['paid_start_time'];
+        $endAt = $request['paid_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$request,$startAt,$endAt) {
             return $order->select([

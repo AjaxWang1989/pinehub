@@ -14,8 +14,6 @@ use App\Entities\StorePurchaseOrders;
 class StorePurchaseOrdersTransformer extends TransformerAbstract
 {
     public function transform(StorePurchaseOrders $model){
-        return [
-            $model
-        ];
+        return $model;
     }
 }

@@ -40,7 +40,7 @@ class OrderCreateRequest extends FormRequest
             'comment' => 'string',
             'type' => Rule::in(Order::OFF_LINE_PAY,Order::ORDERING_PAY,Order::E_SHOP_PAY,Order::SITE_SELF_EXTRACTION,Order::SITE_DISTRIBUTION,Order::ACTIVITY_PAY),
             'send_time' => 'date',
-            'card_id' => 'int',
+            'card_id' => 'string',
             'store_id' => 'int',
             'activity_merchandises_id' =>'int'
         ];
@@ -49,7 +49,15 @@ class OrderCreateRequest extends FormRequest
     public function messages()
     {
         return [
-          'receiver_mobile.mobile' => '手机号格式错误'
+            'receiver_name.required' => '姓名不能为空',
+            'receiver_mobile.mobile' => '手机号格式错误',
+            'receiver_address.required' => '地址不能为空',
+            'comment.string' => '备注不是字符串类型',
+            'type' => 'type不在给定的数字中',
+            'send_time.date' => '配送时间不是正常时间格式',
+            'card_id.string' => '优惠券id字符串类型',
+            'store_id.int' => '店铺id不是整型',
+            'activity_merchandises_id' => '活动商品id不是整型'
         ];
     }
 }

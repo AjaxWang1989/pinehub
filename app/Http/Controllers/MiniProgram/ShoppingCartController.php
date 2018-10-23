@@ -10,6 +10,7 @@ namespace App\Http\Controllers\MiniProgram;
 
 use App\Http\Requests\MiniProgram\ShoppingCartCreateRequest;
 use App\Services\AppManager;
+use App\Entities\ShoppingCart;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
 use App\Repositories\MerchandiseRepository;
@@ -170,9 +171,11 @@ class ShoppingCartController extends Controller
                 'activity_merchandises_id' => null,
             ]);
         }
+        $deleteIds = [];
         foreach ($shoppingMerchandise as $v){
-            $item = $this->shoppingCartRepository->delete($v['id']);
+            $deleteIds[] = $v['id'];
         }
+        $item = ShoppingCart::destroy($deleteIds);
         return $this->response(new JsonResponse(['delete_count' => $item]));
     }
 
