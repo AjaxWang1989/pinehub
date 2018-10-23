@@ -10,6 +10,7 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Validation\ValidationException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 
 
@@ -35,8 +36,11 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                 }
                 if($exception instanceof TokenExpiredException) {
                     $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
-                }elseif ($exception instanceof ValidationHttpException) {
-                    $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
+                }elseif ($exception instanceof ValidationHttpException || $exception instanceof ValidationException) {
+                    if($exception instanceof ValidationHttpException)
+                        $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
+                    else
+                        $exception = new HttpValidationException($exception->errors(), HTTP_REQUEST_VALIDATE_ERROR);
                 }
                 return $this->app->make('api.http.handler')->handle($exception);
             });
