@@ -27,6 +27,7 @@ return [
     'web_prefix' => env('WEB_PREFIX', ''),
 
     'protocol' => env('WEB_PROTO', 'http://'),
+    'timezone' => 'RPC',
     /*
     |--------------------------------------------------------------------------
     | Application Locale Configuration
