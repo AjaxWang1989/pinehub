@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use Illuminate\Support\Facades\Auth;
 use League\Fractal\TransformerAbstract;
 use App\Entities\App as AppItem;
 
@@ -29,7 +30,9 @@ class AppItemTransformer extends TransformerAbstract
             'secret' => $model->secret,
             'logo' => $model->logo,
             /* place your other model properties here */
-
+            'open_platform_auth_url' => webUrlGenerator('web.wxopen', 'open-platform.auth', [], [
+                'app_id' => $model->id, 'token' => Auth::getToken(), 'type' => 'all'
+            ]),
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];

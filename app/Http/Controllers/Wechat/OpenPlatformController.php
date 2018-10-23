@@ -28,6 +28,7 @@ class OpenPlatformController extends Controller
 
     public function __construct(AppRepository $appRepository, WechatConfigRepository $wechatConfigRepository)
     {
+        parent::__construct();
         $this->wechat = app('wechat');
         $this->appRepository = $appRepository;
         $this->wechatRepository = $wechatConfigRepository;
