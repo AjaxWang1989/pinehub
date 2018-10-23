@@ -125,7 +125,7 @@ class WechatService
 
     public function getOpenPlatformAuthorizer(string $appId)
     {
-        $info = $this->openPlatform()->getAuthorizer($appId);
+        $info = (array)$this->openPlatform()->getAuthorizer($appId);
         if(isset($info['authorizer_info']['MiniProgramInfo'])) {
             return new MiniProgramAuthorizerInfo($info);
         }else{
