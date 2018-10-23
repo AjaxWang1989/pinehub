@@ -149,6 +149,7 @@ if(!function_exists('webUrlGenerator')) {
     function webUrlGenerator(string $gateway, string $name, array $params = [], array $query = []) {
         $router = app()->router;
         $routes = $router->namedRoutes;
+        dump($routes);
         $search = [];
         $replace = [];
         $url = null;
