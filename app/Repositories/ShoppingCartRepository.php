@@ -22,5 +22,5 @@ interface ShoppingCartRepository extends RepositoryInterface
      * @param int $userId
      * @return mixed
      */
-    public function shoppingCartMerchandises(int $storeId,$userId);
+    public function shoppingCartMerchandises(int $storeId = null,int $activityMerchandiseId=null,$userId);
 }

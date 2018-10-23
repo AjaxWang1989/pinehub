@@ -90,13 +90,26 @@ class OrderController extends Controller
             ->first();
         if ($customerTicketRecord){
             $card = $customerTicketRecord['card'];
-            $orders['discount_amount'] = $card ? $card['card_info']['cash']['reduce_cost']/100 : '';
+            $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
             $orders['card_id'] = $card['card_id'];
         }else{
             return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
         }
-        $orders['shop_id'] = $orders['store_id'];
-        $shoppingCarts = $this->shoppingCartRepository->findWhere(['customer_id'=>$user->id,'shop_id'=>$orders['store_id']]);
+        $orders['shop_id'] = $orders['store_id'] ? $orders['store_id'] : null;
+        if (isset($orders['store_id']) && $orders['store_id']){
+            $shoppingCarts = $this->shoppingCartRepository->findWhere(['customer_id'=>$user->id,'shop_id'=>$orders['store_id']]);
+        }elseif (isset($orders['activity_merchandises_id']) && $orders['activity_merchandises_id']){
+            $shoppingCarts = $this->shoppingCartRepository->findWhere([
+                'customer_id'=>$user->id,
+                'activity_merchandises_id'=>$orders['activity_merchandises_id']]);
+        }else{
+            $shoppingCarts = $this->shoppingCartRepository->findWhere([
+                'customer_id'=>$user->id,
+                'activity_merchandises_id'=>null,
+                'shop_id' => null
+            ]);
+        }
+        
         $orders['merchandise_num'] = $shoppingCarts->sum('quality');
         $orders['total_amount'] = $shoppingCarts->sum('amount');
         $orders['payment_amount'] = $orders['total_amount'] - $orders['discount_amount'];
