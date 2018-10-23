@@ -30,7 +30,7 @@ class AppItemTransformer extends TransformerAbstract
             'secret' => $model->secret,
             'logo' => $model->logo,
             /* place your other model properties here */
-            'open_platform_auth_url' => webUrlGenerator('web.wxopen', 'open-platform.auth', [], [
+            'open_platform_auth_url' => buildUrl('web.wxopen', 'auth', [], [
                 'app_id' => $model->id, 'token' => Auth::getToken(), 'type' => 'all'
             ]),
             'created_at' => $model->createdAt,
