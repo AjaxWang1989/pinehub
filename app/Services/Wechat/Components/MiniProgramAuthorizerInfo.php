@@ -67,7 +67,7 @@ class MiniProgramAuthorizerInfo
      */
     public function getAuthorizationInfo(): array
     {
-        return $this->authorizerInfo['authorization_info'];
+        return $this->authorizationInfo;
     }
 
     /**
