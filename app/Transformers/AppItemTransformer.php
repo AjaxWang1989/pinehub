@@ -33,7 +33,7 @@ class AppItemTransformer extends TransformerAbstract
             'logo' => $model->logo,
             /* place your other model properties here */
             'open_platform_auth_url' => buildUrl('web.wxopen', 'auth', [], [
-                'app_id' => $model->id, 'token' =>  JWTAuth::getToken(), 'type' => 'all'
+                'app_id' => $model->id, 'token' =>  (string)JWTAuth::getToken(), 'type' => 'all'
             ]),
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
