@@ -5,6 +5,7 @@ namespace App\Transformers;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use App\Entities\App;
+use phpDocumentor\Reflection\Project;
 
 /**
  * Class AppTransformer.
@@ -32,7 +33,7 @@ class AppTransformer extends TransformerAbstract
             /* place your other model properties here */
 
             'created_at' => $model->createdAt,
-            'updated_at' => $model->updatedAt
+            'updated_at' => $model->updatedAt,
         ];
     }
 }

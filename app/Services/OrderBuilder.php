@@ -299,7 +299,6 @@ class OrderBuilder implements InterfaceServiceHandler
                     $goods = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
-
                 }else{
                     $repository = $this->merchandise;
                     $goods = $repository->find($orderItem['merchandise_id']);
@@ -407,9 +406,9 @@ class OrderBuilder implements InterfaceServiceHandler
         }else {
             $this->merchandise($model, $quality);
         }
-
         $data['quality'] = $quality;
         $merchandise = null;
+
         if ($model instanceof SKUProduct) {
             $data['merchandise_id'] = $model->merchandiseId;
             $data['sku_product_id'] = $model->id;
@@ -417,6 +416,9 @@ class OrderBuilder implements InterfaceServiceHandler
         }elseif ($model instanceof Merchandise) {
             $data['merchandise_id'] = $model->id;
             $merchandise = $model;
+        }elseif ($model instanceof ActivityMerchandise){
+            $data['merchandise_id'] = $model->merchandiseId;
+            $merchandise = $model->merchandise;
         }elseif ($model instanceof ShopMerchandise) {
             $data['merchandise_id'] = $model->merchandiseId;
             $merchandise = $model->merchandise;

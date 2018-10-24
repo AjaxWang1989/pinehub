@@ -139,14 +139,27 @@ class OrderController extends Controller
         $orders['order_items'] = $orderItems;
         $order = $this->app->make('order.builder')->setInput($orders)->handle();
 //        $result = app('wechat')->unify($order, $order->wechatAppId);
-        $result = ['return_code'=>'SUCCESS'];
+        $result = ['return_code'=>'ERROR'];
         if($result['return_code'] === 'SUCCESS'){
             $order->status = Order::MAKE_SURE;
             $order->save();
             $sdkConfig = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
             $result['sdk_config'] = $sdkConfig;
         }else{
+            if (isset($orders['store_id']) && $orders['store_id']){
+                $items = [];
+                foreach ($orderItems as $k =>$v){
+                    $items[$k]['shop_id'] = $v['shop_id'];
+                    $items[$k]['merchandise_id'] = $v['merchandise_id'];
+                    $items[$k]['quality'] = $v['quality'];
+                }
 
+                return $items;
+            }elseif(isset($orders['activity_merchandises_id']) && $orders['activity_merchandises_id']){
+                return $orderItems;
+            }else{
+                return $orderItems;
+            }
         }
         return $this->response(new JsonResponse($result));
 //        return $this->response()->item($ordersMerchandise,new OrderTransformer());
