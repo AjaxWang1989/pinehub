@@ -20,7 +20,7 @@ use App\Http\Requests\Admin\AppLogoImageRequest;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
 use Dingo\Api\Http\Request;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 
 class AppController extends Controller
@@ -66,14 +66,14 @@ class AppController extends Controller
             ->subDay(7);
 
         $item = $this->appRepository
-            ->with(['users' => function (HasMany $users) use($time){
+            ->with(['users' => function (Builder $users) use($time){
                 return $users->where('last_login_at', '>=', $time);
             }])
             ->withCount([
-                'shops' => function (HasMany $shops) {
+                'shops' => function (Builder $shops) {
                     return $shops->where('status', '<>', Shop::STATUS_WAIT);
                 },
-                'orders' => function (HasMany $orders) use($time){
+                'orders' => function (Builder $orders) use($time){
                     return $orders->where('paid_at', '>=', $time);
                 }])->find($id);
 
