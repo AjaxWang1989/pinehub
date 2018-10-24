@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Entities\Merchandise;
+use App\Entities\ShoppingCart;
 use App\Entities\Order;
 use App\Entities\OrderItem;
 use App\Entities\SKUProduct;
@@ -77,6 +78,11 @@ class OrderBuilder implements InterfaceServiceHandler
      * @var SKUProductRepositoryEloquent|null
      * */
     protected $skuProduct = null;
+
+    /**
+     * @var array $shoppingCartIds
+     */
+    protected $shoppingCartIds = [];
 
     /**
      * @var Auth
@@ -162,6 +168,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems->push($orderItem);
         }else{
             $orderItems = $this->input['order_items'];
+            $this->shoppingCartIds = $this->input['shopping_cart_ids'];
             if(is_array($orderItems)) {
                 $orderItems = collect($orderItems);
             }
@@ -174,7 +181,9 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderItems = $this->buildOrderItems($orderItems);
             $this->checkOrder($orderItems, $order);
         }
-        return DB::transaction(function () use($order, $orderItems){
+        $shoppingCartIds = $this->shoppingCartIds;
+
+        return DB::transaction(function () use($order, $orderItems ,$shoppingCartIds){
             /**
              *@var Order $orderModel
              * */
@@ -182,6 +191,7 @@ class OrderBuilder implements InterfaceServiceHandler
             if($orderModel && $orderItems) {
                 $orderItems = $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['app_id'] =  $orderModel->appId;
+                    $orderItem['member_id'] =  $orderModel->memberId;
                     $orderItem['status'] =  $orderModel->status;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);
                     return new OrderItem($orderItem->toArray());
@@ -191,8 +201,14 @@ class OrderBuilder implements InterfaceServiceHandler
 
             $this->updateStockNum();
 
+//            $this->delete($shoppingCartIds);
+
             return $orderModel;
         });
+    }
+
+    protected function delete(array $shoppingCartIds){
+        ShoppingCart::destroy($shoppingCartIds);
     }
 
     protected function updateStockNum() {
@@ -204,10 +220,10 @@ class OrderBuilder implements InterfaceServiceHandler
             function ( $sku) {
                 if(get_class($sku) === SKUProduct::class) {
                     return /** @lang text */
-                        "UPDATE `sku_products` SET `stock_num` = {$sku->stockNum} WHERE `id` = {$sku->id}";
+                        "UPDATE `sku_products` SET `stock_num` = {$sku->stockNum},`sell_num` = {$sku->sellNum} WHERE `id` = {$sku->id}";
                 }elseif(get_class($sku) === ShopProduct::class){
                     return /** @lang text */
-                        "UPDATE `shop_products` SET `stock_num` = {$sku->stockNum} WHERE `id` = {$sku->id}";
+                        "UPDATE `shop_products` SET `stock_num` = {$sku->stockNum},`sell_num` = {$sku->sellNum} WHERE `id` = {$sku->id}";
                 }
 
         })->toArray();
@@ -220,17 +236,17 @@ class OrderBuilder implements InterfaceServiceHandler
             switch(get_class($merchandise)) {
                 case Merchandise::class: {
                     return /** @lang text */
-                        "UPDATE `merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                        "UPDATE `merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
                     break;
                 }
                 case ShopMerchandise::class: {
                     return /** @lang text */
-                        "UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                        "UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
                     break;
                 }
                 case ActivityMerchandise::class: {
                     return /** @lang text */
-                        "UPDATE `activity_merchandises` SET `stock_num` = {$merchandise->stockNum} WHERE `id` = {$merchandise->id}";
+                        "UPDATE `activity_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
                     break;
                 }
             }
@@ -250,10 +266,10 @@ class OrderBuilder implements InterfaceServiceHandler
             $subOrder = null;
             if(isset($orderItem['sku_product_id']) && $orderItem['sku_product_id']) {
                 if($orderItem['activity_merchandises_id']) {
-//                    $repository = app()->make(ActivityMerchandiseRepository::class);
-//                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
-//                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
-//                    })->first();
+                    $repository = app()->make(ActivityMerchandiseRepository::class);
+                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
+                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
+                    })->first();
 
                 }elseif($orderItem['shop_id']) {
                     $repository = app()->make(ShopProductRepository::class);
@@ -429,6 +445,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $sku = $this->updateStockNumSqlContainer['sku'][$model->code] = $model;
         }
         $sku->stockNum -= $quality;
+        $sku->sellNum += $quality;
     }
 
 
@@ -444,5 +461,6 @@ class OrderBuilder implements InterfaceServiceHandler
             $merchandise = $model;
         }
         $merchandise->stockNum -= $quality;
+        $merchandise->sellNum += $quality;
     }
 }

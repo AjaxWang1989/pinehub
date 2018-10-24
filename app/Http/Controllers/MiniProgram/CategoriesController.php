@@ -10,8 +10,11 @@ namespace App\Http\Controllers\MiniProgram;
 use App\Repositories\CategoryRepository;
 use App\Repositories\AppRepository;
 use App\Repositories\MerchandiseCategoryRepository;
+use App\Repositories\ShopRepository;
 use App\Repositories\ShopMerchandiseStockModifyRepository;
 use Dingo\Api\Http\Request;
+use App\Http\Requests\MiniProgram\StoreStockUpdateRequest;
+use App\Http\Requests\MiniProgram\StoreStockListRequest;
 use App\Transformers\Mp\CategoriesTransformer;
 use App\Transformers\Mp\MerchandisesTransformer;
 use App\Transformers\Mp\StoreMerchandiseTransformer;
@@ -34,14 +37,16 @@ class CategoriesController extends Controller
 
     protected  $shopMerchandiseStockModifyRepository = null;
 
-    protected $merchandiseRepository = null;
+    protected  $merchandiseRepository = null;
+
+    protected  $shopRepository = null;
     /**
      * CategoriesController constructor.
      * @param CategoryRepository $categoryRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(MerchandiseRepository $merchandiseRepository,ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository,CategoryRepository $categoryRepository,MerchandiseCategoryRepository $merchandiseCategoryRepository,ShopMerchandiseRepository $shopMerchandiseRepository, AppRepository $appRepository, Request $request)
+    public function __construct(MerchandiseRepository $merchandiseRepository,ShopRepository $shopRepository,ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository,CategoryRepository $categoryRepository,MerchandiseCategoryRepository $merchandiseCategoryRepository,ShopMerchandiseRepository $shopMerchandiseRepository, AppRepository $appRepository, Request $request)
     {
         parent::__construct($request, $appRepository);
         $this->categoryRepository = $categoryRepository;
@@ -49,6 +54,7 @@ class CategoriesController extends Controller
         $this->shopMerchandiseRepository = $shopMerchandiseRepository;
         $this->merchandiseStockModifyRepository = $merchandiseStockModifyRepository;
         $this->merchandiseRepository = $merchandiseRepository;
+        $this->shopRepository = $shopRepository;
     }
     /*
      * 获取预定商城所有分类
@@ -96,9 +102,15 @@ class CategoriesController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeStockStatistics(Request $request)
+    public function storeStockStatistics(StoreStockListRequest $request)
     {
+        $user = $this->mpUser();
+        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        $user['shop_id'] = $shopUser['id'];
         $store = $request->all();
+        if ($store['store_id'] != $user['shop_id']){
+            return $this->response(new JsonResponse(['message' => '所传店铺id不是当前登陆用户的店铺id']));
+        }
         $items  = $this->shopMerchandiseRepository->storeStockMerchandise($store);
         return $this->response()->paginator($items,new StoreStockStatisticsTransformer);
     }
@@ -109,7 +121,7 @@ class CategoriesController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeMerchandiseStock(int $id,Request $request)
+    public function storeMerchandiseStock(int $id,StoreStockUpdateRequest $request)
     {
         $request = $request->input();
         $request['stock_num'] = $request['modify_stock_num'];

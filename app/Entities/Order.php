@@ -142,6 +142,7 @@ class Order extends Model implements Transformable
         'paid_at'
     ];
 
+
     /**
      * The attributes that are mass assignable.
      *

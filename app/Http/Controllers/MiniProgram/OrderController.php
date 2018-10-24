@@ -15,6 +15,7 @@ use App\Entities\Order;
 use App\Entities\ShoppingCart;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
+use App\Http\Requests\MiniProgram\OrderCreateRequest;
 use App\Repositories\OrderRepository;
 use App\Repositories\CardRepository;
 use App\Repositories\ShoppingCartRepository;
@@ -75,7 +76,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function createOrder(Request $request)
+    public function createOrder(OrderCreateRequest $request)
     {
         $user = $this->mpUser();
         $orders = $request->all();
@@ -95,6 +96,7 @@ class OrderController extends Controller
         }else{
             return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
         }
+
         $orders['shop_id'] = $orders['store_id'] ? $orders['store_id'] : null;
         if (isset($orders['store_id']) && $orders['store_id']){
             $shoppingCarts = $this->shoppingCartRepository->findWhere(['customer_id'=>$user->id,'shop_id'=>$orders['store_id']]);
@@ -118,6 +120,7 @@ class OrderController extends Controller
         $orders['week']  = date('w',time()) ==0 ? 7 : date('w',time());
         $orders['hour']  = date('H',time());
         $orderItems = [];
+        $deleteIds = [];
         foreach ($shoppingCarts as $k => $v) {
             $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
             $orderItems[$k]['shop_id'] = $v['shop_id'];
@@ -130,18 +133,20 @@ class OrderController extends Controller
             $orderItems[$k]['payment_amount'] = $v['amount'];
             $orderItems[$k]['sku_product_id'] = $v['sku_product_id'];
             $orderItems[$k]['status'] = Order::WAIT;
-//            $this->shoppingCartRepository->delete($v['id']);
+            $deleteIds[] = $v['id'];
         }
+        $orders['shopping_cart_ids'] = $deleteIds;
         $orders['order_items'] = $orderItems;
         $order = $this->app->make('order.builder')->setInput($orders)->handle();
-        $result = app('wechat')->unify($order, $order->wechatAppId);
-        $order->status = Order::MAKE_SURE;
-        $order->save();
+//        $result = app('wechat')->unify($order, $order->wechatAppId);
+        $result = ['return_code'=>'SUCCESS'];
         if($result['return_code'] === 'SUCCESS'){
-            $order->status = Order::PAID;
+            $order->status = Order::MAKE_SURE;
             $order->save();
             $sdkConfig = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
             $result['sdk_config'] = $sdkConfig;
+        }else{
+
         }
         return $this->response(new JsonResponse($result));
 //        return $this->response()->item($ordersMerchandise,new OrderTransformer());
@@ -234,12 +239,13 @@ class OrderController extends Controller
      * @param int $id
      */
     public function cancelOrder(int $id){
+        $status = ['status'=>Order::CANCEL];
         $items = $this->orderItemRepository->findWhere(['order_id'=>$id]);
         foreach ($items as $v){
-            $this->orderItemRepository->delete($v['id']);
+            $this->orderItemRepository->update($status,$v['id']);
         }
-        $item = $this->orderRepository->delete($id);
-        return $this->response(new JsonResponse(['delete_count' => $item]));
+        $item = $this->orderRepository->update($status,$id);
+        return $this->response(new JsonResponse(['confirm_status' => $item]));
     }
 
     /**

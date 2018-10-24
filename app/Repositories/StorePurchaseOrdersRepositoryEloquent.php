@@ -134,6 +134,6 @@ class StorePurchaseOrdersRepositoryEloquent extends BaseRepository implements St
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
-        return $this->get();
+        return $this->paginate();
     }
 }
