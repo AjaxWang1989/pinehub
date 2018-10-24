@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Entities\Role;
 use App\Entities\Shop;
 use App\Http\Controllers\FileManager\UploadController as Controller;
 use App\Http\Requests\Admin\AppCreateRequest;
@@ -20,6 +21,7 @@ use App\Http\Requests\Admin\AppLogoImageRequest;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
 use Dingo\Api\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -67,13 +69,15 @@ class AppController extends Controller
 
         $item = $this->appRepository
             ->with(['users' => function (HasMany $users) use($time){
-                return $users->where('last_login_at', '>=', $time);
+                return $users->where('last_login_at', '>=', $time)->whereHas('roles', function (Builder $roles) {
+                    return $roles->where('slug', Role::MEMBER);
+                });
             }])
             ->withCount([
-                'shops' => function (HasMany $shops) {
+                'shops' => function (Builder $shops) {
                     return $shops->where('status', '<>', Shop::STATUS_WAIT);
                 },
-                'orders' => function (HasMany $orders) use($time){
+                'orders' => function (Builder $orders) use($time){
                     return $orders->where('paid_at', '>=', $time);
                 }])->find($id);
 

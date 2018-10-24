@@ -48,6 +48,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOwnerUserId($value)
  * @property string $contactName 联系人名称
  * @property string $contactPhoneNum 联系电话
+ * @property  int $shopsCount
+ * @property  int $ordersCount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactPhoneNum($value)
  */
@@ -98,14 +100,11 @@ class App extends Model implements Transformable
         return $this->belongsTo(MiniProgram::class, 'mini_app_id', 'app_id')->where('type', WECHAT_MINI_PROGRAM);
     }
 
-    public function appUsers() : HasMany
-    {
-        return $this->hasMany(AppUser::class, 'app_id', 'id');
-    }
 
-    public function users() : BelongsToMany
+
+    public function users() : HasMany
     {
-        return $this->belongsToMany(User::class, 'app_users', 'app_id', 'user_id');
+        return $this->hasMany(User::class, 'app_id', 'id');
     }
 
     public function orders() : HasMany
