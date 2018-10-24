@@ -83,6 +83,11 @@ class App extends Model implements Transformable
         return $this->belongsTo(User::class, 'owner_user_id', 'id');
     }
 
+    public function shops() : HasMany
+    {
+        return $this->hasMany(Shop::class, 'app_id', 'id');
+    }
+
     public function officialAccount(): BelongsTo
     {
         return $this->belongsTo(OfficialAccount::class, 'wechat_app_id', 'app_id')->where('type', WECHAT_OFFICIAL_ACCOUNT);

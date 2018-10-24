@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Entities\Shop;
 use App\Http\Controllers\FileManager\UploadController as Controller;
 use App\Http\Requests\Admin\AppCreateRequest;
 use App\Http\Requests\Admin\AppUpdateRequest;
@@ -19,6 +20,8 @@ use App\Http\Requests\Admin\AppLogoImageRequest;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
 use Dingo\Api\Http\Request;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 class AppController extends Controller
 {
@@ -58,7 +61,22 @@ class AppController extends Controller
 
     public function show(string $id)
     {
-        $item = $this->appRepository->find($id);
+        $time = Carbon::today(config('app.timezone'))
+            ->startOfDay()
+            ->subDay(7);
+
+        $item = $this->appRepository
+            ->with(['users' => function (HasMany $users) use($time){
+                return $users->where('last_login_at', '>=', $time);
+            }])
+            ->withCount([
+                'shops' => function (HasMany $shops) {
+                    return $shops->where('status', '<>', Shop::STATUS_WAIT);
+                },
+                'orders' => function (HasMany $orders) use($time){
+                    return $orders->where('paid_at', '>=', $time);
+                }])->find($id);
+
         return $this->response()->item($item, new AppTransformer());
     }
 

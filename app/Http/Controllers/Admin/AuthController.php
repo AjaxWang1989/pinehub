@@ -26,6 +26,7 @@ class AuthController extends Controller {
         'mobile' => ['required', 'mobile', 'roles:SYS_ADMIN,SUPER_ADMIN,TESTER,DEVELOPER'],
         'password' => ['required', 'regex:' . PASSWORD_PATTERN]
     ];
+
     const MESSAGES = [
         'mobile.required' => '缺少手机号码',
         'password.required' => '未提交密码',
@@ -41,6 +42,7 @@ class AuthController extends Controller {
         parent::__construct(app(UserRepository::class));
 
         $this->administratorRepository = $administratorRepository;
+
         $this->parseApp($request, $appRepository);
     }
 
@@ -55,10 +57,15 @@ class AuthController extends Controller {
     public function register(RegisterRequest $request)
     {
         $user = $request->all();
+
         $user['mobile_company'] = mobileCompany($user['mobile']);
+
         $user['user_name'] = $user['mobile'];
+
         $user['password'] = password($user['password'], true);
+
         $user = $this->administratorRepository->create($user);
+
         if($user) {
             return $this->response(new JsonResponse([
                 'message' => '注册成功'

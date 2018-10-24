@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Criteria\Admin\SearchRequestCriteria;
+use App\Entities\ShopMerchandise;
 use App\Repositories\Traits\Destruct;
 use Illuminate\Container\Container as Application;
 use Illuminate\Support\Facades\DB;
@@ -75,20 +76,23 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             $order->code =  app('uid.generator')->getUid(ORDER_CODE_FORMAT, ORDER_SEGMENT_MAX_LENGTH);
             return $order;
         });
-
         Order::updated(function (Order &$order) {
             if($order->getOriginal('status') !== $order->status) {
                 $order->orderItems()->update(['status' => $order->status]);
-                if (Order::PAY_FAILED === $order->status){
+//                if (Order::PAY_FAILED === $order->status){
                     if ($order->shopId){
-                        DB::raw('UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}');
+                        $shopMerchandise = $order->orderItems()->with('shop')->
+                            update(['stock_num'=>$order->getOriginal('stock_num'),'sell_num'=>$order->getOriginal('sell_num')]);
+//                        $orderItem = $order->orderItems()->where(['order_id'=>$order->id])->first();
+//                        $shopMerchandise = ShopMerchandise::whereMerchandiseId($orderItem->merchandiseId)->first();
+//                        DB::raw("UPDATE `shop_merchandises` SET `stock_num` = {$order->getOriginal('stock_num')} ,`sell_num` = {$order->getOriginal('sell_num')} WHERE `id` = {$shopMerchandise->id}");
                     }elseif ($order->activityMerchandisesId){
 
                     }else{
 
                     }
-                    $order->orderItems()->update(['stock_num' => $order->getOriginal('stock_num'),'sell_num'=>$order->getOriginal('sell_num')]);
-                }
+//                    $order->orderItems()->update(['stock_num' => $order->getOriginal('stock_num'),'sell_num'=>$order->getOriginal('sell_num')]);
+//                }
             }
         });
 
