@@ -21,6 +21,7 @@ use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 class AppController extends Controller
@@ -66,7 +67,7 @@ class AppController extends Controller
             ->subDay(7);
 
         $item = $this->appRepository
-            ->with(['users' => function (Builder $users) use($time){
+            ->with(['users' => function (HasMany $users) use($time){
                 return $users->where('last_login_at', '>=', $time);
             }])
             ->withCount([

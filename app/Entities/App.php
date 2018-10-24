@@ -98,14 +98,11 @@ class App extends Model implements Transformable
         return $this->belongsTo(MiniProgram::class, 'mini_app_id', 'app_id')->where('type', WECHAT_MINI_PROGRAM);
     }
 
-    public function appUsers() : HasMany
-    {
-        return $this->hasMany(AppUser::class, 'app_id', 'id');
-    }
 
-    public function users() : BelongsToMany
+
+    public function users() : HasMany
     {
-        return $this->belongsToMany(User::class, 'app_users', 'app_id', 'user_id');
+        return $this->hasMany(User::class, 'app_id', 'id');
     }
 
     public function orders() : HasMany
