@@ -85,6 +85,7 @@ class OrderController extends Controller
     {
         $user = $this->mpUser();
         $orders = $request->all();
+
         $orders['app_id'] = $user->appId;
         $orders['member_id'] = $user->memberId;
         $orders['wechat_app_id'] = $user->platformAppId;
@@ -164,20 +165,16 @@ class OrderController extends Controller
 
         $orders['shopping_cart_ids']    = $deleteIds;
         $orders['order_items']          = $orderItems;
-        return DB::transaction(function () use(&$orders){
-            $order = $this->app
-                ->make('order.builder')
-                ->setInput($orders)
-                ->handle();
-//            $result = app('wechat')->unify($order, $order->wechatAppId);
-            $result = ['return_code' =>'SUCCESS'];
+        $order = $this->app
+            ->make('order.builder')
+            ->setInput($orders)
+            ->handle();
+        return DB::transaction(function () use(&$order){
+            $result = app('wechat')->unify($order, $order->wechatAppId);
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
-
                 $order->save();
-                return $order;
                 $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
-
                 $result['sdk_config'] = $sdkConfig;
 
                 return $this->response(new JsonResponse($result));
@@ -193,7 +190,7 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function storeBuffetOrders(Request $request){
-        $user = $this->user();
+        $user = $this->mpUser();
 
         $shopUser = $this->shopRepository
             ->findWhere(['user_id'  =>  $user['member_id']])
@@ -217,7 +214,6 @@ class OrderController extends Controller
                 $items[$k]['order_item_merchandises'] = $this->orderItemRepository
                     ->OrderItemMerchandises($v['id']);
             }
-
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
         }
@@ -231,7 +227,7 @@ class OrderController extends Controller
      */
     public function storeSendOrders(Request $request)
     {
-        $user = $this->user();
+        $user = $this->mpUser();
 
         $shopUser = $this->shopRepository
             ->findWhere(['user_id'   =>  $user['member_id']])
@@ -248,7 +244,6 @@ class OrderController extends Controller
                 $items[$k]['order_item_merchandises'] = $this->orderItemRepository
                     ->OrderItemMerchandises($v['id']);
             }
-
             return $this->response()->paginator($items,new OrderStoreSendTransformer());
         }
 

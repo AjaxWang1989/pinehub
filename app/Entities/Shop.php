@@ -57,6 +57,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Country $country
  * @property-read \App\Entities\County $county
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\ShopMerchandise[] $shopMerchandises
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \App\Entities\Province $province
  * @property-read \App\Entities\User $shopManager
@@ -140,6 +141,11 @@ class Shop extends Model implements Transformable
     protected $spatialFields = [
         'position'
     ];
+
+    public function shopMerchandises() : HasMany
+    {
+        return $this->hasMany(ShopMerchandise::class, 'shop_id', 'id');
+    }
 
     public function shopManager() : BelongsTo
     {

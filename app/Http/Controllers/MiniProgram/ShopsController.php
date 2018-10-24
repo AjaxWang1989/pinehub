@@ -72,14 +72,32 @@ class ShopsController extends Controller
      * @param Request $request
      */
     public function storeSellStatistics(Request $request){
-        $user = $this->user();
+        $user = $this->mpUser();
         $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
         if ($shopUser){
             $userId = $shopUser['id'];
             $request = $request->all();
+            //查询出截止当前时间,星期,天数每条数据的金额总和
             $orderStatistics = $this->orderRepository->orderStatistics($request,$userId);
+            //查询出截止当前时间,星期,天数的最后一条数据
             $orderDateHigh  = $this->orderRepository->orderDateHigh($request,$userId);
-            $statics = [];
+
+            //没有值的话默认给当前截止时间
+            if (empty($orderDateHigh) && $request['date'] == 'hour'){
+
+                $orderDateHigh[$request['date']] = date('H',time());
+
+            }elseif (empty($orderDateHigh) && $request['date'] == 'week'){
+
+                $orderDateHigh[$request['date']] = date('w', time()) === 0 ? 7 : date('w', time());
+
+            }elseif (empty($orderDateHigh) && $request['date'] == 'month'){
+
+                $orderDateHigh[$request['date']] = date('d', time());
+
+            }
+            $statics = [ ];
+            //循环组装当前截止时间的数据
             for ($i=0; $i < $orderDateHigh[$request['date']] ; $i++){
                 $statics[$i] = 0;
                 foreach ($orderStatistics as $k=>  $v) {
@@ -89,12 +107,20 @@ class ShopsController extends Controller
                 }
             }
             $items['statics'] = $statics;
+            //预定产品金额总和
             $bookPaymentAmount = $this->orderRepository->bookPaymentAmount($request,$userId);
+            //站点产品金额总和
             $sitePaymentAmount = $this->orderRepository->sitePaymentAmount($request,$userId);
+            //销售单品数量总和
             $sellMerchandiseNum = $this->orderItemRepository->sellMerchandiseNum($request,$userId);
+            //销售笔数
             $sellOrderNum = $this->orderRepository->sellOrderNum($request,$userId);
+            //销售排行额客户
             $sellTop = $this->orderItemRepository->sellTop($request,$userId);
+            //销售排行额货品
             $sellMerchandiseTop = $this->orderItemRepository->sellMerchandiseTop($request,$userId);
+
+            $items['order_amount'] = $bookPaymentAmount['total_amount'] + $sitePaymentAmount['total_amount'];
             $items['reservation_order_amount'] = $bookPaymentAmount['total_amount'];
             $items['store_order_amount'] = $sitePaymentAmount['total_amount'];
             $items['merchandise_num'] = $sellMerchandiseNum['total_amount'];
@@ -114,12 +140,18 @@ class ShopsController extends Controller
      */
     public function storeStatistics(Request $request){
         $request = $request->all();
+        //今日用户购买数量
         $todayBuyNum = $this->orderRepository->todayBuyNum($request);
+        //本周用户购买数量
         $weekBuyNum = $this->orderRepository->weekBuyNum($request);
+        //今日营业额
         $todaySellAmount = $this->orderRepository->todaySellAmount($request);
+        //本周营业额
         $weekSellAmount = $this->orderRepository->weekSellAmount($request);
+        //本周购买总用户和总数额
         $weekStatistics = $this->orderRepository->weekStatistics($request);
 
+        //组装本周购买的用户
         $weekBuyNumStatics = [];
         for ($i=0; $i < 7 ; $i++){
             $weekBuyNumStatics[$i] = 0;
@@ -130,6 +162,7 @@ class ShopsController extends Controller
             }
         }
 
+        //组装本周购买的金额
         $sellAmount = $this->orderRepository->sellAmount($request);
         $weekBuyNumAmount = [];
         for ($i=0; $i < 7 ; $i++){

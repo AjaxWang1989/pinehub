@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Criteria\Admin\SearchRequestCriteria;
+use App\Entities\OrderItem;
 use App\Entities\ShopMerchandise;
 use App\Repositories\Traits\Destruct;
 use Illuminate\Container\Container as Application;
@@ -72,29 +73,6 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
         $this->pushCriteria(SearchRequestCriteria::class);
-        Order::creating(function (Order &$order){
-            $order->code =  app('uid.generator')->getUid(ORDER_CODE_FORMAT, ORDER_SEGMENT_MAX_LENGTH);
-            return $order;
-        });
-        Order::updated(function (Order &$order) {
-            if($order->getOriginal('status') !== $order->status) {
-                $order->orderItems()->update(['status' => $order->status]);
-//                if (Order::PAY_FAILED === $order->status){
-                    if ($order->shopId){
-                        $shopMerchandise = $order->orderItems()->with('shop')->
-                            update(['stock_num'=>$order->getOriginal('stock_num'),'sell_num'=>$order->getOriginal('sell_num')]);
-//                        $orderItem = $order->orderItems()->where(['order_id'=>$order->id])->first();
-//                        $shopMerchandise = ShopMerchandise::whereMerchandiseId($orderItem->merchandiseId)->first();
-//                        DB::raw("UPDATE `shop_merchandises` SET `stock_num` = {$order->getOriginal('stock_num')} ,`sell_num` = {$order->getOriginal('sell_num')} WHERE `id` = {$shopMerchandise->id}");
-                    }elseif ($order->activityMerchandisesId){
-
-                    }else{
-
-                    }
-//                    $order->orderItems()->update(['stock_num' => $order->getOriginal('stock_num'),'sell_num'=>$order->getOriginal('sell_num')]);
-//                }
-            }
-        });
 
     }
 
@@ -151,7 +129,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
             return $order->select([
-                DB::raw('orders.id,orders.code,orders.status,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount,orders.created_at,')
+                DB::raw('orders.id,orders.code,orders.status,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount,orders.created_at')
                 ])
                 ->where(['shop_id'=>$userId])
                 ->where('send_time', '>=', $startAt)
