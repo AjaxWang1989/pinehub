@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Entities\Role;
 use App\Entities\Shop;
 use App\Http\Controllers\FileManager\UploadController as Controller;
 use App\Http\Requests\Admin\AppCreateRequest;
@@ -68,7 +69,9 @@ class AppController extends Controller
 
         $item = $this->appRepository
             ->with(['users' => function (HasMany $users) use($time){
-                return $users->where('last_login_at', '>=', $time);
+                return $users->where('last_login_at', '>=', $time)->whereHas('roles', function (Builder $roles) {
+                    return $roles->where('slug', Role::MEMBER);
+                });
             }])
             ->withCount([
                 'shops' => function (Builder $shops) {
