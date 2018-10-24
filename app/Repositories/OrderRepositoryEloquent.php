@@ -79,6 +79,16 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         Order::updated(function (Order &$order) {
             if($order->getOriginal('status') !== $order->status) {
                 $order->orderItems()->update(['status' => $order->status]);
+                if (Order::PAY_FAILED === $order->status){
+                    if ($order->shopId){
+                        DB::raw('UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}');
+                    }elseif ($order->activityMerchandisesId){
+
+                    }else{
+
+                    }
+                    $order->orderItems()->update(['stock_num' => $order->getOriginal('stock_num'),'sell_num'=>$order->getOriginal('sell_num')]);
+                }
             }
         });
 
