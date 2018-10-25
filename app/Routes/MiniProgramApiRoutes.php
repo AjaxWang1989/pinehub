@@ -24,7 +24,7 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->get('/app/access/{appid}/{appsecret}', ['as' => 'user.app.access','uses' => 'AuthController@appAccess']);
         $router->post('/register/user', ['as' => 'user.register.user','uses' => 'AuthController@registerUser']);
         $router->get('/user/info', ['as' => 'user.info','uses' => 'AuthController@userInfo']);
-        $router->get('/mvp/login/{code}', ['as' => 'user.mvp.login','uses' => 'AuthController@mvpLogin']);
+        $router->get('/login/{code}', ['as' => 'user.login','uses' => 'AuthController@login']);
         $router->post('/save/mobile', ['as' => 'user.save.mobile','uses' => 'AuthController@saveMobile']);
 
 
@@ -43,7 +43,7 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->get('/store/{id}/categories', ['as' => 'user.store.categories','uses' => 'CategoriesController@storeCategories']);
         $router->get('/store/stock/statistics', ['as' => 'user.store.stock.statistics','uses' => 'CategoriesController@storeStockStatistics']);
         $router->get('/reserve/search/merchandises', ['as' => 'user.reserve.search.','uses' => 'CategoriesController@reserveSearchMerchandises']);
-        $router->put('/store/merchandise/{id}/stock', ['as' => 'user.store.merchandise.stock','uses' => 'CategoriesController@storeMerchandiseStock']);
+        $router->put('/store/merchandise/{merchandiseId}/stock', ['as' => 'user.store.merchandise.stock','uses' => 'CategoriesController@storeMerchandiseStock']);
         $router->get('/categories/{id}/merchandises', ['as' => 'user.categories.merchandises','uses' => 'CategoriesController@categoriesMerchandises']);
         $router->get('/store/{id}/category/{categoryId}/merchandises', ['as' => 'user.store.category.merchandise','uses' => 'CategoriesController@storeCategoryMerchandise']);
 

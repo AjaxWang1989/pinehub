@@ -86,6 +86,15 @@ class OrderController extends Controller
         $user = $this->mpUser();
         $orders = $request->all();
 
+
+        if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
+            $address = [
+                'receiver_address' => $orders['receiver_address'],
+                'build_num'        => $orders['build_num'],
+                'room_num'         => $orders['room_num']
+            ];
+            $orders['receiver_address'] = json_encode($address);
+        }
         $orders['app_id'] = $user->appId;
         $orders['member_id'] = $user->memberId;
         $orders['wechat_app_id'] = $user->platformAppId;
@@ -114,6 +123,7 @@ class OrderController extends Controller
 
         $orders['shop_id'] = $orders['store_id'] ? $orders['store_id'] : null;
 
+        //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         if (isset($orders['store_id']) && $orders['store_id']){
             $shoppingCarts = $this->shoppingCartRepository
                 ->findWhere([
@@ -149,6 +159,7 @@ class OrderController extends Controller
         $orderItems = [];
         $deleteIds  = [];
 
+        //取出购物车商品信息组装成一个子订单数组
         foreach ($shoppingCarts as $k => $v) {
             $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
             $orderItems[$k]['shop_id'] = $v['shop_id'];
@@ -165,11 +176,15 @@ class OrderController extends Controller
 
         $orders['shopping_cart_ids']    = $deleteIds;
         $orders['order_items']          = $orderItems;
+
+        //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
             ->setInput($orders)
             ->handle();
+
         return DB::transaction(function () use(&$order){
+            //跟微信打交道生成预支付订单
             $result = app('wechat')->unify($order, $order->wechatAppId);
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
@@ -198,22 +213,12 @@ class OrderController extends Controller
 
         if ($shopUser){
             $userId = $shopUser['id'];
-
             $sendTime = $request->all();
 
+            //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
                 ->storeBuffetOrders($sendTime,  $userId);
 
-            $shopEndHour = $this->shopRepository
-                ->findwhere(['id'   =>  $userId])
-                ->first();
-
-            foreach ($items as $k => $v){
-                $items[$k]['shop_end_hour'] = $shopEndHour['end_at'];
-
-                $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                    ->OrderItemMerchandises($v['id']);
-            }
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
         }
@@ -237,13 +242,10 @@ class OrderController extends Controller
             $userId     = $shopUser['id'];
             $sendTime   = $request->all();
 
+           //查询今日下单和预定商城的所有配送订单
             $items = $this->orderRepository
                 ->storeSendOrders($sendTime,$userId);
 
-            foreach ($items as $k => $v){
-                $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                    ->OrderItemMerchandises($v['id']);
-            }
             return $this->response()->paginator($items,new OrderStoreSendTransformer());
         }
 
@@ -258,18 +260,12 @@ class OrderController extends Controller
      */
 
     public function orders(string  $status){
-        $user   = $this->user();
+        $user   = $this->mpUser();
 
         $customerId = $user['id'];
 
         $items = $this->orderRepository
             ->orders($status,   $customerId);
-
-        foreach ($items as $k => $v){
-            $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                ->OrderItemMerchandises($v['id']);
-        }
-
         return $this->response()
             ->paginator($items, new StatusOrdersTransformer());
     }
@@ -280,7 +276,7 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function storeOrdersSummary(Request $request){
-        $user = $this->user();
+        $user = $this->mpUser();
 
         $shopUser = $this->shopRepository
             ->findWhere(['user_id'  =>  $user['member_id']])
@@ -293,20 +289,6 @@ class OrderController extends Controller
 
             $items = $this->orderRepository
                 ->storeOrdersSummary($request,  $userId);
-
-            foreach ($items as $k => $v){
-                    $reduce_cost = $this->cardRepository
-                        ->findWhere(['card_id' => $v['card_id']])
-                        ->first();
-
-                    $items[$k]['reduce_cost'] = $reduce_cost ? $reduce_cost['card_info']['cash']['base_info']['title'] : '无';
-
-                    $items[$k]['sell_point']  = '';
-
-                    $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                        ->OrderItemMerchandises($v['id']);
-            }
-
             return $this->response()
                 ->paginator($items, new StoreOrdersSummaryTransformer());
         }

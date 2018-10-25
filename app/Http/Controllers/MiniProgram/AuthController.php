@@ -72,8 +72,10 @@ class AuthController extends Controller
     {
         $session = $this->session();
 
+        //获取小程序app_id
         $currentApp = app(AppManager::class)->currentApp;
 
+        //根据小程序id和登陆接口返回的解析后的用户信息
         list($errCode, $data) = app()->makeWith('bizDataCrypt', [$currentApp, $session['session_key']])
             ->decryptData($request->input('encrypted_data'), $request->input('iv') );
 
@@ -155,7 +157,7 @@ class AuthController extends Controller
      * @throws \Exception
      */
 
-    public function mvpLogin(string $code, Request $request)
+    public function login(string $code, Request $request)
     {
         $accessToken = $request->input('access_token', null);
 
