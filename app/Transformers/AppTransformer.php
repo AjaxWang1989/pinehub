@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use App\Entities\App;
+use phpDocumentor\Reflection\Project;
 
 /**
  * Class AppTransformer.
@@ -56,7 +57,7 @@ class AppTransformer extends TransformerAbstract
                 'app_id' => $model->id, 'token' =>  (string)app('tymon.jwt.auth')->getToken(), 'type' => 'mini_program'
             ]),
             'created_at' => $model->createdAt,
-            'updated_at' => $model->updatedAt
+            'updated_at' => $model->updatedAt,
         ];
     }
 }

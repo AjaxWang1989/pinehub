@@ -46,6 +46,7 @@ class BackendApiRoutes extends ApiRoutes
                 /**
                  * @var  LumenRouter|DingoRouter $router
                  * */
+                $router->get('/refresh/token',['as'=>'administrator.refresh.token','uses'=>'AuthController@RefreshToken']);
                 $router->get('/logout', ['as' => 'administrator.logout', 'uses' => 'AuthController@logout']);
                 $router->get('/users',['as' => 'users.list', 'uses' => 'UsersController@getUsers']);
                 $router->get('/user/{id}',['as' => 'user.detail', 'uses' => 'UsersController@getUserDetail']);

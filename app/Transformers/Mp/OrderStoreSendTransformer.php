@@ -14,17 +14,6 @@ use App\Entities\Order;
 class OrderStoreSendTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
-        return [
-            $model
-//            'id'=>$model->id,
-//            'code' => $model->code,
-//            'status' => $model->status,
-//            'receiver_address'=>$model->receiverAddress,
-//            'receiver_mobile'=>$model->receiverMobile,
-//            'total_amount' => $model->totalAmount,
-//            'payment_amount'  => $model->totalAmount,
-//            'comment' => $model->comment,
-//            'order_item_merchandises' => $model->orderItems,
-        ];
+        return $model;
     }
 }

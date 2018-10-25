@@ -14,8 +14,6 @@ class StoreSellStatisticsTransformer extends TransformerAbstract
 {
     public function transform(OrderItemMerchandise $model)
     {
-        return [
-            $model
-        ];
+        return $model;
     }
 }

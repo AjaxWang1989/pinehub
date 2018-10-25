@@ -14,8 +14,6 @@ use App\Entities\ShopMerchandise;
 class StoreCategoriesTransformer extends TransformerAbstract
 {
     public function transform(ShopMerchandise $model){
-        return [
-            $model
-        ];
+        return $model->only(['id', 'name']);
     }
 }

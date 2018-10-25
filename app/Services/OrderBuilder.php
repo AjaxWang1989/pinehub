@@ -19,14 +19,14 @@ use App\Entities\ShopProduct;
 use App\Entities\ActivityMerchandise;
 use App\Entities\User;
 use App\Repositories\ActivityMerchandiseRepository;
-use App\Repositories\MerchandiseRepositoryEloquent;
-use App\Repositories\OrderItemMerchandiseRepositoryEloquent;
-use App\Repositories\OrderItemRepositoryEloquent;
-use App\Repositories\OrderPostRepositoryEloquent;
-use App\Repositories\OrderRepositoryEloquent;
+use App\Repositories\MerchandiseRepository;
+use App\Repositories\OrderItemMerchandiseRepository;
+use App\Repositories\OrderItemRepository;
+use App\Repositories\OrderPostRepository;
+use App\Repositories\OrderRepository;
 use App\Repositories\ShopMerchandiseRepository;
 use App\Repositories\ShopProductRepository;
-use App\Repositories\SKUProductRepositoryEloquent;
+use App\Repositories\SKUProductRepository;
 use Dingo\Api\Auth\Auth;
 use Dingo\Api\Exception\ValidationHttpException;
 use Illuminate\Database\Eloquent\Model;
@@ -45,22 +45,22 @@ class OrderBuilder implements InterfaceServiceHandler
     protected $input = null;
 
     /**
-     * @var OrderRepositoryEloquent $order
+     * @var OrderRepository $order
      * */
     protected $order = null;
 
     /**
-     * @var OrderItemRepositoryEloquent $orderItem
+     * @var OrderItemRepository $orderItem
      * */
     protected $orderItem = null;
 
     /**
-     * @var OrderItemMerchandiseRepositoryEloquent $orderItemMerchandise
+     * @var OrderItemMerchandiseRepository $orderItemMerchandise
      * */
     protected $orderItemMerchandise = null;
 
     /**
-     * @var OrderPostRepositoryEloquent $orderPost
+     * @var OrderPostRepository $orderPost
      * */
     protected $orderPost = null;
 
@@ -70,12 +70,12 @@ class OrderBuilder implements InterfaceServiceHandler
    // protected $buyer = null;
 
     /**
-     * @var MerchandiseRepositoryEloquent|null
+     * @var MerchandiseRepository|null
      * */
     protected $merchandise = null;
 
     /**
-     * @var SKUProductRepositoryEloquent|null
+     * @var SKUProductRepository|null
      * */
     protected $skuProduct = null;
 
@@ -94,9 +94,14 @@ class OrderBuilder implements InterfaceServiceHandler
         'merchandise' => []
     ];
 
-    public function __construct(Collection $input, $auth, OrderRepositoryEloquent $order,MerchandiseRepositoryEloquent $merchandise,
-                                OrderItemRepositoryEloquent $orderItem = null,SKUProductRepositoryEloquent $skuProduct = null,
-                                OrderItemMerchandiseRepositoryEloquent $orderItemMerchandise =null, OrderPostRepositoryEloquent $orderPost = null)
+    public function __construct( Collection $input,
+                                 Auth $auth, 
+                                 OrderRepository $order,
+                                 MerchandiseRepository $merchandise,
+                                 OrderItemRepository $orderItem = null,
+                                 SKUProductRepository $skuProduct = null,
+                                 OrderItemMerchandiseRepository $orderItemMerchandise =null, 
+                                 OrderPostRepository $orderPost = null)
     {
         $this->auth = $auth;
         $this->input = $input;
@@ -299,7 +304,6 @@ class OrderBuilder implements InterfaceServiceHandler
                     $goods = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
-
                 }else{
                     $repository = $this->merchandise;
                     $goods = $repository->find($orderItem['merchandise_id']);
@@ -407,9 +411,9 @@ class OrderBuilder implements InterfaceServiceHandler
         }else {
             $this->merchandise($model, $quality);
         }
-
         $data['quality'] = $quality;
         $merchandise = null;
+
         if ($model instanceof SKUProduct) {
             $data['merchandise_id'] = $model->merchandiseId;
             $data['sku_product_id'] = $model->id;
@@ -417,6 +421,9 @@ class OrderBuilder implements InterfaceServiceHandler
         }elseif ($model instanceof Merchandise) {
             $data['merchandise_id'] = $model->id;
             $merchandise = $model;
+        }elseif ($model instanceof ActivityMerchandise){
+            $data['merchandise_id'] = $model->merchandiseId;
+            $merchandise = $model->merchandise;
         }elseif ($model instanceof ShopMerchandise) {
             $data['merchandise_id'] = $model->merchandiseId;
             $merchandise = $model->merchandise;

@@ -41,7 +41,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Customer|null $customer
  * @property-read \App\Entities\Member|null $member
  * @property-read \App\Entities\Order $order
- * @property-read \App\Entities\OrderItemMerchandise $orderMerchandise
+ * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Shop|null $shop
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCode($value)
@@ -111,10 +111,5 @@ class OrderItem extends Model implements Transformable
     public function order() : BelongsTo
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
-    }
-
-    public function orderMerchandise(): HasOne
-    {
-        return $this->hasOne(OrderItemMerchandise::class, 'order_item_id', 'id');
     }
 }

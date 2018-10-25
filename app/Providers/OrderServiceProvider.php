@@ -2,12 +2,12 @@
 
 namespace App\Providers;
 
-use App\Repositories\MerchandiseRepositoryEloquent;
-use App\Repositories\OrderItemMerchandiseRepositoryEloquent;
-use App\Repositories\OrderItemRepositoryEloquent;
-use App\Repositories\OrderPostRepositoryEloquent;
-use App\Repositories\OrderRepositoryEloquent;
-use App\Repositories\SKUProductRepositoryEloquent;
+use App\Repositories\MerchandiseRepository;
+use App\Repositories\OrderItemMerchandiseRepository;
+use App\Repositories\OrderItemRepository;
+use App\Repositories\OrderPostRepository;
+use App\Repositories\OrderRepository;
+use App\Repositories\SKUProductRepository;
 use App\Services\OrderBuilder;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\ServiceProvider;
@@ -40,12 +40,12 @@ class OrderServiceProvider extends ServiceProvider
             return new OrderBuilder(
                 $input,
                 $auth,
-                $app->make(OrderRepositoryEloquent::class),
-                $app->make(MerchandiseRepositoryEloquent::class),
-                $app->make(OrderItemRepositoryEloquent::class),
-                $app->make(SKUProductRepositoryEloquent::class),
-                $app->make(OrderItemMerchandiseRepositoryEloquent::class),
-                $app->make(OrderPostRepositoryEloquent::class)
+                $app->make(OrderRepository::class),
+                $app->make(MerchandiseRepository::class),
+                $app->make(OrderItemRepository::class),
+                $app->make(SKUProductRepository::class),
+                $app->make(OrderItemMerchandiseRepository::class),
+                $app->make(OrderPostRepository::class)
             );
         });
     }
