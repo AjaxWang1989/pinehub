@@ -17,7 +17,11 @@ class CustomerTicketCardTransformer extends TransformerAbstract
         return [
             'card_id'=>$model->card->cardId,
             'title' => $model->card->card_info['base_info']['title'],
-            'least_cost' => $model->card->card_info['least_cost']/100,
+            'discount' => isset($model->card->cardInfo['discount']) ? $model->card->cardInfo['discount'] : null ,
+            'type' => mb_strtoupper($model->card->cardType),
+            'least_cost' => isset($model->card->card_info['least_cost']) ?$model->card->card_info['least_cost']/100 : null,
+            'reduce_cost' => isset($model->card->card_info['reduce_cost']) ?$model->card->card_info['reduce_cost']/100 : null,
+            'record_count' => $model->card->recordCount,
             'begin_timestamp' => date('Y-m-d H:i:s',$model->card->card_info['date_info']['begin_timestamp']),
             'end_timestamp' => date('Y-m-d H:i:s',$model->card->card_info['date_info']['end_timestamp']),
         ];

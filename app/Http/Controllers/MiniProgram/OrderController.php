@@ -83,6 +83,15 @@ class OrderController extends Controller
      */
     public function createOrder(OrderCreateRequest $request)
     {
+//        $string = '7：00 - 9:00';
+//
+//        $a = explode('-', $string);
+//
+//        $time = date('Y-m-d'.$a[1].':'.'00',time());
+//
+//        return $time;
+
+
         $user = $this->mpUser();
         $orders = $request->all();
 
@@ -95,6 +104,16 @@ class OrderController extends Controller
             ];
             $orders['receiver_address'] = json_encode($address);
         }
+
+        if (isset($orders['send_time']) && $orders['send_time']){
+            //拆分字符串
+            $sendTime = explode('-',$orders['send_time']);
+            //去除字符串中的空格
+            $removeSpace = str_replace(' ','',$sendTime);
+            $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
+            $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
+        }
+
         $orders['app_id'] = $user->appId;
         $orders['member_id'] = $user->memberId;
         $orders['wechat_app_id'] = $user->platformAppId;
@@ -158,7 +177,6 @@ class OrderController extends Controller
 
         $orderItems = [];
         $deleteIds  = [];
-
         //取出购物车商品信息组装成一个子订单数组
         foreach ($shoppingCarts as $k => $v) {
             $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
@@ -183,11 +201,15 @@ class OrderController extends Controller
             ->setInput($orders)
             ->handle();
 
+        //更新优惠券状态为已使用
+        $card_use = $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
+
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
             $result = app('wechat')->unify($order, $order->wechatAppId);
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
+                $order->paidAt = date('Y-m-d H:i:s',time());
                 $order->save();
                 $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
                 $result['sdk_config'] = $sdkConfig;

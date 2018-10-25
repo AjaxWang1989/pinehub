@@ -5,6 +5,7 @@ namespace App\Entities;
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -90,5 +91,10 @@ class Card extends Model implements Transformable
     public function app() : BelongsTo
     {
         return $this->belongsTo(App::class, 'app_id', 'id');
+    }
+
+    public function records() :HasMany
+    {
+        return $this->hasMany(CustomerTicketCard::class,'card_id','card_id');
     }
 }

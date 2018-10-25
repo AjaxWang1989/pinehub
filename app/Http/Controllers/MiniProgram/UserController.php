@@ -55,7 +55,7 @@ class UserController extends Controller
         }else{
             $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['activity_merchandises_id'=>null,'shop_id'=>null,'customer_id'=>$user['id']])->sum('amount');
         }
-        $items = $this->customerTicketCardRepository->userTickets($status,$user['id'],$shoppingCartAmount);
+        $items = $this->customerTicketCardRepository->userTickets($status,$user['id'], $shoppingCartAmount);
         return $this->response()->paginator($items,new CustomerTicketCardTransformer());
     }
 

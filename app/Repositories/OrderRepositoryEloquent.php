@@ -128,8 +128,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
             return $order
                 ->where(['shop_id'=>$userId])
-                ->where('send_time', '>=', $startAt)
-                ->where('send_time', '<', $endAt)
+                ->where('send_start_time', '=', $startAt)
+                ->where('send_end_time', '=', $endAt)
                 ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);
         });
         return $this->paginate();
