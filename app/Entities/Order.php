@@ -167,7 +167,7 @@ class Order extends Model implements Transformable
 
         Order::updated(function (Order &$order) {
             if($order->getOriginal('status') !== $order->status) {
-                $order->orderItems()->update(['status' => $order->status]);
+                $order->orderItems()->update(['status' => $order->status,'paid_at' => date('Y-m-d H:i:s',time())]);
                 if (Order::PAY_FAILED === $order->status){
                     $orderItems = $order->orderItems;
                     $merchandiseIds = [];

@@ -22,24 +22,55 @@ use App\Http\Response\JsonResponse;
 
 class ShopsController extends Controller
 {
+    /**
+     * @var ShopRepository|null
+     */
     protected  $shopRepository = null;
+
+    /**
+     * @var OrderItemRepository|null
+     */
     protected  $orderItemRepository = null;
+
+    /**
+     * @var OrderRepository|null
+     */
     protected  $orderRepository = null;
+
+    /**
+     * @var MerchandiseRepository|null
+     */
     protected  $merchandiseRepository = null;
+
+    /**
+     * @var ShopMerchandiseRepository|null
+     */
     protected  $shopMerchandiseRepository = null;
+
     /**
      * ShopsController constructor.
      * @param ShopRepository $shopRepository
+     * @param ShopMerchandiseRepository $shopMerchandiseRepository
+     * @param MerchandiseRepository $merchandiseRepository
+     * @param OrderItemRepository $orderItemRepository
+     * @param OrderRepository $orderRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(ShopRepository $shopRepository,ShopMerchandiseRepository $shopMerchandiseRepository,MerchandiseRepository $merchandiseRepository,OrderItemRepository $orderItemRepository ,OrderRepository $orderRepository ,AppRepository $appRepository, Request $request)
+    public function __construct(ShopRepository $shopRepository,
+                                ShopMerchandiseRepository $shopMerchandiseRepository,
+                                MerchandiseRepository $merchandiseRepository,
+                                OrderItemRepository $orderItemRepository ,
+                                OrderRepository $orderRepository ,
+                                AppRepository $appRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->shopRepository = $shopRepository;
-        $this->orderItemRepository = $orderItemRepository;
-        $this->orderRepository = $orderRepository;
-        $this->merchandiseRepository = $merchandiseRepository;
+
+        $this->shopRepository            = $shopRepository;
+        $this->orderItemRepository       = $orderItemRepository;
+        $this->orderRepository           = $orderRepository;
+        $this->merchandiseRepository     = $merchandiseRepository;
         $this->shopMerchandiseRepository = $shopMerchandiseRepository;
     }
 

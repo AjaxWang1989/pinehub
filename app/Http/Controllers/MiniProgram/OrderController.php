@@ -41,19 +41,58 @@ use Illuminate\Support\Facades\Cache;
  */
 class OrderController extends Controller
 {
+    /**
+     * @var OrderRepository|null
+     */
     protected $orderRepository = null;
+
+    /**
+     * @var null
+     */
     protected $userTicketRepository = null;
+
+    /**
+     * @var ShoppingCartRepository|null
+     */
     protected $shoppingCartRepository = null;
+
+    /**
+     * @var MerchandiseRepository|null
+     */
     protected $merchandiseRepository = null;
+
+    /**
+     * @var ShopRepository|null
+     */
     protected $shopRepository = null;
+
+    /**
+     * @var OrderItemRepository|null
+     */
     protected $orderItemRepository = null;
+
+    /**
+     * @var Application|null
+     */
     protected $app = null;
+
+    /**
+     * @var MemberCardRepository|null
+     */
     protected $memberCardRepository = null;
+
+    /**
+     * @var CustomerTicketCardRepository|null
+     */
     protected $customerTicketCardRepository = null;
 
     /**
      * OrderController constructor.
      * @param AppRepository $appRepository
+     * @param CustomerTicketCardRepository $customerTicketCardRepository
+     * @param MemberCardRepository $memberCardRepository
+     * @param Application $app
+     * @param OrderItemRepository $orderItemRepository
      * @param ShopRepository $shopRepository
      * @param MerchandiseRepository $merchandiseRepository
      * @param CardRepository $cardRepository
@@ -61,18 +100,29 @@ class OrderController extends Controller
      * @param OrderRepository $orderRepository
      * @param Request $request
      */
-    public function __construct(AppRepository $appRepository,CustomerTicketCardRepository $customerTicketCardRepository,MemberCardRepository $memberCardRepository,Application $app,OrderItemRepository $orderItemRepository ,ShopRepository $shopRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
+    public function __construct(AppRepository $appRepository,
+                                CustomerTicketCardRepository $customerTicketCardRepository,
+                                MemberCardRepository $memberCardRepository,
+                                Application $app,
+                                OrderItemRepository $orderItemRepository ,
+                                ShopRepository $shopRepository,
+                                MerchandiseRepository $merchandiseRepository ,
+                                CardRepository $cardRepository,
+                                ShoppingCartRepository $shoppingCartRepository,
+                                OrderRepository $orderRepository ,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->appRepository = $appRepository;
-        $this->orderRepository = $orderRepository;
-        $this->cardRepository = $cardRepository;
-        $this->shoppingCartRepository = $shoppingCartRepository;
-        $this->merchandiseRepository = $merchandiseRepository;
-        $this->shopRepository = $shopRepository;
-        $this->orderItemRepository = $orderItemRepository;
-        $this->app = $app;
-        $this->memberCardRepository = $memberCardRepository;
+
+        $this->appRepository                = $appRepository;
+        $this->orderRepository              = $orderRepository;
+        $this->cardRepository               = $cardRepository;
+        $this->shoppingCartRepository       = $shoppingCartRepository;
+        $this->merchandiseRepository        = $merchandiseRepository;
+        $this->shopRepository               = $shopRepository;
+        $this->orderItemRepository          = $orderItemRepository;
+        $this->app                          = $app;
+        $this->memberCardRepository         = $memberCardRepository;
         $this->customerTicketCardRepository = $customerTicketCardRepository;
     }
 
@@ -83,15 +133,6 @@ class OrderController extends Controller
      */
     public function createOrder(OrderCreateRequest $request)
     {
-//        $string = '7：00 - 9:00';
-//
-//        $a = explode('-', $string);
-//
-//        $time = date('Y-m-d'.$a[1].':'.'00',time());
-//
-//        return $time;
-
-
         $user = $this->mpUser();
         $orders = $request->all();
 

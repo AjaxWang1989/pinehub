@@ -30,9 +30,24 @@ use App\Http\Response\JsonResponse;
 
 class AuthController extends Controller
 {
+    /**
+     * @var MpUserRepository|null
+     */
     protected  $mpUserRepository = null;
+
+    /**
+     * @var ShopRepository|null
+     */
     protected  $shopRepository = null;
+
+    /**
+     * @var UserRepository|null
+     */
     protected  $userRepository = null;
+
+    /**
+     * @var CustomerTicketCardRepository|null
+     */
     protected  $customerTicketCardRepository = null;
 
     /**
@@ -53,10 +68,10 @@ class AuthController extends Controller
     {
         parent::__construct($request, $appRepository);
 
-        $this->mpUserRepository = $mpUserRepository;
-        $this->appRepository = $appRepository;
-        $this->shopRepository = $shopRepository;
-        $this->userRepository = $userRepository;
+        $this->mpUserRepository             = $mpUserRepository;
+        $this->appRepository                = $appRepository;
+        $this->shopRepository               = $shopRepository;
+        $this->userRepository               = $userRepository;
         $this->customerTicketCardRepository = $customerTicketCardRepository;
     }
 
@@ -64,8 +79,8 @@ class AuthController extends Controller
      * 注册
      * @param CreateRequest $request
      * @return AuthController|\Dingo\Api\Http\Response|
-     *         \Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|
-     *          \Laravel\Lumen\Application|mixed
+     * \Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|
+     * \Laravel\Lumen\Application|mixed
      */
 
     public function registerUser(CreateRequest $request)

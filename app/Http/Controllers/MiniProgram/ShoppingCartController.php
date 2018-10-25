@@ -23,25 +23,48 @@ use App\Repositories\ShopMerchandiseRepository;
 
 class ShoppingCartController extends Controller
 {
+    /**
+     * @var MerchandiseRepository
+     */
     protected $merchandiseRepository;
+
+    /**
+     * @var ShoppingCartRepository
+     */
     protected $shoppingCartRepository;
+
+    /**
+     * @var ShopMerchandiseRepository
+     */
     protected $shopMerchandiseRepository;
+
+    /**
+     * @var ActivityMerchandiseRepository
+     */
     protected $activityMerchandiseRepository;
 
     /**
      * ShoppingCartController constructor.
      * @param ShoppingCartRepository $shoppingCartRepository
+     * @param ActivityMerchandiseRepository $activityMerchandiseRepository
+     * @param ShopMerchandiseRepository $shopMerchandiseRepository
      * @param MerchandiseRepository $merchandiseRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(ShoppingCartRepository $shoppingCartRepository,ActivityMerchandiseRepository $activityMerchandiseRepository ,ShopMerchandiseRepository $shopMerchandiseRepository,MerchandiseRepository $merchandiseRepository,AppRepository $appRepository,Request $request)
+    public function __construct(ShoppingCartRepository $shoppingCartRepository,
+                                ActivityMerchandiseRepository $activityMerchandiseRepository ,
+                                ShopMerchandiseRepository $shopMerchandiseRepository,
+                                MerchandiseRepository $merchandiseRepository,
+                                AppRepository $appRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->appRepository = $appRepository;
-        $this->merchandiseRepository = $merchandiseRepository;
-        $this->shoppingCartRepository = $shoppingCartRepository;
-        $this->shopMerchandiseRepository = $shopMerchandiseRepository;
+
+        $this->appRepository                 = $appRepository;
+        $this->merchandiseRepository         = $merchandiseRepository;
+        $this->shoppingCartRepository        = $shoppingCartRepository;
+        $this->shopMerchandiseRepository     = $shopMerchandiseRepository;
         $this->activityMerchandiseRepository = $activityMerchandiseRepository;
     }
 

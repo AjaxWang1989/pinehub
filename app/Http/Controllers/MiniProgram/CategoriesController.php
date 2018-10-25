@@ -29,32 +29,64 @@ use App\Http\Response\JsonResponse;
 
 class CategoriesController extends Controller
 {
+    /**
+     * @var CategoryRepository|null
+     */
     protected  $categoryRepository = null;
 
+    /**
+     * @var MerchandiseCategoryRepository|null
+     */
     protected  $merchandiseCategoryRepository = null;
 
+    /**
+     * @var ShopMerchandiseRepository|null
+     */
     protected  $shopMerchandiseRepository = null;
 
+    /**
+     * @var null
+     */
     protected  $shopMerchandiseStockModifyRepository = null;
 
+    /**
+     * @var MerchandiseRepository|null
+     */
     protected  $merchandiseRepository = null;
 
+    /**
+     * @var ShopRepository|null
+     */
     protected  $shopRepository = null;
+
     /**
      * CategoriesController constructor.
+     * @param MerchandiseRepository $merchandiseRepository
+     * @param ShopRepository $shopRepository
+     * @param ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository
      * @param CategoryRepository $categoryRepository
+     * @param MerchandiseCategoryRepository $merchandiseCategoryRepository
+     * @param ShopMerchandiseRepository $shopMerchandiseRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(MerchandiseRepository $merchandiseRepository,ShopRepository $shopRepository,ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository,CategoryRepository $categoryRepository,MerchandiseCategoryRepository $merchandiseCategoryRepository,ShopMerchandiseRepository $shopMerchandiseRepository, AppRepository $appRepository, Request $request)
+    public function __construct(MerchandiseRepository $merchandiseRepository,
+                                ShopRepository $shopRepository,
+                                ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository,
+                                CategoryRepository $categoryRepository,
+                                MerchandiseCategoryRepository $merchandiseCategoryRepository,
+                                ShopMerchandiseRepository $shopMerchandiseRepository,
+                                AppRepository $appRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->categoryRepository = $categoryRepository;
-        $this->merchandiseCategoryRepository = $merchandiseCategoryRepository;
-        $this->shopMerchandiseRepository = $shopMerchandiseRepository;
+
+        $this->categoryRepository               = $categoryRepository;
+        $this->merchandiseCategoryRepository    = $merchandiseCategoryRepository;
+        $this->shopMerchandiseRepository        = $shopMerchandiseRepository;
         $this->merchandiseStockModifyRepository = $merchandiseStockModifyRepository;
-        $this->merchandiseRepository = $merchandiseRepository;
-        $this->shopRepository = $shopRepository;
+        $this->merchandiseRepository            = $merchandiseRepository;
+        $this->shopRepository                   = $shopRepository;
     }
     /*
      * 获取预定商城所有分类

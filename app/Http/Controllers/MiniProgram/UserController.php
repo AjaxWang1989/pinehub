@@ -18,25 +18,45 @@ use App\Transformers\Mp\FeedBackMessageTransformer;
 
 class UserController extends Controller
 {
-
+    /**
+     * @var
+     */
     protected  $userTicketRepository;
+
+    /**
+     * @var ShoppingCartRepository
+     */
     protected  $shoppingCartRepository;
+
+    /**
+     * @var CustomerTicketCardRepository
+     */
     protected  $customerTicketCardRepository;
+
+    /**
+     * @var FeedBackMessageRepository
+     */
     protected  $feedBackMessageRepository;
 
     /**
      * UserController constructor.
      * @param AppRepository $appRepository
+     * @param FeedBackMessageRepository $feedBackMessageRepository
+     * @param CustomerTicketCardRepository $customerTicketCardRepository
      * @param ShoppingCartRepository $shoppingCartRepository
-     * @param UserTicketRepository $userTicketRepository
      * @param Request $request
      */
-    public function __construct(AppRepository $appRepository,FeedBackMessageRepository $feedBackMessageRepository,CustomerTicketCardRepository $customerTicketCardRepository,ShoppingCartRepository $shoppingCartRepository, Request $request)
+    public function __construct(AppRepository $appRepository,
+                                FeedBackMessageRepository $feedBackMessageRepository,
+                                CustomerTicketCardRepository $customerTicketCardRepository,
+                                ShoppingCartRepository $shoppingCartRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->shoppingCartRepository = $shoppingCartRepository;
+
+        $this->shoppingCartRepository       = $shoppingCartRepository;
         $this->customerTicketCardRepository = $customerTicketCardRepository;
-        $this->feedBackMessageRepository = $feedBackMessageRepository;
+        $this->feedBackMessageRepository    = $feedBackMessageRepository;
     }
 
     /**
