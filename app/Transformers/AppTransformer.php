@@ -38,12 +38,23 @@ class AppTransformer extends TransformerAbstract
             'wechat_app_id' => $model->wechatAppId,
             'secret' => $model->secret,
             'logo' => $model->logo,
+            'concat_phone_num' => $model->concatPhoneNum,
+            'concat_name' => $model->contactName,
             /* place your other model properties here */
             'shop_count' => $model->shopsCount,
             'order_count' => $model->ordersCount,
             'new_user_count' => $newUserCount,
             'active_user_count' => $model->users->count(),
             'refunding_order_count' => 0,
+            'open_platform_auth_url' => buildUrl('web.wxopen', 'auth', [], [
+                'app_id' => $model->id, 'token' =>  (string)app('tymon.jwt.auth')->getToken(), 'type' => 'all'
+            ]),
+            'official_account_auth_url' => buildUrl('web.wxopen', 'auth', [], [
+                'app_id' => $model->id, 'token' =>  (string)app('tymon.jwt.auth')->getToken(), 'type' => 'official_account'
+            ]),
+            'mini_program_auth_url' => buildUrl('web.wxopen', 'auth', [], [
+                'app_id' => $model->id, 'token' =>  (string)app('tymon.jwt.auth')->getToken(), 'type' => 'mini_program'
+            ]),
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];
