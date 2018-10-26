@@ -106,7 +106,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION]);
+                ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION])
+                ->orderBy('id','desc');
         });
         return $this->paginate();
     }
@@ -130,7 +131,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where(['shop_id'=>$userId])
                 ->where('send_start_time', '=', $startAt)
                 ->where('send_end_time', '=', $endAt)
-                ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);
+                ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION])
+                ->orderBy('id','desc');
         });
         return $this->paginate();
     }
@@ -152,7 +154,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             $where = ['customer_id'=>$customerId];
         }
         $this->scopeQuery(function (Order $order) use($where){
-            return $order->where($where);
+            return $order->where($where)->orderBy('id','desc');
         });
         return $this->paginate();
     }
