@@ -26,6 +26,7 @@ use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Response\JsonResponse;
+use App\Exceptions\UserCodeException;
 
 
 class AuthController extends Controller
@@ -110,7 +111,7 @@ class AuthController extends Controller
                 ->item($mpUser, new MpUserTransformer());
 
         } else {
-            return $this->response(new JsonResponse(['err_code' => $errCode]));
+            throw new UserCodeException($errCode);
         }
     }
 
@@ -244,7 +245,7 @@ class AuthController extends Controller
 
             return $this->response(new JsonResponse(['user_info' => $user]));
         }else{
-            return $this->response(new JsonResponse(['err_code' => $errCode]));
+            throw new UserCodeException($errCode);
         }
     }
 }

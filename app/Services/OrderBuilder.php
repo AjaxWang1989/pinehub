@@ -207,7 +207,7 @@ class OrderBuilder implements InterfaceServiceHandler
 
             $this->updateStockNum();
 
-//            $this->delete($shoppingCartIds);
+            $this->delete($shoppingCartIds);
 
             return $orderModel;
         });
