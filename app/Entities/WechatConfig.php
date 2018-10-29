@@ -90,6 +90,9 @@ class WechatConfig extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    const MINI_PROGRAM = 'MINI_PROGRAM';
+    const OFFICIAL_ACCOUNT = 'OFFICIAL_ACCOUNT';
+
     protected $casts = [
         'service_type_info' => 'json',
         'verify_type_info'  => 'json',
