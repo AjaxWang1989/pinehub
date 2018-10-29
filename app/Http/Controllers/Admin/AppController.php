@@ -123,15 +123,17 @@ class AppController extends Controller
     {
         $app= app(AppManager::class);
         if($id) {
-            $result = $this->miniProgramRepository->update($request->all(), $id);
+            $miniProject = $this->miniProgramRepository->update($request->all(), $id);
+            $project = $miniProject->app;
         }else{
             $miniProject = $this->miniProgramRepository->create($request->all());
             $app->currentApp->miniAppId = $miniProject->id;
             $result = $app->currentApp->save();
+            $project = $app->currentApp;
         }
 
         if($result) {
-            return $this->response()->item($app->currentApp, new AppTransformer());
+            return $this->response()->item($project, new AppTransformer());
         }else {
             throw new StoreResourceFailedException('小程序配置保存失败', null, null, [], MODEL_SAVE_FAILED);
         }
