@@ -128,11 +128,11 @@ class AppController extends Controller
         }else{
             $miniProject = $this->miniProgramRepository->create($request->all());
             $app->currentApp->miniAppId = $miniProject->id;
-            $result = $app->currentApp->save();
+            $app->currentApp->save();
             $project = $app->currentApp;
         }
 
-        if($result) {
+        if($project) {
             return $this->response()->item($project, new AppTransformer());
         }else {
             throw new StoreResourceFailedException('小程序配置保存失败', null, null, [], MODEL_SAVE_FAILED);
