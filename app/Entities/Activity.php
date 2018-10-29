@@ -20,7 +20,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string $title 活动名称
  * @property string $posterImg 海报图片
  * @property string $description 详情
- * @property string $type NEW_PRODUCT PAYMENT
  * @property int $status 0 未开始 1 进行中 2 已结束
  * @property string|null $startAt 活动开始时间
  * @property string|null $endAt 活动结束时间
@@ -41,7 +40,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class Activity extends Model implements Transformable
 {
