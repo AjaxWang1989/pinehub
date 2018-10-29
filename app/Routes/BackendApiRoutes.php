@@ -67,6 +67,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->delete('/app/{id}', ['as' => 'app.delete', 'uses' => 'AppController@destroy']);
                 $router->post('/app/mp/config', ['as' => 'app.mp.config.create', 'uses' => 'AppController@setMpConfig']);
                 $router->put('/app/mp/config/{id}', ['as' => 'app.mp.config.update', 'uses' => 'AppController@setMpConfig']);
+                $router->get('/app/seven_days_statistics', ['as' => 'app.seven_days_statistics', 'uses' => 'AppController@sevenDaysStatistics']);
 
                 $router->get('/customers', ['as'=> 'customers', 'uses' => 'CustomersController@index']);
 

@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Entities\App;
 use App\Entities\Role;
 use App\Entities\Shop;
 use App\Http\Controllers\FileManager\UploadController as Controller;
@@ -28,6 +29,7 @@ use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AppController extends Controller
 {
@@ -137,6 +139,18 @@ class AppController extends Controller
         }else {
             throw new StoreResourceFailedException('小程序配置保存失败', null, null, [], MODEL_SAVE_FAILED);
         }
+    }
+
+    public function sevenDaysStatistics()
+    {
+        $end = Carbon::now();
+        $start = $end->copy()->subDay(7);
+        $project = app(AppManager::class)->currentApp;
+        $result = $project->orders()->select([DB::raw('count(*)'), DB::raw('DATE_FORMAT(`paid_at`, "%Y-%m-%d") as paid_time')])
+            ->where('paid_at', '>=', $start)
+            ->where('paid_at', '<', $end)
+            ->get();
+        return $result;
     }
 
 }
