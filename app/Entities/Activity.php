@@ -40,7 +40,6 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereUpdatedAt($value)
- * @mixin \Eloquent
  */
 class Activity extends Model implements Transformable
 {
@@ -52,8 +51,12 @@ class Activity extends Model implements Transformable
     const INVALID = 3;
 
     const NEW_PRODUCT_ACTIVITY = 'NEW_PRODUCT';
-    const PAY_FULL = "PAY_FULL";
-    const PAY_GIFT = "PAY_GIFT";
+    const PAYMENT_ACTIVITY = "PAYMENT";
+
+    protected $casts = [
+        'start_at' => 'date',
+        'end_at' => 'date',
+    ];
 
     /**
      * The attributes that are mass assignable.

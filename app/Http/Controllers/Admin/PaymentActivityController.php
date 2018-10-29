@@ -13,6 +13,7 @@ use App\Http\Requests\Admin\OrderGiftUpdateRequest;
 use App\Transformers\OrderGiftTransformer;
 use App\Transformers\OrderGiftItemTransformer;
 use App\Repositories\ActivityRepository;
+use App\Repositories\PaymentActivityRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
@@ -29,15 +30,18 @@ class PaymentActivityController extends Controller
      */
     protected $repository;
 
+    protected $paymentActivity;
+
 
     /**
      * PaymentActivityController constructor.
      *
      * @param ActivityRepository $repository
      */
-    public function __construct( ActivityRepository $repository)
+    public function __construct( ActivityRepository $repository,PaymentActivityRepository $activityRepository)
     {
         $this->repository = $repository;
+        $this->paymentActivity = $activityRepository;
         parent::__construct();
     }
 
@@ -59,7 +63,6 @@ class PaymentActivityController extends Controller
             }]);
             return $model;
         })->paginate();
-//        return app(AppManager::class)->getAppId();
         return $this->response()->paginator($activities, new OrderGiftItemTransformer());
     }
 
@@ -74,9 +77,29 @@ class PaymentActivityController extends Controller
      */
     public function store(OrderGiftCreateRequest $request)
     {
-        $data = $request->all();
-        $orderGift = $this->repository->create($data);
-        return $this->response()->item($orderGift, new OrderGiftTransformer());
+        $activity = $request->all();
+        $activity['app_id'] =  app(AppManager::class)->getAppId();
+        $activity['status'] =  Activity::NOT_BEGINNING;
+        $activity['poster_img'] = isset($activity['poster_img']) ? $activity['poster_img'] : '';
+        $activity['description'] = isset($activity['description']) ? $activity['description'] : '';
+        //创建一个支付活动
+        $activityCreate = $this->repository->create($activity);
+
+        $paymentActivities = [];
+        foreach ($activity['payment_activity'] as $k => $v){
+            $paymentActivities[$k]['activity_id']  = $activityCreate['id'];
+            $paymentActivities[$k]['type']         = $v['type'];
+            $paymentActivities[$k]['ticket_id']    = isset($v['ticket_id']) ? $v['ticket_id'] : null;
+            $paymentActivities[$k]['discount']     = isset($v['discount']) ? $v['discount'] : null;
+            $paymentActivities[$k]['cost']         = isset($v['cost']) ? $v['cost'] : null;
+            $paymentActivities[$k]['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : null;
+            $paymentActivities[$k]['score']        = isset($v['score']) ? $v['score'] : null;
+            $paymentActivities[$k]['created_at']   = date('Y-m-d H:i:s');
+            $paymentActivities[$k]['updated_at']   = date('Y-m-d H:i:s');
+        }
+        //支付活动对应子活动条件创建
+        DB::table('payment_activity')->insert($paymentActivities);
+        return $this->response()->item($activityCreate, new OrderGiftTransformer());
     }
 
     /**
@@ -88,8 +111,8 @@ class PaymentActivityController extends Controller
      */
     public function show($id)
     {
-        $orderGift = $this->repository->find($id);
-        return $this->response()->item($orderGift, new OrderGiftTransformer());
+        $activity = $this->repository->find($id)->first();
+        return $this->response()->item($activity, new OrderGiftTransformer());
     }
 
     /**
@@ -118,8 +141,44 @@ class PaymentActivityController extends Controller
      */
     public function update(OrderGiftUpdateRequest $request, $id)
     {
-       $orderGift = $this->repository->update($request->all(), $id);
-        return $this->response()->item($orderGift, new OrderGiftTransformer());
+        //根据活动id查询创建的活动
+        $activityPayment = $this->repository->find($id);
+        if ($activityPayment['start_at'] < date("Y-m-d H:i:s",time())){
+            return $this->response(new JsonResponse(['message' => '活动已开始不能修改']));
+        }else{
+            $activity = $request->all();
+            $activity['status'] =  Activity::NOT_BEGINNING;
+            $activity['poster_img'] = isset($activity['poster_img']) ? $activity['poster_img'] : '';
+            $activity['description'] = isset($activity['description']) ? $activity['description'] : '';
+            //根据活动id修改创建的活动
+            $activityUpdate = $this->repository->update($activity,$id);
+
+            //根据活动id查询此活动下子活动的原始数据
+            $payments = $this->paymentActivity->findWhere(['activity_id'=>$activityPayment['id']]);
+            $paymentDeleteIds = [];
+            foreach ($payments as $k => $v){
+                $paymentDeleteIds[$k] = $v['id'];
+            }
+            //删除此活动下子活动的数据
+            PaymentActivity::destroy($paymentDeleteIds);
+
+            //根据更新的活动id创建此活动下子活动的数据
+            $paymentActivities = [];
+            foreach ($activity['payment_activity'] as $k => $v){
+                $paymentActivities[$k]['activity_id']  = $id;
+                $paymentActivities[$k]['type']         = $v['type'];
+                $paymentActivities[$k]['ticket_id']    = isset($v['ticket_id']) ? $v['ticket_id'] : null;
+                $paymentActivities[$k]['discount']     = isset($v['discount']) ? $v['discount'] : null;
+                $paymentActivities[$k]['cost']         = isset($v['cost']) ? $v['cost'] : null;
+                $paymentActivities[$k]['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : null;
+                $paymentActivities[$k]['score']        = isset($v['score']) ? $v['score'] : null;
+                $paymentActivities[$k]['created_at']   = date('Y-m-d H:i:s');
+                $paymentActivities[$k]['updated_at']   = date('Y-m-d H:i:s');
+            }
+            //创建子活动
+            DB::table('payment_activity')->insert($paymentActivities);
+            return $this->response()->item($activityUpdate, new OrderGiftTransformer());
+        }
     }
 
 
@@ -133,6 +192,16 @@ class PaymentActivityController extends Controller
     public function destroy($id)
     {
         $deleted = $this->repository->delete($id);
+        //根据活动id查询创建的活动
+        $activityPayment = $this->repository->find($id);
+        //根据活动id查询此活动下子活动的原始数据
+        $payments = $this->paymentActivity->findWhere(['activity_id'=>$activityPayment['id']]);
+        $paymentDeleteIds = [];
+        foreach ($payments as $k => $v){
+            $paymentDeleteIds[$k] = $v['id'];
+        }
+        //删除此活动下子活动的数据
+        PaymentActivity::destroy($paymentDeleteIds);
         return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 }
