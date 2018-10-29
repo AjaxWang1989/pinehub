@@ -77,6 +77,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereVipLevel($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereBalance($value)
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {

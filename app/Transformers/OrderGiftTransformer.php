@@ -3,7 +3,7 @@
 namespace App\Transformers;
 
 use League\Fractal\TransformerAbstract;
-use App\Entities\OrderGift;
+use App\Entities\PaymentActivity;
 
 /**
  * Class OrderGiftTransformer.
@@ -13,13 +13,13 @@ use App\Entities\OrderGift;
 class OrderGiftTransformer extends TransformerAbstract
 {
     /**
-     * Transform the OrderGift entity.
-     )*
-     * @param \App\Entities\OrderGift $model
+     * Transform the PaymentActivity entity.
+     * )*
+     * @param \App\Entities\PaymentActivity $model
      *
      * @return array
      */
-    public function transform(OrderGift $model)
+    public function transform( PaymentActivity $model)
     {
         return [
             'id'         => (int) $model->id,

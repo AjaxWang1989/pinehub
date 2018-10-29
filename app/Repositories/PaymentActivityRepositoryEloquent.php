@@ -2,18 +2,18 @@
 
 namespace App\Repositories;
 
-use App\Criteria\Admin\OrderGiftCriteria;
+use App\Criteria\Admin\PaymentActivityCriteria;
 use App\Services\AppManager;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\OrderGift;
+use App\Entities\PaymentActivity;
 
 /**
- * Class OrderGiftRepositoryEloquent.
+ * Class PaymentActivityRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class OrderGiftRepositoryEloquent extends BaseRepository implements OrderGiftRepository
+class PaymentActivityRepositoryEloquent extends BaseRepository implements PaymentActivityRepository
 {
     /**
      * Specify Model class name
@@ -22,8 +22,8 @@ class OrderGiftRepositoryEloquent extends BaseRepository implements OrderGiftRep
      */
     public function model()
     {
-        new OrderGift();
-        return OrderGift::class;
+        new PaymentActivity();
+        return PaymentActivity::class;
     }
 
     
@@ -35,8 +35,8 @@ class OrderGiftRepositoryEloquent extends BaseRepository implements OrderGiftRep
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-        $this->pushCriteria(OrderGiftCriteria::class);
-//        OrderGift::creating(function (OrderGift $gift) {
+        $this->pushCriteria(PaymentActivityCriteria::class);
+//        PaymentActivity::creating(function (PaymentActivity $gift) {
 //            $gift->appId = app(AppManager::class)->currentApp->id;
 //            return $gift;
 //        });

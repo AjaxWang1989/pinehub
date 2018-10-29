@@ -14,6 +14,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 
 /**
  * Class ShopMerchandiseStockModify
+ *
  * @package App\Entities
  * @property int $id
  * @property int $shopId 店铺id
@@ -26,6 +27,19 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
  * @property \Carbon\Carbon|null $deleteAt
+ * @property int $primaryStockNum 原库存数量
+ * @property int $modifyStockNum 修改后库存数量
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereMerchandiseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereModifyStockNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify wherePrimaryStockNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereReason($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereShopId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 
 class ShopMerchandiseStockModify extends Model implements Transformable

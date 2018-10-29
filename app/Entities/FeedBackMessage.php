@@ -22,6 +22,20 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $comment 反馈内容
  * @property string $mobile 电话
  * @property string $appID 系统app_id
+ * @property int $id
+ * @property string $openId 微信open id或支付宝user ID
+ * @property string|null $appId 系统appid
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereOpenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 
 class FeedBackMessage extends Model implements Transformable

@@ -33,14 +33,9 @@ class BackendApiRoutes extends ApiRoutes
                 $attributes['middleware'] = ['api.auth'];
             }
 
-            $router->group([], function($router) {
-              /**
-               * @var  LumenRouter|DingoRouter $router
-               * */
-               $router->get('/public/key',['as'=>'administrator.public.key','uses'=>'AuthController@getPublicKey']);
-               $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
-               $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
-            });
+            $router->get('/public/key',['as'=>'administrator.public.key','uses'=>'AuthController@getPublicKey']);
+            $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
+            $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
 
             $router->group($attributes, function ($router) {
                 /**
@@ -97,6 +92,20 @@ class BackendApiRoutes extends ApiRoutes
                 $router->post('/score-rule', ['as' => 'score-rule.create', 'uses' => 'ScoreRulesController@store']);
                 $router->put('/score-rule/{id}', ['as' => 'score-rule.update', 'uses' => 'ScoreRulesController@store']);
 
+                $router->get('categories', ['as' => 'categories.list', 'uses' => 'CategoriesController@index']);
+                $router->post('category', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);
+
+                $router->get('merchandises', ['as' => 'merchandises.list', 'uses' => 'MerchandisesController@index']);
+                $router->post('merchandise', ['as' => 'merchandise.create', 'uses' => 'MerchandisesController@store']);
+                $router->put('merchandise/{id}', ['as' => 'merchandise.update', 'uses' => 'MerchandisesController@update']);
+                $router->get('merchandise/{id}', ['as' => 'merchandise.show', 'uses' => 'MerchandisesController@show']);
+                $router->post('merchandise/image/{driver?}', ['as' => 'merchandise.image.upload', 'uses' => 'MerchandisesController@uploadMerchandiseImage']);
+
+                $router->post('payment_activity', ['as' => 'payment_activity.create', 'uses' => 'PaymentActivityController@store']);
+                $router->put('payment_activity/{id}', ['as' => 'payment_activity.update', 'uses' => 'PaymentActivityController@update']);
+                $router->get('payment_activities/{type?}', ['as' => 'payment_activity.list', 'uses' => 'PaymentActivityController@index']);
+                $router->get('payment_activity/{id}', ['as' => 'payment_activity.show', 'uses' => 'PaymentActivityController@show']);
+
                 $router->group(["prefix" => "wechat", "namespace" => "Wechat"], function ($router) {
                     /**
                      * @var LumenRouter|DingoRouter $router
@@ -139,20 +148,6 @@ class BackendApiRoutes extends ApiRoutes
                     $router->delete("auto_reply_message/{id}", ['as' => 'wechat.auto_reply_message.delete', 'uses' => 'AutoReplyMessagesController@destroy']);
                     $router->delete("auto_reply_messages", ['as' => 'wechat.auto_reply_message.delete.bat', 'uses' => 'AutoReplyMessagesController@destroy']);
                 });
-
-                $router->get('categories', ['as' => 'categories.list', 'uses' => 'CategoriesController@index']);
-                $router->post('category', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);
-
-                $router->get('merchandises', ['as' => 'merchandises.list', 'uses' => 'MerchandisesController@index']);
-                $router->post('merchandise', ['as' => 'merchandise.create', 'uses' => 'MerchandisesController@store']);
-                $router->put('merchandise/{id}', ['as' => 'merchandise.update', 'uses' => 'MerchandisesController@update']);
-                $router->get('merchandise/{id}', ['as' => 'merchandise.show', 'uses' => 'MerchandisesController@show']);
-                $router->post('merchandise/image/{driver?}', ['as' => 'merchandise.image.upload', 'uses' => 'MerchandisesController@uploadMerchandiseImage']);
-
-                $router->post('order-gift', ['as' => 'order-gift.create', 'uses' => 'OrderGiftsController@store']);
-                $router->put('order-gift/{id}', ['as' => 'order-gift.update', 'uses' => 'OrderGiftsController@update']);
-                $router->get('order-gifts/{type}', ['as' => 'order-gift.list', 'uses' => 'OrderGiftsController@index']);
-                $router->get('order-gift/{id}', ['as' => 'order-gift.show', 'uses' => 'OrderGiftsController@show']);
             });
 
 

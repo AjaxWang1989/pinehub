@@ -27,7 +27,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereUserId($value)
- * @mixin \Eloquent
  */
 class AppUser extends Model implements Transformable
 {

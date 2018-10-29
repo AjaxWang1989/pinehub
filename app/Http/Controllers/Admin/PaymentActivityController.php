@@ -2,38 +2,40 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Entities\OrderGift;
+use App\Entities\Activity;
+use App\Entities\PaymentActivity;
 use App\Http\Response\JsonResponse;
-
+use App\Repositories\OrderRepository;
+use App\Services\AppManager;
 use Exception;
 use App\Http\Requests\Admin\OrderGiftCreateRequest;
 use App\Http\Requests\Admin\OrderGiftUpdateRequest;
 use App\Transformers\OrderGiftTransformer;
 use App\Transformers\OrderGiftItemTransformer;
-use App\Repositories\OrderGiftRepository;
+use App\Repositories\ActivityRepository;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 /**
- * Class OrderGiftsController.
+ * Class PaymentActivityController.
  *
  * @package namespace App\Http\Controllers\Admin;
  */
-class OrderGiftsController extends Controller
+class PaymentActivityController extends Controller
 {
     /**
-     * @var OrderGiftRepository
+     * @var ActivityRepository
      */
     protected $repository;
 
 
     /**
-     * OrderGiftsController constructor.
+     * PaymentActivityController constructor.
      *
-     * @param OrderGiftRepository $repository
+     * @param ActivityRepository $repository
      */
-    public function __construct(OrderGiftRepository $repository)
+    public function __construct( ActivityRepository $repository)
     {
         $this->repository = $repository;
         parent::__construct();
@@ -43,24 +45,22 @@ class OrderGiftsController extends Controller
      * Display a listing of the resource.
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($type)
     {
-        $type = Request::input('type');
-        $orderGifts = $this->repository->scopeQuery(function (OrderGift &$model) use($type) {
-            $model = $model->whereType($type);
-            $beginAt = Request::input('begin_at', null);
-            $endAt = Request::input('end_at', null);
-            if($beginAt) {
-                $model = $model->where('begin_at', '>=', $beginAt);
-            }
-
-            if($endAt) {
-                $model = $model->where('end_at', '<', $endAt);
-            }
-            Log::debug('order gift type '.$type);
+        $type = PaymentActivity::TYPES[$type];
+        $activities = $this->repository
+            ->scopeQuery(function (Activity &$model) use($type) {
+            $model = $model->with(['paymentActivities'])
+                ->whereHas('paymentActivities', function (Builder $query) use($type){
+                return $query->where('type', $type);
+            });
+            $model->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {
+                return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
+            }]);
             return $model;
         })->paginate();
-        return $this->response()->paginator($orderGifts, new OrderGiftItemTransformer());
+//        return app(AppManager::class)->getAppId();
+        return $this->response()->paginator($activities, new OrderGiftItemTransformer());
     }
 
     /**

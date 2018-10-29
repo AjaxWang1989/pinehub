@@ -36,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Shop $shop
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereSellPrice($value)
  */
 class ShopMerchandise extends Model implements Transformable
 {

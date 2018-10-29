@@ -9,7 +9,7 @@
 namespace App\Http\Response;
 
 
-use EasyWeChat\Kernel\Contracts\Arrayable;
+use Illuminate\Contracts\Support\Arrayable;
 
 class CreateResponse implements Arrayable
 {
@@ -30,4 +30,5 @@ class CreateResponse implements Arrayable
         // TODO: Implement toArray() method.
         return $this->content;
     }
+
 }

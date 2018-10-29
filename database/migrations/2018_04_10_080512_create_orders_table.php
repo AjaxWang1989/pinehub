@@ -22,6 +22,7 @@ class CreateOrdersTable extends Migration
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺id');
+            $table->unsignedInteger('activity_id')->nullable()->default(null)->comment('新品活动id');
             $table->unsignedInteger('activity_merchandises_id')->nullable()->default(null)->comment('新品预定商品id');
             $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
             $table->string('card_id', 32)->comment('优惠券id');

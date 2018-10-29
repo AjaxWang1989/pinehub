@@ -3,6 +3,9 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
@@ -33,6 +36,9 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\PaymentActivity[] $paymentActivities
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereStatus($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  */
 class Activity extends Model implements Transformable
 {
@@ -63,5 +69,20 @@ class Activity extends Model implements Transformable
         'end_at',
         'status'
     ];
+
+    public function paymentActivities():HasMany
+    {
+        return $this->hasMany(PaymentActivity::class, 'activity_id', 'id');
+    }
+
+    public function orders() : HasMany
+    {
+        return $this->hasMany(Order::class, 'activity_id', 'id');
+    }
+
+    public function customers() : BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'orders', 'activity_id', 'customer_id');
+    }
 
 }

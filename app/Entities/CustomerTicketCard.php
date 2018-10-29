@@ -36,7 +36,13 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUsed($value)
- * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereFriendOpenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereIsGiveByFriend($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereOpenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereOuterStr($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUnionId($value)
  */
 class CustomerTicketCard extends Model implements Transformable
 {

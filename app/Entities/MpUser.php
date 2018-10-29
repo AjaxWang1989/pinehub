@@ -64,6 +64,42 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereWechatAppId($value)
  * @mixin \Eloquent
+ * @property string|null $mobile 手机号码
+ * @property int|null $memberId 会员id
+ * @property string|null $platformAppId 微信公众平台、小程序、开放app id
+ * @property string $platformOpenId 三方平台用户唯一标志
+ * @property \Illuminate\Support\Carbon $sessionKeyExpiresAt session 过期
+ * @property int $isStudentCertified 是否是学生
+ * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户
+ *             B代表被冻结账户 W代表已注册，未激活的账户
+ * @property int $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
+ * @property int $canUseScore 用户可用积分
+ * @property int $score 用户积分
+ * @property int $totalScore 用户总积分
+ * @property int $orderCount 订单数
+ * @property string|null $channel 渠道来源
+ * @property string|null $registerChannel 注册渠道
+ * @property array $tags 标签
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereCanUseScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereChannel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereIsCertified($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereIsStudentCertified($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereMemberId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereOrderCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser wherePlatformAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser wherePlatformOpenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereRegisterChannel($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereSessionKeyExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereTags($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereTotalScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereUserStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereUserType($value)
+ * @property-read \App\Entities\Member|null $member
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $ticketRecords
+
  */
 class   MpUser extends Customer
 {

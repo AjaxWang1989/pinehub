@@ -73,7 +73,9 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member whereVipLevel($value)
- * @mixin \Eloquent
+
+ * @property float|null $balance 用户余额
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  */
 class Member extends User
 {
