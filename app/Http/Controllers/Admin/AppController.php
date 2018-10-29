@@ -117,7 +117,7 @@ class AppController extends Controller
     public function setMpConfig(SetMpConfigRequest $request)
     {
         $app= app(AppManager::class);
-        $result = $app->miniProgram()->save($request->all());
+        $result = $app->currentApp->miniProgram()->create($request->all());
         if($result) {
             return $this->response()->item($app, new AppTransformer());
         }else {
