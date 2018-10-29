@@ -19,6 +19,7 @@ use App\Http\Response\JsonResponse;
 use App\Repositories\AppRepository;
 use App\Repositories\FileRepository;
 use App\Http\Requests\Admin\AppLogoImageRequest;
+use App\Repositories\MiniProgramRepository;
 use App\Services\AppManager;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
@@ -34,11 +35,14 @@ class AppController extends Controller
     //定义repository 处理model层数据
     protected $appRepository  = null;
 
-    public function __construct(FileRepository $fileModel, AppRepository $appRepository, Request $request)
+    protected $miniProgramRepository = null;
+
+    public function __construct(FileRepository $fileModel, AppRepository $appRepository, MiniProgramRepository $miniProgramRepository, Request $request)
     {
         parent::__construct($fileModel);
         $this->appRepository = $appRepository;
-        $this->parseApp($request, $appRepository);
+        $this->miniProgramRepository = $miniProgramRepository;
+        //$this->parseApp($request, $appRepository);
     }
 
     public function uploadLogo(AppLogoImageRequest $request, string $driver = "default")
@@ -117,7 +121,9 @@ class AppController extends Controller
     public function setMpConfig(SetMpConfigRequest $request)
     {
         $app= app(AppManager::class);
-        $result = $app->currentApp->miniProgram()->create($request->all());
+        $miniProject = $this->miniProgramRepository->create($request->all());
+        $app->currentApp->miniAppId = $miniProject->id;
+        $result = $app->currentApp->save();
         if($result) {
             return $this->response()->item($app->currentApp, new AppTransformer());
         }else {
