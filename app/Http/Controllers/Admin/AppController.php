@@ -119,7 +119,7 @@ class AppController extends Controller
         $app= app(AppManager::class);
         $result = $app->currentApp->miniProgram()->create($request->all());
         if($result) {
-            return $this->response()->item($app, new AppTransformer());
+            return $this->response()->item($app->currentApp, new AppTransformer());
         }else {
             throw new StoreResourceFailedException('小程序配置保存失败', null, null, [], MODEL_SAVE_FAILED);
         }
