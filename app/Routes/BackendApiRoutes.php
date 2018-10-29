@@ -65,6 +65,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->put('/app/{id}', ['as' => 'app.update', 'uses' => 'AppController@update']);
                 $router->get('/app/{id}', ['as' => 'app.show', 'uses' => 'AppController@show']);
                 $router->delete('/app/{id}', ['as' => 'app.delete', 'uses' => 'AppController@destroy']);
+                $router->post('/app/mp/config', ['as' => 'app.mp.config', 'uses' => 'AppController@setMpConfig']);
 
                 $router->get('/customers', ['as'=> 'customers', 'uses' => 'CustomersController@index']);
 
@@ -105,6 +106,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->put('payment_activity/{id}', ['as' => 'payment_activity.update', 'uses' => 'PaymentActivityController@update']);
                 $router->get('payment_activities/{type?}', ['as' => 'payment_activity.list', 'uses' => 'PaymentActivityController@index']);
                 $router->get('payment_activity/{id}', ['as' => 'payment_activity.show', 'uses' => 'PaymentActivityController@show']);
+
 
                 $router->group(["prefix" => "wechat", "namespace" => "Wechat"], function ($router) {
                     /**
