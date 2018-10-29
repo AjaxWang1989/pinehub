@@ -2,8 +2,9 @@
 
 namespace App\Events;
 
-use App\Entities\MiniProgram;
-use App\Entities\OfficialAccount;
+use App\Entities\{
+    MiniProgram, OfficialAccount
+};
 use App\Jobs\Job;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
@@ -17,7 +18,7 @@ class WechatAuthAccessTokenRefreshEvent extends Job
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
-     * @var OfficialAccount|MiniProgram
+     * @var OfficialAccount|MiniProgram|null
      * */
     public $wechat = null;
 
@@ -30,7 +31,7 @@ class WechatAuthAccessTokenRefreshEvent extends Job
     {
         //
         $this->wechat = $config;
-        if($this->wechat->authorizerAccessTokenExpiresIn->timestamp > time()) {
+        if($this->wechat->authorizerAccessTokenExpiresIn && $this->wechat->authorizerAccessTokenExpiresIn->timestamp > time()) {
             $this->delay($this->wechat->authorizerAccessTokenExpiresIn);
         }
     }
