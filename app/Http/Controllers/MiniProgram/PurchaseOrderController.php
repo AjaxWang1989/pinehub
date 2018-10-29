@@ -22,10 +22,29 @@ use App\Http\Response\JsonResponse;
 
 class PurchaseOrderController extends Controller
 {
+    /**
+     * @var StorePurchaseOrdersRepository|null
+     */
     protected $storePurchaseOrdersRepository = null;
+
+    /**
+     * @var OrderPurchaseItemsRepository|null
+     */
     protected $orderPurchaseItemsRepository  = null;
+
+    /**
+     * @var ShopMerchandiseRepository|null
+     */
     protected $shopMerchandiseRepository     = null;
+
+    /**
+     * @var MerchandiseCategoryRepository|null
+     */
     protected $merchandiseCategoryRepository = null;
+
+    /**
+     * @var ShopRepository|null
+     */
     protected  $shopRepository = null;
 
     /**
@@ -38,15 +57,22 @@ class PurchaseOrderController extends Controller
      * @param OrderPurchaseItemsRepository $orderPurchaseItemsRepository
      * @param Request $request
      */
-    public function __construct(AppRepository $appRepository,ShopRepository $shopRepository,MerchandiseCategoryRepository $merchandiseCategoryRepository,ShopMerchandiseRepository $shopMerchandiseRepository,StorePurchaseOrdersRepository $storePurchaseOrdersRepository ,OrderPurchaseItemsRepository $orderPurchaseItemsRepository,Request $request)
+    public function __construct(AppRepository $appRepository,
+                                ShopRepository $shopRepository,
+                                MerchandiseCategoryRepository $merchandiseCategoryRepository,
+                                ShopMerchandiseRepository $shopMerchandiseRepository,
+                                StorePurchaseOrdersRepository $storePurchaseOrdersRepository ,
+                                OrderPurchaseItemsRepository $orderPurchaseItemsRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->appRepository = $appRepository;
+
+        $this->appRepository                 = $appRepository;
         $this->storePurchaseOrdersRepository = $storePurchaseOrdersRepository;
         $this->orderPurchaseItemsRepository  = $orderPurchaseItemsRepository;
         $this->shopMerchandiseRepository     = $shopMerchandiseRepository;
         $this->merchandiseCategoryRepository = $merchandiseCategoryRepository;
-        $this->shopRepository = $shopRepository;
+        $this->shopRepository                = $shopRepository;
     }
 
     /**
@@ -62,7 +88,9 @@ class PurchaseOrderController extends Controller
         if ($shopUser){
             $userId = $shopUser['id'];
             $request = $request->all();
+            //进货订单总金额
             $storePurchaseStatisticsAmount = $this->storePurchaseOrdersRepository->storePurchaseStatistics($request,$userId);
+            //进货订单的总订单数
             $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($request,$userId);
             return $this->response()->paginator($storeOrders,new StorePurchaseOrdersTransformer)->addMeta('total_amount',
                 $storePurchaseStatisticsAmount['total_amount']);
@@ -78,22 +106,52 @@ class PurchaseOrderController extends Controller
     public function storeCodeOrderMerchandiseUp (Request $request)
     {
         $request = $request->all();
-        $storePurchaseMessage = $this->storePurchaseOrdersRepository->findWhere(['code'=>$request['code']])->first();
-        $orderPurchaseItems = $this->orderPurchaseItemsRepository->orderPurchaseItems($storePurchaseMessage['id'],$storePurchaseMessage['shop_id']);
+        //根据code码获取此code码下面的一条主订单信息
+        $storePurchaseMessage = $this->storePurchaseOrdersRepository->findWhere([
+            'code'=>$request['code']
+        ])->first();
+
+        //根据主订单id获取此主订单下所有字订单信息
+        $orderPurchaseItems = $this->orderPurchaseItemsRepository->orderPurchaseItems(
+            $storePurchaseMessage['id'],
+            $storePurchaseMessage['shop_id']
+        );
+
         foreach ($orderPurchaseItems as $v){
-            $shopMerchandise = $this->shopMerchandiseRepository->findWhere(['shop_id'=>$v['shop_id'],'merchandise_id'=>$v['merchandise_id']])->first();
+            //根据店铺id和商品id查询店铺此商品的库存
+            $shopMerchandise = $this->shopMerchandiseRepository->findWhere([
+                'shop_id'=>$v['shop_id'],
+                'merchandise_id'=>$v['merchandise_id']
+            ])->first();
+
             if ($shopMerchandise){
                     $data['stock_num'] = $shopMerchandise['stock_num'] + $v['quality'];
                     $this->shopMerchandiseRepository->update($data,$shopMerchandise['id']);
                     $this->orderPurchaseItemsRepository->update(['status'=>OrderPurchaseItems::MAKE_SURE],$v['id']);
             }else{
-                $merchandiseCategory = $this->merchandiseCategoryRepository->findWhere(['merchandise_id'=>$v['merchandise_id']])->first();
-                $data = ['shop_id'=>$v['shop_id'],'merchandise_id'=>$v['merchandise_id'],'category_id'=>$merchandiseCategory['id'],'stock_num'=>$v['quality']];
+                //查询此商品属于哪个分类
+                $merchandiseCategory = $this->merchandiseCategoryRepository->findWhere([
+                    'merchandise_id'=>$v['merchandise_id']
+                ])->first();
+
+                //组装数据
+                $data = [
+                    'shop_id'=>$v['shop_id'],
+                    'merchandise_id'=>$v['merchandise_id'],
+                    'category_id'=>$merchandiseCategory['id'],
+                    'stock_num'=>$v['quality']
+                ];
+
+                //生成一条店铺此商品的新库存
                 $this->shopMerchandiseRepository->create($data);
                 $this->orderPurchaseItemsRepository->update(['status'=>OrderPurchaseItems::MAKE_SURE],$v['id']);
             }
         }
-        $item = $this->storePurchaseOrdersRepository->update(['status'=>OrderPurchaseItems::MAKE_SURE],$storePurchaseMessage['id']);
+        //更改主订单状态
+        $item = $this->storePurchaseOrdersRepository->update([
+            'status'=>OrderPurchaseItems::MAKE_SURE],
+            $storePurchaseMessage['id']
+        );
         return $this->response()->item($item,new StoreCodeOrderMerchandiseUpTransformer());
     }
 }

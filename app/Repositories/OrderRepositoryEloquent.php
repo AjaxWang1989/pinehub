@@ -102,13 +102,12 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $sendTime['paid_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
-            return $order->select([
-                DB::raw('orders.id,orders.code,orders.status,orders.receiver_name,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount,orders.created_at')
-            ])
+            return $order
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION]);
+                ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION])
+                ->orderBy('id','desc');
         });
         return $this->paginate();
     }
@@ -128,13 +127,12 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $sendTime['send_end_time'];
 
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
-            return $order->select([
-                DB::raw('orders.id,orders.code,orders.status,orders.receiver_address,orders.receiver_mobile,orders.total_amount,orders.payment_amount,orders.created_at')
-                ])
+            return $order
                 ->where(['shop_id'=>$userId])
-                ->where('send_time', '>=', $startAt)
-                ->where('send_time', '<', $endAt)
-                ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION]);
+                ->where('send_start_time', '=', $startAt)
+                ->where('send_end_time', '=', $endAt)
+                ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION])
+                ->orderBy('id','desc');
         });
         return $this->paginate();
     }
@@ -149,19 +147,14 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     {
         $where = [];
         if ($status == 'success'){
-            $status = 300;
-            $where = ['customer_id'=>$customerId,'status'=>$status];
+            $where = ['customer_id'=>$customerId,'status'=>Order::PAID];
         }elseif ($status == 'completed'){
-            $status = 500;
-            $where = ['customer_id'=>$customerId,'status'=>$status];
+            $where = ['customer_id'=>$customerId,'status'=>Order::COMPLETED];
         }elseif ($status == 'all'){
             $where = ['customer_id'=>$customerId];
         }
         $this->scopeQuery(function (Order $order) use($where){
-            return $order->select([
-                    DB::raw('id,code,type,merchandise_num,payment_amount,total_amount,status,receiver_address,created_at')
-                ])
-                ->where($where);
+            return $order->where($where)->orderBy('id','desc');
         });
         return $this->paginate();
     }
@@ -178,18 +171,33 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
+        $type = [];
+        //type传reserve就是预定商品  type传self_lift 就是自提商品
+        if ($request['type'] == 'reserve'){
+            $type = [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION];
+        }elseif ($request['type'] == 'self_lift'){
+            $type = [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION];
+        }
+
+
+        $where = [];
+        if ($request['status'] == 'all'){
+            $where = ['shop_id'=> $userId];
+        }elseif ($request['status'] == 'send'){
+            $where = ['shop_id'=> $userId,'status'=>Order::PAID];
+        }elseif ($request['status'] == 'completed'){
+            $where = ['shop_id'=> $userId,'status'=>Order::COMPLETED];
+        }
+
         $startAt = $request['paid_start_time'];
         $endAt = $request['paid_end_time'];
 
-        $this->scopeQuery(function (Order $order) use($userId,$request,$startAt,$endAt) {
-            return $order->select([
-                    DB::raw('orders.id ,orders.code,merchandise_num,orders.payment_amount,orders.total_amount,orders.receiver_address,orders.card_id'),
-                ])
-                ->where(['orders.shop_id'=>$userId])
+        $this->scopeQuery(function (Order $order) use($where,$startAt,$endAt,$type) {
+            return $order
+                ->where($where)
                 ->where('orders.paid_at', '>=', $startAt)
                 ->where('orders.paid_at', '<', $endAt)
-                ->where('orders.type',$request['type'])
-                ->where('orders.status',$request['status']);
+                ->where('type',[$type]);
         });
         return $this->paginate();
     }

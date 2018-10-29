@@ -131,7 +131,8 @@ class OrderBuilder implements InterfaceServiceHandler
             'receiver_name',
             'receiver_mobile',
             'comment',
-            'send_time',
+            'send_start_time',
+            'send_end_time',
             'card_id',
             'shop_id',
             'merchandise_num',
@@ -206,7 +207,7 @@ class OrderBuilder implements InterfaceServiceHandler
 
             $this->updateStockNum();
 
-//            $this->delete($shoppingCartIds);
+            $this->delete($shoppingCartIds);
 
             return $orderModel;
         });

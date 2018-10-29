@@ -26,13 +26,29 @@ use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Response\JsonResponse;
+use App\Exceptions\UserCodeException;
 
 
 class AuthController extends Controller
 {
+    /**
+     * @var MpUserRepository|null
+     */
     protected  $mpUserRepository = null;
+
+    /**
+     * @var ShopRepository|null
+     */
     protected  $shopRepository = null;
+
+    /**
+     * @var UserRepository|null
+     */
     protected  $userRepository = null;
+
+    /**
+     * @var CustomerTicketCardRepository|null
+     */
     protected  $customerTicketCardRepository = null;
 
     /**
@@ -53,10 +69,10 @@ class AuthController extends Controller
     {
         parent::__construct($request, $appRepository);
 
-        $this->mpUserRepository = $mpUserRepository;
-        $this->appRepository = $appRepository;
-        $this->shopRepository = $shopRepository;
-        $this->userRepository = $userRepository;
+        $this->mpUserRepository             = $mpUserRepository;
+        $this->appRepository                = $appRepository;
+        $this->shopRepository               = $shopRepository;
+        $this->userRepository               = $userRepository;
         $this->customerTicketCardRepository = $customerTicketCardRepository;
     }
 
@@ -64,16 +80,18 @@ class AuthController extends Controller
      * 注册
      * @param CreateRequest $request
      * @return AuthController|\Dingo\Api\Http\Response|
-     *         \Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|
-     *          \Laravel\Lumen\Application|mixed
+     * \Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|
+     * \Laravel\Lumen\Application|mixed
      */
 
     public function registerUser(CreateRequest $request)
     {
         $session = $this->session();
 
+        //获取小程序app_id
         $currentApp = app(AppManager::class)->currentApp;
 
+        //根据小程序id和登陆接口返回的解析后的用户信息
         list($errCode, $data) = app()->makeWith('bizDataCrypt', [$currentApp, $session['session_key']])
             ->decryptData($request->input('encrypted_data'), $request->input('iv') );
 
@@ -93,7 +111,7 @@ class AuthController extends Controller
                 ->item($mpUser, new MpUserTransformer());
 
         } else {
-            return $this->response(new JsonResponse(['err_code' => $errCode]));
+            throw new UserCodeException($errCode);
         }
     }
 
@@ -155,14 +173,13 @@ class AuthController extends Controller
      * @throws \Exception
      */
 
-    public function mvpLogin(string $code, Request $request)
+    public function login(string $code, Request $request)
     {
         $accessToken = $request->input('access_token', null);
 
-//        $session = app('wechat')->miniProgram()
-//            ->auth
-//            ->session($code);
-        $session = ['open_id'=>'xcx0987654321'];
+        $session = app('wechat')->miniProgram()
+            ->auth
+            ->session($code);
 
         cache([$accessToken.'_session'=> $session], 60);
 
@@ -227,7 +244,7 @@ class AuthController extends Controller
 
             return $this->response(new JsonResponse(['user_info' => $user]));
         }else{
-            return $this->response(new JsonResponse(['err_code' => $errCode]));
+            throw new UserCodeException($errCode);
         }
     }
 }

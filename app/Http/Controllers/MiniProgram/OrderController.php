@@ -41,19 +41,58 @@ use Illuminate\Support\Facades\Cache;
  */
 class OrderController extends Controller
 {
+    /**
+     * @var OrderRepository|null
+     */
     protected $orderRepository = null;
+
+    /**
+     * @var null
+     */
     protected $userTicketRepository = null;
+
+    /**
+     * @var ShoppingCartRepository|null
+     */
     protected $shoppingCartRepository = null;
+
+    /**
+     * @var MerchandiseRepository|null
+     */
     protected $merchandiseRepository = null;
+
+    /**
+     * @var ShopRepository|null
+     */
     protected $shopRepository = null;
+
+    /**
+     * @var OrderItemRepository|null
+     */
     protected $orderItemRepository = null;
+
+    /**
+     * @var Application|null
+     */
     protected $app = null;
+
+    /**
+     * @var MemberCardRepository|null
+     */
     protected $memberCardRepository = null;
+
+    /**
+     * @var CustomerTicketCardRepository|null
+     */
     protected $customerTicketCardRepository = null;
 
     /**
      * OrderController constructor.
      * @param AppRepository $appRepository
+     * @param CustomerTicketCardRepository $customerTicketCardRepository
+     * @param MemberCardRepository $memberCardRepository
+     * @param Application $app
+     * @param OrderItemRepository $orderItemRepository
      * @param ShopRepository $shopRepository
      * @param MerchandiseRepository $merchandiseRepository
      * @param CardRepository $cardRepository
@@ -61,18 +100,29 @@ class OrderController extends Controller
      * @param OrderRepository $orderRepository
      * @param Request $request
      */
-    public function __construct(AppRepository $appRepository,CustomerTicketCardRepository $customerTicketCardRepository,MemberCardRepository $memberCardRepository,Application $app,OrderItemRepository $orderItemRepository ,ShopRepository $shopRepository,MerchandiseRepository $merchandiseRepository ,CardRepository $cardRepository,ShoppingCartRepository $shoppingCartRepository,OrderRepository $orderRepository ,Request $request)
+    public function __construct(AppRepository $appRepository,
+                                CustomerTicketCardRepository $customerTicketCardRepository,
+                                MemberCardRepository $memberCardRepository,
+                                Application $app,
+                                OrderItemRepository $orderItemRepository ,
+                                ShopRepository $shopRepository,
+                                MerchandiseRepository $merchandiseRepository ,
+                                CardRepository $cardRepository,
+                                ShoppingCartRepository $shoppingCartRepository,
+                                OrderRepository $orderRepository ,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->appRepository = $appRepository;
-        $this->orderRepository = $orderRepository;
-        $this->cardRepository = $cardRepository;
-        $this->shoppingCartRepository = $shoppingCartRepository;
-        $this->merchandiseRepository = $merchandiseRepository;
-        $this->shopRepository = $shopRepository;
-        $this->orderItemRepository = $orderItemRepository;
-        $this->app = $app;
-        $this->memberCardRepository = $memberCardRepository;
+
+        $this->appRepository                = $appRepository;
+        $this->orderRepository              = $orderRepository;
+        $this->cardRepository               = $cardRepository;
+        $this->shoppingCartRepository       = $shoppingCartRepository;
+        $this->merchandiseRepository        = $merchandiseRepository;
+        $this->shopRepository               = $shopRepository;
+        $this->orderItemRepository          = $orderItemRepository;
+        $this->app                          = $app;
+        $this->memberCardRepository         = $memberCardRepository;
         $this->customerTicketCardRepository = $customerTicketCardRepository;
     }
 
@@ -85,6 +135,25 @@ class OrderController extends Controller
     {
         $user = $this->mpUser();
         $orders = $request->all();
+
+
+        if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
+            $address = [
+                'receiver_address' => $orders['receiver_address'],
+                'build_num'        => $orders['build_num'],
+                'room_num'         => $orders['room_num']
+            ];
+            $orders['receiver_address'] = json_encode($address);
+        }
+
+        if (isset($orders['send_time']) && $orders['send_time']){
+            //拆分字符串
+            $sendTime = explode('-',$orders['send_time']);
+            //去除字符串中的空格
+            $removeSpace = str_replace(' ','',$sendTime);
+            $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
+            $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
+        }
 
         $orders['app_id'] = $user->appId;
         $orders['member_id'] = $user->memberId;
@@ -114,6 +183,7 @@ class OrderController extends Controller
 
         $orders['shop_id'] = $orders['store_id'] ? $orders['store_id'] : null;
 
+        //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         if (isset($orders['store_id']) && $orders['store_id']){
             $shoppingCarts = $this->shoppingCartRepository
                 ->findWhere([
@@ -148,7 +218,7 @@ class OrderController extends Controller
 
         $orderItems = [];
         $deleteIds  = [];
-
+        //取出购物车商品信息组装成一个子订单数组
         foreach ($shoppingCarts as $k => $v) {
             $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
             $orderItems[$k]['shop_id'] = $v['shop_id'];
@@ -165,14 +235,22 @@ class OrderController extends Controller
 
         $orders['shopping_cart_ids']    = $deleteIds;
         $orders['order_items']          = $orderItems;
+
+        //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
             ->setInput($orders)
             ->handle();
+
+        //更新优惠券状态为已使用
+        $card_use = $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
+
         return DB::transaction(function () use(&$order){
+            //跟微信打交道生成预支付订单
             $result = app('wechat')->unify($order, $order->wechatAppId);
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
+                $order->paidAt = date('Y-m-d H:i:s',time());
                 $order->save();
                 $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
                 $result['sdk_config'] = $sdkConfig;
@@ -198,22 +276,12 @@ class OrderController extends Controller
 
         if ($shopUser){
             $userId = $shopUser['id'];
-
             $sendTime = $request->all();
 
+            //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
                 ->storeBuffetOrders($sendTime,  $userId);
 
-            $shopEndHour = $this->shopRepository
-                ->findwhere(['id'   =>  $userId])
-                ->first();
-
-            foreach ($items as $k => $v){
-                $items[$k]['shop_end_hour'] = $shopEndHour['end_at'];
-
-                $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                    ->OrderItemMerchandises($v['id']);
-            }
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
         }
@@ -237,13 +305,10 @@ class OrderController extends Controller
             $userId     = $shopUser['id'];
             $sendTime   = $request->all();
 
+           //查询今日下单和预定商城的所有配送订单
             $items = $this->orderRepository
                 ->storeSendOrders($sendTime,$userId);
 
-            foreach ($items as $k => $v){
-                $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                    ->OrderItemMerchandises($v['id']);
-            }
             return $this->response()->paginator($items,new OrderStoreSendTransformer());
         }
 
@@ -258,18 +323,12 @@ class OrderController extends Controller
      */
 
     public function orders(string  $status){
-        $user   = $this->user();
+        $user   = $this->mpUser();
 
         $customerId = $user['id'];
 
         $items = $this->orderRepository
             ->orders($status,   $customerId);
-
-        foreach ($items as $k => $v){
-            $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                ->OrderItemMerchandises($v['id']);
-        }
-
         return $this->response()
             ->paginator($items, new StatusOrdersTransformer());
     }
@@ -280,7 +339,7 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function storeOrdersSummary(Request $request){
-        $user = $this->user();
+        $user = $this->mpUser();
 
         $shopUser = $this->shopRepository
             ->findWhere(['user_id'  =>  $user['member_id']])
@@ -293,20 +352,6 @@ class OrderController extends Controller
 
             $items = $this->orderRepository
                 ->storeOrdersSummary($request,  $userId);
-
-            foreach ($items as $k => $v){
-                    $reduce_cost = $this->cardRepository
-                        ->findWhere(['card_id' => $v['card_id']])
-                        ->first();
-
-                    $items[$k]['reduce_cost'] = $reduce_cost ? $reduce_cost['card_info']['cash']['base_info']['title'] : '无';
-
-                    $items[$k]['sell_point']  = '';
-
-                    $items[$k]['order_item_merchandises'] = $this->orderItemRepository
-                        ->OrderItemMerchandises($v['id']);
-            }
-
             return $this->response()
                 ->paginator($items, new StoreOrdersSummaryTransformer());
         }

@@ -21,8 +21,19 @@ use App\Http\Response\JsonResponse;
 
 class ActivityController extends Controller
 {
+    /**
+     * @var ActivityRepository|null
+     */
     protected  $activityRepository = null;
+
+    /**
+     * @var ActivityMerchandiseRepository|null
+     */
     protected  $activityMerchandiseRepository = null;
+
+    /**
+     * @var ShopRepository|null
+     */
     protected  $shopRepository = null;
 
     /**
@@ -33,12 +44,17 @@ class ActivityController extends Controller
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(ActivityRepository $activityRepository,ShopRepository $shopRepository,ActivityMerchandiseRepository $activityMerchandiseRepository, AppRepository $appRepository, Request $request)
+    public function __construct(ActivityRepository $activityRepository,
+                                ShopRepository $shopRepository,
+                                ActivityMerchandiseRepository $activityMerchandiseRepository,
+                                AppRepository $appRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->activityRepository = $activityRepository;
+
+        $this->activityRepository            = $activityRepository;
         $this->activityMerchandiseRepository = $activityMerchandiseRepository;
-        $this->shopRepository = $shopRepository;
+        $this->shopRepository                = $shopRepository;
     }
 
     /**

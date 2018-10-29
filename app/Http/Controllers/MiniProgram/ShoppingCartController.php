@@ -23,25 +23,48 @@ use App\Repositories\ShopMerchandiseRepository;
 
 class ShoppingCartController extends Controller
 {
+    /**
+     * @var MerchandiseRepository
+     */
     protected $merchandiseRepository;
+
+    /**
+     * @var ShoppingCartRepository
+     */
     protected $shoppingCartRepository;
+
+    /**
+     * @var ShopMerchandiseRepository
+     */
     protected $shopMerchandiseRepository;
+
+    /**
+     * @var ActivityMerchandiseRepository
+     */
     protected $activityMerchandiseRepository;
 
     /**
      * ShoppingCartController constructor.
      * @param ShoppingCartRepository $shoppingCartRepository
+     * @param ActivityMerchandiseRepository $activityMerchandiseRepository
+     * @param ShopMerchandiseRepository $shopMerchandiseRepository
      * @param MerchandiseRepository $merchandiseRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(ShoppingCartRepository $shoppingCartRepository,ActivityMerchandiseRepository $activityMerchandiseRepository ,ShopMerchandiseRepository $shopMerchandiseRepository,MerchandiseRepository $merchandiseRepository,AppRepository $appRepository,Request $request)
+    public function __construct(ShoppingCartRepository $shoppingCartRepository,
+                                ActivityMerchandiseRepository $activityMerchandiseRepository ,
+                                ShopMerchandiseRepository $shopMerchandiseRepository,
+                                MerchandiseRepository $merchandiseRepository,
+                                AppRepository $appRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->appRepository = $appRepository;
-        $this->merchandiseRepository = $merchandiseRepository;
-        $this->shoppingCartRepository = $shoppingCartRepository;
-        $this->shopMerchandiseRepository = $shopMerchandiseRepository;
+
+        $this->appRepository                 = $appRepository;
+        $this->merchandiseRepository         = $merchandiseRepository;
+        $this->shoppingCartRepository        = $shoppingCartRepository;
+        $this->shopMerchandiseRepository     = $shopMerchandiseRepository;
         $this->activityMerchandiseRepository = $activityMerchandiseRepository;
     }
 
@@ -54,9 +77,14 @@ class ShoppingCartController extends Controller
         $user = $this->mpUser();
         $shoppingCart = $request->all();
 
-        $merchandise = $this->merchandiseRepository->findWhere(['id'=>$shoppingCart['merchandise_id']])->first();
+        //根据商品id查询商品的所有信息
+        $merchandise = $this->merchandiseRepository->findWhere([
+            'id'=>$shoppingCart['merchandise_id']
+        ])->first();
+
 
         if (isset($shoppingCart['store_id']) && $shoppingCart['store_id']){
+            //根据店铺id和商品id查询此店铺此商品的信息
             $Merchandise = $this->shopMerchandiseRepository->findWhere([
                 'shop_id'=>$shoppingCart['store_id'],
                 'merchandise_id'=>$shoppingCart['merchandise_id']
@@ -67,7 +95,9 @@ class ShoppingCartController extends Controller
                 'merchandise_id'=>$shoppingCart['merchandise_id'],
                 'customer_id'=>$user['id']
             ])->first();
+
         }elseif (isset($shoppingCart['activity_merchandises_id']) && $shoppingCart['activity_merchandises_id']){
+            //根据活动商品id查询此活动商品的库存
             $Merchandise = $this->activityMerchandiseRepository->findWhere([
                 'merchandise_id'=>$shoppingCart['merchandise_id']
             ])->first();
@@ -159,7 +189,6 @@ class ShoppingCartController extends Controller
      */
     public function emptyMerchandise(int $storeId = null, int $activityMerchandiseId = null){
         $user = $this->mpUser();
-        $item = '';
         if (isset($storeId) && $storeId){
             $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$storeId,'customer_id'=>$user['id']]);
         }elseif(isset($activityMerchandiseId) && $activityMerchandiseId){

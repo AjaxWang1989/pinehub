@@ -29,32 +29,64 @@ use App\Http\Response\JsonResponse;
 
 class CategoriesController extends Controller
 {
+    /**
+     * @var CategoryRepository|null
+     */
     protected  $categoryRepository = null;
 
+    /**
+     * @var MerchandiseCategoryRepository|null
+     */
     protected  $merchandiseCategoryRepository = null;
 
+    /**
+     * @var ShopMerchandiseRepository|null
+     */
     protected  $shopMerchandiseRepository = null;
 
+    /**
+     * @var null
+     */
     protected  $shopMerchandiseStockModifyRepository = null;
 
+    /**
+     * @var MerchandiseRepository|null
+     */
     protected  $merchandiseRepository = null;
 
+    /**
+     * @var ShopRepository|null
+     */
     protected  $shopRepository = null;
+
     /**
      * CategoriesController constructor.
+     * @param MerchandiseRepository $merchandiseRepository
+     * @param ShopRepository $shopRepository
+     * @param ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository
      * @param CategoryRepository $categoryRepository
+     * @param MerchandiseCategoryRepository $merchandiseCategoryRepository
+     * @param ShopMerchandiseRepository $shopMerchandiseRepository
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct(MerchandiseRepository $merchandiseRepository,ShopRepository $shopRepository,ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository,CategoryRepository $categoryRepository,MerchandiseCategoryRepository $merchandiseCategoryRepository,ShopMerchandiseRepository $shopMerchandiseRepository, AppRepository $appRepository, Request $request)
+    public function __construct(MerchandiseRepository $merchandiseRepository,
+                                ShopRepository $shopRepository,
+                                ShopMerchandiseStockModifyRepository $merchandiseStockModifyRepository,
+                                CategoryRepository $categoryRepository,
+                                MerchandiseCategoryRepository $merchandiseCategoryRepository,
+                                ShopMerchandiseRepository $shopMerchandiseRepository,
+                                AppRepository $appRepository,
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
-        $this->categoryRepository = $categoryRepository;
-        $this->merchandiseCategoryRepository = $merchandiseCategoryRepository;
-        $this->shopMerchandiseRepository = $shopMerchandiseRepository;
+
+        $this->categoryRepository               = $categoryRepository;
+        $this->merchandiseCategoryRepository    = $merchandiseCategoryRepository;
+        $this->shopMerchandiseRepository        = $shopMerchandiseRepository;
         $this->merchandiseStockModifyRepository = $merchandiseStockModifyRepository;
-        $this->merchandiseRepository = $merchandiseRepository;
-        $this->shopRepository = $shopRepository;
+        $this->merchandiseRepository            = $merchandiseRepository;
+        $this->shopRepository                   = $shopRepository;
     }
     /*
      * 获取预定商城所有分类
@@ -121,21 +153,34 @@ class CategoriesController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeMerchandiseStock(int $id,StoreStockUpdateRequest $request)
+    public function storeMerchandiseStock(int $merchandiseId,StoreStockUpdateRequest $request)
     {
+        $user = $this->mpUser();
+        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        $user['shop_id'] = $shopUser['id'];
+
+        //获取此店铺此商品的信息
+        $storeMerchandise = $this->shopMerchandiseRepository->findWhere([
+            'merchandise_id'=>$merchandiseId,
+            'shop_id'=>$shopUser['id']
+        ])->first();
+
         $request = $request->input();
         $request['stock_num'] = $request['modify_stock_num'];
-        $storeMerchandise = $this->shopMerchandiseRepository->find($id);
-        $item = $this->shopMerchandiseRepository->update($request,$id);
-        $storeStockModify['shop_id'] = $storeMerchandise['shop_id'];
-        $storeStockModify['product_id'] = $storeMerchandise['product_id'];
-        $storeStockModify['merchandise_id'] = $request['merchandise_id'];
-        $storeStockModify['primary_stock_num'] = $request['primary_stock_num'];
-        $storeStockModify['modify_stock_num'] = $request['modify_stock_num'];
-        $storeStockModify['reason'] = $request['reason'];
-        $storeStockModify['comment'] = $request['comment'];
-        $this->merchandiseStockModifyRepository->create($storeStockModify);
-        return $this->response()->item($item,new ShopMerchandiseStockModifyTransformer());
+
+        $item = $this->shopMerchandiseRepository->update($request,$storeMerchandise['id']);
+        if ($item){
+            $storeStockModify['shop_id'] = $storeMerchandise['shop_id'];
+            $storeStockModify['product_id'] = $storeMerchandise['product_id'];
+            $storeStockModify['merchandise_id'] = $merchandiseId;
+            $storeStockModify['primary_stock_num'] = $request['primary_stock_num'];
+            $storeStockModify['modify_stock_num'] = $request['modify_stock_num'];
+            $storeStockModify['reason'] = $request['reason'];
+            $storeStockModify['comment'] = $request['comment'];
+            $this->merchandiseStockModifyRepository->create($storeStockModify);
+            return $this->response()->item($item,new ShopMerchandiseStockModifyTransformer());
+        }
+            return $this->response(new JsonResponse(['message' => '库存修改失败,请稍后再试']));
     }
 
     /**
