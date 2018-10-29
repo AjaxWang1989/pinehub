@@ -116,14 +116,20 @@ class AppController extends Controller
      * 设置小程序配置
      *
      * @param SetMpConfigRequest $request
+     * @param int $id
      * @return \Dingo\Api\Http\Response
      */
-    public function setMpConfig(SetMpConfigRequest $request)
+    public function setMpConfig(SetMpConfigRequest $request, int $id = null)
     {
         $app= app(AppManager::class);
-        $miniProject = $this->miniProgramRepository->create($request->all());
-        $app->currentApp->miniAppId = $miniProject->id;
-        $result = $app->currentApp->save();
+        if($id) {
+            $result = $this->miniProgramRepository->update($request->all(), $id);
+        }else{
+            $miniProject = $this->miniProgramRepository->create($request->all());
+            $app->currentApp->miniAppId = $miniProject->id;
+            $result = $app->currentApp->save();
+        }
+
         if($result) {
             return $this->response()->item($app->currentApp, new AppTransformer());
         }else {
