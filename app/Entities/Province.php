@@ -16,8 +16,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $countryId 国家ID
  * @property string $code 省份编码
  * @property string $name 省份名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\City[] $cities
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\County[] $counties
  * @property-read \App\Entities\Country $country

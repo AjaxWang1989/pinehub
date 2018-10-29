@@ -9,34 +9,32 @@ use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Class ShopMerdandise.
+ * App\Entities\ShopMerchandise
  *
- * @package namespace App\Entities;
  * @property int $id
  * @property int $shopId 店铺id
+ * @property float $sellPrice 售价
  * @property int $merchandiseId 商品ID
- * * @property float $sellPrice 售价
- * @property int $CategoryId 商品ID
+ * @property int $categoryId 分类ID
  * @property int|null $productId sku单品ID
  * @property int $stockNum 库存数量
  * @property int $sellNum 销售数量
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property-read \App\Entities\Category $category
+ * @property-read \App\Entities\Merchandise $merchandise
+ * @property-read \App\Entities\Shop $shop
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereMerchandiseId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereSellNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereSellPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $categoryId 分类ID
- * @property-read \App\Entities\Category $category
- * @property-read \App\Entities\Merchandise $merchandise
- * @property-read \App\Entities\Shop $shop
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereSellPrice($value)
  */
 class ShopMerchandise extends Model implements Transformable
 {

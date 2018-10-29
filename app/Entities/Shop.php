@@ -27,7 +27,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $cityId 城市id
  * @property int $countyId 所属区县id
  * @property string|null $address 详细地址
- * @property mixed|null $position 店铺定位
+ * @property mixed $position 店铺定位
  * @property string|null $description 店铺描述
  * @property string|null $geoHash 位置hash编码
  * @property float $totalAmount 店铺总计营业额
@@ -48,19 +48,19 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $aliAppId 支付宝app ID
  * @property string|null $mtAppId 美团app id
  * @property string|null $wechatParamsQrcodeUrl 微信参数二维码url
- * @property string|null $start_at 开售时间
- * @property string|null $end_at   结业时间
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property string|null $startAt 开售时间
+ * @property string|null $endAt 结业时间
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\City $city
  * @property-read \App\Entities\Country $country
  * @property-read \App\Entities\County $county
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\ShopMerchandise[] $shopMerchandises
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \App\Entities\Province $province
  * @property-read \App\Entities\User $shopManager
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\ShopMerchandise[] $shopMerchandises
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop comparison($geometryColumn, $geometry, $relationship)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop contains($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop crosses($geometryColumn, $geometry)
@@ -74,6 +74,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop doesTouch($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop equals($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop intersects($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop near($lng, $lat, $distance)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop overlaps($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAliAppId($value)
@@ -85,12 +86,14 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereEndAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereGeoHash($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereMtAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop wherePosition($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereProvinceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereStartAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereTodayAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereTodayOffLineAmount($value)
@@ -110,9 +113,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereWechatParamsQrcodeUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop within($geometryColumn, $polygon)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop near($lng, $lat, $distance)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereEndAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereStartAt($value)
  */
 class Shop extends Model implements Transformable
 {

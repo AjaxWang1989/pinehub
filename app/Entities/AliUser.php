@@ -20,13 +20,13 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $nickname 用户昵称
  * @property int $isStudentCertified 是否是学生
  * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
  *             B代表被冻结账户 W代表已注册，未激活的账户
  * @property string $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
  * @property string $gender 【注意】只有is_certified为T的时候才有意义，否则不保证准确性.
  *              性别（F：女性；M：男性）。
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereCity($value)
@@ -42,6 +42,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserType($value)
+ * @mixin \Eloquent
  */
 class AliUser extends Model implements Transformable
 {

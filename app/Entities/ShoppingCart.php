@@ -56,9 +56,9 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property int $id
  * @property string|null $appId 系统appid
  * @property int|null $shopId 店铺ID
+ * @property int|null $activityMerchandisesId 新品预定商品id
  * @property int|null $memberId 买家会员id
  * @property int|null $customerId 买家id
- * @property int|null $activityMerchandisesId 新品活动商品id
  * @property int|null $merchandiseId 产品id
  * @property int|null $skuProductId 规格产品ID
  * @property int $quality 订单产品数量

@@ -10,14 +10,14 @@ use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
 
 /**
- * App\Entities\AdminRole
+ * App\Entities\Role
  *
  * @property int $id
  * @property string $slug 角色标识
  * @property string $displayName 角色显示名称
  * @property int|null $groupId 部门组织id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\Group|null $group
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\User[] $users
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereCreatedAt($value)

@@ -7,9 +7,8 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class Administrator.
+ * App\Entities\Administrator
  *
- * @package namespace App\Entities;
  * @property int $id
  * @property string|null $appId 系统appid
  * @property string $mobile 用户手机号码
@@ -22,6 +21,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $city 城市
  * @property string|null $province 省份
  * @property string|null $country 国家
+ * @property float $balance 用户余额
  * @property int $canUseScore 用户可用积分
  * @property int $score 用户积分
  * @property int $totalScore 用户总积分
@@ -29,14 +29,13 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $lastLoginAt 最后登录时间
  * @property int $status 用户状态0-账户冻结 1-激活状态 2-等待授权
  * @property int $orderCount 订单数
- * @property string|null $channel 渠道来源
- * @property string|null $registerChannel 注册渠道
+ * @property int $channel 渠道来源 0-未知 1-微信 2-支付宝
+ * @property int $registerChannel 注册渠道 0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP
  * @property array $tags 标签
  * @property string $mobileCompany 手机号码所属公司
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property float|null $balance 用户余额
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\App[] $apps
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Customer[] $customers
  * @property-read \App\Entities\MemberCard $memberCard

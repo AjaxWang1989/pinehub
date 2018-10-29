@@ -7,9 +7,8 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class MiniProgramTemplate.
+ * App\Entities\MiniProgramTemplate
  *
- * @package namespace App\Entities;
  * @property int $templateId 模版id
  * @property string $userVersion 模版版本号
  * @property string $userDesc 模版描述

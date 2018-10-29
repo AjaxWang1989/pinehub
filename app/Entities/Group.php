@@ -13,8 +13,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int $id
  * @property string $code 部门编号
  * @property string $displayName 部门名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group whereCreatedAt($value)

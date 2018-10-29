@@ -10,16 +10,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 
 /**
- * Class UserTicket.
+ * App\Entities\UserTicket
  *
- * @package namespace App\Entities;
  * @property int $id
  * @property string $cardId 优惠券id
  * @property string $cardCode 优惠券编码
  * @property int $userId 会员id
  * @property int $status 0-不可用，1-可用，2-已使用，3-过期
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property-read \App\Entities\Card $tickets
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereCardCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereCreatedAt($value)
@@ -28,7 +28,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereUserId($value)
  * @mixin \Eloquent
- * @property-read \App\Entities\Card $tickets
  */
 class UserTicket extends Model implements Transformable
 {

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrderGiftsTable extends Migration
+class CreatePaymentActivitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateOrderGiftsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_gifts', function (Blueprint $table) {
+        Schema::create('payment_activities', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('activity_id')->comment('活动ID');
             $table->string('type', 16)->comment('支付活动方式：满减送 PAY_FULL/支付礼包 PAY_GIFT');

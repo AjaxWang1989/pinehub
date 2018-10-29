@@ -11,11 +11,11 @@ use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
 
 /**
- * Class Activity.
+ * App\Entities\Activity
  *
- * @package namespace App\Entities;
  * @property int $id
  * @property string $appId 项目应用ID
+ * @property string $type 活动类型
  * @property int|null $shopId 店铺id
  * @property string $title 活动名称
  * @property string $posterImg 海报图片
@@ -24,8 +24,11 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int $status 0 未开始 1 进行中 2 已结束
  * @property string|null $startAt 活动开始时间
  * @property string|null $endAt 活动结束时间
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Customer[] $customers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\PaymentActivity[] $paymentActivities
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereDescription($value)
@@ -34,12 +37,11 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity wherePosterImg($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereStartAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\PaymentActivity[] $paymentActivities
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereStatus($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  */
 class Activity extends Model implements Transformable
 {

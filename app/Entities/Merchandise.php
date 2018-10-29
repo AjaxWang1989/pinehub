@@ -25,17 +25,19 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property float $sellPrice 售价
  * @property float $costPrice 成本价格
  * @property float $factoryPrice 工厂价格
+ * @property int $capacity 产能（工厂生产能力）
  * @property int $stockNum 库存
  * @property int $sellNum 已售出数量
  * @property int $status 状态：0-下架 1-上架
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Category[] $categories
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\SKUProduct[] $skuProducts
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCapacity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCreatedAt($value)
@@ -54,8 +56,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $capacity 产能（工厂生产能力）
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCapacity($value)
  */
 class Merchandise extends Model implements Transformable
 {

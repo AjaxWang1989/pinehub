@@ -20,12 +20,12 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property string|null $appId 系统应用appid
  * @property int|null $userId 用户手机
  * @property string|null $wechatAppId 微信公众平台、小程序、开放app id
- * @property string $type OFFICE_ACCOUNT 公众平台，
+ * @property string $type OFFICE_ACCOUNT 公众平台， 
  *             OPEN_PLATFORM 开放平台 MINI_PROGRAM 小程序
  * @property string|null $unionId union id
  * @property string $openId open id
  * @property string $sessionKey session key
- * @property \Carbon\Carbon $expiresAt session 过期
+ * @property \Illuminate\Support\Carbon $expiresAt session 过期
  * @property string|null $avatar 头像
  * @property string|null $country 国家
  * @property string|null $province 省份
@@ -33,9 +33,9 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property string|null $nickname 用户昵称
  * @property string $sex 性别
  * @property mixed|null $privilege 微信特权信息
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property \Carbon\Carbon $deletedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $deletedAt
  * @property-read \App\Entities\App|null $app
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \App\Entities\User|null $user

@@ -15,8 +15,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $name 菜单名称
  * @property int $isPublic 菜单是否发布
  * @property array $menus menus
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereId($value)

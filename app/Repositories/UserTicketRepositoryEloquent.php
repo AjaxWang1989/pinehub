@@ -39,12 +39,11 @@ class UserTicketRepositoryEloquent extends BaseRepository implements UserTicketR
      * @param int $status
      * @param int $userId
      * @param string $shoppingCartAmount
-     * @param string $limit
      * @return mixed
      */
-    public function userTickets(int $status,$userId,string $shoppingCartAmount){
+    public function userTickets(int $status, int $userId, string $shoppingCartAmount){
         $shoppingCartAmount = $shoppingCartAmount*100;
-        $this->scopeQuery(function (UserTicket $userTicket) use($status,$userId,$shoppingCartAmount) {
+        $this->scopeQuery(function (UserTicket $userTicket) use($status, $userId, $shoppingCartAmount) {
             return $userTicket->where(['user_id'=>$userId,'user_tickets.status'=>$status])
                 ->join('cards', 'user_tickets.card_id', '=', 'cards.card_id')
                 ->where('cards.card_info->cash->least_cost', '<=', $shoppingCartAmount)

@@ -144,9 +144,9 @@ define('APP_NAME_ARRAY', [
     TO_APP_NAME
 ]);
 
-define('WECHAT_OFFICIAL_ACCOUNT', 'wechat_official_account');
-define('WECHAT_OPEN_PLATFORM', 'wechat_open_platform');
-define('WECHAT_MINI_PROGRAM', 'wechat_mini_program');
+define('WECHAT_OFFICIAL_ACCOUNT', 'WECHAT_OFFICIAL_ACCOUNT');
+define('WECHAT_OPEN_PLATFORM', 'WECHAT_OPEN_PLATFORM');
+define('WECHAT_MINI_PROGRAM', 'WECHAT_MINI_PROGRAM');
 
 define('WECHAT_APP_TYPE', [
     WECHAT_OFFICIAL_ACCOUNT,

@@ -15,8 +15,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $appId 系统应用id
  * @property int|null $userId 用户id
  * @property int $status 状态：0-冻结账号，1-激活 2-待激活
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\App $app
  * @property-read \App\Entities\WechatUser $miniProgramUser
  * @property-read \App\Entities\WechatUser $officialAccountUser
@@ -27,6 +27,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereUserId($value)
+ * @mixin \Eloquent
  */
 class AppUser extends Model implements Transformable
 {

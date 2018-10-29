@@ -15,20 +15,26 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\App
  *
  * @property string $id app id
+ * @property int|null $ownerUserId 应用拥有者
  * @property string $secret 应用secret
  * @property string $name 应用名称
  * @property string $logo 应用logo
+ * @property string $contactName 联系人名称
+ * @property string $contactPhoneNum 联系电话
  * @property string|null $wechatAppId 微信公众号appid
  * @property string|null $miniAppId 小程序appid
  * @property string|null $openAppId api创建open platform appid
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\AppUser[] $appUsers
- * @property-read \App\Entities\MiniProgram|null $miniProgram
- * @property-read \App\Entities\OfficialAccount|null $officialAccount
+ * @property-read \App\Entities\MiniProgram $miniProgram
+ * @property-read \App\Entities\OfficialAccount $officialAccount
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @property-read \App\Entities\User|null $owner
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\User[] $users
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactPhoneNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereId($value)
@@ -36,30 +42,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereMiniAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOpenAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOwnerUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereSecret($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereWechatAppId($value)
  * @mixin \Eloquent
- * @property int|null $ownerUserId 应用拥有者
- * @property string $concatPhoneNum 联系电话
- * @property-read \App\Entities\User|null $owner
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereConcatPhoneNum($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOwnerUserId($value)
- * @property string $contactName 联系人名称
- * @property string $contactPhoneNum 联系电话
-<<<<<<< HEAD
- * @property int $shopsCount
- * @property int $ordersCount
-=======
- * @property  int $shopsCount
- * @property  int $ordersCount
- * @property  int $activeUserCount
- * @property  int $newUserCount
->>>>>>> 1edc7e8b190e9c714d0a98d8ecef2a26a8ab3b46
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactPhoneNum($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  */
 class App extends Model implements Transformable
 {
@@ -98,14 +85,16 @@ class App extends Model implements Transformable
         return $this->hasMany(Shop::class, 'app_id', 'id');
     }
 
-    public function officialAccount(): BelongsTo
+    public function officialAccount(): HasOne
     {
-        return $this->belongsTo(OfficialAccount::class, 'wechat_app_id', 'app_id')->where('type', WECHAT_OFFICIAL_ACCOUNT);
+        return $this->hasOne(OfficialAccount::class, 'wechat_bind_app', 'id')
+            ->where('type', WECHAT_OFFICIAL_ACCOUNT);
     }
 
-    public function miniProgram(): BelongsTo
+    public function miniProgram(): HasOne
     {
-        return $this->belongsTo(MiniProgram::class, 'mini_app_id', 'app_id')->where('type', WECHAT_MINI_PROGRAM);
+        return $this->hasOne(MiniProgram::class, 'wechat_bind_app', 'id')
+            ->where('type', WECHAT_MINI_PROGRAM);
     }
 
 

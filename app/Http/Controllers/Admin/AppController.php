@@ -14,12 +14,16 @@ use App\Entities\Shop;
 use App\Http\Controllers\FileManager\UploadController as Controller;
 use App\Http\Requests\Admin\AppCreateRequest;
 use App\Http\Requests\Admin\AppUpdateRequest;
+use App\Http\Requests\Admin\SetMpConfigRequest;
 use App\Http\Response\JsonResponse;
 use App\Repositories\AppRepository;
 use App\Repositories\FileRepository;
 use App\Http\Requests\Admin\AppLogoImageRequest;
+use App\Repositories\MiniProgramRepository;
+use App\Services\AppManager;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
+use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,11 +35,14 @@ class AppController extends Controller
     //定义repository 处理model层数据
     protected $appRepository  = null;
 
-    public function __construct(FileRepository $fileModel, AppRepository $appRepository, Request $request)
+    protected $miniProgramRepository = null;
+
+    public function __construct(FileRepository $fileModel, AppRepository $appRepository, MiniProgramRepository $miniProgramRepository, Request $request)
     {
         parent::__construct($fileModel);
         $this->appRepository = $appRepository;
-        $this->parseApp($request, $appRepository);
+        $this->miniProgramRepository = $miniProgramRepository;
+        //$this->parseApp($request, $appRepository);
     }
 
     public function uploadLogo(AppLogoImageRequest $request, string $driver = "default")
@@ -102,6 +109,34 @@ class AppController extends Controller
     {
         $result = $this->appRepository->delete($id);
         return $this->response(new JsonResponse(['delete_count' => $result]));
+    }
+
+
+    /**
+     * 设置小程序配置
+     *
+     * @param SetMpConfigRequest $request
+     * @param int $id
+     * @return \Dingo\Api\Http\Response
+     */
+    public function setMpConfig(SetMpConfigRequest $request, int $id = null)
+    {
+        $app= app(AppManager::class);
+        if($id) {
+            $miniProject = $this->miniProgramRepository->update($request->all(), $id);
+            $project = $miniProject->app;
+        }else{
+            $miniProject = $this->miniProgramRepository->create($request->all());
+            $app->currentApp->miniAppId = $miniProject->id;
+            $app->currentApp->save();
+            $project = $app->currentApp;
+        }
+
+        if($project) {
+            return $this->response()->item($project, new AppTransformer());
+        }else {
+            throw new StoreResourceFailedException('小程序配置保存失败', null, null, [], MODEL_SAVE_FAILED);
+        }
     }
 
 }
