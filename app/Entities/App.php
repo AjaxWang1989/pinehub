@@ -27,8 +27,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\MiniProgram|null $miniProgram
- * @property-read \App\Entities\OfficialAccount|null $officialAccount
+ * @property-read \App\Entities\MiniProgram $miniProgram
+ * @property-read \App\Entities\OfficialAccount $officialAccount
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \App\Entities\User|null $owner
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
@@ -85,15 +85,15 @@ class App extends Model implements Transformable
         return $this->hasMany(Shop::class, 'app_id', 'id');
     }
 
-    public function officialAccount(): BelongsTo
+    public function officialAccount(): HasOne
     {
-        return $this->belongsTo(OfficialAccount::class, 'wechat_bind_app', 'id')
+        return $this->hasOne(OfficialAccount::class, 'wechat_bind_app', 'id')
             ->where('type', WECHAT_OFFICIAL_ACCOUNT);
     }
 
-    public function miniProgram(): BelongsTo
+    public function miniProgram(): HasOne
     {
-        return $this->belongsTo(MiniProgram::class, 'wechat_bind_app', 'id')
+        return $this->hasOne(MiniProgram::class, 'wechat_bind_app', 'id')
             ->where('type', WECHAT_MINI_PROGRAM);
     }
 
