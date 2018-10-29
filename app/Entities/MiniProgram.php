@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Services\AppManager;
 use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -87,6 +88,7 @@ class MiniProgram extends WechatConfig
     {
         self::creating(function (MiniProgram $miniProgram) {
             $miniProgram->type = WECHAT_MINI_PROGRAM;
+            $miniProgram->wechatBindApp = app(AppManager::class)->getAppId();
             return $miniProgram;
         });
     }

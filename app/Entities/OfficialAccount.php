@@ -87,6 +87,7 @@ class OfficialAccount extends WechatConfig
     {
         self::creating(function (MiniProgram $miniProgram) {
             $miniProgram->type = WECHAT_OFFICIAL_ACCOUNT;
+            $miniProgram->wechatBindApp = app(AppManager::class)->getAppId();
             return $miniProgram;
         });
     }
