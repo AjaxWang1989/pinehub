@@ -13,22 +13,18 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class ShopMerchandiseStockModify
+ * App\Entities\ShopMerchandiseStockModify
  *
- * @package App\Entities
  * @property int $id
  * @property int $shopId 店铺id
  * @property int $merchandiseId 商品ID
  * @property int|null $productId sku单品ID
- * @property int $PrimaryStockNum 原库存数量
- * @property int $ModifyStockNum 修改后库存数量
- * @property string|null $reason 修改原因
- * @property string|null $comment 备注
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @property \Carbon\Carbon|null $deleteAt
  * @property int $primaryStockNum 原库存数量
  * @property int $modifyStockNum 修改后库存数量
+ * @property string|null $reason 修改原因
+ * @property string|null $comment 备注
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereId($value)

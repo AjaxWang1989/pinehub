@@ -19,8 +19,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $content 积分项目
  * @property int $userId 被积分用户id
  * @property int $settled
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\Customer $scoreUser
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash whereCreatedAt($value)

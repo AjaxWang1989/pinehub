@@ -15,7 +15,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $cardId 卡券card id
  * @property string $cardCode 核销码
  * @property string $appId 应用id
- *  * @property int $isGiveByFriend 是否朋友赠送
+ * @property int $isGiveByFriend 是否朋友赠送
  * @property string|null $friendOpenId 好友微信open id
  * @property int $customerId 客户id
  * @property string|null $openId 微信open id
@@ -23,26 +23,26 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $outerStr 领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加Addcard接口中自定义该字段的字符串值。
  * @property int $active 是否激活
  * @property int $status 0-不可用，1-可用，2-已使用，3-过期
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\App $app
  * @property-read \App\Entities\Card $card
  * @property-read \App\Entities\Customer $customer
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereCardCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUsed($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereFriendOpenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereIsGiveByFriend($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereOpenId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereOuterStr($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUnionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class CustomerTicketCard extends Model implements Transformable
 {

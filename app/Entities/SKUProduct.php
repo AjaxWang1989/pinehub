@@ -20,14 +20,16 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property float $sellPrice 售价
  * @property float $costPrice 成本价格
  * @property float $factoryPrice 工厂价格
+ * @property int $capacity 产能（工厂生产能力）
  * @property int $stockNum 库存
  * @property int $sellNum 已售出数量
  * @property int $status 状态：0-下架 1-上架
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCapacity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCostPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCreatedAt($value)
@@ -43,8 +45,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property int $capacity 产能（工厂生产能力）
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCapacity($value)
  */
 class SKUProduct extends Model implements Transformable
 {

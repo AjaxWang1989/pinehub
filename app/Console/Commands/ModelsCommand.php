@@ -53,7 +53,7 @@ class ModelsCommand extends Command
             }
         }
         $propertiesTags = [];
-        dd($this->properties, $this->methods);
+
         foreach ($this->properties as $name => $property) {
             $name = "\$$name";
             if (in_array($name, $properties)) {
@@ -76,10 +76,10 @@ class ModelsCommand extends Command
 
             $propertiesTags[$name] = true;
             $tagLine = trim("@{$attr} {$property['type']} {$name} {$property['comment']}");
-
             $tag = Tag::createInstance($tagLine, $phpdoc);
             $phpdoc->appendTag($tag);
         }
+
 
         ksort($this->methods);
 

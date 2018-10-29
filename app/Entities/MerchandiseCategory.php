@@ -14,8 +14,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $id
  * @property int $categoryId 分类id
  * @property int $merchandiseId 产品id
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\Category $category
  * @property-read \App\Entities\Merchandise $merchandise

@@ -22,8 +22,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $encrypt 是否加密
  * @property string|null $encryptKey 密钥
  * @property string|null $encryptMethod 加密算法
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereBucket($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\File whereDriver($value)

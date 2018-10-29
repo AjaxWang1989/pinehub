@@ -12,35 +12,27 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\PaymentActivity
  *
  * @property int $id
- * @property int $activityId 活动id
- * @property int ticketId 优惠券id
- * @property string|null $discount 折扣
- * @property string|null $cost 抵用金额
- * @property string|null $leastAmount 最低消费
- * @property int  $score 积分
+ * @property int $activityId 活动ID
  * @property string $type 支付活动方式：满减送 PAY_FULL/支付礼包 PAY_GIFT
- * @property \Carbon\Carbon $beginAt 开始时间
- * @property \Carbon\Carbon $endAt 结束时间
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereBeginAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereEndAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereGift($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property int|null $ticketId 优惠券id
+ * @property float $discount 折扣
+ * @property float $cost 抵用金额
+ * @property float $leastAmount 最低消费
+ * @property int $score 积分
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\Activity $activity
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereDiscount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereLeastAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereScore($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereTicketId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class PaymentActivity extends Model implements Transformable
 {
@@ -63,7 +55,6 @@ class PaymentActivity extends Model implements Transformable
         'end_at'
     ];
 
-    protected $table = 'payment_activity';
     /**
      * The attributes that are mass assignable.
      *

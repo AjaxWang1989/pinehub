@@ -15,11 +15,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $name 规则名称
  * @property int $focusReply 关注回复
  * @property string $type 类型
- * @property array $prefectMatchKeywords 全匹配关键字数组
- * @property array $semiMatchKeywords 半匹配关键字数组
+ * @property array|null $prefectMatchKeywords 全匹配关键字数组
+ * @property array|null $semiMatchKeywords 半匹配关键字数组
  * @property string $content 回复消息内容
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereCreatedAt($value)

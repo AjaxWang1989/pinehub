@@ -18,8 +18,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $icon 图标
  * @property string $name 分类名称
  * @property int $parentId 分类父级
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Category[] $children
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Merchandise[] $merchandises

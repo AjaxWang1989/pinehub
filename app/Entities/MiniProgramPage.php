@@ -7,14 +7,13 @@ use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
 /**
- * Class MiniProgramPage.
+ * App\Entities\MiniProgramPage
  *
- * @package namespace App\Entities;
  * @property int $id
  * @property int $miniProgramTemplateId 小程序模版id
  * @property string $page 小程序页面路径
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramPage whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramPage whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramPage whereMiniProgramTemplateId($value)

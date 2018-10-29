@@ -14,12 +14,15 @@ use App\Entities\Shop;
 use App\Http\Controllers\FileManager\UploadController as Controller;
 use App\Http\Requests\Admin\AppCreateRequest;
 use App\Http\Requests\Admin\AppUpdateRequest;
+use App\Http\Requests\Admin\SetMpConfigRequest;
 use App\Http\Response\JsonResponse;
 use App\Repositories\AppRepository;
 use App\Repositories\FileRepository;
 use App\Http\Requests\Admin\AppLogoImageRequest;
+use App\Services\AppManager;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
+use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -102,6 +105,24 @@ class AppController extends Controller
     {
         $result = $this->appRepository->delete($id);
         return $this->response(new JsonResponse(['delete_count' => $result]));
+    }
+
+
+    /**
+     * 设置小程序配置
+     *
+     * @param SetMpConfigRequest $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function setMpConfig(SetMpConfigRequest $request)
+    {
+        $app= app(AppManager::class);
+        $result = $app->miniProgram()->save($request->all());
+        if($result) {
+            return $this->response()->item($app, new AppTransformer());
+        }else {
+            throw new StoreResourceFailedException('小程序配置保存失败', null, null, [], MODEL_SAVE_FAILED);
+        }
     }
 
 }

@@ -18,12 +18,13 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $cardInfo 卡券信息
  * @property int $status 0-审核中 1-审核通过 2-审核未通过
  * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
- * @property \Carbon\Carbon $beginAt 开始日期
- * @property \Carbon\Carbon $endAt 结束时间
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $beginAt 开始日期
+ * @property \Illuminate\Support\Carbon|null $endAt 结束时间
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\App|null $app
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Ticket whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Ticket whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Ticket whereBeginAt($value)
@@ -39,7 +40,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Ticket whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Ticket whereWechatAppId($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
  */
 class Ticket extends Card
 {

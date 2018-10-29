@@ -18,8 +18,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $cityId 城市ID
  * @property string $code 区县编码
  * @property string $name 区县名称
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\City $city
  * @property-read \App\Entities\Country $country
  * @property-read \App\Entities\Province $province

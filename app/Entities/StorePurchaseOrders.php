@@ -28,23 +28,23 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
  * @property int|null $shopId 店铺id
- * @property int|null $merchandiseNum 此订单商品总数量
+ * @property int|null $merchandiseNum 此订单商品数量总数
  * @property float $totalAmount 应付款
  * @property float $paymentAmount 实际付款
  * @property float $discountAmount 优惠价格
- * @property \Carbon\Carbon|null $paidAt 支付时间
- * @property string $payType 支付方式默认微信支付
+ * @property \Illuminate\Support\Carbon|null $paidAt 支付时间
+ * @property int $payType 支付方式默认微信支付:0-未知，1-支付宝，2-微信支付
  * @property int $status 订单状态：1-待发货 2-配送中 3-已完成 4-申请中 5-退货中 6-已拒绝
  * @property int $cancellation 取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消
- * @property \Carbon\Carbon|null $signedAt 签收时间
+ * @property \Illuminate\Support\Carbon|null $signedAt 签收时间
  * @property string|null $receiverCity 收货城市
  * @property string|null $receiverDistrict 收货人所在城市区县
- * * @property string|null $receiverName 收货人姓名
+ * @property string|null $receiverName 收货姓名
  * @property string|null $receiverAddress 收货地址
  * @property string|null $receiverMobile 收货人电话
  * @property string|null $sendTime 配送时间
- * @property string|null $comment 配送时间
- * @property \Carbon\Carbon|null $consignedAt 发货时间
+ * @property string|null $comment 备注
+ * @property \Illuminate\Support\Carbon|null $consignedAt 发货时间
  * @property int $type 订单类型：1-进货订单 2-退货订单
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
  * @property int $scoreSettle 积分是否已经结算
@@ -53,55 +53,49 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $postName 快递公司名称
  * @property string|null $transactionId 支付交易流水
  * @property string|null $ip 支付终端ip地址
- * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功
+ * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
  *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \App\Entities\Customer|null $customer
- * @property-read \App\Entities\Member|null $member
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCancellation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereConsignedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDiscountAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereMemberId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereOpenId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaidAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePayType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaymentAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostNo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverCity($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverDistrict($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereScoreSettle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereShopId($shopId)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSignedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTotalAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTradeStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereTransactionId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWechatAppId($value)
- * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItemMerchandise[] $orderItemMerchandises
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderPurchaseItems[] $orderItems
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereAliAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereCancellation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereConsignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereDiscountAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereMerchandiseNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereOpenId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders wherePaidAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders wherePayType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders wherePaymentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders wherePostCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders wherePostName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders wherePostNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders wherePostType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereReceiverAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereReceiverCity($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereReceiverDistrict($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereReceiverMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereReceiverName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereScoreSettle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereSendTime($value)
- *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereShopId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereSignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereTradeStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereTransactionId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereWechatAppId($value)
+ * @mixin \Eloquent
  */
 
 

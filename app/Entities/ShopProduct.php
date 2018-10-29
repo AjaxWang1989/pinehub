@@ -18,8 +18,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $stockNum 库存
  * @property int $sellNum 销量
  * @property int $status 1-上架 0-下架
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Shop $shop

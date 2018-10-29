@@ -27,31 +27,33 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property string|null $unionId union id
  * @property string $platformOpenId 三方平台用户唯一标志
  * @property string|null $sessionKey session key
- * @property \Carbon\Carbon $sessionKeyExpiresAt session 过期
+ * @property \Illuminate\Support\Carbon $sessionKeyExpiresAt session 过期
  * @property string|null $avatar 头像
  * @property string|null $country 国家
  * @property string|null $province 省份
  * @property string|null $city 城市
  * @property string|null $nickname 用户昵称
  * @property string $sex 性别
- * @property array $privilege 微信特权信息
+ * @property array|null $privilege 微信特权信息
  * @property int $isStudentCertified 是否是学生
  * @property int $userType 用户类型（1/2） 1代表公司账户2代表个人账户
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户
+ * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
  *             B代表被冻结账户 W代表已注册，未激活的账户
  * @property int $isCertified 是否通过实名认证。T是通过 F是没有实名认证。
  * @property int $canUseScore 用户可用积分
  * @property int $score 用户积分
  * @property int $totalScore 用户总积分
  * @property int $orderCount 订单数
- * @property string|null $channel 渠道来源
- * @property string|null $registerChannel 注册渠道
+ * @property int $channel 渠道来源 0-未知 1-微信 2-支付宝
+ * @property int $registerChannel 注册渠道:0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP
  * @property array $tags 标签
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $ticketRecords
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereCanUseScore($value)

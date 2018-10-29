@@ -16,11 +16,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $score 增加的积分数
  * @property int $totalScore 累计积分数
  * @property int $type 类型 0-通用规则 type & 8 == true 特殊规则
- * @property \Carbon\Carbon $expiresAt 过去日期，null表示永远有效
+ * @property \Illuminate\Support\Carbon $expiresAt 过去日期，null表示永远有效
  * @property int $noticeUser 是否给用户发送积分通知
  * @property array $rule 积分自定义规则：{"focus": true, "order_count": 100, "order_amount"" 1000, "merchandise":null}
- * @property \Carbon\Carbon|null $createdAt
- * @property \Carbon\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $createdAt
+ * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereExpiresAt($value)
@@ -33,7 +33,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property \Illuminate\Support\Carbon|null $createdAt
  */
 class ScoreRule extends Model implements Transformable
 {

@@ -15,16 +15,14 @@ use Prettus\Repository\Traits\TransformableTrait;
 
 
 /**
- * App\Entities\App
+ * App\Entities\FeedBackMessage
  *
- * @property string $customerId 用户id
- * @property string $openid 微信open id或支付宝user ID
- * @property string $comment 反馈内容
- * @property string $mobile 电话
- * @property string $appID 系统app_id
  * @property int $id
- * @property string $openId 微信open id或支付宝user ID
+ * @property int|null $customerId 用户id
+ * @property string|null $openId 微信open id或支付宝user ID
  * @property string|null $appId 系统appid
+ * @property string|null $comment 反馈内容
+ * @property string|null $mobile 电话
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereAppId($value)
