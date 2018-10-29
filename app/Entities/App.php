@@ -87,13 +87,13 @@ class App extends Model implements Transformable
 
     public function officialAccount(): BelongsTo
     {
-        return $this->belongsTo(OfficialAccount::class, 'wechat_bind_app', 'app_id')
+        return $this->belongsTo(OfficialAccount::class, 'wechat_bind_app', 'id')
             ->where('type', WECHAT_OFFICIAL_ACCOUNT);
     }
 
     public function miniProgram(): BelongsTo
     {
-        return $this->belongsTo(MiniProgram::class, 'wechat_bind_app', 'app_id')
+        return $this->belongsTo(MiniProgram::class, 'wechat_bind_app', 'id')
             ->where('type', WECHAT_MINI_PROGRAM);
     }
 
