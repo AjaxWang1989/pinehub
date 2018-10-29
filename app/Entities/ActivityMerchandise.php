@@ -38,7 +38,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereStartAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Merchandise[] $merchandise
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereDescribe($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereSellNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereSellPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereTags($value)
  */
 class ActivityMerchandise extends Model implements Transformable
 {

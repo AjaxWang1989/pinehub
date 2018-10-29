@@ -67,6 +67,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Seller whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Seller whereVipLevel($value)
  * @mixin \Eloquent
+ * @property float|null $balance 用户余额
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
+ * @property-read \App\Entities\User $shop
  */
 class Seller extends User
 {

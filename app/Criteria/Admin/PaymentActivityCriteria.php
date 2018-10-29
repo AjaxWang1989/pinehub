@@ -2,22 +2,22 @@
 
 namespace App\Criteria\Admin;
 
-use App\Entities\OrderGift;
+use App\Entities\PaymentActivity;
 use App\Services\AppManager;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Class OrderGiftCriteria.
+ * Class PaymentActivityCriteria.
  *
  * @package namespace App\Criteria\Admin;
  */
-class OrderGiftCriteria implements CriteriaInterface
+class PaymentActivityCriteria implements CriteriaInterface
 {
     /**
      * Apply criteria in query repository
      *
-     * @param OrderGift    $model
+     * @param PaymentActivity    $model
      * @param RepositoryInterface $repository
      *
      * @return mixed

@@ -42,7 +42,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereUserType($value)
- * @mixin \Eloquent
  */
 class AliUser extends Model implements Transformable
 {

@@ -33,6 +33,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreRule whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property \Illuminate\Support\Carbon|null $createdAt
  */
 class ScoreRule extends Model implements Transformable
 {

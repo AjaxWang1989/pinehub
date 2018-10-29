@@ -96,6 +96,12 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWechatAppId($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItemMerchandise[] $orderItemMerchandises
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereMerchandiseNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereReceiverMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereReceiverName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereSendTime($value)
+ *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
  */
 
 

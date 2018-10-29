@@ -48,10 +48,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereOwnerUserId($value)
  * @property string $contactName 联系人名称
  * @property string $contactPhoneNum 联系电话
- * @property  int $shopsCount
- * @property  int $ordersCount
+ * @property int $shopsCount
+ * @property int $ordersCount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactPhoneNum($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  */
 class App extends Model implements Transformable
 {

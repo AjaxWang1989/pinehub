@@ -65,6 +65,19 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $paidAt 支付时间
+ * @property-read \App\Entities\StorePurchaseOrders $PurchaseOrder
+ * @property-read \App\Entities\Merchandise|null $merchandise
+ * @property-read \App\Entities\SKUProduct|null $skuProduct
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereMainImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereMerchandiseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereOriginPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems wherePaidAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereQuality($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereSellPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereSkuProductId($value)
  */
 
 

@@ -66,6 +66,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager whereUserName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager whereVipLevel($value)
  * @mixin \Eloquent
+ * @property float|null $balance 用户余额
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  */
 class ShopManager extends User
 {

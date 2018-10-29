@@ -43,6 +43,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereStockNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $capacity 产能（工厂生产能力）
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCapacity($value)
  */
 class SKUProduct extends Model implements Transformable
 {

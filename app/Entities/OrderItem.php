@@ -60,6 +60,18 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereTotalAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $paidAt 支付时间
+ * @property-read \App\Entities\SKUProduct|null $skuProduct
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereActivityMerchandisesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCostPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereMainImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereMerchandiseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereOriginPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem wherePaidAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereQuality($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereSellPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereSkuProductId($value)
  */
 class OrderItem extends Model implements Transformable
 {

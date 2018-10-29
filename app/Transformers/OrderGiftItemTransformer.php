@@ -2,8 +2,9 @@
 
 namespace App\Transformers;
 
+use App\Repositories\OrderRepository;
 use League\Fractal\TransformerAbstract;
-use App\Entities\OrderGift as OrderGiftItem;
+use App\Entities\Activity;
 
 /**
  * Class OrderGiftItemTransformer.
@@ -15,25 +16,21 @@ class OrderGiftItemTransformer extends TransformerAbstract
     /**
      * Transform the OrderGiftItem entity.
      *
-     * @param OrderGiftItem $model
+     * @param Activity $model
      *
      * @return array
      */
-    public function transform(OrderGiftItem $model)
+    public function transform(Activity $model)
     {
         return [
             'id'         => (int) $model->id,
-            'app_id' => $model->appId,
-            /* place your other model properties here */
-            'name' => $model->name,
-            'type' => $model->type,
-            'status' => $model->status,
-            'begin_at' => $model->beginAt,
-            'end_at' => $model->endAt,
-            'gift' => $model->gift,
-            'tickets' => $model->tickets(),
-            'created_at' => $model->createdAt,
-            'updated_at' => $model->updatedAt
+            'name'       => $model->title,
+            'start_at'   => $model->startAt,
+            'end_at'     => $model->endAt,
+            'status'     => $model->status,
+            'order_count' => $model->order_count,
+            'customer_count' => $model->customer_count,
+            'money'      =>$model->orders->sum('total_amount')
         ];
     }
 }

@@ -21,8 +21,18 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Carbon\Carbon $expiresAt 临时素材过期日期
  * @property \Carbon\Carbon|null $createdAt
  * @property \Carbon\Carbon|null $updatedAt
- *
  * @package namespace App\Entities;
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereArticles($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereExpiresAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereIntroduction($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereIsTmp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereMediaId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereUrl($value)
  */
 class WechatMaterial extends Model implements Transformable
 {

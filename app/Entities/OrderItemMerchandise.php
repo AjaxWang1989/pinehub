@@ -50,6 +50,25 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereSkuProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string|null $appId 系统appid
+ * @property float $totalAmount 应付
+ * @property float $discountAmount 优惠
+ * @property float $paymentAmount 实付
+ * @property string|null $paidAt 支付时间
+ * @property int $status 订单状态：0-订单取消 10-已确定 20-已支付 30-已发货 40-已完成
+ * @property string|null $signedAt 签收时间
+ * @property string|null $consignedAt 发货时间
+ * @property string|null $deletedAt
+ * @property-read \App\Entities\Customer|null $customer
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereConsignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereDeletedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereDiscountAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise wherePaidAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise wherePaymentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereSignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItemMerchandise whereTotalAmount($value)
  */
 class OrderItemMerchandise extends Model implements Transformable
 {
