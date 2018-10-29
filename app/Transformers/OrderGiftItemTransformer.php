@@ -24,7 +24,7 @@ class OrderGiftItemTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-            'name'       => $model->title,
+            'title'       => $model->title,
             'start_at'   => $model->startAt,
             'end_at'     => $model->endAt,
             'status'     => $model->status,

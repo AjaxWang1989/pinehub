@@ -20,6 +20,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string $title 活动名称
  * @property string $posterImg 海报图片
  * @property string $description 详情
+ * @property string $type NEW_PRODUCT PAYMENT
  * @property int $status 0 未开始 1 进行中 2 已结束
  * @property string|null $startAt 活动开始时间
  * @property string|null $endAt 活动结束时间
@@ -50,8 +51,12 @@ class Activity extends Model implements Transformable
     const INVALID = 3;
 
     const NEW_PRODUCT_ACTIVITY = 'NEW_PRODUCT';
-    const PAY_FULL = "PAY_FULL";
-    const PAY_GIFT = "PAY_GIFT";
+    const PAYMENT_ACTIVITY = "PAYMENT";
+
+    protected $casts = [
+        'start_at' => 'date',
+        'end_at' => 'date',
+    ];
 
     /**
      * The attributes that are mass assignable.
