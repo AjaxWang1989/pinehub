@@ -67,18 +67,32 @@ class AppController extends Controller
             ->startOfDay()
             ->subDay(7);
 
+        $start = Carbon::today(config('app.timezone'))
+            ->startOfDay()
+            ->subDay(1);
+        $end = $start->copy()->endOfDay();
+
         $item = $this->appRepository
-            ->with(['users' => function (HasMany $users) use($time){
-                return $users->where('last_login_at', '>=', $time)->whereHas('roles', function (Builder $roles) {
-                    return $roles->where('slug', Role::MEMBER);
-                });
-            }])
+            ->with(['officialAccount', 'miniProgram'])
             ->withCount([
                 'shops' => function (Builder $shops) {
                     return $shops->where('status', '<>', Shop::STATUS_WAIT);
                 },
                 'orders' => function (Builder $orders) use($time){
                     return $orders->where('paid_at', '>=', $time);
+                },
+                'users as new_user_count' => function(Builder $users) use($start, $end){
+                    return $users->where('last_login_at', '>=', $start)
+                        ->where('last_login_at', '<', $end)
+                        ->whereHas('roles', function (Builder $roles) {
+                        return $roles->where('slug', Role::MEMBER);
+                    });
+                },
+                'users as active_user_count' => function(Builder $users) use($time){
+                    return $users->where('last_login_at', '>=', $time)
+                        ->whereHas('roles', function (Builder $roles) {
+                            return $roles->where('slug', Role::MEMBER);
+                        });
                 }])->find($id);
 
         return $this->response()->item($item, new AppTransformer());
