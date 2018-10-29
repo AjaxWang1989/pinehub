@@ -17,5 +17,5 @@ interface UserTicketRepository extends RepositoryInterface
      * @param string $shoppingCartAmount
      * @return mixed
      */
-    public function userTickets(int $status,int $userId,string $shoppingCartAmount);
+    public function userTickets(int $status, int $userId, string $shoppingCartAmount);
 }

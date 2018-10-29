@@ -53,7 +53,7 @@ class ModelsCommand extends Command
             }
         }
         $propertiesTags = [];
-
+        dd($this->properties, $this->methods);
         foreach ($this->properties as $name => $property) {
             $name = "\$$name";
             if (in_array($name, $properties)) {
