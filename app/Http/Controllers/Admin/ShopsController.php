@@ -100,7 +100,7 @@ class ShopsController extends Controller
                     return $query;
                 }])
             ->paginate($request->input('limit', PAGE_LIMIT));
-        return $shops;
+//        return $shops;
         return $this->response()->paginator($shops, new ShopItemTransformer());
     }
 
