@@ -153,7 +153,7 @@ class AppController extends Controller
             ->groupBy('paid_time')
             ->get();
         $transformer = new SevenDaysStatisticsTransformer();
-        return $this->response($transformer->transform($result));//->item($result, new SevenDaysStatisticsTransformer());
+        return $this->response(new JsonResponse($transformer->transform($result)));//->item($result, new SevenDaysStatisticsTransformer());
     }
 
 }
