@@ -26,16 +26,17 @@ class SevenDaysStatisticsTransformer extends TransformerAbstract
             'this_week' => []
         ];
         $collection->map(function ($item) use(&$statistics){
+            $item['paid_time'] = $item['paid_time'] == 0 ? 7 : $item['paid_time'];
             if($this->isLastWeek($item['paid_at'])) {
-                while (count($statistics['last_week']) - 1 < $item['paid_time']) {
+                while (count($statistics['last_week']) < $item['paid_time']) {
                     array_push($statistics['last_week'], 0);
                 }
-                $statistics['last_week'][$item['paid_time']] = $item['count'];
+                $statistics['last_week'][$item['paid_time'] - 1] = $item['count'];
             }else{
-                while (count($statistics['this_week']) - 1 < $item['paid_time']) {
+                while (count($statistics['this_week'])  < $item['paid_time']) {
                     array_push($statistics['this_week'], 0);
                 }
-                $statistics['this_week'][$item['paid_time']] = $item['count'];
+                $statistics['this_week'][$item['paid_time'] - 1] = $item['count'];
             }
         });
         if(count($statistics['last_week']) < 7) {
