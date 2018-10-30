@@ -152,7 +152,6 @@ class AppController extends Controller
             ->where('paid_at', '<', $end)
             ->groupBy('paid_time')
             ->get();
-        dd($result);
         return $this->response()->item($result, new SevenDaysStatisticsTransformer());
     }
 
