@@ -148,7 +148,7 @@ class AppController extends Controller
         $start = $end->copy()->startOfWeek()->subDay(7);
         $project = app(AppManager::class)->currentApp;
         $result = $project->orders()->select([DB::raw('count(*) as count'), DB::raw('DATE_FORMAT(`paid_at`, "%w") as paid_time'),
-            DB::raw('DATE_FORMAT(`paid_at`, "%Y-%m-%d") as paid_date', 'paid_at')])
+            DB::raw('DATE_FORMAT(`paid_at`, "%Y-%m-%d") as paid_date'), 'paid_at'])
             ->where('paid_at', '>=', $start)
             ->where('paid_at', '<', $end)
             ->groupBy('paid_date')
