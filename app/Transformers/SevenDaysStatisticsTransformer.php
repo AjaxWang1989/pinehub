@@ -44,9 +44,8 @@ class SevenDaysStatisticsTransformer extends TransformerAbstract
             }
 
         }
-
-        if(count($statistics['this_week']) === 0) {
-            $day = Carbon::now(config('app.timezone'))->dayOfWeek + 1;
+        $day = Carbon::now(config('app.timezone'))->dayOfWeekIso;
+        if(count($statistics['this_week']) < $day) {
             for($i = 0; $i < $day; $i ++) {
                 array_push($statistics['this_week'], 0);
             }
