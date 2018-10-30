@@ -41,8 +41,9 @@ class OrderCreateRequest extends FormRequest
             'type' => Rule::in(Order::OFF_LINE_PAY,Order::ORDERING_PAY,Order::E_SHOP_PAY,Order::SITE_SELF_EXTRACTION,Order::SITE_DISTRIBUTION,Order::ACTIVITY_PAY),
             'send_time' => 'string',
             'card_id' => 'string',
-            'store_id' => 'int',
-            'activity_merchandises_id' =>'int'
+            'store_id' => 'integer',
+            'activity_id' => 'integer',
+            'activity_merchandises_id' =>'integer'
         ];
     }
 
@@ -56,8 +57,9 @@ class OrderCreateRequest extends FormRequest
             'type' => 'type不在给定的数字中',
             'send_time.string' => '配送时间不是正常时间格式',
             'card_id.string' => '优惠券id字符串类型',
-            'store_id.int' => '店铺id不是整型',
-            'activity_merchandises_id' => '活动商品id不是整型'
+            'store_id.integer' => '店铺id不是整型',
+            'activity_id.integer' => '活动id不是整型',
+            'activity_merchandises_id.integer' => '活动商品id不是整型'
         ];
     }
 }

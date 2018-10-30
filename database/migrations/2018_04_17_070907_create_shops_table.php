@@ -28,6 +28,7 @@ class CreateShopsTable extends Migration
             $table->point('position')->default(null)->comment('店铺定位');
             $table->string('description', 64000)->nullable()->comment('店铺描述');
             $table->string('geo_hash', 16)->nullable()->comment('位置hash编码');
+            $table->float('balance', 12, 2)->default(0)->comment('店铺余额');
             $table->float('total_amount', 12, 2)->default(0)->comment('店铺总计营业额');
             $table->float('today_amount', 12, 2)->default(0)->comment('今日营业额');
 

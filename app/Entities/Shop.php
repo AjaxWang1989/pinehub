@@ -30,6 +30,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property mixed $position 店铺定位
  * @property string|null $description 店铺描述
  * @property string|null $geoHash 位置hash编码
+ * @property float $balance 店铺余额
  * @property float $totalAmount 店铺总计营业额
  * @property float $todayAmount 今日营业额
  * @property float $totalOffLineAmount 店铺预定总计营业额
@@ -133,7 +134,7 @@ class Shop extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'user_id', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'position', 'total_amount', 'today_amount',
+        'user_id', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'position','balance' ,'total_amount', 'today_amount',
         'total_off_line_amount', 'today_off_line_amount', 'total_ordering_amount', 'today_ordering_amount', 'total_ordering_num',
         'today_ordering_num', 'total_order_write_off_num', 'total_order_write_off_num', 'total_order_write_off_amount',
         'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code', 'app_id', 'wechat_app_id', 'name', 'ali_app_id',
