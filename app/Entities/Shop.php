@@ -201,9 +201,9 @@ class Shop extends Model implements Transformable
         return $this->hasMany(OrderItem::class, 'shop_id', 'id');
     }
 
-    public function orders() : BelongsToMany
+    public function orders() : HasMany
     {
-        return $this->belongsToMany(Order::class, 'order_items', 'shop_id', 'order_id');
+        return $this->hasMany(Order::class, 'shop_id', 'id');
     }
 
     public function waitWriteOffCustomers()
