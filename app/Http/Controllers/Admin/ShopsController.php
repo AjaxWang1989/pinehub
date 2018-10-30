@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entities\App;
+use App\Entities\Merchandise;
 use App\Entities\Order;
 use App\Entities\Role;
 use App\Entities\Shop;
@@ -97,7 +98,7 @@ class ShopsController extends Controller
                         ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
                 },
                 'shopMerchandises' => function (Builder $query) {
-                    return $query;
+                    return $query->whereNotNull('status');
                 }])
             ->paginate($request->input('limit', PAGE_LIMIT));
 //        return $shops;
