@@ -37,7 +37,7 @@ class ShopUpdateRequest extends FormRequest
             'address'        => ['string'],
             'lng'            => ['numeric'],
             'lat'            => [ 'numeric'],
-            'manager_mobile' => ['regex:'.MOBILE_PATTERN, 'not_exists:users,mobile'],
+            'manager_mobile' => ['regex:'.MOBILE_PATTERN],
             'manager_name'   => ['string', 'max:16'],
             'status'         => ['integer', Rule::in(Shop::STATUS_WAIT,Shop::STATUS_OPEN,Shop::STATUS_CLOSE,Shop::STATUS_LOCK)]
         ];
