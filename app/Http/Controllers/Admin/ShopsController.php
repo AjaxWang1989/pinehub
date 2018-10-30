@@ -93,7 +93,7 @@ class ShopsController extends Controller
                     $start = Carbon::create($year, $month, 1, 0, 0, 0, config('app.timezone'));
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
                         ->where('paid_at', '>=', $start)
-                        ->where('paid_at', '>=', $start->endOfMonth()->endOfDay())
+                        ->where('paid_at', '>=', $start->copy()->endOfMonth()->endOfDay())
                         ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
                 },
                 'shopMerchandises' => function (Builder $query) {
