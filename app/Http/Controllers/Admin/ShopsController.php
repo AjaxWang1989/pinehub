@@ -70,7 +70,7 @@ class ShopsController extends Controller
      */
     public function index(Request $request)
     {
-        $shops = $this->repository->with(['country', 'province', 'city', 'shopManager'])
+        $shops = $this->repository->with(['country', 'province', 'city', 'county', 'shopManager'])
             ->withCount([
                 'orders' => function (Builder $query) {
                     return $query->whereNotNull('paid_at');
@@ -90,12 +90,10 @@ class ShopsController extends Controller
                     $now = Carbon::now(config('app.timezone'));
                     $month = $now->month - 1;
                     $year = $now->year;
-                    $days = $now->lastOfMonth()->daysInMonth;
+                    $start = Carbon::create($year, $month, 1, 0, 0, 0, config('app.timezone'));
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->where('paid_at', '>=', Carbon::create($year, $month, 1, 0, 0, 0,
-                            config('app.timezone')))
-                        ->where('paid_at', '>=', Carbon::create($year, $month, $days, 23, 59, 59,
-                            config('app.timezone')))
+                        ->where('paid_at', '>=', $start)
+                        ->where('paid_at', '>=', $start->endOfMonth()->endOfDay())
                         ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
                 },
                 'shopMerchandises' => function (Builder $query) {
