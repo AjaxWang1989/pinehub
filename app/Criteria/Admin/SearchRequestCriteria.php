@@ -35,14 +35,7 @@ class SearchRequestCriteria implements CriteriaInterface
         $fields = [];
         foreach ($searchJson as $key => $value) {
             if(isset($fieldsSearchable[$key])) {
-                if(isset($value['opt']) && $value['opt'] === $fieldsSearchable[$key]) {
-                    $fields[$key] = $value;
-                }else{
-                    $fields[$key] = [
-                        'opt' => $fieldsSearchable[$key],
-                        'value' => $value
-                    ];
-                }
+                $fields[$key] = $value;
             }
         }
         Log::info('search fields', [$fields, $searchJson]);
