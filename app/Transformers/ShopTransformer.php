@@ -34,6 +34,7 @@ class ShopTransformer extends TransformerAbstract
             'city_id' => $model->cityId,
             'county_id' => $model->countyId,
             'address' => $model->address,
+            'position' => $model->position,
             'manager'  => $model->shopManager->only(['id', 'user_name', 'nickname', 'mobile', 'real_name']),
             'manager_name' => $model->shopManager->realName,
             'manager_mobile' => $model->shopManager->mobile,
