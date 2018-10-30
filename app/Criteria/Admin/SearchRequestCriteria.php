@@ -34,11 +34,10 @@ class SearchRequestCriteria implements CriteriaInterface
         $fields = [];
         foreach ($searchJson as $key => $value) {
             if(isset($fieldsSearchable[$key])) {
-                $fields[$key] = $value;
+                $fields[$key] = [$fieldsSearchable[$key], $value];
             }
         }
         $model = $this->parseSearch($fields, $model);
-        dd($fields);
         return $model;
     }
 
