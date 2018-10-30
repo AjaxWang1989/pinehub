@@ -29,7 +29,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $cityId 城市id
  * @property int $countyId 所属区县id
  * @property string|null $address 详细地址
- * @property mixed $position 店铺定位
+ * @property Point $position 店铺定位
  * @property string|null $description 店铺描述
  * @property string|null $geoHash 位置hash编码
  * @property float $balance 店铺余额
