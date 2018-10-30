@@ -186,7 +186,7 @@ class ShopsController extends Controller
      */
     public function show($id)
     {
-        $shop = $this->repository->find($id);
+        $shop = $this->repository->with(['shopManager'])->find($id);
         return $this->response()->item($shop, new ShopTransformer());
 
     }
