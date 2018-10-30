@@ -188,10 +188,13 @@ class SearchRequestCriteria implements CriteriaInterface
             case '>':
             case '>=':
             case '<':
-            case '<=':
+            case '<=': {
+                $query->where($key, $operator, $value);
+                break;
+            }
             case 'like':
             case 'ilike':   {
-                $query->where($key, $operator, $value);
+                $query->where($key, $operator, "%{$value}%");
                 break;
             }
         }
