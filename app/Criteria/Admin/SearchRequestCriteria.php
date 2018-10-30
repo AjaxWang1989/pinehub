@@ -38,7 +38,7 @@ class SearchRequestCriteria implements CriteriaInterface
             }
         }
         $model = $this->parseSearch($fields, $model);
-        dd($model->get());
+        dd($fields);
         return $model;
     }
 
