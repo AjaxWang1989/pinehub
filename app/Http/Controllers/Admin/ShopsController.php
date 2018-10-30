@@ -87,12 +87,13 @@ class ShopsController extends Controller
                         ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
                 },
                 'orders as last_month_amount' => function (Builder $query) {
-                    $month = Carbon::now(config('app.timezone'))->month - 1;
+                    $now = Carbon::now(config('app.timezone'));
+                    $month = $now->month - 1;
+                    $year = $now->year;
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->where('paid_at', '>=', Carbon::now(config('app.timezone'))
-                            ->month($month)->startOfMonth()->startOfDay())
-                        ->where('paid_at', '>=', Carbon::now(config('app.timezone'))
-                            ->month($month)->endOfMonth()->endOfDay())
+                        ->where('paid_at', '>=', Carbon::create($year, $month)
+                            ->startOfMonth()->startOfDay())
+                        ->where('paid_at', '>=', Carbon::create($year, $month)->endOfMonth()->endOfDay())
                         ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
                 },
                 'shopMerchandises' => function (Builder $query) {
