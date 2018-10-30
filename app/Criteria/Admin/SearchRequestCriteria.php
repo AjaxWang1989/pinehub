@@ -132,7 +132,7 @@ class SearchRequestCriteria implements CriteriaInterface
 
             }else{
                 $item = $value;
-                if($item['join']) {
+                if(isset($item['join'])) {
                     if(!$relation) {
                         return $this->addConditionInQuery($item, $query, $key);
                     }else{
