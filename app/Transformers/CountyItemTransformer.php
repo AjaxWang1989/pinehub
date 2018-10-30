@@ -29,7 +29,8 @@ class CountyItemTransformer extends TransformerAbstract
             'province'   => $model->province->name,
             'country'    => $model->country->name,
             /* place your other model properties here */
-
+            'province_id' => $model->provinceId,
+            'city_id' => $model->cityId,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];
