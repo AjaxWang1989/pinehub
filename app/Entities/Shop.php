@@ -5,6 +5,7 @@ namespace App\Entities;
 use App\Entities\Traits\ModelAttributesAccess;
 use App\Services\AppManager;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -140,6 +141,10 @@ class Shop extends Model implements Transformable
         'today_ordering_num', 'total_order_write_off_num', 'total_order_write_off_num', 'total_order_write_off_amount',
         'total_order_write_off_amount', 'status', 'geo_hash', 'description', 'code', 'app_id', 'wechat_app_id', 'name', 'ali_app_id',
         'mt_app_id','start_at','end_at'
+    ];
+
+    protected $casts = [
+        'position' => Point::class
     ];
 
     protected $spatialFields = [
