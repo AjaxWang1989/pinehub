@@ -9,6 +9,7 @@
 namespace App\Transformers;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 
 class SevenDaysStatisticsTransformer extends TransformerAbstract
@@ -47,6 +48,7 @@ class SevenDaysStatisticsTransformer extends TransformerAbstract
                 array_push($statistics['this_week'], 0);
             }
         }
+        Log::info('statistics', $statistics);
         return $statistics;
     }
 
