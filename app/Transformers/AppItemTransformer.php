@@ -30,8 +30,8 @@ class AppItemTransformer extends TransformerAbstract
             'wechat_app_id' => $model->wechatAppId,
             'secret' => $model->secret,
             'logo' => $model->logo,
-            'concat_phone_num' => $model->contactPhoneNum,
-            'concat_name' => $model->contactName,
+            'contact_phone_num' => $model->contactPhoneNum,
+            'contact_name' => $model->contactName,
             /* place your other model properties here */
             'open_platform_auth_url' => buildUrl('web.wxopen', 'auth', [], [
                 'app_id' => $model->id, 'token' =>  (string)app('tymon.jwt.auth')->getToken(), 'type' => 'all'
