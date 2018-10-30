@@ -44,7 +44,7 @@ class ShopItemTransformer extends TransformerAbstract
             'merchandise_num' => $model->shopMerchandisesCount,
             'this_month_amount' => $model->thisMonthAmount ? $model->thisMonthAmount : 0,
             'last_month_amount' => $model->lastMonthAmount ? $model->lastMonthAmount : 0,
-            'balance' => $model->balance,
+            'balance' => $model->balance ? $model->balance : 0,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];
