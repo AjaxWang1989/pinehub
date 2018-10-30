@@ -51,7 +51,7 @@ class SevenDaysStatisticsTransformer extends TransformerAbstract
                 array_push($statistics['this_week'], 0);
             }
         }
-        Log::info('statistics', $statistics);
+        Log::info('statistics', [$day]);
         return $statistics;
     }
 
