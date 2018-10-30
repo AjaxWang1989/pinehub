@@ -146,7 +146,7 @@ class AppController extends Controller
         $end = Carbon::now();
         $start = $end->copy()->startOfWeek()->subDay(7);
         $project = app(AppManager::class)->currentApp;
-        $result = $project->orders()->select([DB::raw('count(*)'), DB::raw('DATE_FORMAT(`paid_at`, "%w") as paid_time')])
+        $result = $project->orders()->select([DB::raw('count(*)'), DB::raw('DATE_FORMAT(`paid_at`, "%w") as paid_time'), 'paid_at'])
             ->where('paid_at', '>=', $start)
             ->where('paid_at', '<', $end)
             ->groupBy('paid_time')
