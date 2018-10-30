@@ -39,17 +39,11 @@ class ShopItemTransformer extends TransformerAbstract
             'total_amount' => $model->totalAmount,
             'today_amount' => $model->todayAmount,
             'status' => $model->status,
-            'order_count' =>count(app()->make(OrderRepository::class)->findWhere(['shop_id'=>$model->id])),
-            'sell_amount' => app()->make(OrderRepository::class)->findWhere(['shop_id'=>$model->id])->sum('payment_amount'),
-            'merchandise_num' => count(app()->make(ShopMerchandiseRepository::class)->findWhere(['shop_id'=>$model->id])),
-            'this_month_amount' => DB::table('orders')->where('shop_id',$model->id)
-                ->where('paid_at','>=',date('Y-m-d 00:00:00', strtotime(date('Y-m', time()) . '-01 00:00:00')))
-                ->where('paid_at','<=',date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-' . date('t', time()) . ' 00:00:00')))
-                ->get()->sum('payment_amount'),
-            'last_month_amount' => DB::table('orders')->where('shop_id',$model->id)
-                ->where('paid_at','>=' ,date('Y-m-d 00:00:00', strtotime('-1 month', strtotime(date('Y-m', time()) . '-01 00:00:00'))))
-                ->where('paid_at','<=' ,date('Y-m-d 23:59:59', strtotime(date('Y-m', time()) . '-01 00:00:00') - 86400))
-                ->get()->sum('payment_amount'),
+            'sell_amount' => $model->sellAmountCount,
+            'order_count' => $model->ordersCount,
+            'merchandise_num' => $model->shopMerchandisesCount,
+            'this_month_amount' => $model->thisMonthAmountCount,
+            'last_month_amount' => $model->lastMonthAmountCount,
             'balance' => $model->balance,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt

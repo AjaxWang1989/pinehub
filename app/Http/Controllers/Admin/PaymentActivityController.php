@@ -54,13 +54,13 @@ class PaymentActivityController extends Controller
         $type = PaymentActivity::TYPES[$type];
         $activities = $this->repository
             ->scopeQuery(function (Activity &$model) use($type) {
-            $model = $model->with(['paymentActivities'])
+            $model = $model->with(['paymentActivities', 'orders'])
                 ->whereHas('paymentActivities', function (Builder $query) use($type){
-                return $query->where('type', $type);
-            });
+                    return $query->where('type', $type);
+                });
             $model->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {
-                return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
-            }]);
+                    return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
+                }]);
             return $model;
         })->paginate();
         return $this->response()->paginator($activities, new OrderGiftItemTransformer());

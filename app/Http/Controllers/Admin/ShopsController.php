@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entities\App;
+use App\Entities\Order;
 use App\Entities\Role;
+use App\Entities\Shop;
 use App\Entities\ShopManager;
 use App\Http\Response\JsonResponse;
 
@@ -11,7 +13,9 @@ use App\Repositories\SellerRepository;
 use App\Repositories\ShopManagerRepository;
 use App\Services\AppManager;
 use App\Utils\GeoHash;
+use Carbon\Carbon;
 use Dingo\Api\Http\Request;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request as IlluminateRequest;
 use Exception;
 use App\Http\Requests\Admin\ShopCreateRequest;
@@ -21,6 +25,7 @@ use App\Transformers\ShopItemTransformer;
 use App\Repositories\ShopRepository;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
 
@@ -65,7 +70,34 @@ class ShopsController extends Controller
      */
     public function index(Request $request)
     {
-        $shops = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
+        $shops = $this->repository->with(['country', 'province', 'city', 'shopManager'])
+            ->withCount([
+                'orders' => function (Builder $query) {
+                    return $query->whereNotNull('paid_at');
+                },
+                'orders as sell_amount' => function (Builder $query) {
+                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
+                        ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
+                },
+                'orders as this_month_amount' => function (Builder $query) {
+                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
+                        ->where('paid_at', '>=', Carbon::now(config('app.timezone'))
+                            ->startOfMonth()->startOfDay())
+                        ->where('paid_at', '>=', Carbon::now(config('app.timezone')))
+                        ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
+                },
+                'orders as last_month_amount' => function (Builder $query) {
+                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
+                        ->where('paid_at', '>=', Carbon::now(config('app.timezone'))
+                            ->lastOfMonth()->startOfMonth()->startOfDay())
+                        ->where('paid_at', '>=', Carbon::now(config('app.timezone'))
+                            ->lastOfMonth()->endOfMonth()->endOfDay())
+                        ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
+                },
+                'shopMerchandises' => function (Builder $query) {
+                    return $query;
+                }])
+            ->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($shops, new ShopItemTransformer());
     }
 

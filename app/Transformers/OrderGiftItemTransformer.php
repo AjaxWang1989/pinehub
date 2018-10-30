@@ -28,9 +28,9 @@ class OrderGiftItemTransformer extends TransformerAbstract
             'start_at'   => $model->startAt,
             'end_at'     => $model->endAt,
             'status'     => $model->status,
-            'order_count' => $model->order_count,
-            'customer_count' => $model->customer_count,
-            'money'      =>$model->orders->sum('total_amount')
+            'order_count' => $model->orderCount,
+            'customer_count' => $model->customerCount,
+            'money'      =>    $model->orders->sum('total_amount')
         ];
     }
 }
