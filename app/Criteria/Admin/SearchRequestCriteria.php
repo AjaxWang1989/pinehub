@@ -32,13 +32,13 @@ class SearchRequestCriteria implements CriteriaInterface
         }
         $searchJson = json_decode(base64_decode($searchStr), true);
         $fields = [];
-        dd($searchJson);
         foreach ($searchJson as $key => $value) {
             if(in_array($key, $fieldsSearchable)) {
                 $fields[$key] = $value;
             }
         }
         $model = $this->parseSearch($fields, $model);
+        dd($model->get());
         return $model;
     }
 
