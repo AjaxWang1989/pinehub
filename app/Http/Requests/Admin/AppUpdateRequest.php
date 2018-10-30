@@ -24,8 +24,6 @@ class AppUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
-            'name' => 'unique:apps,name',
             'logo' => 'url'
         ];
     }
