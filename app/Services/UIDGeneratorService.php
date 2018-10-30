@@ -65,6 +65,10 @@ class UIDGeneratorService implements InterfaceServiceHandler
         $this->segmentInit();
     }
 
+    /**
+     * @return string
+     * @throws \Exception
+     */
     public function handle()
     {
         // TODO: Implement handle() method.
@@ -86,11 +90,25 @@ class UIDGeneratorService implements InterfaceServiceHandler
         return $this->uidGenerator();
     }
 
+    /**
+     *
+     * @param string $format
+     * @param int $segmentLength
+     * @return string
+     * @throws \Exception
+     */
     public function getUid(string $format, int $segmentLength)
     {
         return $this->handle($format, $segmentLength);
     }
 
+    /**
+     *
+     * @param string $mainUid
+     * @param int $subUidSegmentLength
+     * @return string
+     * @throws \Exception
+     */
     public function getSubUid(string $mainUid, int $subUidSegmentLength)
     {
         $this->segmentKey = $mainUid;
@@ -99,6 +117,11 @@ class UIDGeneratorService implements InterfaceServiceHandler
         return $this->uidGenerator();
     }
 
+    /**
+     *
+     * @return string
+     * @throws \Exception
+     */
     protected function uidGenerator()
     {
         $orderId = null;
@@ -118,12 +141,11 @@ class UIDGeneratorService implements InterfaceServiceHandler
         }
         if ($this->lock) {
             $this->segment->put($key, true);
-            Cache::put($this->segmentKey, $this->segment->toArray());
+            Cache::put($this->segmentKey, $this->segment->toArray(), 1);
             $this->lock->release();
             $this->lock = null;
             $keyLength = strlen($this->segmentMaxLength.'') - 1;
             $key = sprintf("%0{$keyLength}d", $key);
-            Log::debug('uuid key ',['key' => $key, 'length' => $keyLength]);
             return generatorUID($this->segmentKey, $key);
         }elseif($this->wait_time < self::WAIT_MAX_TIME){
             sleep(self::INTERVAL_TIME);
@@ -133,18 +155,27 @@ class UIDGeneratorService implements InterfaceServiceHandler
         }
     }
 
+    /**
+     *
+     * @return int
+     * @throws \Exception
+     */
     protected function segmentRandKey()
     {
         return random_int(0, $this->segmentMaxLength);
     }
 
+    /**
+     *
+     * @return Collection
+     */
     protected function newSegment()
     {
         $segment = array();
         for($i = 0; $i < $this->segmentMaxLength; $i ++) {
             $segment[$i] = false;
         }
-        Cache::put($this->segmentKey, $segment);
+        Cache::put($this->segmentKey, $segment, 1);
         return collect($segment);
     }
 
