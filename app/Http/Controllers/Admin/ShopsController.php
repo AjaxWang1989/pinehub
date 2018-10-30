@@ -104,20 +104,16 @@ class ShopsController extends Controller
      */
     public function store(ShopCreateRequest $request)
     {
-        $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'description', 'status']);
-        $appManager = app(AppManager::class);
-        $data['app_id'] = $appManager->currentApp->id;
-        $data['user_id'] = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'))->id;
+        $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'description',
+            'status']);
+        $shopManager = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'));
+        $data['user_id'] = $shopManager->id;
         if($request->input('lat', null) && $request->input('lng', null)){
             $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
 
-        $data['wechat_app_id'] = $appManager->officialAccount->appId;
-        $data['ali_app_id'] = $appManager->aliPayOpenPlatform->config['app_id'];
-
         $shop = $this->repository->create($data);
-
         return $this->response()->item($shop, new ShopTransformer());
     }
 
