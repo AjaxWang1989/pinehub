@@ -39,19 +39,15 @@ class SevenDaysStatisticsTransformer extends TransformerAbstract
                 $statistics['this_week'][$item['paid_time'] - 1] = $item['count'];
             }
         });
-        if(count($statistics['last_week']) < 7) {
-            while (count($statistics['last_week'])  < 7) {
-                array_push($statistics['last_week'], 0);
-            }
 
+        while (count($statistics['last_week'])  < 7) {
+            array_push($statistics['last_week'], 0);
         }
+
         $day = Carbon::now(config('app.timezone'))->dayOfWeekIso;
-        if(count($statistics['this_week']) < $day) {
-            for($i = 0; $i < $day; $i ++) {
-                array_push($statistics['this_week'], 0);
-            }
+        while (count($statistics['this_week'])  < $day) {
+            array_push($statistics['last_week'], 0);
         }
-        Log::info('statistics', [$day]);
         return $statistics;
     }
 
