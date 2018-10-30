@@ -88,8 +88,9 @@ class AppController extends Controller
                 'shops' => function (Builder $shops) {
                     return $shops->where('status', '<>', Shop::STATUS_WAIT);
                 },
-                'orders' => function (Builder $orders) use($time){
-                    return $orders->where('paid_at', '>=', $time);
+                'orders' => function (Builder $orders) use($start, $end){
+                    return $orders->where('paid_at', '>=', $start)
+                        ->where('paid_at', '<', $end);
                 },
                 'users as new_user_count' => function(Builder $users) use($start, $end){
                     return $users->where('last_login_at', '>=', $start)
