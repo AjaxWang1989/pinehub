@@ -31,6 +31,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
         'country_id' => '=',
         'city_id' => '=',
         'province_id' => '=',
+        'code' => 'like'
     ];
     /**
      * Specify Model class name

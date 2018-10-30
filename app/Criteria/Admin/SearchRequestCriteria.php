@@ -4,6 +4,7 @@ namespace App\Criteria\Admin;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
@@ -44,6 +45,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 }
             }
         }
+        Log::info('search fields', $fields);
         $model = $this->parseSearch($fields, $model);
         return $model;
     }
