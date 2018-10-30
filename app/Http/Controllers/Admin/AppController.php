@@ -144,7 +144,7 @@ class AppController extends Controller
 
     public function sevenDaysStatistics()
     {
-        $end = Carbon::now();
+        $end = Carbon::now(config('app.timezone'));
         $start = $end->copy()->startOfWeek()->subDay(7);
         $project = app(AppManager::class)->currentApp;
         $result = $project->orders()->select([DB::raw('count(*) as count'), DB::raw('DATE_FORMAT(`paid_at`, "%w") as paid_time'), 'paid_at'])
