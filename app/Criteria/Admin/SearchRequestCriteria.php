@@ -34,7 +34,14 @@ class SearchRequestCriteria implements CriteriaInterface
         $fields = [];
         foreach ($searchJson as $key => $value) {
             if(isset($fieldsSearchable[$key])) {
-                $fields[$key] = [$fieldsSearchable[$key], $value];
+                if(isset($value['opt']) && $value['opt'] === $fieldsSearchable[$key]) {
+                    $fields[$key] = $value;
+                }else{
+                    $fields[$key] = [
+                        'opt' => $fieldsSearchable[$key],
+                        'value' => $value
+                    ];
+                }
             }
         }
         $model = $this->parseSearch($fields, $model);
