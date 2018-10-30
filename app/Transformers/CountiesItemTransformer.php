@@ -27,6 +27,8 @@ class CountiesItemTransformer extends TransformerAbstract
             'country' => $model->country->only(['id', 'code', 'name']),
             'province' => $model->province->only(['id', 'code', 'name']),
             'city' => $model->only(['id', 'code', 'name']),
+            'province_id' => $model->provinceId,
+            'city_id' => $model->cityId,
             'code' => $model->code,
             'name' => $model->name,
             'created_at' => $model->createdAt,

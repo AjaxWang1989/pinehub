@@ -25,6 +25,7 @@ class CityItemTransformer extends TransformerAbstract
             'id'         => (int) $model->id,
             'name'       => $model->name,
             'code'       => $model->code,
+            'province_id' => $model->provinceId,
             'province'   => $model->province->name,
             'country'    => $model->country->name,
             'counties_count' => $model->countiesCount ? $model->countiesCount : 0,

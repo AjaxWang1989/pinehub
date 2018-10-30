@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Country;
 use App\Repositories\Traits\Destruct;
 use App\Validators\Admin\ShopsValidator;
@@ -50,6 +51,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        $this->pushCriteria(app(SearchRequestCriteria::class));
         Shop::creating(function (Shop $shop) {
             $shop->code = app('uid.generator')->getUid(SHOP_CODE_FORMAT, SHOP_CODE_SEGMENT_MAX_LENGTH, ONE_DAY_SECONDS);
         });

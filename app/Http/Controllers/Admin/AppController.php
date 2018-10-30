@@ -24,6 +24,7 @@ use App\Repositories\MiniProgramRepository;
 use App\Services\AppManager;
 use App\Transformers\AppItemTransformer;
 use App\Transformers\AppTransformer;
+use App\Transformers\SevenDaysStatisticsTransformer;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
@@ -87,8 +88,9 @@ class AppController extends Controller
                 'shops' => function (Builder $shops) {
                     return $shops->where('status', '<>', Shop::STATUS_WAIT);
                 },
-                'orders' => function (Builder $orders) use($time){
-                    return $orders->where('paid_at', '>=', $time);
+                'orders' => function (Builder $orders) use($start, $end){
+                    return $orders->where('paid_at', '>=', $start)
+                        ->where('paid_at', '<', $end);
                 },
                 'users as new_user_count' => function(Builder $users) use($start, $end){
                     return $users->where('last_login_at', '>=', $start)
@@ -143,14 +145,17 @@ class AppController extends Controller
 
     public function sevenDaysStatistics()
     {
-        $end = Carbon::now();
-        $start = $end->copy()->subDay(7);
+        $end = Carbon::now(config('app.timezone'))->endOfDay();
+        $start = $end->copy()->startOfWeek()->subDay(7);
         $project = app(AppManager::class)->currentApp;
-        $result = $project->orders()->select([DB::raw('count(*)'), DB::raw('DATE_FORMAT(`paid_at`, "%Y-%m-%d") as paid_time')])
+        $result = $project->orders()->select([DB::raw('count(*) as count'), DB::raw('DATE_FORMAT(`paid_at`, "%w") as paid_time'),
+            DB::raw('DATE_FORMAT(`paid_at`, "%Y-%m-%d") as paid_date'), 'paid_at'])
             ->where('paid_at', '>=', $start)
             ->where('paid_at', '<', $end)
+            ->groupBy('paid_date')
             ->get();
-        return $result;
+        $transformer = new SevenDaysStatisticsTransformer();
+        return $this->response(new JsonResponse($transformer->transform($result)));//->item($result, new SevenDaysStatisticsTransformer());
     }
 
 }

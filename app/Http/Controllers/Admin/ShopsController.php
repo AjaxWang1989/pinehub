@@ -60,11 +60,12 @@ class ShopsController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $shops = $this->repository->paginate();
+        $shops = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($shops, new ShopItemTransformer());
     }
 

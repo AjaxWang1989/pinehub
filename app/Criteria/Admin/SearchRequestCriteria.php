@@ -33,8 +33,15 @@ class SearchRequestCriteria implements CriteriaInterface
         $searchJson = json_decode(base64_decode($searchStr), true);
         $fields = [];
         foreach ($searchJson as $key => $value) {
-            if(in_array($key, $fieldsSearchable)) {
-                $fields[$key] = $value;
+            if(isset($fieldsSearchable[$key])) {
+                if(isset($value['opt']) && $value['opt'] === $fieldsSearchable[$key]) {
+                    $fields[$key] = $value;
+                }else{
+                    $fields[$key] = [
+                        'opt' => $fieldsSearchable[$key],
+                        'value' => $value
+                    ];
+                }
             }
         }
         $model = $this->parseSearch($fields, $model);
@@ -60,12 +67,12 @@ class SearchRequestCriteria implements CriteriaInterface
                 $modelTableName = $query->getModel()->getTable();
                 if(is_null($relation)) {
                     $key = $modelTableName.'.'.$key;
-                    $this->buildQuery($key, $value, $query);
+                    $query = $this->buildQuery($key, $value, $query);
                 }else{
-                    $this->buildQuery($key, $value, $query, $relation);
+                    $query = $this->buildQuery($key, $value, $query, $relation);
                 }
-
             }
+            return $query;
         });
 
     }
@@ -74,10 +81,10 @@ class SearchRequestCriteria implements CriteriaInterface
     {
         if(!is_array($value)) {
             if(!$relation) {
-                $query->where($key, $value);
+                return $query->where($key, $value);
             }else{
-                $query->whereHas($relation, function (Builder $query)use($key, $value){
-                    $query->where($key, $value);
+                return $query->whereHas($relation, function (Builder $query)use($key, $value){
+                    return $query->where($key, $value);
                 });
             }
         }else{
@@ -85,61 +92,63 @@ class SearchRequestCriteria implements CriteriaInterface
             if($count > 1 && isset($value[$count - 1])) {
                 $items = $value;
                 if(!$relation) {
-                    $query->where(function (Builder $query) use($items, $key) {
+                    return $query->where(function (Builder $query) use($items, $key) {
                         foreach ($items as $item ) {
                             if(!is_array($item)) {
-                                $query->where($key, $item);
+                                $query = $query->where($key, $item);
                             }else{
                                 if($item['join']) {
-                                    $this->addConditionInQuery($item, $query, $key);
+                                    $query = $this->addConditionInQuery($item, $query, $key);
                                 }else{
-                                    $query->orWhere(function (Builder $query) use ($key, $item){
-                                        $this->addConditionInQuery($item, $query, $key);
+                                    $query = $query->orWhere(function (Builder $query) use ($key, $item){
+                                        return $this->addConditionInQuery($item, $query, $key);
                                     });
                                 }
 
                             }
                         }
+                        return $query;
                     });
                 }else{
-                    $query->whereHas($relation, function (Builder $query) use($items, $key){
+                    return $query->whereHas($relation, function (Builder $query) use($items, $key){
                         foreach ($items as $item ) {
                             if(!is_array($item)) {
-                                $query->where($key, $item);
+                                $query = $query->where($key, $item);
                             }else{
                                 if($item['join']) {
-                                    $this->addConditionInQuery($item, $query, $key);
+                                    $query = $this->addConditionInQuery($item, $query, $key);
                                 }else{
-                                    $query->orWhere(function (Builder $query) use ($key, $item){
-                                        $this->addConditionInQuery($item, $query, $key);
+                                    $query = $query->orWhere(function (Builder $query) use ($key, $item){
+                                        return $this->addConditionInQuery($item, $query, $key);
                                     });
                                 }
 
                             }
                         }
+                        return $query;
                     });
                 }
 
 
             }else{
                 $item = $value;
-                if($item['join']) {
+                if(isset($item['join'])) {
                     if(!$relation) {
-                        $this->addConditionInQuery($item, $query, $key);
+                        return $this->addConditionInQuery($item, $query, $key);
                     }else{
-                        $query->whereHas($relation, function (Builder $query) use($item, $key) {
-                            $this->addConditionInQuery($item, $query, $key);
+                        return $query->whereHas($relation, function (Builder $query) use($item, $key) {
+                            return $this->addConditionInQuery($item, $query, $key);
                         });
                     }
 
                 }else{
                     if(!$relation) {
-                        $query->orWhere(function (Builder $query) use ($key, $item){
-                            $this->addConditionInQuery($item, $query, $key);
+                        return $query->orWhere(function (Builder $query) use ($key, $item){
+                            return $this->addConditionInQuery($item, $query, $key);
                         });
                     }else{
-                        $query->orWhereHas($relation, function (Builder $query) use($item, $key) {
-                            $this->addConditionInQuery($item, $query, $key);
+                        return $query->orWhereHas($relation, function (Builder $query) use($item, $key) {
+                            return $this->addConditionInQuery($item, $query, $key);
                         });
                     }
 
@@ -184,6 +193,6 @@ class SearchRequestCriteria implements CriteriaInterface
                 break;
             }
         }
-
+        return $query;
     }
 }
