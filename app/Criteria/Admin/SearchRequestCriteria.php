@@ -45,7 +45,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 }
             }
         }
-        Log::info('search fields', $fields);
+        Log::info('search fields', $fields, $searchJson);
         $model = $this->parseSearch($fields, $model);
         return $model;
     }
