@@ -163,4 +163,13 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
     {
         return Hash::make($this->sessionKey);
     }
+
+    public function ordersNum()
+    {
+        $count = 0;
+        foreach ($this->customers as $customer){
+            $count += $customer->orders->count();
+        }
+        return $count;
+    }
 }
