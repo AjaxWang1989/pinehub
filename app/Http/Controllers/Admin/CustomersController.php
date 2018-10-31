@@ -46,7 +46,7 @@ class CustomersController extends Controller
      */
     public function index()
     {
-//        $this->repository->pushCriteria(CustomerCriteria::class);
+        $this->repository->pushCriteria(CustomerCriteria::class);
         $customers = $this->repository
             ->paginate();
         return $this->response()->paginator($customers, new CustomerItemTransformer());

@@ -11,5 +11,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface CustomerRepository extends RepositoryInterface
 {
-    //
+    public function pushCriteria($class);
 }
