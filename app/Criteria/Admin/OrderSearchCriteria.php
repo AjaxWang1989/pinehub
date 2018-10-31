@@ -3,6 +3,7 @@
 namespace App\Criteria\Admin;
 
 use App\Entities\Order;
+use App\Services\AppManager;
 use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
@@ -33,6 +34,8 @@ class OrderSearchCriteria implements CriteriaInterface
         if($endAt) {
             $model = $model->where('paid_at', '<', $endAt);
         }
+        $id = app(AppManager::class)->getAppId();
+        $model = $model->whereAppId($id);
         return $model;
     }
 }

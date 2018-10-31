@@ -43,13 +43,14 @@ class OrdersController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->repository->pushCriteria(OrderSearchCriteria::class);
-        $orders = $this->repository->with(['orderItems.merchandise',
-            'orderItems.shop', 'customer', 'member'])->paginate(\Illuminate\Support\Facades\Request::input('limit', PAGE_LIMIT));
+        $orders = $this->repository->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member'])
+            ->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($orders, new OrderItemTransformer());
     }
 

@@ -78,7 +78,6 @@ class ShopsController extends Controller
             ->withOrderCount()
             ->withThisMonthAmount()
             ->paginate($request->input('limit', PAGE_LIMIT));
-//        return $shops;
         return $this->response()->paginator($shops, new ShopItemTransformer());
     }
 
