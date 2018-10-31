@@ -35,7 +35,6 @@ class MembersController extends Controller
     public function __construct(MemberRepository $repository)
     {
         $this->repository = $repository;
-        $this->repository->pushCriteria(MemberCriteria::class);
         parent::__construct();
     }
 
@@ -46,6 +45,7 @@ class MembersController extends Controller
      */
     public function index()
     {
+        $this->repository->pushCriteria(MemberCriteria::class);
         $members = $this->repository->paginate();
         return $this->response()->paginator($members, new MemberItemTransformer());
     }

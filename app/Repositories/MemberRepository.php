@@ -12,4 +12,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface MemberRepository extends RepositoryInterface
 {
     //
+    public function pushCriteria($class);
 }
