@@ -30,4 +30,33 @@ interface ShopRepository extends RepositoryInterface
      * @return Collection|Array
      * */
     public function nearBy(float $lng, float $lat, float $distance = 15);
+
+    /**
+     * @return $this
+     * */
+    public function withOrderCount();
+
+
+    /**
+     * @return $this
+     * */
+    public function withSellAmount();
+
+
+    /**
+     * @return $this
+     * */
+    public function withLastMonthAmount();
+
+
+    /**
+     * @return $this
+     * */
+    public function withThisMonthAmount();
+
+
+    /**
+     * @return $this
+     * */
+    public function withMerchandiseCount();
 }
