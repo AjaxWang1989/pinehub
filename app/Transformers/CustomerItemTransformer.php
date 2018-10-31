@@ -30,7 +30,9 @@ class CustomerItemTransformer extends TransformerAbstract
             'app_id' => $model->appId,
             'channel' => $model->channel,
             'register_channel' => $model->registerChannel,
-            'order_count' => $model->ordersCount,
+            'order_count' => $model->ordersCount ? $model->ordersCount : 0,
+            'total_score' => $model->totalScore,
+            'can_use_score' => $model->canUseScore,
             'tags'  => $model->tags,
             'sex' => $model->sex,
             /* place your other model properties here */
