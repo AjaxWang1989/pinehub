@@ -24,15 +24,8 @@ class OrderItemTransformer extends TransformerAbstract
     public function transform(Order $model)
     {
         $orderItems = $model->orderItems->map(function (OrderItem $orderItem) {
-            $data = [];
-            if($orderItem->merchandise) {
-                $data = with($orderItem->merchandise, function (Merchandise $merchandise) {
-                    $data['merchandise'] = $merchandise->only(['name', 'merchandise_id', 'sku_product_id', 'main_image', 'sell_price', 'quality']);
-                    return $data;
-                });
-            }
-
-            $data  = array_merge($data, $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'status', 'sell_price', 'origin_price']));
+            $data  = $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'status', 'sell_price',
+                'origin_price', 'merchandise_id', 'merchandise_name', 'merchandise_image', 'quality']);
 
             $data['shop'] =$orderItem->shop ? $orderItem->shop->only(array('id', 'name')) : null;
 
