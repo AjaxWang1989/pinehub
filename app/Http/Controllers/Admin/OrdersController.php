@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\OrderCriteria;
 use App\Criteria\Admin\OrderSearchCriteria;
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Order;
 use App\Http\Requests\OrderSendRequest;
 use App\Http\Response\JsonResponse;
@@ -49,7 +50,9 @@ class OrdersController extends Controller
     public function index(Request $request)
     {
         $this->repository->pushCriteria(OrderSearchCriteria::class);
-        $orders = $this->repository->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member'])
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
+        $orders = $this->repository
+            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member'])
             ->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($orders, new OrderItemTransformer());
     }
