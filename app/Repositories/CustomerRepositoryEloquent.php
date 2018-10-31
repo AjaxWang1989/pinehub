@@ -8,6 +8,8 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\Customer;
 use App\Validators\CustomerValidator;
+use App\Repositories\Traits\RepositoryRelationShip;
+use App\Criteria\Admin\SearchRequestCriteria;
 
 /**
  * Class CustomerRepositoryEloquent.
@@ -16,7 +18,10 @@ use App\Validators\CustomerValidator;
  */
 class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepository
 {
-    use Destruct;
+    use Destruct, RepositoryRelationShip;
+    protected $fieldSearchable = [
+        'channel' => '=',
+    ];
     /**
      * Specify Model class name
      *
@@ -35,6 +40,7 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
+        $this->pushCriteria(app(SearchRequestCriteria::class));
     }
 
 }
