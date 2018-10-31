@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
+use App\Entities\Traits\ModelRelationShip;
 use App\Services\AppManager;
 use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
@@ -119,7 +120,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Shop extends Model implements Transformable
 {
-    use TransformableTrait, ModelAttributesAccess, SpatialTrait;
+    use TransformableTrait, ModelAttributesAccess, SpatialTrait, ModelRelationShip;
 
     const STATUS_WAIT  = 0;
     const STATUS_OPEN  = 1;

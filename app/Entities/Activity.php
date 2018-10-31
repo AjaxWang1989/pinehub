@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelRelationShip;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -43,7 +44,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  */
 class Activity extends Model implements Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use TransformableTrait, ModelAttributesAccess, ModelRelationShip;
 
     const NOT_BEGINNING = 0;
     const HAVE_IN_HAND  = 1;

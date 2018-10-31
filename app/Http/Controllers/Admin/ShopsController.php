@@ -72,34 +72,11 @@ class ShopsController extends Controller
     public function index(Request $request)
     {
         $shops = $this->repository->with(['country', 'province', 'city', 'county', 'shopManager'])
-            ->withCount([
-                'orders' => function (Builder $query) {
-                    return $query->whereNotNull('paid_at');
-                },
-                'orders as sell_amount' => function (Builder $query) {
-                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
-                },
-                'orders as this_month_amount' => function (Builder $query) {
-                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->where('paid_at', '>=', Carbon::now(config('app.timezone'))
-                            ->startOfMonth()->startOfDay())
-                        ->where('paid_at', '<', Carbon::now(config('app.timezone')))
-                        ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
-                },
-                'orders as last_month_amount' => function (Builder $query) {
-                    $now = Carbon::now(config('app.timezone'));
-                    $month = $now->month - 1;
-                    $year = $now->year;
-                    $start = Carbon::create($year, $month, 1, 0, 0, 0, config('app.timezone'));
-                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->where('paid_at', '>=', $start)
-                        ->where('paid_at', '<', $start->copy()->endOfMonth()->endOfDay())
-                        ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
-                },
-                'shopMerchandises' => function (Builder $query) {
-                    return $query->whereNotNull('status');
-                }])
+            ->withLastMonthAmount()
+            ->withMerchandiseCount()
+            ->withSellAmount()
+            ->withOrderCount()
+            ->withThisMonthAmount()
             ->paginate($request->input('limit', PAGE_LIMIT));
 //        return $shops;
         return $this->response()->paginator($shops, new ShopItemTransformer());
