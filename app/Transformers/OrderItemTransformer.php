@@ -23,24 +23,24 @@ class OrderItemTransformer extends TransformerAbstract
      */
     public function transform(Order $model)
     {
+        $orderItems = $model->orderItems->map(function (OrderItem $orderItem) {
+            $data = $orderItem->merchandise ? with($orderItem->merchandise, function (Merchandise $merchandise) {
+                $data['merchandise'] = $merchandise->only(['name', 'merchandise_id', 'sku_product_id', 'main_image', 'sell_price', 'quality']);
+                return $data; }) : [];
+
+            $data  = array_merge($data, $orderItem->only(array('code', 'total_amount', 'payment_amount', 'discount_amount', 'status')));
+
+            /** @var array $data */
+
+            $data['shop'] =$orderItem->shop ? $orderItem->shop->only(array('id', 'name')) : null;
+
+            return $data;
+        });
+
         return array(
             'id'         => (int) $model->id,
             'transaction_id' => $model->transactionId,
-            'order_items' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
-                $data = $orderItem->merchandise ? with($orderItem->merchandise, function (Merchandise $merchandise) {
-                        $data['merchandise'] = $merchandise->only(['name', 'merchandise_id', 'sku_product_id', 'main_image', 'sell_price', 'quality']);
-                        return $data;
-                    }) : [];
-
-                $data  = array_merge($data, $orderItem->only(array('code', 'total_amount', 'payment_amount',
-                    'discount_amount', 'status')));
-
-                /** @var array $data */
-
-                $data['shop'] =$orderItem->shop ? $orderItem->shop->only(array('id', 'name')) : null;
-
-                return $data;
-            }) : null,
+            'order_items' => $orderItems,
 
             'code' => $model->code,
 
