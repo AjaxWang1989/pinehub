@@ -167,9 +167,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
     public function ordersNum()
     {
         $count = 0;
-        foreach ($this->customers as $customer){
-            $count += $customer->orders->count();
-        }
+        $count += $this->orders->count();
         return $count;
     }
 }
