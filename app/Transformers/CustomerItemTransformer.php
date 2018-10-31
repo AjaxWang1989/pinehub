@@ -32,6 +32,7 @@ class CustomerItemTransformer extends TransformerAbstract
             'register_channel' => $model->registerChannel,
             'order_count' => $model->ordersCount,
             'tags'  => $model->tags,
+            'sex' => $model->sex,
             /* place your other model properties here */
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
