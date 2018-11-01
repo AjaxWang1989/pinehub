@@ -28,10 +28,12 @@ class SearchRequestCriteria implements CriteriaInterface
     {
         $fieldsSearchable = $repository->getFieldsSearchable();
         $searchStr = Request::query('searchJson', null);
+        Log::info('search fields', [$searchStr]);
         if(!$searchStr) {
             return $model;
         }
-        $searchJson = is_array($searchStr) ? $searchStr : json_decode(base64_decode($searchStr), true);
+        $searchJson = is_array($searchStr) ? $searchStr : json_decode(urldecode(base64_decode($searchStr)), true);
+
         $fields = [];
         foreach ($searchJson as $key => $value) {
             if(isset($fieldsSearchable[$key]) || array_search($key, $fieldsSearchable)) {
@@ -43,7 +45,7 @@ class SearchRequestCriteria implements CriteriaInterface
         return $model;
     }
 
-    /**
+    /**Z
      * parse search query
      * @param array $fields
      * @param Builder|Model $model
@@ -83,8 +85,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 });
             }
         }else{
-            Log::info('is assoc array', [is_assoc($value), $value]);
-            if(is_assoc($value)) {
+            if(is_assoc($value) && (!is_array($value[0]) || !is_object($value[0]))) {
                 return $query->whereIn($key, $value);
             }
             $count = count($value);
@@ -134,26 +135,36 @@ class SearchRequestCriteria implements CriteriaInterface
 
             }else{
                 $item = $value;
-                if(isset($item['join'])) {
-                    if(!$relation) {
-                        return $this->addConditionInQuery($item, $query, $key);
-                    }else{
-                        return $query->whereHas($relation, function (Builder $query) use($item, $key) {
+                $join = isset($item['join']) ? $item['join'] : 'and';
+                switch ($join) {
+                    case 'and':
+                    case '&':
+                    case 'AND': {
+                        if(!$relation) {
                             return $this->addConditionInQuery($item, $query, $key);
-                        });
-                    }
 
-                }else{
-                    if(!$relation) {
-                        return $query->orWhere(function (Builder $query) use ($key, $item){
-                            return $this->addConditionInQuery($item, $query, $key);
-                        });
-                    }else{
-                        return $query->orWhereHas($relation, function (Builder $query) use($item, $key) {
-                            return $this->addConditionInQuery($item, $query, $key);
-                        });
-                    }
+                        }else{
+                            return $query->whereHas($relation, function (Builder $query) use($item, $key) {
 
+                                return $this->addConditionInQuery($item, $query, $key);
+                            });
+                        }
+                        break;
+                    }
+                    case 'or':
+                    case '|':
+                    case 'OR': {
+                        if(!$relation) {
+                            return $query->orWhere(function (Builder $query) use ($key, $item){
+                                return $this->addConditionInQuery($item, $query, $key);
+                            });
+                        }else{
+                            return $query->orWhereHas($relation, function (Builder $query) use($item, $key) {
+                                return $this->addConditionInQuery($item, $query, $key);
+                            });
+                        }
+                        break;
+                    }
                 }
             }
         }
@@ -165,10 +176,10 @@ class SearchRequestCriteria implements CriteriaInterface
             $item['opt'] = '=';
         }
         $operator = isset($item['opt']) ? $item['opt'] : '=';
-        $value = $item['value'];
+        $value = isset($item['value']) ? $item['value'] : null;
         switch ($operator) {
             case '=': {
-                if(is_array($item['value'])) {
+                if(is_array($value)) {
                     $query->whereIn($key, $value);
                 }elseif ($item['value'] === null){
                     $query->whereNull($key);
@@ -178,7 +189,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 break;
             }
             case '!=': {
-                if($item['value'] === null) {
+                if($value === null) {
                     $query->whereNotNull($key);
                 }elseif (is_array($item['value'])) {
                     $query->whereNotIn($key, $value);
@@ -189,11 +200,17 @@ class SearchRequestCriteria implements CriteriaInterface
             case '>=':
             case '<':
             case '<=': {
+                if($value === null) {
+                    return $query;
+                }
                 $query->where($key, $operator, $value);
                 break;
             }
             case 'like':
             case 'ilike':   {
+                if($value === null) {
+                    return $query;
+                }
                 $query->where($key, $operator, "%{$value}%");
                 break;
             }
