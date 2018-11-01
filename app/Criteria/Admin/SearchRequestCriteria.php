@@ -135,26 +135,36 @@ class SearchRequestCriteria implements CriteriaInterface
 
             }else{
                 $item = $value;
-                if(isset($item['join'])) {
-                    if(!$relation) {
-                        return $this->addConditionInQuery($item, $query, $key);
-                    }else{
-                        return $query->whereHas($relation, function (Builder $query) use($item, $key) {
+                $join = isset($item['join']) ? $item['join'] : 'and';
+                switch ($join) {
+                    case 'and':
+                    case '&':
+                    case 'AND': {
+                        if(!$relation) {
                             return $this->addConditionInQuery($item, $query, $key);
-                        });
-                    }
 
-                }else{
-                    if(!$relation) {
-                        return $query->orWhere(function (Builder $query) use ($key, $item){
-                            return $this->addConditionInQuery($item, $query, $key);
-                        });
-                    }else{
-                        return $query->orWhereHas($relation, function (Builder $query) use($item, $key) {
-                            return $this->addConditionInQuery($item, $query, $key);
-                        });
-                    }
+                        }else{
+                            return $query->whereHas($relation, function (Builder $query) use($item, $key) {
 
+                                return $this->addConditionInQuery($item, $query, $key);
+                            });
+                        }
+                        break;
+                    }
+                    case 'or':
+                    case '|':
+                    case 'OR': {
+                        if(!$relation) {
+                            return $query->orWhere(function (Builder $query) use ($key, $item){
+                                return $this->addConditionInQuery($item, $query, $key);
+                            });
+                        }else{
+                            return $query->orWhereHas($relation, function (Builder $query) use($item, $key) {
+                                return $this->addConditionInQuery($item, $query, $key);
+                            });
+                        }
+                        break;
+                    }
                 }
             }
         }

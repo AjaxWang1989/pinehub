@@ -14,4 +14,4 @@
     | searchJoin | string | N | 查询条件是and还是or查询 |
     | sortedBy | string | N | 排序字段，取值desc 降序，asc 升序|
     | orderBy | string | N | 1、orderBy=id按id排<br>2、orderBy=posts&#124;title,posts关联title作为排序字段<br>3、orderBy=posts:custom_id&#124;posts.title，<br>关联字段posts的custom_id,排序字段posts的title|
-        
+     
