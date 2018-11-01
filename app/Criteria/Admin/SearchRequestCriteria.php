@@ -106,10 +106,12 @@ class SearchRequestCriteria implements CriteriaInterface
                     });
                 }else{
                     return $query->whereHas($relation, function (Builder $query) use($items, $key){
-                        $in = false;
+                        if(is_assoc($items)) {
+                            return $query->whereIn($key, $items);
+                        }
                         foreach ($items as $item ) {
                             if(!is_array($item)) {
-                               $in = true;
+                                $query = $query->where($key, $item);
                             }else{
                                 if($item['join']) {
                                     $query = $this->addConditionInQuery($item, $query, $key);
@@ -120,9 +122,6 @@ class SearchRequestCriteria implements CriteriaInterface
                                 }
 
                             }
-                        }
-                        if($in) {
-                            $query = $query->whereIn($key, $items);
                         }
                         return $query;
                     });
