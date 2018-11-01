@@ -83,6 +83,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 });
             }
         }else{
+            Log::info('is assoc array', [is_assoc($value), $value]);
             if(is_assoc($value)) {
                 return $query->whereIn($key, $value);
             }
