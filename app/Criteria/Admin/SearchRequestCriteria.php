@@ -108,8 +108,10 @@ class SearchRequestCriteria implements CriteriaInterface
                             }else{
                                 $join = isset($item['join']) ? $item['join'] : 'and';
                                 if($join === 'and' || $join === 'AND' || $join === '|') {
+                                    Log::info('build and ', $item);
                                     $query = $this->addConditionInQuery($item, $query, $key);
                                 }else{
+                                    Log::info('build or ', $item);
                                     $query = $query->orWhere(function (Builder $query) use ($key, $item){
                                         return $this->addConditionInQuery($item, $query, $key);
                                     });
