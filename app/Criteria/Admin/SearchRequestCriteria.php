@@ -107,6 +107,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 }else{
                     return $query->whereHas($relation, function (Builder $query) use($items, $key){
                         if(is_assoc($items)) {
+                            Log::info('query where in', $items);
                             return $query->whereIn($key, $items);
                         }
                         foreach ($items as $item ) {
