@@ -260,6 +260,7 @@ if(!function_exists('is_assoc')) {
         if(is_array($array)) {
             $keys = array_keys($array);
             $diff = array_diff($keys, array_keys($keys));
+            \Illuminate\Support\Facades\Log::info('diff', $diff);
             return $diff && count($diff);
         }
         return false;
