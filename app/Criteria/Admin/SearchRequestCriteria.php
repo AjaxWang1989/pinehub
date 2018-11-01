@@ -36,7 +36,12 @@ class SearchRequestCriteria implements CriteriaInterface
 
         $fields = [];
         foreach ($searchJson as $key => $value) {
-            if(isset($fieldsSearchable[$key]) || array_search($key, $fieldsSearchable)) {
+            if(isset($fieldsSearchable[$key])) {
+                $fields[$key] = [
+                    'opt' => $fieldsSearchable[$key],
+                    'value' => $value
+                ];
+            }elseif (array_search($key, $fieldsSearchable)) {
                 $fields[$key] = $value;
             }
         }
@@ -97,7 +102,8 @@ class SearchRequestCriteria implements CriteriaInterface
                             if(!is_array($item)) {
                                 $query = $query->where($key, $item);
                             }else{
-                                if($item['join']) {
+                                $join = isset($item['join']) ? $item['join'] : 'and';
+                                if($join === 'and' || $join === 'AND' || $join === '|') {
                                     $query = $this->addConditionInQuery($item, $query, $key);
                                 }else{
                                     $query = $query->orWhere(function (Builder $query) use ($key, $item){
@@ -118,7 +124,8 @@ class SearchRequestCriteria implements CriteriaInterface
                             if(!is_array($item)) {
                                 $query = $query->where($key, $item);
                             }else{
-                                if($item['join']) {
+                                $join = isset($item['join']) ? $item['join'] : 'and';
+                                if($join === 'and' || $join === 'AND' || $join === '|') {
                                     $query = $this->addConditionInQuery($item, $query, $key);
                                 }else{
                                     $query = $query->orWhere(function (Builder $query) use ($key, $item){
