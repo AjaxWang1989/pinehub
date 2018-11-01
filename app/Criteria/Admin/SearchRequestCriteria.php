@@ -166,7 +166,7 @@ class SearchRequestCriteria implements CriteriaInterface
             $item['opt'] = '=';
         }
         $operator = isset($item['opt']) ? $item['opt'] : '=';
-        $value = $item['value'];
+        $value = isset($item['value']) ? $item['value'] : null;
         switch ($operator) {
             case '=': {
                 if(is_array($value)) {
