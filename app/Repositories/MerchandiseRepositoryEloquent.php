@@ -9,6 +9,8 @@ use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\Merchandise;
 use App\Validators\MerchandiseValidator;
+use App\Repositories\Traits\RepositoryRelationShip;
+use App\Criteria\Admin\SearchRequestCriteria;
 
 /**
  * Class MerchandiseRepositoryEloquent.
@@ -17,7 +19,11 @@ use App\Validators\MerchandiseValidator;
  */
 class MerchandiseRepositoryEloquent extends BaseRepository implements MerchandiseRepository
 {
-    use Destruct;
+    use Destruct, RepositoryRelationShip;
+
+    protected $fieldSearchable = [
+        'name' => 'like',
+    ];
     /**
      * Specify Model class name
      *
@@ -26,6 +32,7 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
     public function model()
     {
         return Merchandise::class;
+
     }
 
 
@@ -38,6 +45,7 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
     {
         $this->pushCriteria(app(RequestCriteria::class));
 //        $this->pushCriteria(app(MerchandiseCriteria::class));
+        $this->pushCriteria(app(SearchRequestCriteria::class));
         Merchandise::creating(function (Merchandise $merchandise){
             $merchandise->appId = app(AppManager::class)->currentApp->id;
             $merchandise->code = app('uid.generator')->getUid(MERCHANDISE_CODE_FORMAT, MERCHANDISE_SEGMENT_MAX_LENGTH);

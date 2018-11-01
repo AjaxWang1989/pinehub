@@ -5,9 +5,6 @@ namespace App\Repositories;
 use App\Entities\Role;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\Traits\Destruct;
-use App\Repositories\Traits\RepositoryRelationShip;
-use App\Criteria\Admin\SearchRequestCriteria;
 
 use App\Entities\Member;
 
@@ -18,11 +15,6 @@ use App\Entities\Member;
  */
 class MemberRepositoryEloquent extends BaseRepository implements MemberRepository
 {
-    use Destruct, RepositoryRelationShip;
-
-    protected $fieldSearchable = [
-        'name' => 'like',
-    ];
     /**
      * Specify Model class name
      *
@@ -41,7 +33,6 @@ class MemberRepositoryEloquent extends BaseRepository implements MemberRepositor
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-        $this->pushCriteria(app(SearchRequestCriteria::class));
         Member::created(function (Member $member) {
             $role = Role::whereSlug(Role::MEMBER)->first();
             $member->roles()->attach($role->id);
