@@ -83,8 +83,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 });
             }
         }else{
-            Log::info('is assoc array', [is_assoc($value), $value]);
-            if(is_assoc($value)) {
+            if(is_assoc($value) && (!is_array($value[0]) || !is_object($value[0]))) {
                 return $query->whereIn($key, $value);
             }
             $count = count($value);
@@ -168,7 +167,7 @@ class SearchRequestCriteria implements CriteriaInterface
         $value = $item['value'];
         switch ($operator) {
             case '=': {
-                if(is_array($item['value'])) {
+                if(is_array($value)) {
                     $query->whereIn($key, $value);
                 }elseif ($item['value'] === null){
                     $query->whereNull($key);
@@ -178,7 +177,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 break;
             }
             case '!=': {
-                if($item['value'] === null) {
+                if($value === null) {
                     $query->whereNotNull($key);
                 }elseif (is_array($item['value'])) {
                     $query->whereNotIn($key, $value);
@@ -189,11 +188,17 @@ class SearchRequestCriteria implements CriteriaInterface
             case '>=':
             case '<':
             case '<=': {
+                if($value === null) {
+                    return $query;
+                }
                 $query->where($key, $operator, $value);
                 break;
             }
             case 'like':
             case 'ilike':   {
+                if($value === null) {
+                    return $query;
+                }
                 $query->where($key, $operator, "%{$value}%");
                 break;
             }
