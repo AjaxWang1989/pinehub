@@ -28,7 +28,7 @@ class SearchRequestCriteria implements CriteriaInterface
     {
         $fieldsSearchable = $repository->getFieldsSearchable();
         $searchStr = Request::query('searchJson', null);
-        Log::info('search fields', [$searchStr, base64_decode($searchStr)]);
+        Log::info('search fields', [$searchStr]);
         if(!$searchStr) {
             return $model;
         }
