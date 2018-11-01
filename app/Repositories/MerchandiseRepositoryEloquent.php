@@ -23,8 +23,6 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
 
     protected $fieldSearchable = [
         'name' => 'like',
-        'categories.name' => 'like',
-        'shops.name' => 'like',
         'sell_num'=>'*',
         'sell_price' => '*'
     ];
