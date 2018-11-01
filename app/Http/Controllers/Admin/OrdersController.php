@@ -37,7 +37,7 @@ class OrdersController extends Controller
     public function __construct(OrderRepository $repository)
     {
         $this->repository = $repository;
-        $this->repository->pushCriteria(OrderCriteria::class);
+
         parent::__construct();
     }
 
@@ -49,7 +49,8 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
-        $this->repository->pushCriteria(OrderSearchCriteria::class);
+       // $this->repository->pushCriteria(OrderSearchCriteria::class);
+        $this->repository->pushCriteria(OrderCriteria::class);
         $this->repository->pushCriteria(SearchRequestCriteria::class);
         $orders = $this->repository
             ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member'])
