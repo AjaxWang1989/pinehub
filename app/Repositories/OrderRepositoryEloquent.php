@@ -22,13 +22,13 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 {
     use Destruct;
     protected $fieldSearchable = [
-        'type',
-        'pay_type',
-        'status',
-        'customer_id',
-        'member.mobile',
-        'orderItemMerchandise.name',
-        'code'
+        'type' => '=',
+        'pay_type' => '=',
+        'status' => '=',
+        'customer_id' => '=',
+        'member.mobile' => 'like',
+        'orderItemMerchandise.name' => 'like',
+        'code' => 'like'
     ];
     protected $hourStartAt ;
     protected $hourEndAt;
