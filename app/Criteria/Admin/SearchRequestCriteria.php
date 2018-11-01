@@ -95,6 +95,7 @@ class SearchRequestCriteria implements CriteriaInterface
             }
         }else{
             if(is_assoc($value) && (!is_array($value[0]) || !is_object($value[0]))) {
+                Log::info('build in for');
                 return $query->whereIn($key, $value);
             }
             $count = count($value);
