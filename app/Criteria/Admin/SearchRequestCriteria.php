@@ -32,6 +32,7 @@ class SearchRequestCriteria implements CriteriaInterface
             return $model;
         }
         $searchJson = is_array($searchStr) ? $searchStr : json_decode(base64_decode($searchStr), true);
+        Log::info('search fields', [$searchJson]);
         $fields = [];
         foreach ($searchJson as $key => $value) {
             if(isset($fieldsSearchable[$key]) || array_search($key, $fieldsSearchable)) {
