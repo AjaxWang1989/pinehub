@@ -83,6 +83,9 @@ class SearchRequestCriteria implements CriteriaInterface
                 });
             }
         }else{
+            if(is_assoc($value)) {
+                return $query->whereIn($key, $value);
+            }
             $count = count($value);
             if($count > 1 && isset($value[$count - 1])) {
                 $items = $value;
@@ -107,7 +110,6 @@ class SearchRequestCriteria implements CriteriaInterface
                 }else{
                     return $query->whereHas($relation, function (Builder $query) use($items, $key){
                         if(is_assoc($items)) {
-                            Log::info('query where in', $items);
                             return $query->whereIn($key, $items);
                         }
                         foreach ($items as $item ) {
