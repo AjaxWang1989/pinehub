@@ -37,10 +37,14 @@ class SearchRequestCriteria implements CriteriaInterface
         $fields = [];
         foreach ($searchJson as $key => $value) {
             if(isset($fieldsSearchable[$key])) {
-                $fields[$key] = [
-                    'opt' => $fieldsSearchable[$key],
-                    'value' => $value
-                ];
+                if($fieldsSearchable[$key] === '*') {
+                    $fields[$key] = $value
+                }else{
+                    $fields[$key] = [
+                        'opt' => $fieldsSearchable[$key],
+                        'value' => $value
+                    ];
+                }
             }elseif (array_search($key, $fieldsSearchable)) {
                 $fields[$key] = $value;
             }
