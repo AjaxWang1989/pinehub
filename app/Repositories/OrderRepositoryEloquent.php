@@ -27,7 +27,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         'status' => '=',
         'customer_id' => '=',
         'member.mobile' => 'like',
-        'orderItem.name' => 'like',
+        'orderItems.name' => 'like',
         'code' => 'like',
         'paid_at' => '*'
     ];
