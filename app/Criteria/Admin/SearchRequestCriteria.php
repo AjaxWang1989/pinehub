@@ -34,7 +34,7 @@ class SearchRequestCriteria implements CriteriaInterface
         $searchJson = is_array($searchStr) ? $searchStr : json_decode(base64_decode($searchStr), true);
         $fields = [];
         foreach ($searchJson as $key => $value) {
-            if(isset($fieldsSearchable[$key])) {
+            if(isset($fieldsSearchable[$key]) || array_search($key, $fieldsSearchable)) {
                 $fields[$key] = $value;
             }
         }
