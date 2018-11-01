@@ -32,7 +32,7 @@ class SearchRequestCriteria implements CriteriaInterface
         if(!$searchStr) {
             return $model;
         }
-        $searchJson = is_array($searchStr) ? $searchStr : json_decode(base64_decode($searchStr), true);
+        $searchJson = is_array($searchStr) ? $searchStr : json_decode(urldecode(base64_decode($searchStr)), true);
 
         $fields = [];
         foreach ($searchJson as $key => $value) {
