@@ -72,7 +72,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     public function boot()
     {
         $this->pushCriteria(app(RequestCriteria::class));
-        $this->pushCriteria(SearchRequestCriteria::class);
+//        $this->pushCriteria(SearchRequestCriteria::class);
 
     }
 
