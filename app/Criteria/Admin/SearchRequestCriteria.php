@@ -28,11 +28,12 @@ class SearchRequestCriteria implements CriteriaInterface
     {
         $fieldsSearchable = $repository->getFieldsSearchable();
         $searchStr = Request::query('searchJson', null);
+        Log::info('search fields', [$searchStr, base64_decode($searchStr)]);
         if(!$searchStr) {
             return $model;
         }
         $searchJson = is_array($searchStr) ? $searchStr : json_decode(base64_decode($searchStr), true);
-        Log::info('search fields', [$searchJson, $searchStr, base64_decode($searchStr)]);
+
         $fields = [];
         foreach ($searchJson as $key => $value) {
             if(isset($fieldsSearchable[$key]) || array_search($key, $fieldsSearchable)) {
@@ -44,7 +45,7 @@ class SearchRequestCriteria implements CriteriaInterface
         return $model;
     }
 
-    /**
+    /**Z
      * parse search query
      * @param array $fields
      * @param Builder|Model $model
