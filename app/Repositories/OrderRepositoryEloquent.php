@@ -29,7 +29,9 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         'member.mobile' => 'like',
         'orderItems.name' => 'like',
         'code' => 'like',
-        'paid_at' => '*'
+        'paid_at' => '*',
+        'receiver_name' => 'like',
+        'receiver_mobile' > 'like'
     ];
     protected $hourStartAt ;
     protected $hourEndAt;
