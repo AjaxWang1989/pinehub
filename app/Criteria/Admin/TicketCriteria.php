@@ -9,11 +9,11 @@ use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Class CardCriteria.
+ * Class TicketCriteria.
  *
  * @package namespace App\Criteria\Admin;
  */
-class CardCriteria implements CriteriaInterface
+class TicketCriteria implements CriteriaInterface
 {
     /**
      * Apply criteria in query repository

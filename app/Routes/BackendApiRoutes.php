@@ -79,15 +79,15 @@ class BackendApiRoutes extends ApiRoutes
                 $router->put('/member/card/{id}', ['as' => 'member.card.update', 'uses' => 'MemberCardsController@update']);
                 $router->delete('/member/card/{id}', ['as' => 'member.card.delete', 'uses' => 'MemberCardsController@destroy']);
 
-                $router->post('/groupon/ticket', ['as' => 'groupon-ticket.create', 'middleware' => ['ticket:groupon'],  'uses' => 'CardsController@store']);
-                $router->post('/discount/ticket', ['as' => 'discount-ticket.create', 'middleware' => ['ticket:discount'], 'uses' => 'CardsController@store']);
-                $router->post('/coupon/ticket', ['as' => 'coupon-ticket.create', 'middleware' => ['ticket:coupon_card'],  'uses' => 'CardsController@store']);
-                $router->post('/gift/ticket', ['as' => 'gift-ticket.create', 'middleware' => ['ticket:gift'],  'uses' => 'CardsController@store']);
+                $router->post('/groupon/ticket', ['as' => 'groupon-ticket.create', 'middleware' => ['ticket:groupon'],  'uses' => 'TicketController@store']);
+                $router->post('/discount/ticket', ['as' => 'discount-ticket.create', 'middleware' => ['ticket:discount'], 'uses' => 'TicketController@store']);
+                $router->post('/coupon/ticket', ['as' => 'coupon-ticket.create', 'middleware' => ['ticket:coupon_card'],  'uses' => 'TicketController@store']);
+                $router->post('/gift/ticket', ['as' => 'gift-ticket.create', 'middleware' => ['ticket:gift'],  'uses' => 'TicketController@store']);
 
-                $router->get('/tickets', ['as' => 'tickets', 'middleware' => ['ticket'], 'uses' => 'CardsController@index']);
-                $router->get('/ticket/{id}', ['as' => 'ticket.show', 'uses' => 'CardsController@show']);
+                $router->get('/tickets', ['as' => 'tickets', 'middleware' => ['ticket'], 'uses' => 'TicketController@index']);
+                $router->get('/ticket/{id}', ['as' => 'ticket.show', 'uses' => 'TicketController@show']);
 
-                $router->put('/ticket/{id}', ['as' => 'ticket.update', 'uses' => 'CardsController@update']);
+                $router->put('/ticket/{id}', ['as' => 'ticket.update', 'uses' => 'TicketController@update']);
 
                 $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
                 $router->get('/{type}/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);

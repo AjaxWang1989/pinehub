@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -46,4 +47,14 @@ class Ticket extends Card
     protected $table = 'cards';
 
     const UNAVAILABLE = 3;//unavailable
+
+    public function orders() : HasMany
+    {
+        return $this->hasMany(Order::class, 'card_id', 'id');
+    }
+
+    public function customerTickets() : HasMany
+    {
+        return $this->hasMany(CustomerTicketCard::class, 'card_id', 'id');
+    }
 }

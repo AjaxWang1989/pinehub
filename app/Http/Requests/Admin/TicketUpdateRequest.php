@@ -6,7 +6,7 @@ use App\Entities\Card;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CardUpdateRequest extends FormRequest
+class TicketUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

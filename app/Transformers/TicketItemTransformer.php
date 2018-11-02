@@ -6,11 +6,11 @@ use League\Fractal\TransformerAbstract;
 use App\Entities\Card as CardItem;
 
 /**
- * Class CardItemTransformer.
+ * Class TicketItemTransformer.
  *
  * @package namespace App\Transformers;
  */
-class CardItemTransformer extends TransformerAbstract
+class TicketItemTransformer extends TransformerAbstract
 {
     /**
      * Transform the CardItem entity.
@@ -46,7 +46,10 @@ class CardItemTransformer extends TransformerAbstract
             'discount' => isset($model->cardInfo['discount']) ? $model->cardInfo['discount'] : null,
             'get_limit' => isset($model->cardInfo['base_info']['get_limit']) ? $model->cardInfo['base_info']['get_limit'] : null,
             /* place your other model properties here */
-
+            'quantity' => isset($model->cardInfo['base_info']['quantity']) ? $model->cardInfo['base_info']['quantity'] : null,
+            'used_count' => $model->usedCount,
+            'user_get_count' => $model->userGetCount,
+            'used_rate' => $model->userGetCount? $model->usedCount/$model->userGetCount : 0,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];

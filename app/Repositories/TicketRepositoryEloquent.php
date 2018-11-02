@@ -2,9 +2,7 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\TicketRepository;
 use App\Entities\Ticket;
 use App\Validators\TicketValidator;
 
@@ -13,7 +11,7 @@ use App\Validators\TicketValidator;
  *
  * @package namespace App\Repositories;
  */
-class TicketRepositoryEloquent extends BaseRepository implements TicketRepository
+class TicketRepositoryEloquent extends CardRepositoryEloquent
 {
     /**
      * Specify Model class name
@@ -32,14 +30,14 @@ class TicketRepositoryEloquent extends BaseRepository implements TicketRepositor
      */
     public function boot()
     {
-        $this->pushCriteria(app(RequestCriteria::class));
-        Ticket::creating(function (Ticket &$ticket) {
-            if($ticket->ticketType)
-                $ticket->cardType = $ticket->ticketType;
-            if($ticket->ticketInfo)
-                $ticket->cardInfo = $ticket->ticketInfo;
-            unset($ticket->ticketType, $ticket->ticketType);
-        });
+//        $this->pushCriteria(app(RequestCriteria::class));
+//        Ticket::creating(function (Ticket &$ticket) {
+//            if($ticket->ticketType)
+//                $ticket->cardType = $ticket->ticketType;
+//            if($ticket->ticketInfo)
+//                $ticket->cardInfo = $ticket->ticketInfo;
+//            unset($ticket->ticketType, $ticket->ticketType);
+//        });
     }
     
 }
