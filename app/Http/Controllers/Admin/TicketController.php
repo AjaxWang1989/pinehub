@@ -116,4 +116,19 @@ class TicketController extends Controller
             $this->response()->error('设置失败', HTTP_STATUS_NOT_MODIFIED);
         }
     }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     *
+     * @return \Dingo\Api\Http\Response
+     */
+    public function show($id)
+    {
+        /** @var Ticket $id */
+        $ticket = parent::show($id);
+        return $this->response()->item($ticket, new TicketTransformer());
+    }
 }
