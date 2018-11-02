@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Activity;
 use App\Entities\Order;
 use App\Entities\PaymentActivity;
@@ -53,6 +54,7 @@ class PaymentActivityController extends Controller
     public function index($type)
     {
         $type = PaymentActivity::TYPES[$type];
+        $this->repository->pushCriteria(app(SearchRequestCriteria::class));
         $activities = $this->repository
             ->scopeQuery(function (Activity &$model) use($type) {
                 return $model->withSum('orders as payment_amount', function (Builder $query) {
