@@ -12,6 +12,7 @@ namespace App\Observers;
 use App\Entities\WechatMenu;
 use App\Exceptions\MenuSyncFail;
 use App\Services\AppManager;
+use Illuminate\Support\Facades\Log;
 
 class WechatMenuObserver
 {
@@ -21,9 +22,15 @@ class WechatMenuObserver
         return $menu;
     }
 
+    protected function sync(WechatMenu $menu)
+    {
+
+    }
+
     public function updating(WechatMenu $menu)
     {
         $menu->isPublic = $menu->isPublic ? !$menu->isPublic : $menu->isPublic;
+        Log::info('sync menus', $menu->toArray());
         if($menu->isPublic)
         {
             $buttons = $menu->menus;
@@ -35,7 +42,9 @@ class WechatMenuObserver
                     unset($button['type']);
                 }
             }
+            Log::info('sync menus', $buttons);
             $result = app('wechat')->officeAccount()->menu->create($buttons['button']);
+            Log::info('sync menus', $result);
             if($result['errcode'] !== 0) {
                 throw new MenuSyncFail($result['message']);
             }
