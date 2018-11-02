@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Traits\RepositoryRelationShip;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\ActivityRepository;
 use App\Entities\Activity;
-use App\Validators\ActivityValidator;
 
 /**
  * Class ActivityRepositoryEloquent.
@@ -15,6 +14,10 @@ use App\Validators\ActivityValidator;
  */
 class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepository
 {
+    use RepositoryRelationShip;
+    protected $fieldSearchable = [
+      'status' => '='
+    ];
     /**
      * Specify Model class name
      *

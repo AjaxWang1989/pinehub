@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Activity;
 use App\Entities\Order;
 use App\Entities\PaymentActivity;
@@ -53,18 +54,20 @@ class PaymentActivityController extends Controller
     public function index($type)
     {
         $type = PaymentActivity::TYPES[$type];
+        $this->repository->pushCriteria(app(SearchRequestCriteria::class));
         $activities = $this->repository
-            ->scopeQuery(function (Activity &$model) use($type) {
-                return $model->withSum('orders as payment_amount', function (Builder $query) {
-                    return $query->select([DB::select('sum(orders.payment_amount)')])
-                        ->whereIn('orders.status', [Order::PAID, Order::SEND, Order::COMPLETED]);
-                    })->with(['paymentActivities', 'orders'])
+            ->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {
+                return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
+            }])
+            ->withSum('orders as payment_amount', function (Builder $query) {
+                return $query->select([DB::select('sum(orders.payment_amount)')])
+                    ->whereIn('orders.status', [Order::PAID, Order::SEND, Order::COMPLETED]);
+            })
+            ->scopeQuery(function ($model) use($type) {
+                return $model->with(['paymentActivities', 'orders'])
                     ->whereHas('paymentActivities', function (Builder $query) use($type){
                         return $query->where('payment_activities.type', $type);
-                    })
-                    ->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {
-                        return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
-                    }]);
+                    });
             })->paginate();
         return $this->response()->paginator($activities, new OrderGiftItemTransformer());
     }
