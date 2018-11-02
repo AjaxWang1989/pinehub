@@ -28,7 +28,7 @@ class MemberCardCreateRequest extends FormRequest
         return [
             'member_info' => ['required', 'array'],
             'ticket_type' => ['required', Rule::in([Card::MEMBER_CARD])],
-            'sync'        => ['required', 'boolean'],
+            'sync'        => ['required', 'integer'],
             'begin_at'    => ['date'],
             'end_at'      => ['date']
         ];
@@ -39,7 +39,7 @@ class MemberCardCreateRequest extends FormRequest
         return [
             'member_info.array'      => 'member_info不能为空,且应该是数组',
             'ticket_type.in'         => 'ticket_type不在给定的数组中',
-            'sync.required.boolean'  => 'sync不能为空且必须为布尔型',
+            'sync.required.integer'  => 'sync不能为空且必须为整型',
             'begin_at.date'          => 'begin_at必须为date类型',
             'end_at.date'            => 'end_at必须为date类型'
         ];

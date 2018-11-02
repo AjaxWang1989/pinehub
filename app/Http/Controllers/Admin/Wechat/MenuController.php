@@ -55,10 +55,7 @@ class MenuController extends Controller
     public function index()
     {
         $menuses = $this->repository->paginate();
-        if (request()->wantsJson()) {
-            return $this->response()->paginator($menuses, new WechatMenuTransformer());
-        }
-        return view('menuses.index', compact('menuses'));
+        return $this->response()->paginator($menuses, new WechatMenuTransformer());
     }
 
     /**
@@ -74,12 +71,7 @@ class MenuController extends Controller
     {
         $menu = $request->only(['menus', 'name']);
         $menu = $this->repository->create($menu);
-
-        if ($request->wantsJson()) {
-            return $this->response()->item($menu, new WechatMenuTransformer());
-        }
-
-        return redirect()->back()->with('message', '菜单保存成功');
+        return $this->response()->item($menu, new WechatMenuTransformer());
     }
 
     /**
@@ -92,11 +84,7 @@ class MenuController extends Controller
     public function show($id)
     {
         $menu = $this->repository->find($id);
-        if (request()->wantsJson()) {
-            return $this->response()->item($menu, new WechatMenuTransformer());
-        }
-
-        return view('menuses.show', compact('menu'));
+        return $this->response()->item($menu, new WechatMenuTransformer());
     }
 
     /**
@@ -128,14 +116,7 @@ class MenuController extends Controller
         $menu = $this->repository->update($request->all(), $id);
         if(!$menu)
             throw new ModelNotFoundException('菜单查找失败，没有相应的菜单数据！', 'MENU_NOT_FOUND');
-        $response = [
-            'message' => '菜单修改成功.',
-        ];
-        if ($request->wantsJson()) {
-            return $this->response()->item($menu, new WechatMenuTransformer());
-        }
-
-        return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($menu, new WechatMenuTransformer());
     }
 
 
@@ -187,15 +168,10 @@ class MenuController extends Controller
         }
 
         $message = "删除指定配置信息。";
-        if (request()->wantsJson()) {
-
-            return $this->response(new JsonResponse([
-                'message' => $message,
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', $message);
+        return $this->response(new JsonResponse([
+            'message' => $message,
+            'deleted' => $deleted,
+        ]));
     }
 
     public function __destruct()

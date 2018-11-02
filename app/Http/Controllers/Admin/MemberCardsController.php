@@ -119,13 +119,9 @@ class MemberCardsController extends Controller
      */
     public function update(MemberCardUpdateRequest $request, $id)
     {
+        $request->merge(['card_info' => $request->input('member_info')]);
+       $memberCard =  parent::updateCard($request,$id);
        $data['card_info'] = $request->input('member_info');
-       Log::debug('card info', $data);
-       $memberCard = $this->repository->find($id);
-       tap($memberCard, function (Card $card) use($data) {
-           $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
-           $card->save();
-       });
        if(isset($data['card_info']['base_info']['date_info']))
            $data['card_info']['base_info']['date_info']['type'] = 1;
        if(isset($data['card_info']['background_material_id'])) {
@@ -133,17 +129,7 @@ class MemberCardsController extends Controller
        }
 
        Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
-       $response = [
-           'message' => 'MemberCard updated.',
-           'data'    => $memberCard->toArray(),
-       ];
-
-       if ($request->wantsJson()) {
-
-           return $this->response()->item($memberCard, new MemberCardTransformer());
-       }
-
-       return redirect()->back()->with('message', $response['message']);
+        return $this->response()->item($memberCard, new MemberCardTransformer());
     }
 
 

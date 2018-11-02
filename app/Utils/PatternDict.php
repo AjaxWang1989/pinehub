@@ -50,6 +50,14 @@ define('ORDER_SEGMENT_MAX_LENGTH', 100);
 
 define('ORDER_CODE_FORMAT', 'YmdHis');
 
+define('MEMBER_CARD_SEGMENT_MAX_LENGTH', 100);
+
+define('MEMBER_CARD_CODE_FORMAT', 'Ymd');
+
+define('TICKET_SEGMENT_MAX_LENGTH', 100);
+
+define('TICKET_CODE_FORMAT', 'Ymd');
+
 define('SHOP_CODE_FORMAT', 'Ymd');
 define('SHOP_CODE_SEGMENT_MAX_LENGTH', 100);
 
@@ -63,7 +71,7 @@ define('USER_AUTH_INFO', 'user_info');
 
 define('MEMBER_CARD', 'member_card');
 
-define('COUPON_CARD', 'general_coupon');
+define('COUPON_CARD', 'coupon');
 define('GROUPON_CARD', 'groupon');
 define('DISCOUNT_CARD', 'discount');
 define('CASH_CARD', 'cash');

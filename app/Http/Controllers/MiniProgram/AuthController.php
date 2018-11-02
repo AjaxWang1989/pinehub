@@ -177,10 +177,9 @@ class AuthController extends Controller
     {
         $accessToken = $request->input('access_token', null);
 
-//        $session = app('wechat')->miniProgram()
-//            ->auth
-//            ->session($code);
-        $session = ['open_id'=>'xcx0987654321'];
+        $session = app('wechat')->miniProgram()
+            ->auth
+            ->session($code);
 
         cache([$accessToken.'_session'=> $session], 60);
 
