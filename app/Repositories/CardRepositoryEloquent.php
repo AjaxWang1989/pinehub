@@ -18,7 +18,8 @@ class CardRepositoryEloquent extends BaseRepository implements CardRepository
 {
     use Destruct;
     protected $fieldSearchable = [
-        'card_type' => '='
+        'card_type' => '=',
+        'cards.card_info->base_info->title' =>'=',
     ];
     /**
      * Specify Model class name
