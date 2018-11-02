@@ -20,7 +20,9 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
 {
     use Destruct, RepositoryRelationShip;
     protected $fieldSearchable = [
+        'nickname' => 'like',
         'channel' => '=',
+        'member.id' => '=',
     ];
     /**
      * Specify Model class name
