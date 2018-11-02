@@ -46,7 +46,8 @@ class TicketItemTransformer extends TransformerAbstract
             'discount' => isset($model->cardInfo['discount']) ? $model->cardInfo['discount'] : null,
             'get_limit' => isset($model->cardInfo['base_info']['get_limit']) ? $model->cardInfo['base_info']['get_limit'] : null,
             /* place your other model properties here */
-            'quantity' => isset($model->cardInfo['base_info']['quantity']) ? $model->cardInfo['base_info']['quantity'] : null,
+            'quantity' => $model->issueCount ? ($model->issueCount - $model->userGetCount) : 0,
+            'issue_count' => $model->issueCount,
             'used_count' => $model->usedCount,
             'user_get_count' => $model->userGetCount,
             'used_rate' => $model->userGetCount? $model->usedCount/$model->userGetCount : 0,

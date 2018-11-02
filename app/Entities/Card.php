@@ -31,6 +31,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
  * @property  int $usedCount
  * @property  int $userGetCount
+ * @property  int $issueCount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereBeginAt($value)
@@ -87,6 +88,7 @@ class Card extends Model implements Transformable
         'status',
         'sync',
         'app_id',
+        'issue_count',
         'wechat_app_id',
         'ali_app_id',
         'begin_at',

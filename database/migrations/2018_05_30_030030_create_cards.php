@@ -23,6 +23,8 @@ class CreateCards extends Migration
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
             $table->string('card_type', 16)->default(MEMBER_CARD)->comment('卡券类型');
             $table->json('card_info')->default(null)->comment('卡券信息');
+            $table->unsignedInteger('issue_count')->default(0)->comment('发行数量');
+            $table->unsignedInteger('user_get_count')->default(0)->comment('领取数量');
             $table->unsignedTinyInteger('status')->default(false)->comment('0-审核中 1-审核通过 2-审核未通过');
             $table->tinyInteger('sync')->default(0)->comment('-1 不需要同步 0 - 同步失败 1-同步中 2-同步成功');
             $table->timestamp('begin_at')->nullable()->default(null)->comment('开始日期');
