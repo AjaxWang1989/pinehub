@@ -55,18 +55,17 @@ class PaymentActivityController extends Controller
         $type = PaymentActivity::TYPES[$type];
         $activities = $this->repository
             ->scopeQuery(function (Activity &$model) use($type) {
-            $model = $model->with(['paymentActivities', 'orders'])
-                ->whereHas('paymentActivities', function (Builder $query) use($type){
-                    return $query->where('payment_activities.type', $type);
-                })
-                ->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {
-                    return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
-                }])->withSum('orders as payment_amount', function (Builder $query) {
+                return $model->withSum('orders as payment_amount', function (Builder $query) {
                     return $query->select([DB::select('sum(orders.payment_amount)')])
                         ->whereIn('orders.status', [Order::PAID, Order::SEND, Order::COMPLETED]);
-                });
-            return $model;
-        })->paginate();
+                    })->with(['paymentActivities', 'orders'])
+                    ->whereHas('paymentActivities', function (Builder $query) use($type){
+                        return $query->where('payment_activities.type', $type);
+                    })
+                    ->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {
+                        return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
+                    }]);
+            })->paginate();
         return $this->response()->paginator($activities, new OrderGiftItemTransformer());
     }
 
