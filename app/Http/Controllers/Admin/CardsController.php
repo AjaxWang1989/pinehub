@@ -12,17 +12,16 @@ use App\Http\Requests\Admin\MemberCardUpdateRequest;
 use App\Http\Requests\Admin\TicketCreateRequest;
 use App\Http\Response\JsonResponse;
 
+use App\Repositories\MemberCardRepository;
+use App\Repositories\TicketRepository;
 use App\Services\AppManager;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\TicketUpdateRequest;
-use App\Transformers\TicketTransformer;
-use App\Transformers\TicketItemTransformer;
 use App\Repositories\CardRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Event;
 
 /**
  * Class CardsController.
@@ -32,7 +31,7 @@ use Illuminate\Support\Facades\Event;
 class CardsController extends Controller
 {
     /**
-     * @var CardRepository
+     * @var TicketRepository|MemberCardRepository
      */
     protected $repository;
 
@@ -42,7 +41,7 @@ class CardsController extends Controller
      *
      * @param CardRepository $repository
      */
-    public function __construct(CardRepository $repository)
+    public function __construct( $repository)
     {
         $this->repository = $repository;
         parent::__construct();
