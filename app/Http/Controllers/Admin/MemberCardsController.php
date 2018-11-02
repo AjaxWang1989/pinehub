@@ -40,7 +40,6 @@ class MemberCardsController extends Controller
     public function __construct(MemberCardRepository $repository)
     {
         $this->repository = $repository;
-        $this->repository->pushCriteria(MemberCardCriteria::class);
         parent::__construct();
     }
 
@@ -51,6 +50,7 @@ class MemberCardsController extends Controller
      */
     public function index()
     {
+        $this->repository->pushCriteria(MemberCardCriteria::class);
         $memberCards = $this->repository->paginate();
         return $this->response()->paginator($memberCards, new MemberCardItemTransformer());
     }

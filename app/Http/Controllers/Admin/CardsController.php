@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Criteria\Admin\CardCriteria;
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Card;
+use App\Entities\MemberCard;
 use App\Entities\Ticket;
 use App\Events\SyncTicketCardInfoEvent;
+use App\Http\Requests\Admin\MemberCardCreateRequest;
+use App\Http\Requests\Admin\MemberCardUpdateRequest;
+use App\Http\Requests\Admin\TicketCreateRequest;
 use App\Http\Response\JsonResponse;
 
 use App\Services\AppManager;
+use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Exception;
-use App\Http\Requests\Admin\CardCreateRequest;
-use App\Http\Requests\Admin\CardUpdateRequest;
-use App\Transformers\CardTransformer;
-use App\Transformers\CardItemTransformer;
+use App\Http\Requests\Admin\TicketUpdateRequest;
+use App\Transformers\TicketTransformer;
+use App\Transformers\TicketItemTransformer;
 use App\Repositories\CardRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Event;
 
 /**
@@ -41,7 +46,6 @@ class CardsController extends Controller
     {
         $this->repository = $repository;
         parent::__construct();
-        $this->repository->pushCriteria(CardCriteria::class);
     }
 
     public function colors()
@@ -57,24 +61,24 @@ class CardsController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed|Collection
      */
     public function index()
     {
-        $cards = $this->repository->paginate();
-        return $this->response()->paginator($cards, new CardItemTransformer());
+        $cards = $this->repository
+            ->paginate();
+        return $cards;
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  CardCreateRequest $request
+     * @param  Request|TicketCreateRequest|MemberCardCreateRequest $request
      *
-     * @return \Illuminate\Http\Response
+     * @return mixed|Card|Ticket|MemberCard
      *
-     * @throws Exception
      */
-    public function store(CardCreateRequest $request)
+    public function store($request)
     {
         $appManager = app(AppManager::class);
         $data['card_info'] = $request->input('ticket_info');
@@ -83,15 +87,7 @@ class CardsController extends Controller
         $data['begin_at'] = $request->input('begin_at');
         $data['end_at'] = $request->input('end_at');
         $data['card_type'] = $request->input('ticket_type');
-        $card = $this->repository->create($data);
-        if ($request->input('sync', false)) {
-            $ticket = new Ticket(with($card, function (Card $card) {
-                return $card->toArray();
-            }));
-            $ticket->exists = true;
-            Event::fire(new SyncTicketCardInfoEvent($ticket, [], app('wechat')->officeAccount()));
-        }
-        return $this->response()->item($card, new CardTransformer());
+        return $this->repository->create($data);
     }
 
     /**
@@ -99,12 +95,12 @@ class CardsController extends Controller
      *
      * @param  int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Card|Ticket|MemberCard
      */
     public function show($id)
     {
         $card = $this->repository->find($id);
-        return $this->response()->item($card, new CardTransformer());
+        return $card;
     }
 
     /**
@@ -124,14 +120,14 @@ class CardsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  CardUpdateRequest $request
+     * @param  TicketUpdateRequest|Request|MemberCardUpdateRequest $request
      * @param  string            $id
      *
      * @return Response
      *
      * @throws Exception
      */
-    public function update(CardUpdateRequest $request, $id)
+    public function update($request, $id)
     {
        $data['card_type'] = $request->input('ticket_type');
        $data['card_info'] = $request->input('ticket_info');
@@ -145,35 +141,10 @@ class CardsController extends Controller
           $card->endAt    = $data['end_at'];
           $card->save();
        });
-       if($request->input('sync', false)) {
-           $ticket = new Ticket(with($card, function (Card $card) {
-               return $card->toArray();
-           }));
-           $ticket->exists = true;
-           Event::fire(new SyncTicketCardInfoEvent($ticket, $data['card_info'], app('wechat')->officeAccount()));
-       }
-       return $this->response()->item($card, new CardTransformer());
+       return $card;
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     * @throws
-     * */
-    public function unavailable(int $id)
-    {
-        $result = $this->repository->update(['status' => Ticket::UNAVAILABLE], $id);
-        if($result) {
-            $result = app('wechat')->officeAccount()->card->reduceStock($result->cardId, $result->cardInfo['base_info']['sku']['quantity']);
-            if($result['errcode'] !== 0) {
-                $this->response()->error('同步失败', HTTP_STATUS_NOT_MODIFIED);
-            }else{
-                return $this->response(new JsonResponse(['message' => '设置成功，卡券已经失效']));
-            }
-        }else{
-            $this->response()->error('设置失败', HTTP_STATUS_NOT_MODIFIED);
-        }
-    }
+
 
     public function qrCode(int $id)
     {

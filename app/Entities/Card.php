@@ -29,6 +29,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $deletedAt
  * @property-read \App\Entities\App|null $app
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
+ * @property  int $usedCount
+ * @property  int $userGetCount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereBeginAt($value)
