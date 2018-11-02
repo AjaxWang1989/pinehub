@@ -78,7 +78,7 @@ class CardsController extends Controller
      * @return mixed|Card|Ticket|MemberCard
      *
      */
-    public function store(Request $request)
+    public function storeCard(Request $request)
     {
         $appManager = app(AppManager::class);
         $data['card_info'] = $request->input('ticket_info');
@@ -127,7 +127,7 @@ class CardsController extends Controller
      *
      * @throws Exception
      */
-    public function update(Request $request, $id)
+    public function updateCard(Request $request, $id)
     {
        $data['card_type'] = $request->input('ticket_type');
        $data['card_info'] = $request->input('ticket_info');
