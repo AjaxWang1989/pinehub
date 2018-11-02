@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\MemberCardCriteria;
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Card;
 use App\Events\SyncMemberCardInfoEvent;
 use App\Http\Response\JsonResponse;
@@ -51,6 +52,7 @@ class MemberCardsController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(MemberCardCriteria::class);
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
         $memberCards = $this->repository->paginate();
         return $this->response()->paginator($memberCards, new MemberCardItemTransformer());
     }
