@@ -2,16 +2,16 @@
 
 namespace App\Repositories;
 
+use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\Ticket;
-use App\Validators\TicketValidator;
 
 /**
  * Class TicketRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class TicketRepositoryEloquent extends CardRepositoryEloquent
+class TicketRepositoryEloquent extends BaseRepository implements TicketRepository
 {
     /**
      * Specify Model class name
