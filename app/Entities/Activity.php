@@ -29,6 +29,9 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Customer[] $customers
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\PaymentActivity[] $paymentActivities
+ * @property  int $orderCount
+ * @property  int $customerCount
+ * @property  float $paymentAmount
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereDescription($value)

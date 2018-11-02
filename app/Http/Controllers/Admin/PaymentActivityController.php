@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Entities\Activity;
+use App\Entities\Order;
 use App\Entities\PaymentActivity;
 use App\Http\Response\JsonResponse;
 use App\Repositories\OrderRepository;
@@ -61,6 +62,10 @@ class PaymentActivityController extends Controller
             $model->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {
                     return $query->select([DB::raw('count(distinct `orders`.`customer_id`)')]);
                 }]);
+            $model->withSum('orders as payment_amount', function (Builder $query) {
+                $query->select([DB::select('sum(orders.payment_amount)')])
+                    ->whereIn('orders.status', [Order::PAID, Order::SEND, Order::COMPLETED]);
+            });
             return $model;
         })->paginate();
         return $this->response()->paginator($activities, new OrderGiftItemTransformer());
