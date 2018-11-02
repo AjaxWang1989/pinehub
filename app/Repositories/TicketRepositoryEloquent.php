@@ -2,8 +2,6 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\Ticket;
 
 /**
@@ -11,7 +9,7 @@ use App\Entities\Ticket;
  *
  * @package namespace App\Repositories;
  */
-class TicketRepositoryEloquent extends BaseRepository implements TicketRepository
+class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketRepository
 {
     /**
      * Specify Model class name
