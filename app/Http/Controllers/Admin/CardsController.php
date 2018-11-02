@@ -64,6 +64,7 @@ class CardsController extends Controller
      */
     public function index()
     {
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
         $cards = $this->repository
             ->paginate();
         return $cards;
@@ -77,15 +78,16 @@ class CardsController extends Controller
      * @return mixed|Card|Ticket|MemberCard
      *
      */
-    public function storeCard(Request $request)
+    public function storeCard($request)
     {
         $appManager = app(AppManager::class);
-        $data['card_info'] = $request->input('ticket_info');
+        $data['card_info'] = $request->input('card_info');
         $data['app_id'] = $appManager->currentApp->id;
         $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
         $data['begin_at'] = $request->input('begin_at');
         $data['end_at'] = $request->input('end_at');
         $data['card_type'] = $request->input('ticket_type');
+        $data['sync']   = $request->input('sync');
         return $this->repository->create($data);
     }
 
@@ -122,14 +124,14 @@ class CardsController extends Controller
      * @param  TicketUpdateRequest|Request|MemberCardUpdateRequest $request
      * @param  string            $id
      *
-     * @return Response
+     * @return Card
      *
      * @throws Exception
      */
-    public function updateCard(Request $request, $id)
+    public function updateCard($request, $id)
     {
        $data['card_type'] = $request->input('ticket_type');
-       $data['card_info'] = $request->input('ticket_info');
+       $data['card_info'] = $request->input('card_info');
        $data['begin_at'] = $request->input('begin_at', null);
        $data['end_at'] = $request->input('end_at', null);
        $card = $this->repository->find($id);
