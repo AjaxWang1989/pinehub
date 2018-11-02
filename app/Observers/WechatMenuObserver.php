@@ -30,6 +30,7 @@ class WechatMenuObserver
     public function updating(WechatMenu $menu)
     {
         $menu->isPublic = $menu->isPublic ? !$menu->isPublic : $menu->isPublic;
+        Log::info('sync menus', $menu->toArray());
         if($menu->isPublic)
         {
             $buttons = $menu->menus;
