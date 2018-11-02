@@ -27,7 +27,7 @@ class CardItemTransformer extends TransformerAbstract
             'color'      => isset($model->cardInfo['base_info']['color']) ? $model->cardInfo['base_info']['color'] : null ,
             //'background_pic_url' => $model->cardInfo['background_pic_url'],
             //'logo_url' => $model->cardInfo['base_info']['logo_url'],
-            'card_type' => $model->cardType,
+            'card_type' => mb_strtoupper($model->cardType),
             'brand_name' => isset($model->cardInfo['base_info']['brand_name']) ?  $model->cardInfo['base_info']['brand_name'] : null ,
             'code_type'  => isset($model->cardInfo['base_info']['code_type']) ? $model->cardInfo['base_info']['code_type'] : null,
             'title' => isset($model->cardInfo['base_info']['title']) ? $model->cardInfo['base_info']['title'] : null ,

@@ -24,7 +24,7 @@ class CardTransformer extends TransformerAbstract
         return [
             'id' => (int)$model->id,
             'code'       => $model->code,
-            'ticket_type' => $model->cardType,
+            'ticket_type' => mb_strtoupper($model->cardType),
             'ticket_info' => $model->cardInfo,
             'ticket_id'   => $model->cardId,
             'app_id'      => $model->appId,
