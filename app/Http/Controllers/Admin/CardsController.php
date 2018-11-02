@@ -64,6 +64,7 @@ class CardsController extends Controller
      */
     public function index()
     {
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
         $cards = $this->repository
             ->paginate();
         return $cards;
@@ -80,12 +81,13 @@ class CardsController extends Controller
     public function storeCard(Request $request)
     {
         $appManager = app(AppManager::class);
-        $data['card_info'] = $request->input('ticket_info');
+        $data['card_info'] = $request->input('card_info');
         $data['app_id'] = $appManager->currentApp->id;
         $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
         $data['begin_at'] = $request->input('begin_at');
         $data['end_at'] = $request->input('end_at');
         $data['card_type'] = $request->input('ticket_type');
+        return $data;
         return $this->repository->create($data);
     }
 

@@ -9,14 +9,15 @@ use App\Events\SyncMemberCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
 use App\Services\AppManager;
+use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\MemberCardCreateRequest;
 use App\Http\Requests\Admin\MemberCardUpdateRequest;
 use App\Transformers\MemberCardTransformer;
 use App\Transformers\MemberCardItemTransformer;
-use App\Repositories\CardRepository as MemberCardRepository;
-use App\Http\Controllers\Controller;
+use App\Repositories\MemberCardInfoRepository as MemberCardRepository;
+use App\Http\Controllers\Admin\CardsController as Controller;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 
@@ -41,7 +42,7 @@ class MemberCardsController extends Controller
     public function __construct(MemberCardRepository $repository)
     {
         $this->repository = $repository;
-        parent::__construct();
+        parent::__construct($repository);
     }
 
     /**
@@ -52,8 +53,7 @@ class MemberCardsController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(MemberCardCriteria::class);
-        $this->repository->pushCriteria(SearchRequestCriteria::class);
-        $memberCards = $this->repository->paginate();
+        $memberCards = parent::index();
         return $this->response()->paginator($memberCards, new MemberCardItemTransformer());
     }
 
@@ -68,19 +68,15 @@ class MemberCardsController extends Controller
      */
     public function store(MemberCardCreateRequest $request)
     {
-        $appManager = app(AppManager::class);
-        $data['card_type'] = Card::MEMBER_CARD;
-        $data['app_id'] = $appManager->currentApp->id;
-        $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
-        $data['status'] = Card::CHECK_ING;
-        $data['sync'] = $request->input('sync', false) ? Card::SYNC_NO_NEED : Card::SYNC_ING;
-        $data['card_info'] = $request->input('member_info');
-        $memberCard = $this->repository->create($data);
-        if(isset($data['card_info']['background_material_id'])) {
-            unset($data['card_info']['background_material_id']);
+        $request->merge(['card_info' => $request->input('member_info')]);
+        $memberCard = parent::storeCard($request);
+        $cardInfo = $memberCard->cardInfo;
+        if(isset($cardInfo['background_material_id'])) {
+            unset($cardInfo['background_material_id']);
         }
-        if($data['wechat_app_id'] && $data['sync'])
-            Event::fire(new SyncMemberCardInfoEvent($memberCard, $data['card_info'], app('wechat')->officeAccount()));
+        if($memberCard->wechatAppId && $memberCard->sync)
+            Event::fire(new SyncMemberCardInfoEvent($memberCard, $cardInfo,
+                app('wechat')->officeAccount()));
         return $this->response()->item($memberCard, new MemberCardTransformer());
     }
 
