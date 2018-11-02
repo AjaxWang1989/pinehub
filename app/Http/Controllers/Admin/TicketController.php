@@ -59,9 +59,6 @@ class TicketController extends Controller
         $this->ticketRepository->pushCriteria(app(TicketCriteria::class));
         $this->ticketRepository->pushCriteria(app(SearchRequestCriteria::class));
         $this->ticketRepository->withCount([
-            'customerTickets as user_get_count' => function (Builder $query) {
-                return $query->whereNotNull('customer_id');
-            },
             'customerTickets as used_count' => function (Builder $query) {
                 return $query->whereNotNull('customer_id')->where('status', CustomerTicketCard::STATUS_USE);
             }
