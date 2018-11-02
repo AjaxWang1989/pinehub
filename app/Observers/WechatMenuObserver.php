@@ -35,7 +35,6 @@ class WechatMenuObserver
         {
             $buttons = $menu->menus;
             foreach ($buttons['button'] as &$button) {
-                unset($button['width']);
                 if(empty($button['sub_button'])) {
                     unset($button['sub_button']);
                 }else{
