@@ -24,7 +24,7 @@ class CustomerItemTransformer extends TransformerAbstract
     {
         return array(
             'id'         => (int) $model->id,
-            'is_member'  => !$model->userId,
+            'is_member'  => !!$model->memberId,
             'nickname'   => $model->nickname,
             'score'  => $model->score,
             'app_id' => $model->appId,

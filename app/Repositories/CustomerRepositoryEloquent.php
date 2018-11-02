@@ -22,7 +22,7 @@ class CustomerRepositoryEloquent extends BaseRepository implements CustomerRepos
     protected $fieldSearchable = [
         'nickname' => 'like',
         'channel' => '=',
-        'member.id' => '=',
+        'member_id' => '*',
     ];
     /**
      * Specify Model class name
