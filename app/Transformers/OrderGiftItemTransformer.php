@@ -30,7 +30,7 @@ class OrderGiftItemTransformer extends TransformerAbstract
             'status'     => $model->status,
             'order_count' => $model->orderCount,
             'customer_count' => $model->customerCount,
-            'money'      =>    $model->paymentAmount
+            'paid_amount'      =>    $model->paymentAmount
         ];
     }
 }
