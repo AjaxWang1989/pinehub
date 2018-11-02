@@ -13,6 +13,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\Card
  *
  * @property int $id
+ * @property string $code 订单编号
  * @property string $cardId 卡券id
  * @property string|null $wechatAppId 微信app id
  * @property string|null $aliAppId 支付宝app id
@@ -77,6 +78,7 @@ class Card extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
+        'code',
         'card_id',
         'card_type',
         'card_info',

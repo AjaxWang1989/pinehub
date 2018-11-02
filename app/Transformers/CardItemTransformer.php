@@ -23,6 +23,7 @@ class CardItemTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
+            'code'       => $model->code,
             'color'      => isset($model->cardInfo['base_info']['color']) ? $model->cardInfo['base_info']['color'] : null ,
             //'background_pic_url' => $model->cardInfo['background_pic_url'],
             //'logo_url' => $model->cardInfo['base_info']['logo_url'],
