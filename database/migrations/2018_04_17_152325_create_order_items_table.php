@@ -19,7 +19,7 @@ class CreateOrderItemsTable extends Migration
             $table->increments('id');
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统appid');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺ID');
-            $table->unsignedInteger('activity_merchandises_id')->nullable()->default(null)->comment('新品预定商品id');
+            $table->unsignedInteger('activity_id')->nullable()->default(null)->comment('活动id');
             $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
             $table->unsignedInteger('customer_id')->nullable()->default(null)->comment('买家ID');
             $table->unsignedInteger('order_id')->comment('订单id');
@@ -45,7 +45,7 @@ class CreateOrderItemsTable extends Migration
             $table->index('code');
             $table->index('customer_id');
             $table->index('shop_id');
-            $table->index('activity_merchandises_id');
+            $table->index('activity_id');
             $table->index('order_id');
             $table->index('status');
 		});

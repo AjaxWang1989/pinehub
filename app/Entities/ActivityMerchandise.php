@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Entities\ActivityMerchandise
@@ -57,8 +57,8 @@ class ActivityMerchandise extends Model implements Transformable
         'start_at','end_at','tags','describe','sell_price'
     ];
 
-    public function merchandise() : hasMany
+    public function merchandise() : BelongsTo
     {
-        return $this->hasMany(Merchandise::class, 'merchandise_id', 'id');
+        return $this->BelongsTo(Merchandise::class, 'merchandise_id', 'id');
     }
 }

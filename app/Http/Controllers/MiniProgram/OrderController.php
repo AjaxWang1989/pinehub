@@ -181,7 +181,7 @@ class OrderController extends Controller
             return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
         }
 
-        $orders['shop_id'] = $orders['store_id'] ? $orders['store_id'] : null;
+        $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
 
         //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         if (isset($orders['store_id']) && $orders['store_id']){
@@ -191,17 +191,17 @@ class OrderController extends Controller
                     'shop_id'     =>$orders['store_id']
                 ]);
 
-        }elseif (isset($orders['activity_merchandises_id']) && $orders['activity_merchandises_id']){
+        }elseif (isset($orders['activity_id']) && $orders['activity_id']){
             $shoppingCarts = $this->shoppingCartRepository
                 ->findWhere([
                 'customer_id'              => $user->id,
-                'activity_merchandises_id' => $orders['activity_merchandises_id']]);
+                'activity_id' => $orders['activity_id']]);
 
         }else{
             $shoppingCarts = $this->shoppingCartRepository
                 ->findWhere([
                 'customer_id'               => $user->id,
-                'activity_merchandises_id'  => null,
+                'activity_id'  => null,
                 'shop_id'                   => null
             ]);
 
@@ -220,7 +220,7 @@ class OrderController extends Controller
         $deleteIds  = [];
         //取出购物车商品信息组装成一个子订单数组
         foreach ($shoppingCarts as $k => $v) {
-            $orderItems[$k]['activity_merchandises_id'] = $v['activity_merchandises_id'];
+            $orderItems[$k]['activity_id'] = $v['activity_id'];
             $orderItems[$k]['shop_id'] = $v['shop_id'];
             $orderItems[$k]['customer_id'] = $v['customer_id'];
             $orderItems[$k]['merchandise_id'] = $v['merchandise_id'];

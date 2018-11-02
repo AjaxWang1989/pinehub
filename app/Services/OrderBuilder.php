@@ -135,6 +135,7 @@ class OrderBuilder implements InterfaceServiceHandler
             'send_end_time',
             'card_id',
             'shop_id',
+            'activity_id',
             'merchandise_num',
             'status',
             'years',
@@ -196,6 +197,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $orderModel = $this->order->create($order->toArray());
             if($orderModel && $orderItems) {
                 $orderItems = $orderItems->map(function (Collection $orderItem) use($orderModel) {
+                    $orderItem['activity_id'] =  $orderModel->activityId;
                     $orderItem['app_id'] =  $orderModel->appId;
                     $orderItem['member_id'] =  $orderModel->memberId;
                     $orderItem['status'] =  $orderModel->status;
@@ -271,9 +273,9 @@ class OrderBuilder implements InterfaceServiceHandler
             function ( Collection $orderItem){
             $subOrder = null;
             if(isset($orderItem['sku_product_id']) && $orderItem['sku_product_id']) {
-                if($orderItem['activity_merchandises_id']) {
+                if($orderItem['activity_id']) {
                     $repository = app()->make(ActivityMerchandiseRepository::class);
-                    $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
+                    $product = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
                     })->first();
 
@@ -295,7 +297,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['customer_id']);
                 $subOrder = $subOrder->merge( $orderItemProduct);
             }elseif (isset($orderItem['merchandise_id'])) {
-                if($orderItem['activity_merchandises_id']) {
+                if($orderItem['activity_id']) {
                     $repository = app()->make(ActivityMerchandiseRepository::class);
                     $goods = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')->whereMerchandiseId($orderItem['merchandise_id']);
