@@ -70,6 +70,7 @@ class MenuController extends Controller
     public function store(MenuCreateRequest $request)
     {
         $menu = $request->only(['menus', 'name']);
+        $menu['is_public'] = true;
         $menu = $this->repository->create($menu);
         return $this->response()->item($menu, new WechatMenuTransformer());
     }
