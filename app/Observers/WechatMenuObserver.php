@@ -29,13 +29,10 @@ class WechatMenuObserver
 
     public function updating(WechatMenu $menu)
     {
-        $menu->isPublic = $menu->isPublic ? !$menu->isPublic : $menu->isPublic;
-        Log::info('sync menus', $menu->toArray());
         if($menu->isPublic)
         {
             $buttons = $menu->menus;
             foreach ($buttons['button'] as &$button) {
-                unset($button['width']);
                 if(empty($button['sub_button'])) {
                     unset($button['sub_button']);
                 }else{
