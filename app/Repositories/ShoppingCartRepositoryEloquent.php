@@ -43,13 +43,13 @@ class ShoppingCartRepositoryEloquent extends BaseRepository implements ShoppingC
      * @return mixed
      */
 
-    public function shoppingCartMerchandises(int $storeId = null,int $activityMerchandiseId = null ,$userId){
+    public function shoppingCartMerchandises(int $storeId = null,int $activityId = null ,$userId){
         if (isset($storeId) && $storeId){
             $where = ['customer_id'=>$userId,'shop_id'=>$storeId];
-        }elseif(isset($activityMerchandiseId) && $activityMerchandiseId){
-            $where = ['customer_id'=>$userId,'activity_merchandises_id'=>$activityMerchandiseId];
+        }elseif(isset($activityId) && $activityId){
+            $where = ['customer_id'=>$userId,'activity_id'=>$activityId];
         } else{
-            $where = ['customer_id'=>$userId,'shop_id'=>null,'activity_merchandises_id'=>null];
+            $where = ['customer_id'=>$userId,'shop_id'=>null,'activity_id'=>null];
         }
         $this->scopeQuery(function (ShoppingCart $shoppingCart) use($where) {
             return $shoppingCart->with('merchandise')->where($where);

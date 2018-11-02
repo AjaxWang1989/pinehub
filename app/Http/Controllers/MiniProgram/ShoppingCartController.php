@@ -96,14 +96,14 @@ class ShoppingCartController extends Controller
                 'customer_id'=>$user['id']
             ])->first();
 
-        }elseif (isset($shoppingCart['activity_merchandises_id']) && $shoppingCart['activity_merchandises_id']){
+        }elseif (isset($shoppingCart['activity_id']) && $shoppingCart['activity_id']){
             //根据活动商品id查询此活动商品的库存
             $Merchandise = $this->activityMerchandiseRepository->findWhere([
                 'merchandise_id'=>$shoppingCart['merchandise_id']
             ])->first();
 
             $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'activity_merchandises_id'=>$shoppingCart['activity_merchandises_id'],
+                'activity_id'=>$shoppingCart['activity_id'],
                 'merchandise_id'=>$shoppingCart['merchandise_id'],
                 'customer_id'=>$user['id']
             ])->first();
@@ -113,7 +113,7 @@ class ShoppingCartController extends Controller
             $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
                 'merchandise_id'=>$shoppingCart['merchandise_id'],
                 'shop_id' => null,
-                'activity_merchandises_id' => null,
+                'activity_id' => null,
                 'customer_id' => $user['id']
             ])->first();
         }
@@ -122,8 +122,8 @@ class ShoppingCartController extends Controller
             return $this->response(new JsonResponse(['message' => '此商品没有库存了']));
         }
 
-        $shoppingCart['shop_id'] = $shoppingCart['store_id'] ? $shoppingCart['store_id'] : null;
-        $shoppingCart['activity_merchandises_id'] = $shoppingCart['activity_merchandises_id'] ? $shoppingCart['activity_merchandises_id'] : null;
+        $shoppingCart['shop_id'] = isset($shoppingCart['store_id']) ? $shoppingCart['store_id'] : null;
+        $shoppingCart['activity_id'] = isset($shoppingCart['activity_id']) ? $shoppingCart['activity_id'] : null;
         $shoppingCart['name'] = $merchandise['name'];
         $shoppingCart['customer_id'] = $user->id;
         $shoppingCart['member_id'] = $user->memberId ? $user->memberId : null;
@@ -156,9 +156,9 @@ class ShoppingCartController extends Controller
                 'merchandise_id'=>$shoppingCart['merchandise_id'],
                 'customer_id'=>$user['id']
             ])->first();
-        }elseif (isset($shoppingCart['activity_merchandises_id']) && $shoppingCart['activity_merchandises_id']){
+        }elseif (isset($shoppingCart['activity_id']) && $shoppingCart['activity_id']){
             $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'activity_merchandises_id'=>$shoppingCart['activity_merchandises_id'],
+                'activity_id'=>$shoppingCart['activity_id'],
                 'merchandise_id'=>$shoppingCart['merchandise_id'],
                 'customer_id'=>$user['id']
             ])->first();
@@ -166,7 +166,7 @@ class ShoppingCartController extends Controller
             $shoppingMerchandise = $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
                 'merchandise_id'=>$shoppingCart['merchandise_id'],
                 'shop_id' => null,
-                'activity_merchandises_id' => null,
+                'activity_id' => null,
                 'customer_id'=>$user['id']
             ])->first();
         }
@@ -187,17 +187,17 @@ class ShoppingCartController extends Controller
      * @param int $storeId
      * @return \Dingo\Api\Http\Response
      */
-    public function emptyMerchandise(int $storeId = null, int $activityMerchandiseId = null){
+    public function emptyMerchandise(int $storeId = null, int $activityId = null){
         $user = $this->mpUser();
         if (isset($storeId) && $storeId){
             $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$storeId,'customer_id'=>$user['id']]);
-        }elseif(isset($activityMerchandiseId) && $activityMerchandiseId){
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['activity_merchandises_id'=>$activityMerchandiseId,'customer_id'=>$user['id']]);
+        }elseif(isset($activityId) && $activityId){
+            $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['activity_id'=>$activityId,'customer_id'=>$user['id']]);
         }else{
             $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
                 'customer_id'=>$user['id'],
                 'shop_id' => null,
-                'activity_merchandises_id' => null,
+                'activity_id' => null,
             ]);
         }
         $deleteIds = [];
@@ -214,10 +214,10 @@ class ShoppingCartController extends Controller
      * @return \Dingo\Api\Http\Response
      */
 
-    public function shoppingCartMerchandises(int $storeId = null,int $activityMerchandiseId = null){
+    public function shoppingCartMerchandises(int $storeId = null,int $activityId = null){
         $user = $this->mpUser();
         $userId =$user['id'];
-        $items  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId ,$activityMerchandiseId ,$userId);
+        $items  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId ,$activityId ,$userId);
         return $this->response()->paginator($items,new ShoppingCartTransformer);
     }
 

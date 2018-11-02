@@ -24,7 +24,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property int $id
  * @property string|null $appId 系统app id
  * @property int|null $shopId 店铺shop id
- * @property int|null $activityMerchandisesId 新品活动商品id
+ * @property int|null $activityId 活动id
  * @property int|null $memberId 买家会员id
  * @property int|null customerId 买家customerId
  * @property int|null $merchandiseId 商品信息merchandise id
@@ -94,7 +94,7 @@ class ShoppingCart extends Model implements AuthenticatableContract, Authorizabl
 
     protected $fillable =[
         'app_id','shop_id','member_id','customer_id','merchandise_id','sku_product_id','quality','sell_price','amount'
-        ,'activity_merchandises_id'
+        ,'activity_id'
     ];
 
     public function shop():BelongsTo
