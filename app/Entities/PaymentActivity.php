@@ -42,7 +42,7 @@ class PaymentActivity extends Model implements Transformable
     const PAY_GIFT = "PAY_GIFT";
 
     const TYPES = [
-        'utc' => self::PAY_FULL,// up to cut 满减、
+        'coupon' => self::PAY_FULL,// up to cut 满减、
         'gift' => self::PAY_GIFT
     ];
     const WAIT = 0;
