@@ -15,6 +15,9 @@ use App\Validators\ActivityValidator;
  */
 class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepository
 {
+    protected $fieldSearchable = [
+      'status' => '='
+    ];
     /**
      * Specify Model class name
      *
