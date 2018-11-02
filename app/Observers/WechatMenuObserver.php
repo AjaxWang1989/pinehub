@@ -41,6 +41,7 @@ class WechatMenuObserver
                     unset($button['type']);
                 }
             }
+            Log::info('sync menus', $buttons);
             $result = app('wechat')->officeAccount()->menu->create($buttons['button']);
             Log::info('sync menus', $result);
             if($result['errcode'] !== 0) {
