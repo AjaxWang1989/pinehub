@@ -63,7 +63,7 @@ class PaymentActivityController extends Controller
                 return $query->select([DB::select('sum(orders.payment_amount)')])
                     ->whereIn('orders.status', [Order::PAID, Order::SEND, Order::COMPLETED]);
             })
-            ->scopeQuery(function (Activity &$model) use($type) {
+            ->scopeQuery(function ($model) use($type) {
                 return $model->with(['paymentActivities', 'orders'])
                     ->whereHas('paymentActivities', function (Builder $query) use($type){
                         return $query->where('payment_activities.type', $type);
