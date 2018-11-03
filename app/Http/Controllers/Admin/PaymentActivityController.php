@@ -9,6 +9,7 @@ use App\Entities\PaymentActivity;
 use App\Http\Response\JsonResponse;
 use App\Repositories\OrderRepository;
 use App\Services\AppManager;
+use Carbon\Carbon;
 use Exception;
 use App\Http\Requests\Admin\OrderGiftCreateRequest;
 use App\Http\Requests\Admin\OrderGiftUpdateRequest;
@@ -85,7 +86,12 @@ class PaymentActivityController extends Controller
     {
         $activity = $request->only(['title', 'start_at', 'end_at']);
         $activity['app_id'] =  app(AppManager::class)->getAppId();
-        $activity['status'] =  Activity::NOT_BEGINNING;
+        if(Carbon::parse($activity['start_at'])->timestamp <= Carbon::now(config('app.timezone'))->timestamp) {
+            $activity['status'] =  Activity::HAVE_IN_HAND;
+        }elseif(Carbon::parse($activity['start_at'])->timestamp > Carbon::now(config('app.timezone'))->timestamp){
+            $activity['status'] =  Activity::NOT_BEGINNING;
+        }
+
         $activity['poster_img'] = isset($activity['poster_img']) ? $activity['poster_img'] : '';
         $activity['description'] = isset($activity['description']) ? $activity['description'] : '';
         //创建一个支付活动
