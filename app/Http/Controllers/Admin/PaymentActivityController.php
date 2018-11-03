@@ -95,12 +95,12 @@ class PaymentActivityController extends Controller
         $items = $request->only(['items']);
         $paymentActivities = [];
         foreach ($items as $v){
-            $item['type']         = $type;
-            $item['ticket_id']    = isset($v['ticket_id']) ? $v['ticket_id'] : null;
-            $item['discount']     = isset($v['discount']) ? $v['discount'] : null;
-            $item['cost']         = isset($v['cost']) ? $v['cost'] : null;
-            $item['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : null;
-            $item['score']        = isset($v['score']) ? $v['score'] : null;
+            $item['type']         = PaymentActivity::TYPES[$type];
+            $item['ticket_id']    = isset($v['ticket_id']) ? $v['ticket_id'] : 0;
+            $item['discount']     = isset($v['discount']) ? $v['discount'] : 0;
+            $item['cost']         = isset($v['cost']) ? $v['cost'] : 0;
+            $item['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : 0;
+            $item['score']        = isset($v['score']) ? $v['score'] : 0;
             array_push($paymentActivities, new PaymentActivity($item));
         }
         //支付活动对应子活动条件创建
