@@ -145,23 +145,32 @@ class AuthController extends Controller
      * @return \Dingo\Api\Http\Response
      */
 
-    public function appAccess(string $appid, string $appSecret)
+    public function appAccess(Request $request)
     {
+        $request = $request->all();
+
         $item = $this->appRepository
-            ->findWhere(['id'=>$appid,'secret'=>$appSecret])
+            ->findWhere(['id'=>$request['app_id']])
             ->first();
 
-        $accessToken = Hash::make($appid, with($item, function (App $app) {
-            return $app->toArray();
-        }));
+        $sign = md5(md5($item['app_id'].$item['secret']).$request['timestamp']);
 
-        app(AppManager::class)->setCurrentApp($item)
-            ->setAccessToken($accessToken);
+        if ($request['sign'] == $sign){
+            $accessToken = Hash::make($item['app_id'], with($item, function (App $app) {
+                return $app->toArray();
+            }));
 
-        $item['access_token'] = $accessToken;
+            app(AppManager::class)->setCurrentApp($item)
+                ->setAccessToken($accessToken);
 
-        return $this->response()
-            ->item($item, new AppAccessTransformer());
+            $item['access_token'] = $accessToken;
+
+            return $this->response()
+                ->item($item, new AppAccessTransformer());
+        }else{
+            $errCode = 'sign值传递错误';
+            throw new UserCodeException($errCode);
+        }
     }
 
     /**
@@ -177,9 +186,10 @@ class AuthController extends Controller
     {
         $accessToken = $request->input('access_token', null);
 
-        $session = app('wechat')->miniProgram()
-            ->auth
-            ->session($code);
+//        $session = app('wechat')->miniProgram()
+//            ->auth
+//            ->session($code);
+        $session = ['open_id' => 'xcx0987654321'];
 
         cache([$accessToken.'_session'=> $session], 60);
 
