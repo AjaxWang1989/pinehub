@@ -104,7 +104,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('merchandise/{id}', ['as' => 'merchandise.show', 'uses' => 'MerchandisesController@show']);
                 $router->post('merchandise/image/{driver?}', ['as' => 'merchandise.image.upload', 'uses' => 'MerchandisesController@uploadMerchandiseImage']);
 
-                $router->post('payment_activity', ['as' => 'payment_activity.create', 'uses' => 'PaymentActivityController@store']);
+                $router->post('payment_activity/{type}', ['as' => 'payment_activity.create', 'uses' => 'PaymentActivityController@store']);
                 $router->put('payment_activity/{id}', ['as' => 'payment_activity.update', 'uses' => 'PaymentActivityController@update']);
                 $router->get('payment_activities/{type?}', ['as' => 'payment_activity.list', 'uses' => 'PaymentActivityController@index']);
                 $router->get('payment_activity/{id}', ['as' => 'payment_activity.show', 'uses' => 'PaymentActivityController@show']);

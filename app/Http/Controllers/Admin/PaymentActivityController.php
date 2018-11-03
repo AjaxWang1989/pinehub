@@ -77,35 +77,35 @@ class PaymentActivityController extends Controller
      *
      * @param  OrderGiftCreateRequest $request
      *
+     * @param string $type
      * @return \Illuminate\Http\Response
      *
-     * @throws Exception
      */
-    public function store(OrderGiftCreateRequest $request)
+    public function store(OrderGiftCreateRequest $request, string $type = 'coupon')
     {
-        $activity = $request->all();
+        $activity = $request->only(['title', 'start_at', 'end_at']);
         $activity['app_id'] =  app(AppManager::class)->getAppId();
         $activity['status'] =  Activity::NOT_BEGINNING;
         $activity['poster_img'] = isset($activity['poster_img']) ? $activity['poster_img'] : '';
         $activity['description'] = isset($activity['description']) ? $activity['description'] : '';
         //创建一个支付活动
-        $activityCreate = $this->repository->create($activity);
+        /** @var Activity $activityModel */
+        $activityModel = $this->repository->create($activity);
 
+        $items = $request->only(['items']);
         $paymentActivities = [];
-        foreach ($activity['payment_activity'] as $k => $v){
-            $paymentActivities[$k]['activity_id']  = $activityCreate['id'];
-            $paymentActivities[$k]['type']         = $v['type'];
-            $paymentActivities[$k]['ticket_id']    = isset($v['ticket_id']) ? $v['ticket_id'] : null;
-            $paymentActivities[$k]['discount']     = isset($v['discount']) ? $v['discount'] : null;
-            $paymentActivities[$k]['cost']         = isset($v['cost']) ? $v['cost'] : null;
-            $paymentActivities[$k]['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : null;
-            $paymentActivities[$k]['score']        = isset($v['score']) ? $v['score'] : null;
-            $paymentActivities[$k]['created_at']   = date('Y-m-d H:i:s');
-            $paymentActivities[$k]['updated_at']   = date('Y-m-d H:i:s');
+        foreach ($items as $v){
+            $item['type']         = $type;
+            $item['ticket_id']    = isset($v['ticket_id']) ? $v['ticket_id'] : null;
+            $item['discount']     = isset($v['discount']) ? $v['discount'] : null;
+            $item['cost']         = isset($v['cost']) ? $v['cost'] : null;
+            $item['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : null;
+            $item['score']        = isset($v['score']) ? $v['score'] : null;
+            array_push($paymentActivities, new PaymentActivity($item));
         }
         //支付活动对应子活动条件创建
-        DB::table('payment_activity')->insert($paymentActivities);
-        return $this->response()->item($activityCreate, new OrderGiftTransformer());
+        $activityModel->paymentActivities()->saveMany($paymentActivities);
+        return $this->response()->item($activityModel, new OrderGiftTransformer());
     }
 
     /**
