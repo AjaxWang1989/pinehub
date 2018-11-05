@@ -262,6 +262,7 @@ class AuthController extends Controller
                 ->firstOrCreate($user);
 
             $mpUser->mobile = $user['mobile'];
+            $mpUser->appId  = $user['app_id'];
 
             $member->customers()
                 ->save($mpUser);
