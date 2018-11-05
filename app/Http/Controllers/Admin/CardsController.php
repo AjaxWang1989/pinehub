@@ -4,19 +4,17 @@ namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Card;
-use App\Entities\MemberCard;
+use App\Entities\MemberCardInfo;
 use App\Entities\Ticket;
-use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Requests\Admin\MemberCardCreateRequest;
 use App\Http\Requests\Admin\MemberCardUpdateRequest;
 use App\Http\Requests\Admin\TicketCreateRequest;
 use App\Http\Response\JsonResponse;
 
-use App\Repositories\MemberCardRepository;
+use App\Repositories\MemberCardInfoRepository;
 use App\Repositories\TicketRepository;
 use App\Services\AppManager;
 use Dingo\Api\Http\Request;
-use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\TicketUpdateRequest;
 use App\Repositories\CardRepository;
@@ -31,7 +29,7 @@ use Illuminate\Database\Eloquent\Collection;
 class CardsController extends Controller
 {
     /**
-     * @var TicketRepository|MemberCardRepository
+     * @var TicketRepository|MemberCardInfoRepository
      */
     protected $repository;
 
@@ -75,7 +73,7 @@ class CardsController extends Controller
      *
      * @param  Request|TicketCreateRequest|MemberCardCreateRequest $request
      *
-     * @return mixed|Card|Ticket|MemberCard
+     * @return mixed|Card|Ticket|MemberCardInfo
      *
      */
     public function storeCard($request)
@@ -96,7 +94,7 @@ class CardsController extends Controller
      *
      * @param  int $id
      *
-     * @return Card|Ticket|MemberCard
+     * @return Card|Ticket|MemberCardInfo
      */
     public function show($id)
     {
@@ -124,7 +122,7 @@ class CardsController extends Controller
      * @param  TicketUpdateRequest|Request|MemberCardUpdateRequest $request
      * @param  string            $id
      *
-     * @return Card
+     * @return Card|Ticket|MemberCardInfo
      *
      * @throws Exception
      */
