@@ -49,7 +49,7 @@ class MpUserRepositoryEloquent extends BaseRepository implements MpUserRepositor
             $attributes['gender'] = 'FEMALE';
         }
         $currentApp = app(AppManager::class)->currentApp;
-        $mpUser['platform_app_id'] = $currentApp['app_id'];
+        $mpUser['platform_app_id'] = $currentApp['id'];
         $mpUser['union_id'] = $attributes['unionId'];
         $mpUser['platform_open_id'] = $attributes['openId'];
         $mpUser['session_key'] = $attributes['session_key'];
