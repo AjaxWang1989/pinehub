@@ -74,7 +74,7 @@ class SyncTicketCardInfoEventListener
         $cardInfo['base_info']['logo_url'] = $ticket->app->logo;
         $cardInfo['base_info']['brand_name'] = $ticket->app->name;
         $cardInfo['base_info']['color'] = isset($cardInfo['base_info']['color']) ? $cardInfo['base_info']['color']  : 'Color010';
-        $cardInfo['base_info']['notice'] = isset($cardInfo['base_info']['notice']) ? $cardInfo['base_info']['notice']  : '';
+        $cardInfo['base_info']['notice'] = isset($cardInfo['base_info']['notice']) ? $cardInfo['base_info']['notice']  : $cardInfo['base_info']['title'];
         $cardInfo['base_info']['code_type'] = isset($cardInfo['base_info']['code_type']) ? $cardInfo['base_info']['code_type']  : 'CODE_TYPE_TEXT';
         Log::info('card info', $cardInfo);
 
