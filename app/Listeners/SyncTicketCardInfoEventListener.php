@@ -39,7 +39,7 @@ class SyncTicketCardInfoEventListener
             sleep(10);
         }
         Log::info('card info', [$event->ticketInfo]);
-        $cardInfo = isset($event->ticketInfo) && $event->ticketInfo ? clone $event->ticketInfo : clone $ticket->cardInfo;
+        $cardInfo = isset($event->ticketInfo) && $event->ticketInfo ? $event->ticketInfo : $ticket->cardInfo;
         if(isset($cardInfo['discount'])) {
             $cardInfo['discount'] = 100 - $cardInfo['discount'];
         }
