@@ -96,7 +96,7 @@ class SyncTicketCardInfoEventListener
         } else {
             $ticket->sync = Ticket::SYNC_FAILED;
             $ticket->save();
-            throw new \Exception($result['errmsg']);
+            throw new \Exception('ticket error code:'.$result['errcode'] .'; error message :'.$result['errmsg']);
         }
 
     }
