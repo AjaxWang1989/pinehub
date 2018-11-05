@@ -16,6 +16,7 @@ use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\FeedBackMessageTransformer;
 use App\Http\Requests\MiniProgram\FeedBackMessageRequest;
+use App\Exceptions\UserCodeException;
 use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Support\Facades\Log;
 
@@ -92,6 +93,14 @@ class UserController extends Controller
         $user = $this->mpUser();
         $message = $request->all();
         $message['comment'] = $message['comment'] ? $message['comment'] : null;
+
+        if (isset($message['mobile']) && $message['mobile']){
+            $search = '/^0?1[3|4|5|6|7|8][0-9]\d{8}$/';
+            if ( preg_match( $search, $message['mobile'] ) ) {
+                $errCode = '手机号格式错误';
+                throw new UserCodeException($errCode);
+            }
+        }
         $message['mobile']  = $message['mobile'] ? $message['mobile'] : null;
         $message['customer_id'] = $user['id'];
         $message['open_id'] = $user['platform_open_id'];
