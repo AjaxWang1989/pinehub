@@ -89,13 +89,12 @@ class UserController extends Controller
 
     public function feedBackMessage(Request $request){
         $user = $this->mpUser();
-        Log::info($user);
         $message = $request->all();
         $message['comment'] = $message['comment'] ? $message['comment'] : null;
         $message['mobile']  = $message['mobile'] ? $message['mobile'] : null;
-        $message['customer_id'] = $user->id;
-        $message['open_id'] = $user->platformOpenId;
-        $message['app_id'] = $user->appId;
+        $message['customer_id'] = $user['id'];
+        $message['open_id'] = $user['platform_open_id'];
+        $message['app_id'] = $user['app_id'];
         $item = $this->feedBackMessageRepository->create($message);
         return $this->response()->item($item,new FeedBackMessageTransformer());
     }
