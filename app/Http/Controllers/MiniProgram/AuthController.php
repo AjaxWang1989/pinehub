@@ -259,7 +259,7 @@ class AuthController extends Controller
 
             $user['mobile'] = $data['phoneNumber'];
 
-            $member = $this->userRepository
+            $member = $this->userRepository->where('mobile', $user['mobile'])
                 ->firstOrCreate($user);
 
             $mpUser->mobile = $user['mobile'];
