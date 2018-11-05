@@ -254,7 +254,7 @@ class AuthController extends Controller
 
         if ($errCode == 0) {
             $user = $mpUser->only(['nickname', 'city', 'province', 'city', 'avatar', 'can_use_score', 'total_score',
-                'score', 'sex']);
+                'score', 'sex','app_id']);
 
             $user['mobile'] = $data['phoneNumber'];
 
@@ -262,7 +262,6 @@ class AuthController extends Controller
                 ->firstOrCreate($user);
 
             $mpUser->mobile = $user['mobile'];
-            $mpUser->appId  = $user['app_id'];
 
             $member->customers()
                 ->save($mpUser);
