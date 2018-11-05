@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Entities\Ticket;
 use App\Events\SyncTicketCardInfoEvent;
+use Illuminate\Support\Facades\Log;
 
 class SyncTicketCardInfoEventListener
 {
@@ -37,6 +38,7 @@ class SyncTicketCardInfoEventListener
         if($ticket->sync === Ticket::SYNC_ING) {
             sleep(10);
         }
+        Log::info('card info', [$event->ticketInfo]);
         $cardInfo = isset($event->ticketInfo) && $event->ticketInfo ? clone $event->ticketInfo : clone $ticket->cardInfo;
         if(isset($cardInfo['discount'])) {
             $cardInfo['discount'] = 100 - $cardInfo['discount'];
