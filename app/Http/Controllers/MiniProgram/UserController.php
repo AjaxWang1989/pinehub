@@ -91,7 +91,7 @@ class UserController extends Controller
 
     public function feedBackMessage(FeedBackMessageRequest $request){
         $user = $this->mpUser();
-        return $user;
+        
         $message = $request->all();
         $message['comment'] = $message['comment'] ? $message['comment'] : null;
 
