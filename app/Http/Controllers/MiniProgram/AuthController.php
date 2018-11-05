@@ -88,7 +88,7 @@ class AuthController extends Controller
     public function registerUser(CreateRequest $request)
     {
         $session = $this->session();
-
+        Log::info($session);
         //获取小程序app_id
         $currentApp = app(AppManager::class)->currentApp;
 
