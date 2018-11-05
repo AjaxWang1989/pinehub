@@ -95,7 +95,7 @@ class UserController extends Controller
         $message['comment'] = $message['comment'] ? $message['comment'] : null;
 
         if (isset($message['mobile']) && $message['mobile']){
-            $search = '/^0?1[3|4|5|6|7|8][0-9]\d{8}$/';
+            $search = '/^1[34578]{1}\d{9}$/';
             if ( preg_match( $search, $message['mobile'] ) ) {
                 $errCode = '手机号格式错误';
                 throw new UserCodeException($errCode);
