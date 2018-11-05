@@ -93,8 +93,6 @@ class UserController extends Controller
         $user = $this->mpUser();
 
         $message = $request->all();
-        $message['comment'] = $message['comment'] ? $message['comment'] : null;
-        $message['mobile']  = $message['mobile'] ? $message['mobile'] : null;
         $message['customer_id'] = $user['id'];
         $message['open_id'] = $user['platform_open_id'];
         $message['app_id'] = $user['app_id'];
