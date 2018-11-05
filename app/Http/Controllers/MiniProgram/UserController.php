@@ -15,6 +15,8 @@ use App\Repositories\FeedBackMessageRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\FeedBackMessageTransformer;
+use Illuminate\Foundation\Bootstrap\LoadConfiguration;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -90,9 +92,9 @@ class UserController extends Controller
         $message = $request->all();
         $message['comment'] = $message['comment'] ? $message['comment'] : null;
         $message['mobile']  = $message['mobile'] ? $message['mobile'] : null;
-        $message['customer_id'] = $user->id;
-        $message['open_id'] = $user->platformOpenId;
-        $message['app_id'] = $user->appId;
+        $message['customer_id'] = $user['id'];
+        $message['open_id'] = $user['platform_open_id'];
+        $message['app_id'] = $user['app_id'];
         $item = $this->feedBackMessageRepository->create($message);
         return $this->response()->item($item,new FeedBackMessageTransformer());
     }
