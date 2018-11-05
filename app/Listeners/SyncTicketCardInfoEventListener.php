@@ -72,6 +72,7 @@ class SyncTicketCardInfoEventListener
             $cardInfo['base_info']['date_info']['fixed_term'] = (int)$cardInfo['base_info']['date_info']['fixed_term'];
         }
 
+        Log::info('card info', $cardInfo);
 
         if($ticket->cardId === null) {
             $result = $event->wechat->card->create($ticket->cardType, $cardInfo);
