@@ -496,6 +496,7 @@ class WechatService
     public function openPlatformServerHandle(string $appId)
     {
         $server = $this->openPlatformServer();
+        app('wxCardEventHandler')->handle($server);
         $server->push(function ($message) use($appId, $server) {
             $this->serverMessageHandle($server, $message, $appId);
         });

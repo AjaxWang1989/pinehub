@@ -23,17 +23,16 @@ use App\Events\UserSendCardEvent;
 use App\Events\UserViewCardEvent;
 use App\Services\InterfaceServiceHandler;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
-use EasyWeChat\OpenPlatform\Application;
+use EasyWeChat\Kernel\ServerGuard;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 
 
 class CardEventHandler implements InterfaceServiceHandler
 {
-    public function handle(Application $application = null)
+    public function handle(ServerGuard $server = null)
     {
         // TODO: Implement handle() method.
-        $server = $application->server;
 
         try {
             $server->on(EVENT_CARD_PASS_CHECK, function ($payload) {

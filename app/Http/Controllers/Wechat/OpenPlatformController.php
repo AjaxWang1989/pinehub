@@ -44,7 +44,7 @@ class OpenPlatformController extends Controller
      * */
     public function __invoke(Application $application)
     {
-        app('wxCardEventHandler')->handle($application);
+        //app('wxCardEventHandler')->handle($application);
         $server = $application->server;
         $server->push(function ($message) {
             Log::info('wechat open platform info', [$message]);
