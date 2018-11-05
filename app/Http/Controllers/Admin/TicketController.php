@@ -46,7 +46,7 @@ class TicketController extends Controller
                 return $card->toArray();
             }));
             $ticket->exists = true;
-            Event::fire(new SyncTicketCardInfoEvent($ticket, [], app('wechat')->officeAccount()));
+            Event::fire(new SyncTicketCardInfoEvent($ticket, null, app('wechat')->officeAccount()));
         }
         return $this->response()->item($ticket, new TicketTransformer());
     }

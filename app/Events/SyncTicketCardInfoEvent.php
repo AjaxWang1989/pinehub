@@ -31,11 +31,11 @@ class SyncTicketCardInfoEvent
     /**
      * Create a new event instance.
      * @param Ticket $ticket
-     * @param array $ticketInfo
+     * @param array|null $ticketInfo
      * @param MiniProgram|OpenPlatformMiniProgram|OfficialAccount|OpenPlatformOfficialAccount
      * @return void
      */
-    public function __construct(Ticket $ticket, array $ticketInfo, $wechat = null)
+    public function __construct(Ticket $ticket,  $ticketInfo, $wechat = null)
     {
         //
         $this->ticket = $ticket;
