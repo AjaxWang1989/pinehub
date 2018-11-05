@@ -153,10 +153,10 @@ class AuthController extends Controller
             ->findWhere(['id'=>$request['app_id']])
             ->first();
 
-        $sign = md5(md5($item['app_id'].$item['secret']).$request['timestamp']);
+        $sign = md5(md5($item['id'].$item['secret']).$request['timestamp']);
 
         if ($request['sign'] == $sign){
-            $accessToken = Hash::make($item['app_id'], with($item, function (App $app) {
+            $accessToken = Hash::make($item['id'], with($item, function (App $app) {
                 return $app->toArray();
             }));
 
@@ -168,7 +168,7 @@ class AuthController extends Controller
             return $this->response()
                 ->item($item, new AppAccessTransformer());
         }else{
-            $errCode = 'sign值传递错误'.$sign;
+            $errCode = "app_id ={$item['id']} secret = {$item['secret']} timestamp = {$request['timestamp']} ";
             throw new UserCodeException($errCode);
         }
     }
