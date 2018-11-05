@@ -12,8 +12,6 @@ class CardCheckEventListener
 
     /**
      * Create the event listener.
-     * @param $payload
-     * @return void
      */
     public function __construct()
     {
@@ -32,7 +30,8 @@ class CardCheckEventListener
         $payload = $event->payload;
         if($payload) {
             $card = Card::whereCardId($payload['CardId'])->first();
-            $card->status = $payload['status'];
+            $status = strtoupper($payload['Event']);
+            $card->status = Card::STATUS[$status];
             $card->save();
         }
     }
