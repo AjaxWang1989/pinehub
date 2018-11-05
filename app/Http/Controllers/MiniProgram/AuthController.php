@@ -143,7 +143,7 @@ class AuthController extends Controller
             ->findWhere(['user_id' => $user['member_id']])
             ->first();
 
-        $user['shop_id'] = $shopUser['id'];
+        $user['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
 
         return $this->response()
             ->item($user, new MpUserInfoMobileTransformer());
