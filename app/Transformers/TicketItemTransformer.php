@@ -23,25 +23,28 @@ class TicketItemTransformer extends TransformerAbstract
     public function transform(CardItem $model)
     {
         $activeTime = '';
-        switch ($model->cardInfo['base_info']['date_info']['type']){
-            case DATE_TYPE_FIX_TIME_RANGE: {
-                $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['begin_timestamp'], config('app.timezone'))
-                    ->format('y-M-d h:m:s');
-                $activeTime .= ' - ';
-                $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['end_timestamp'], config('app.timezone'))
-                    ->format('y-M-d h:m:s');
-                break;
-            }
-            case DATE_TYPE_FIX_TERM: {
-                if($model->cardInfo['base_info']['date_info']['fixed_begin_term']) {
-                    $activeTime .= "领取后{$model->cardInfo['base_info']['date_info']['fixed_begin_term']}天生效，
-                    有效期{$model->cardInfo['base_info']['date_info']['fixed_term']}天。";
-                }else{
-                    $activeTime .= "领取生效，有效期{$model->cardInfo['base_info']['date_info']['fixed_term']}天。";
+        if(isset($model->cardInfo['base_info']) && isset($model->cardInfo['base_info']['date_info'])) {
+            switch ($model->cardInfo['base_info']['date_info']['type']){
+                case DATE_TYPE_FIX_TIME_RANGE: {
+                    $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['begin_timestamp'], config('app.timezone'))
+                        ->format('y-M-d h:m:s');
+                    $activeTime .= ' - ';
+                    $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['end_timestamp'], config('app.timezone'))
+                        ->format('y-M-d h:m:s');
+                    break;
                 }
-                break;
+                case DATE_TYPE_FIX_TERM: {
+                    if($model->cardInfo['base_info']['date_info']['fixed_begin_term']) {
+                        $activeTime .= "领取后{$model->cardInfo['base_info']['date_info']['fixed_begin_term']}天生效，
+                    有效期{$model->cardInfo['base_info']['date_info']['fixed_term']}天。";
+                    }else{
+                        $activeTime .= "领取生效，有效期{$model->cardInfo['base_info']['date_info']['fixed_term']}天。";
+                    }
+                    break;
+                }
             }
         }
+
         return [
             'id'         => (int) $model->id,
             'code'       => $model->code,
