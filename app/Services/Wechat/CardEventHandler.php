@@ -25,6 +25,7 @@ use App\Services\InterfaceServiceHandler;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\OpenPlatform\Application;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 
 class CardEventHandler implements InterfaceServiceHandler
@@ -36,10 +37,12 @@ class CardEventHandler implements InterfaceServiceHandler
 
         try {
             $server->on(EVENT_CARD_PASS_CHECK, function ($payload) {
+                Log::info('EVENT_CARD_PASS_CHECK');
                 Event::fire(new CardCheckEvent($payload));
             });
 
             $server->on(EVENT_CARD_NOT_PASS_CHECK, function ($payload) {
+                Log::info('EVENT_CARD_PASS_CHECK');
                 Event::fire(new CardCheckEvent($payload));
             });
 
