@@ -37,6 +37,7 @@ class OpenPlatformUnauthorized
         }
         $wechat = WechatConfig::whereAppId($wechatAppId)->first();
         $wechat->wechatBindApp = null;
+        $wechat->authInfoType = WechatConfig::UNAUTHORIZED;
         $wechat->save();
     }
 }
