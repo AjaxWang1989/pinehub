@@ -91,7 +91,7 @@ class OpenPlatformController extends Controller
             $payload['AuthorizerAppid'] = $authInfo['authorization_info']['authorizer_appid'];
             $payload['AppId'] = app('wechat')->openPlatform()->getId();
             $payload['AuthorizationCode'] = $authCode;
-            $payload['AuthorizationCodeExpiredTime'] = Carbon::now()->addMinute($expiresIn)->format('Y-m-d H:i:s');
+            $payload['AuthorizationCodeExpiredTime'] = Carbon::now()->addMinute($expiresIn)->getTimestamp();
             $payload['SysAppId'] = $appId;
 
             Event::fire(new Authorized($payload));
