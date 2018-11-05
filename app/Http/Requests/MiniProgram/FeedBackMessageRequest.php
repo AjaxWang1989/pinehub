@@ -21,7 +21,7 @@ class FeedBackMessageRequest extends FormRequest
     {
         return [
             'comment' => 'required|string',
-            'mobile' => 'required|mobile'
+            'mobile' => 'mobile'
         ];
     }
 
