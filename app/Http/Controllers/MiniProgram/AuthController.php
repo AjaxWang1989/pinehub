@@ -263,7 +263,7 @@ class AuthController extends Controller
             $member->customers()
                 ->save($mpUser);
 
-            return $this->response(new JsonResponse(['user_info' => $user]));
+            return $this->response(new JsonResponse(['mobile' => $user['mobile']]));
         }else{
             throw new UserCodeException($errCode);
         }
