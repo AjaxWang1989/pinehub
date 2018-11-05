@@ -37,7 +37,7 @@ class SyncTicketCardInfoEventListener
         if($ticket->sync === Ticket::SYNC_ING) {
             sleep(10);
         }
-        $cardInfo = $event->ticketInfo ? clone $event->ticketInfo : clone $ticket->cardInfo;
+        $cardInfo = isset($event->ticketInfo) && $event->ticketInfo ? clone $event->ticketInfo : clone $ticket->cardInfo;
         if(isset($cardInfo['discount'])) {
             $cardInfo['discount'] = 100 - $cardInfo['discount'];
         }
