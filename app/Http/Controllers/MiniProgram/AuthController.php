@@ -192,9 +192,9 @@ class AuthController extends Controller
             ->session($code);
 
         cache([$accessToken.'_session'=> $session], 60);
-        Log::info('wechat session', $session);
+
         $mpUser = $this->mpUserRepository
-            ->findByField('platform_open_id', $session['open_id'])
+            ->findByField('platform_open_id', $session['openid'])
             ->first();
 
 
