@@ -228,8 +228,12 @@ class AuthController extends Controller
             return $this->response()
                 ->item($mpUser, new MvpLoginTransformer());
         }
-
-        return $this->response(new JsonResponse( $session));
+        
+        $mpSession = [
+            'open_id' => $session['openid'],
+            'session_key' => $session['session_key']
+        ];
+        return $this->response(new JsonResponse($mpSession));
     }
 
     /**
