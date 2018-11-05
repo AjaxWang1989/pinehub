@@ -17,15 +17,9 @@ class Ticket
     public function handle($request, Closure $next, string $type = null)
     {
         $data = $request->all();
-
-        if($type === null && isset($data['ticket_type'])) {
-            $data['card_type'] = $data['ticket_type'];
-            unset($data['ticket_type']);
-        }else{
-            $data['card_type'] = $type;
-        }
-        $request = $request->request->replace($data);
-        $_REQUEST['card_type'] = $data['card_type'];
+        $data['ticket_type'] = $type;
+        $_REQUEST['ticket_type'] = $data['ticket_type'];
+        $request->merge($data);
         return $next($request);
     }
 }

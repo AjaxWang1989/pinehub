@@ -83,6 +83,8 @@ class BackendApiRoutes extends ApiRoutes
                 $router->post('/discount/ticket', ['as' => 'discount-ticket.create', 'middleware' => ['ticket:discount'], 'uses' => 'TicketController@store']);
                 $router->post('/coupon/ticket', ['as' => 'coupon-ticket.create', 'middleware' => ['ticket:coupon_card'],  'uses' => 'TicketController@store']);
                 $router->post('/gift/ticket', ['as' => 'gift-ticket.create', 'middleware' => ['ticket:gift'],  'uses' => 'TicketController@store']);
+                $router->post('/cash/ticket', ['as' => 'cash-ticket.create', 'middleware' => ['ticket:cash'],  'uses' => 'TicketController@store']);
+                $router->post('/ticket', ['as' => 'ticket.create',  'uses' => 'TicketController@store']);
 
                 $router->get('/tickets', ['as' => 'tickets', 'middleware' => ['ticket'], 'uses' => 'TicketController@index']);
                 $router->get('/ticket/{id}', ['as' => 'ticket.show', 'uses' => 'TicketController@show']);
