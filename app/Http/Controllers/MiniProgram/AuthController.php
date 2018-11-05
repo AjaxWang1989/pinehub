@@ -208,12 +208,13 @@ class AuthController extends Controller
 
             $mpUser['token'] = $token;
 
-            with($mpUser, function (MpUser $mpUser) {
-                $mpUser->member()->update([
-                    'last_login_at' => Carbon::now()
-                ]);
-            });
-
+            if ($mpUser['member_id']){
+                with($mpUser, function (MpUser $mpUser) {
+                    $mpUser->member()->update([
+                        'last_login_at' => Carbon::now()
+                    ]);
+                });
+            }
             return $this->response()
                 ->item($mpUser, new MvpLoginTransformer());
         }
