@@ -56,12 +56,11 @@ class OpenPlatformAuthorized
         $attributes = [];
         $expiresIn = null;
         $appId = null;
-        if(isset($payload['app_id'])) {
-            $now = Carbon::now();
-            $appId = $payload['app_id'];
-            $where['app_id'] = $payload['authorizer_appid'];
-            $attributes['auth_code'] = $payload['auth_code'];
-            $attributes['auth_code_expires_in'] = $now->addMinute($payload['auth_code_expires_in']);
+        if($authorized->getAppId()) {
+            $appId = $authorized->getAppId();
+            $where['app_id'] = $authorized->getAuthorizerAppid();
+            $attributes['auth_code'] = $authorized->getAuthorizationCode();
+            $attributes['auth_code_expires_in'] = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
             $attributes['auth_info_type'] = 'authorized';
         }else{
             $where = ['app_id' => $authorized->getAuthorizerAppid()];

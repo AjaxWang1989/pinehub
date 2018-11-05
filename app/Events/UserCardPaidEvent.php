@@ -4,8 +4,12 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\PrivateChannel;
 
-
-class UserEnterOfficialAccountFromCardEvent extends CardEvent
+/**
+ * @method string getTransId()
+ * @method float getOriginalFee()
+ * @method float getFee()
+ * */
+class UserCardPaidEvent extends CardEvent
 {
     /**
      * Create a new event instance.

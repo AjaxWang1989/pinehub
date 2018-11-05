@@ -3,11 +3,11 @@
 namespace App\Listeners;
 
 use App\Entities\MemberCard;
-use App\Events\MemberCardActiveEvent;
+use App\Events\UpdateMemberCardEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class MemberCardActiveEventListener
+class UpdateMemberCardListener
 {
     /**
      * Create the event listener.
@@ -22,10 +22,10 @@ class MemberCardActiveEventListener
     /**
      * Handle the event.
      *
-     * @param  MemberCardActiveEvent  $event
+     * @param  UpdateMemberCardEvent  $event
      * @return void
      */
-    public function handle(MemberCardActiveEvent $event)
+    public function handle(UpdateMemberCardEvent $event)
     {
         //
         $card = MemberCard::whereCardId($event->getCardId())
@@ -33,7 +33,8 @@ class MemberCardActiveEventListener
             ->first();
         if($card) {
             with($card, function (MemberCard $card) use($event) {
-                $card->active = true;
+                $card->bonus = $event->getBonus();
+                $card->balance = $event->getBalance();
                 $card->save();
             });
         }

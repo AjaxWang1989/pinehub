@@ -11,13 +11,15 @@ use App\Events\MemberCardActiveEvent;
 use App\Events\OrderScoreEvent;
 use App\Events\SyncMemberCardInfoEvent;
 use App\Events\SyncTicketCardInfoEvent;
+use App\Events\UpdateMemberCardEvent;
+use App\Events\UserCardPaidEvent;
 use App\Events\UserConsumeCardEvent;
 use App\Events\UserDelCardEvent;
 use App\Events\UserEnterOfficialAccountFromCardEvent;
 use App\Events\UserGetCardEvent;
 use App\Events\UserSendCardEvent;
 use App\Events\UserUseCardToPayEvent;
-use App\Events\UserViewMemberCardEvent;
+use App\Events\UserViewCardEvent;
 use App\Events\WechatAuthAccessTokenRefreshEvent;
 use App\Listeners\CardCheckEventListener;
 use App\Listeners\CardPayOrderEventListener;
@@ -25,10 +27,11 @@ use App\Listeners\CardSKURemindEventListener;
 use App\Listeners\MemberCardActiveEventListener;
 use App\Listeners\OpenPlatformAuthorized;
 use App\Listeners\OpenPlatformUnauthorized;
-use App\Listeners\OpenPlatformUpdateAuthorized;
 use App\Listeners\OrderScoreListener;
 use App\Listeners\SyncMemberCardInfoEventListener;
 use App\Listeners\SyncTicketCardInfoEventListener;
+use App\Listeners\UpdateMemberCardListener;
+use App\Listeners\UserCardPaidListener;
 use App\Listeners\UserConsumeCardEventListener;
 use App\Listeners\UserDelCardEventListener;
 use App\Listeners\UserEnterOfficialAccountFromCardEventListener;
@@ -98,7 +101,7 @@ class EventServiceProvider extends ServiceProvider
         UserGetCardEvent::class => [
             UserGetCardEventListener::class
         ],
-        UserViewMemberCardEvent::class => [
+        UserViewCardEvent::class => [
             UserViewMemberCardEventListener::class
         ],
         MemberCardActiveEvent::class => [
@@ -110,20 +113,20 @@ class EventServiceProvider extends ServiceProvider
         UserSendCardEvent::class => [
             UserSendCardEventListener::class
         ],
-        UserUseCardToPayEvent::class => [
-            UserUseCardToPayEventListener::class
+        UserCardPaidEvent::class => [
+            UserCardPaidListener::class
         ],
         UserDelCardEvent::class => [
             UserDelCardEventListener::class
-        ],
-        UserUseCardToPayEvent::class => [
-            UserUseCardToPayEventListener::class
         ],
         UserEnterOfficialAccountFromCardEvent::class => [
             UserEnterOfficialAccountFromCardEventListener::class
         ],
         WechatAuthAccessTokenRefreshEvent::class => [
             WechatAuthAccessTokenRefreshListener::class
+        ],
+        UpdateMemberCardEvent::class => [
+            UpdateMemberCardListener::class
         ]
     ];
 }

@@ -27,7 +27,9 @@ class OrderScoreListener extends AsyncEventListener
     public function handle(OrderScoreEvent $event)
     {
         //
-        ScoreRule::whereIn('type', [ScoreRule::ORDER_COUNT_RULE, ScoreRule::ORDER_COUNT_RULE])->where('expires_at', '<', Carbon::now())->chunk(100, function (ScoreRule $scoreRule) use($event){
+        ScoreRule::whereIn('type', [ScoreRule::ORDER_COUNT_RULE, ScoreRule::ORDER_COUNT_RULE])
+            ->where('expires_at', '<', Carbon::now())
+            ->chunk(100, function (ScoreRule $scoreRule) use($event){
             $scoreRule->orderScore($event->order);
         });
     }

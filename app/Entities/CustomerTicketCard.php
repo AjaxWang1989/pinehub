@@ -48,10 +48,11 @@ class CustomerTicketCard extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
-    const STATUS_off = 0;
+    const STATUS_OFF = 0;
     const STATUS_ON = 1;
     const STATUS_USE = 2;
     const STATUS_EXPIRE = 3;
+    const STATUS_SEND_FRIEND = 4;
 
     const ACTIVE_ON = 1;
     const ACTIVE_OFF = 0;
@@ -75,7 +76,9 @@ class CustomerTicketCard extends Model implements Transformable
         'union_id',
         'outer_str',
         'active',
-        'status'
+        'status',
+        'created_at',
+        'updated_at'
     ];
 
     public function card(): BelongsTo

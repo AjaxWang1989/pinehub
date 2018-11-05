@@ -66,6 +66,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\Card $tickets
+ * @property  string|null $cardCode
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereActivityMerchandisesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
@@ -164,7 +165,7 @@ class Order extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'customer_id','card_id', 'merchandise_num','total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
+        'code', 'customer_id','card_id', 'card_code', 'merchandise_num','total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
         'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
         'receiver_district','receiver_name', 'receiver_address','receiver_mobile', 'send_start_time','send_end_time','comment','type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
         'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status','years','month','week','hour','activity_id'

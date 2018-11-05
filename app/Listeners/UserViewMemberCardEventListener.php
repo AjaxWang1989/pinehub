@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\UserViewMemberCardEvent;
+use App\Events\UserViewCardEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -21,10 +21,10 @@ class UserViewMemberCardEventListener
     /**
      * Handle the event.
      *
-     * @param  UserViewMemberCardEvent  $event
+     * @param  UserViewCardEvent  $event
      * @return void
      */
-    public function handle(UserViewMemberCardEvent $event)
+    public function handle(UserViewCardEvent $event)
     {
         //
     }

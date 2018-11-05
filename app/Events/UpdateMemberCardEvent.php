@@ -4,9 +4,13 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\PrivateChannel;
 
-
-class UserEnterOfficialAccountFromCardEvent extends CardEvent
+/**
+ * @method int getBonus()
+ * @method float getBalance()
+ * */
+class UpdateMemberCardEvent extends CardEvent
 {
+
     /**
      * Create a new event instance.
      *

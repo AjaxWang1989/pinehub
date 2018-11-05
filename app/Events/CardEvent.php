@@ -9,19 +9,31 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-
-class UserUseCardToPayEvent
+use Overtrue\LaravelWeChat\Events\OpenPlatform\OpenPlatformEvent;
+/**
+ * @method string getToUserName()
+ * @method string getFromUserName()
+ * @method string getCreateTime()
+ * @method string getMsgType()
+ * @method string getEvent()
+ * @method string getCardId()
+ * @method string getUserCardCode()
+ * @method string getPreAuthCode()
+ * @method string getUnionId()
+ */
+class CardEvent extends OpenPlatformEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
-     * @return void
+     * @param $payload
      */
-    public function __construct()
+    public function __construct($payload)
     {
         //
+        parent::__construct($payload);
     }
 
     /**

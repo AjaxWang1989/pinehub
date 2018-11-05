@@ -5,7 +5,7 @@ namespace App\Events;
 use Illuminate\Broadcasting\PrivateChannel;
 
 
-class UserEnterOfficialAccountFromCardEvent extends CardEvent
+class UserViewCardEvent extends CardEvent
 {
     /**
      * Create a new event instance.

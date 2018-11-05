@@ -34,7 +34,10 @@ class UserGetCardEventListener
         $payload = $event->payload;
         if($payload) {
             $card = Card::whereCardId($payload['CardId'])->first();
-            $customer = Customer::with('user')->wherePlatformOpenId($payload['FromUserName'])->first();
+            $customer = Customer::with('user')
+                ->wherePlatformOpenId($event->getFromUserName())
+                ->first();
+
             switch ($card->cardType){
                 case Card::MEMBER_CARD: {
                     if($customer->user) {
@@ -42,12 +45,14 @@ class UserGetCardEventListener
                         $memberCard->cardId = $card->id;
                         $memberCard->userId = $customer->userId;
                         $memberCard->appId = $customer->appId;
-                        $memberCard->cardCode = $payload['UserCardCode'];
-                        $memberCard->unionId = $payload['UnionId'];
-                        $memberCard->outerStr = $payload['OuterStr'];
-                        $memberCard->isGiveByFriend = $payload['IsGiveByFriend'];
-                        $memberCard->friendOpenId = $payload['FriendUserName'];
-                        $memberCard->active = false;
+                        $memberCard->cardCode = $event->getUserCardCode();
+                        $memberCard->unionId = $event->getUnionId();
+                        $memberCard->outerStr = $event->getOuterStr();
+                        $memberCard->isGiveByFriend = $event->getIsGiveByFriend();
+                        $memberCard->friendOpenId = $event->getFriendUserName();
+                        $memberCard->active = $card->cardInfo['auto_activate'];
+                        $memberCard->bonus = $card->cardInfo['bonus_rule']['init_increase_bonus'];
+
                         if($memberCard->card->cardInfo['base_info']['sku']['quantity'] > 0){
                             $memberCard->card->cardInfo['base_info']['sku']['quantity'] -= 1;
                             $memberCard->card->save();
@@ -65,9 +70,14 @@ class UserGetCardEventListener
                     $ticketCard = new CustomerTicketCard();
                     $ticketCard->cardId = $card->id;
                     $ticketCard->customerId = $customer->id;
-                    $ticketCard->cardCode = $payload['UserCardCode'];
+                    $ticketCard->cardCode = $event->getUserCardCode();
                     $ticketCard->appId = $customer->appId;
-                    $ticketCard->used = false;
+                    $ticketCard->unionId = $event->getUnionId();
+                    $ticketCard->outerStr = $event->getOuterStr();
+                    $ticketCard->isGiveByFriend = $event->getIsGiveByFriend();
+                    $ticketCard->friendOpenId = $event->getFriendUserName();
+                    $ticketCard->active = true;
+                    $ticketCard->status = CustomerTicketCard::STATUS_ON;
                     if($ticketCard->card->cardInfo['base_info']['sku']['quantity'] > 0){
                         $ticketCard->card->cardInfo['base_info']['sku']['quantity'] -= 1;
                         $ticketCard->card->save();
