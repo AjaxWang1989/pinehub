@@ -110,7 +110,7 @@ class AuthController extends Controller
                 $mpUser = $this->mpUserRepository->create($data);
 
                 $param = [
-                    'platform_app_id' => $mpUser['platform_app_id'],
+                    'platform_open_id' => $mpUser['platform_open_id'],
                     'password' => $mpUser['session_key']
                 ];
 
@@ -258,6 +258,7 @@ class AuthController extends Controller
                 'score', 'sex','app_id']);
 
             $user['mobile'] = $data['phoneNumber'];
+            $user['user_name'] = $data['phoneNumber'];
 
             $member = $this->userRepository->findWhere(['mobile' => $user['mobile']])->first();
             if($member) {
