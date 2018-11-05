@@ -91,18 +91,8 @@ class UserController extends Controller
 
     public function feedBackMessage(FeedBackMessageRequest $request){
         $user = $this->mpUser();
-        
-        $message = $request->all();
-        $message['comment'] = $message['comment'] ? $message['comment'] : null;
 
-        if (isset($message['mobile']) && $message['mobile']){
-            $search = '/^1[34578]{1}\d{9}$/';
-            if ( preg_match( $search, $message['mobile'] ) ) {
-                $errCode = '手机号格式错误';
-                throw new UserCodeException($errCode);
-            }
-        }
-        $message['mobile']  = $message['mobile'] ? $message['mobile'] : null;
+        $message = $request->all();
         $message['customer_id'] = $user['id'];
         $message['open_id'] = $user['platform_open_id'];
         $message['app_id'] = $user['app_id'];
