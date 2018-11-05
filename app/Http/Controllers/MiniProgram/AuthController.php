@@ -144,6 +144,7 @@ class AuthController extends Controller
             ->first();
 
         $user['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
+        $user['open_id'] = $user->platformOpenId;
 
         return $this->response()
             ->item($user, new MpUserInfoMobileTransformer());

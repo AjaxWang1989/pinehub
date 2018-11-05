@@ -27,9 +27,10 @@ class MpUserInfoMobileTransformer extends TransformerAbstract
             'ticket_num' => $model->ticketNum,
             'shop_id' => $model->shopId ? $model->shopId : null,
             'mobile' => isset($model->member->mobile) ? $model->member->mobile : null,
-            'vip_level' => isset($model->member->vipLevel )? $model->member->vipLevel : null,
-            'total_score'=> isset($model->member->totalScore) ? $model->member->totalScore : null,
-            'balance' => isset($model->member->balance) ? $model->member->balance : null,
+            'vip_level' => isset($model->member->vipLevel )? $model->member->vipLevel : 0,
+            'total_score'=> isset($model->member->totalScore) ? $model->member->totalScore : 0,
+            'can_use_score'=> isset($model->member->canUseScore) ? $model->member->canUseScore : 0,
+            'balance' => isset($model->member->balance) ? $model->member->balance : 0,
         ];
     }
 }
