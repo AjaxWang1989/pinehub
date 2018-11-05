@@ -15,6 +15,7 @@ use App\Repositories\FeedBackMessageRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\FeedBackMessageTransformer;
+use App\Http\Requests\MiniProgram\FeedBackMessageRequest;
 use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Support\Facades\Log;
 
@@ -87,7 +88,7 @@ class UserController extends Controller
      * @return \Dingo\Api\Http\Response
      */
 
-    public function feedBackMessage(Request $request){
+    public function feedBackMessage(FeedBackMessageRequest $request){
         $user = $this->mpUser();
         $message = $request->all();
         $message['comment'] = $message['comment'] ? $message['comment'] : null;
