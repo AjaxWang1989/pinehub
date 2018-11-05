@@ -51,7 +51,7 @@ class Controller extends BaseController
             if($user) {
                 with($user, function (MpUser $user) use(&$session){
                     $session['session_key'] = $user->sessionKey;
-                    $session['open_id'] = $user->platformOpenId;
+                    $session['openid'] = $user->platformOpenId;
                     return $user;
                 });
             }else{
