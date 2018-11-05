@@ -21,12 +21,14 @@ class FeedBackMessageRequest extends FormRequest
     {
         return [
             'comment' => 'required|string',
+            'mobile'  => 'mobile',
         ];
     }
 
     public function messages()
     {
         return [
+            'mobile'  => '手机号格式错误',
             'comment.string' => '备注不能为空'
         ];
     }
