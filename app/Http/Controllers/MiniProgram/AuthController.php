@@ -168,7 +168,7 @@ class AuthController extends Controller
             return $this->response()
                 ->item($item, new AppAccessTransformer());
         }else{
-            $errCode = "app_id ={$item['id']} secret = {$item['secret']} timestamp = {$request['timestamp']} ";
+            $errCode = 'sign签名错误';
             throw new UserCodeException($errCode);
         }
     }
