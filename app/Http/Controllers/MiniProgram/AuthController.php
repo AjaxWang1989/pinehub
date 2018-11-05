@@ -143,7 +143,8 @@ class AuthController extends Controller
             ->findWhere(['user_id' => $user['member_id']])
             ->first();
 
-        $user['shop_id'] = $shopUser['id'];
+        $user['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
+        $user['open_id'] = $user->platformOpenId;
 
         return $this->response()
             ->item($user, new MpUserInfoMobileTransformer());
@@ -228,7 +229,6 @@ class AuthController extends Controller
             return $this->response()
                 ->item($mpUser, new MvpLoginTransformer());
         }
-        
         $mpSession = [
             'open_id' => $session['openid'],
             'session_key' => $session['session_key']
@@ -251,16 +251,20 @@ class AuthController extends Controller
 
         //解密手机号码
         list($errCode, $data) = app()->makeWith('bizDataCrypt', [$currentApp, $session['session_key']])
-            ->decryptData($request->input('encrypt_data'), $request->input('iv') );
+            ->decryptData($request->input('encrypted_data'), $request->input('iv') );
 
         if ($errCode == 0) {
             $user = $mpUser->only(['nickname', 'city', 'province', 'city', 'avatar', 'can_use_score', 'total_score',
-                'score', 'sex']);
+                'score', 'sex','app_id']);
 
             $user['mobile'] = $data['phoneNumber'];
 
-            $member = $this->userRepository
-                ->firstOrCreate($user);
+            $member = $this->userRepository->findWhere(['mobile' => $user['mobile']])->first();
+            if($member) {
+                $member->update($user);
+            }else{
+                $member = $this->userRepository->create($user);
+            }
 
             $mpUser->mobile = $user['mobile'];
 
