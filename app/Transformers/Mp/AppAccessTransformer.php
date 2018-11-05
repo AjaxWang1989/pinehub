@@ -17,6 +17,7 @@ class AppAccessTransformer extends TransformerAbstract
     {
         return [
             'access_token' => $model['access_token'],
+            'contact_phone_num' => $model->contactPhoneNum,
         ];
     }
 }
