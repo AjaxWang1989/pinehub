@@ -69,6 +69,8 @@ class Card extends Model implements Transformable
     const GIFT = GIFT_CARD;
     const CASH = CASH_CARD;
 
+    const DATE_TYPE_FIX_TIME_RANGE = DATE_TYPE_FIX_TIME_RANGE;
+
     protected $casts = [
         'card_info' => 'json',
         'begin_at' => 'date',

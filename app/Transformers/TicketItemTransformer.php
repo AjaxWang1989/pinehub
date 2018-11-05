@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 use App\Entities\Card as CardItem;
 
@@ -21,14 +22,29 @@ class TicketItemTransformer extends TransformerAbstract
      */
     public function transform(CardItem $model)
     {
+        $activeTime = '';
+        switch ($model->cardInfo['base_info']['date_info']['type']){
+            case DATE_TYPE_FIX_TIME_RANGE: {
+                $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['begin_timestamp'], config('app.timezone'))
+                    ->format('y-M-d h:m:s');
+                $activeTime .= ' - ';
+                $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['end_timestamp'], config('app.timezone'))
+                    ->format('y-M-d h:m:s');
+                break;
+            }
+            case DATE_TYPE_FIX_TERM: {
+                if($model->cardInfo['base_info']['date_info']['fixed_begin_term']) {
+                    $activeTime .= "领取后{$model->cardInfo['base_info']['date_info']['fixed_begin_term']}天生效，
+                    有效期{$model->cardInfo['base_info']['date_info']['fixed_term']}天。";
+                }else{
+                    $activeTime .= "领取生效，有效期{$model->cardInfo['base_info']['date_info']['fixed_term']}天。";
+                }
+                break;
+            }
+        }
         return [
             'id'         => (int) $model->id,
             'code'       => $model->code,
-            'color'      => isset($model->cardInfo['base_info']['color']) ? $model->cardInfo['base_info']['color'] : null ,
-            //'background_pic_url' => $model->cardInfo['background_pic_url'],
-            //'logo_url' => $model->cardInfo['base_info']['logo_url'],
-            'card_type' => mb_strtoupper($model->cardType),
-            'brand_name' => isset($model->cardInfo['base_info']['brand_name']) ?  $model->cardInfo['base_info']['brand_name'] : null ,
             'code_type'  => isset($model->cardInfo['base_info']['code_type']) ? $model->cardInfo['base_info']['code_type'] : null,
             'title' => isset($model->cardInfo['base_info']['title']) ? $model->cardInfo['base_info']['title'] : null ,
             'sku' => isset($model->cardInfo['base_info']['sku']) ? $model->cardInfo['base_info']['sku'] : null,
@@ -39,6 +55,7 @@ class TicketItemTransformer extends TransformerAbstract
             'sync' => $model->sync,
             'begin_at' => $model->beginAt,
             'end_at' => $model->endAt,
+            'active_time' => $activeTime,
             'least_cost' => isset($model->cardInfo['least_cost']) ? $model->cardInfo['least_cost'] : (isset($model->cardInfo['advanced_info']) &&
                 isset($model->cardInfo['advanced_info']['use_condition']) && isset($model->cardInfo['advanced_info']['use_condition']['least_cost'])
                 ? $model->cardInfo['advanced_info']['use_condition']['least_cost'] : null),
