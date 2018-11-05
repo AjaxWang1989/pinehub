@@ -86,6 +86,10 @@ class WechatConfig extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+
+    const AUTHORIZED = 'authorized';
+    const UNAUTHORIZED = 'unauthorized';
+
     protected $casts = [
         'service_type_info' => 'json',
         'verify_type_info'  => 'json',

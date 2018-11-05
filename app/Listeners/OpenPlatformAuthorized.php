@@ -56,6 +56,7 @@ class OpenPlatformAuthorized
         $attributes = [];
         $expiresIn = null;
         $appId = null;
+        Log::info('appId = '.$authorized->getAppId());
         if($authorized->getAppId()) {
             $appId = $authorized->getAppId();
             $where['app_id'] = $authorized->getAuthorizerAppid();
