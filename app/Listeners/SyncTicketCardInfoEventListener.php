@@ -71,7 +71,10 @@ class SyncTicketCardInfoEventListener
         if(isset($cardInfo['base_info']['date_info']['fixed_term'])) {
             $cardInfo['base_info']['date_info']['fixed_term'] = (int)$cardInfo['base_info']['date_info']['fixed_term'];
         }
-
+        $cardInfo['base_info']['logo_url'] = $ticket->app->logo;
+        $cardInfo['base_info']['brand_name'] = $ticket->app->name;
+        $cardInfo['base_info']['color'] = isset($cardInfo['base_info']['color']) ? $cardInfo['base_info']['color']  : 'Color010';
+        $cardInfo['base_info']['notice'] = isset($cardInfo['base_info']['notice']) ? $cardInfo['base_info']['notice']  : '';
         Log::info('card info', $cardInfo);
 
         if($ticket->cardId === null) {
