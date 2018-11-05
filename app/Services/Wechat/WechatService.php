@@ -515,6 +515,7 @@ class WechatService
             'app_id' => $appId,
             'message' => $message
         ];
+        Log::info('wechat open platform event payload', $payload);
         switch ($message['MsgType']) {
             case WECHAT_EVENT_MESSAGE: {
                 return $server->dispatch($message['Event'], $payload);
