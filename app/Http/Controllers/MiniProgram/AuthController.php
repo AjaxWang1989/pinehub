@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Response\JsonResponse;
 use App\Exceptions\UserCodeException;
+use Illuminate\Support\Facades\Log;
 
 
 class AuthController extends Controller
@@ -191,7 +192,7 @@ class AuthController extends Controller
             ->session($code);
 
         cache([$accessToken.'_session'=> $session], 60);
-
+        Log::info('wechat session', $session);
         $mpUser = $this->mpUserRepository
             ->findByField('platform_open_id', $session['open_id'])
             ->first();
