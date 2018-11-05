@@ -19,6 +19,7 @@ class MvpLoginTransformer extends TransformerAbstract
             'token' => $model->token,
             'open_id' => $model->platformOpenId,
             'session_key' => $model->sessionKey,
+            'mobile'  => isset($model->member->mobile) ? $model->member->mobile : null,
             'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
             'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
         ];
