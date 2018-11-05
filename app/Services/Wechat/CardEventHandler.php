@@ -51,6 +51,7 @@ class CardEventHandler implements InterfaceServiceHandler
             });
 
             $server->on(EVENT_USER_GET_CARD, function ($payload) {
+                Log::info('EVENT_USER_GET_CARD');
                 Event::fire(new UserGetCardEvent($payload));
             });
 
