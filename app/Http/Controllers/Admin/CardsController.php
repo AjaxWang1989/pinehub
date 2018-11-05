@@ -84,8 +84,8 @@ class CardsController extends Controller
         $data['card_info'] = $request->input('card_info');
         $data['app_id'] = $appManager->currentApp->id;
         $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
-        $data['begin_at'] = $request->input('begin_at');
-        $data['end_at'] = $request->input('end_at');
+        $data['begin_at'] = $request->input('begin_at', null);
+        $data['end_at'] = $request->input('end_at', null);
         $data['card_type'] = $request->input('ticket_type');
         $data['sync']   = $request->input('sync');
         return $this->repository->create($data);
