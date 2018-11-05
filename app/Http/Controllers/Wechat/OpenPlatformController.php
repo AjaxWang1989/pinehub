@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\OpenPlatformAuthCallbackRequest as AuthCallbackReque
 use App\Http\Requests\Admin\OpenPlatformAuthRequest as AuthRequest;
 use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
+use Carbon\Carbon;
 use Dingo\Api\Routing\Helpers;
 use EasyWeChat\OpenPlatform\Application;
 use Illuminate\Http\Request;
@@ -86,10 +87,12 @@ class OpenPlatformController extends Controller
         $token = $request->input('token', null);
         if($app && $authCode && $expiresIn) {
             $authInfo = $this->wechat->openPlatform()->handleAuthorize($authCode);
-            $payload = $authInfo['authorization_info'];
-            $payload['app_id'] = $appId;
-            $payload['auth_code'] = $authCode;
-            $payload['auth_code_expires_in'] = $expiresIn;
+            $payload['AuthorizationInfo'] = $authInfo['authorization_info'];
+            $payload['AuthorizerAppid'] = $authInfo['authorization_info']['authorizer_appid'];
+            $payload['AppId'] = app('wechat')->openPlatform()->getId();
+            $payload['AuthorizationCode'] = $authCode;
+            $payload['AuthorizationCodeExpiredTime'] = Carbon::now()->addMinute($expiresIn)->format('Y-m-d H:i:s');
+            $payload['SysAppId'] = $appId;
 
             Event::fire(new Authorized($payload));
 

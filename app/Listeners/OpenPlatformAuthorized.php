@@ -51,27 +51,15 @@ class OpenPlatformAuthorized
      * */
     protected function componentAuthorized(Authorized $authorized)
     {
-        $payload = $authorized->payload;
         $where = [];
         $attributes = [];
         $expiresIn = null;
-        $appId = null;
-        Log::info('appId = '.$authorized->getAppId());
-        if($authorized->getAppId()) {
-            $appId = $authorized->getAppId();
-            $where['app_id'] = $authorized->getAuthorizerAppid();
-            $attributes['auth_code'] = $authorized->getAuthorizationCode();
-            $attributes['auth_code_expires_in'] = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
-            $attributes['auth_info_type'] = 'authorized';
-        }else{
-            $where = ['app_id' => $authorized->getAuthorizerAppid()];
-            $expiresIn = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
-            $attributes =  [
-                'auth_code' => $authorized->getAuthorizationCode(),
-                'auth_code_expires_in' => $expiresIn,
-                'auth_info_type' => $authorized->getInfoType()
-            ];
-        }
+
+        $appId = $authorized->getSysAppId();
+        $where['app_id'] = $authorized->getAuthorizerAppid();
+        $attributes['auth_code'] = $authorized->getAuthorizationCode();
+        $attributes['auth_code_expires_in'] = Carbon::createFromTimestamp($authorized->getAuthorizationCodeExpiredTime());
+        $attributes['auth_info_type'] = 'authorized';
 
         $wechatInfo = $this->wechatRepository->updateOrCreate($where,$attributes);
 
