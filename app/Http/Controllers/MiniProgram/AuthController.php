@@ -97,20 +97,31 @@ class AuthController extends Controller
             ->decryptData($request->input('encrypted_data'), $request->input('iv') );
 
         if ($errCode == 0) {
-            $mpUser = $this->mpUserRepository->create($data);
 
-            $param = [
-                'platform_app_id' => $mpUser['platform_app_id'],
-                'password' => $mpUser['session_key']
-            ];
+            $mpUser = $this->mpUserRepository
+                ->findByField('platform_open_id', $data['openId'])
+                ->first();
 
-            $token = Auth::attempt($param);
+            if ($mpUser){
 
-            $mpUser['token'] = $token;
+                $errCode = '用户已注册,不用重复操作';
+                throw new UserCodeException($errCode);
+            }else{
+                
+                $mpUser = $this->mpUserRepository->create($data);
 
-            return $this->response()
-                ->item($mpUser, new MpUserTransformer());
+                $param = [
+                    'platform_app_id' => $mpUser['platform_app_id'],
+                    'password' => $mpUser['session_key']
+                ];
 
+                $token = Auth::attempt($param);
+
+                $mpUser['token'] = $token;
+
+                return $this->response()
+                    ->item($mpUser, new MpUserTransformer());
+            }
         } else {
             throw new UserCodeException($errCode);
         }
@@ -208,12 +219,13 @@ class AuthController extends Controller
 
             $mpUser['token'] = $token;
 
-            with($mpUser, function (MpUser $mpUser) {
-                $mpUser->member()->update([
-                    'last_login_at' => Carbon::now()
-                ]);
-            });
-
+            if ($mpUser['member_id']){
+                with($mpUser, function (MpUser $mpUser) {
+                    $mpUser->member()->update([
+                        'last_login_at' => Carbon::now()
+                    ]);
+                });
+            }
             return $this->response()
                 ->item($mpUser, new MvpLoginTransformer());
         }
