@@ -26,10 +26,10 @@ class TicketItemTransformer extends TransformerAbstract
         if(isset($model->cardInfo['base_info']) && isset($model->cardInfo['base_info']['date_info'])) {
             switch ($model->cardInfo['base_info']['date_info']['type']){
                 case DATE_TYPE_FIX_TIME_RANGE: {
-                    $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['begin_timestamp'], config('app.timezone'))
+                    $activeTime .= Carbon::createFromTimestamp($model->cardInfo['base_info']['date_info']['begin_timestamp'], config('app.timezone'))
                         ->format('y-M-d h:m:s');
                     $activeTime .= ' - ';
-                    $activeTime .= Carbon::parse($model->cardInfo['base_info']['date_info']['end_timestamp'], config('app.timezone'))
+                    $activeTime .= Carbon::createFromTimestamp($model->cardInfo['base_info']['date_info']['end_timestamp'], config('app.timezone'))
                         ->format('y-M-d h:m:s');
                     break;
                 }
