@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Entities\CustomerTicketCard;
 use App\Events\UserDelCardEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -27,5 +28,15 @@ class UserDelCardEventListener
     public function handle(UserDelCardEvent $event)
     {
         //
+
+        $ticket = CustomerTicketCard::whereOpenId($event->getFromUserName())
+            ->whereCardId($event->getCardId())
+            ->whereCode($event->getUserCardCode())
+            ->first();
+        if($ticket) {
+            with($ticket, function (CustomerTicketCard $card) {
+                $card->delete();
+            });
+        }
     }
 }

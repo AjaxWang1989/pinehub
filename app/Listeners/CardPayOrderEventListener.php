@@ -2,9 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\CardSKURemindEvent;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\CardPayOrderEvent;
 
 class CardPayOrderEventListener
 {
@@ -21,10 +19,10 @@ class CardPayOrderEventListener
     /**
      * Handle the event.
      *
-     * @param  CardSKURemindEvent  $event
+     * @param CardPayOrderEvent $event
      * @return void
      */
-    public function handle(CardSKURemindEvent $event)
+    public function handle(CardPayOrderEvent $event)
     {
         //
     }

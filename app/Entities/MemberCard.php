@@ -27,6 +27,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\App $app
  * @property-read \App\Entities\Card $card
  * @property-read \App\Entities\User|null $user
+ * @property  int $bonus
+ * @property float $balance
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCardCode($value)
@@ -55,7 +57,9 @@ class MemberCard extends Model implements Transformable
         'card_id',
         'card_code',
         'app_id',
-        'user_id'
+        'user_id',
+        'bonus',
+        'balance'
     ];
 
     public function user(): BelongsTo

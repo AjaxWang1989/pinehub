@@ -27,10 +27,9 @@ class CardCheckEventListener
     public function handle(CardCheckEvent $event)
     {
         //
-        $payload = $event->payload;
-        if($payload) {
-            $card = Card::whereCardId($payload['CardId'])->first();
-            $status = strtoupper($payload['Event']);
+        if($event->getCardId() && $event->getEvent()) {
+            $card = Card::whereCardId($event->getCardId())->first();
+            $status = strtoupper($event->getEvent());
             $card->status = Card::STATUS[$status];
             $card->save();
         }

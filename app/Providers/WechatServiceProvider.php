@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Entities\WechatConfig;
 use App\Repositories\WechatConfigRepositoryEloquent;
 use App\Services\AppManager;
+use App\Services\Wechat\CardEventHandler;
 use App\Services\Wechat\MpBizDataCrypt;
 use App\Services\Wechat\WechatService;
 use Illuminate\Support\Facades\Log;
@@ -68,6 +69,10 @@ class WechatServiceProvider extends ServiceProvider
             $appManger = $paramters[0];
             $sessionKey = $paramters[1];
             return new MpBizDataCrypt($appManger, $sessionKey);
+        });
+
+        $this->app->singleton('wxCardEventHandler', function (Application $application) {
+            return new CardEventHandler();
         });
     }
 }

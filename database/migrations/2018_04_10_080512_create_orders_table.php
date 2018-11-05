@@ -24,7 +24,8 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺id');
             $table->unsignedInteger('activity_id')->nullable()->default(null)->comment('新品活动id');
             $table->unsignedInteger('member_id')->nullable()->default(null)->comment('买家会员id');
-            $table->string('card_id', 32)->comment('优惠券id');
+            $table->string('card_id', 32)->default(null)->comment('优惠券id');
+            $table->string('card_code', 32)->default(null)->comment('优惠券code');
             $table->unsignedInteger('customer_id')->nullable()->default(null)->comment('买家');
             $table->unsignedInteger('merchandise_num')->nullable()->default(null)->comment('此订单商品数量总数');
             $table->float('total_amount')->default(0)->comment('应付款');
@@ -65,6 +66,7 @@ class CreateOrdersTable extends Migration
             $table->softDeletes();
             $table->index('code');
             $table->index('card_id');
+            $table->index('card_code');
             $table->index('customer_id');
             $table->index('post_type');
         });

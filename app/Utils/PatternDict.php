@@ -189,4 +189,33 @@ define('CARD_CHECKING', 0);
 define('CARD_PASS_CHECK', 1);
 define('CARD_NOT_PASS_CHECK', 2);
 
+define('EVENT_CARD_PASS_CHECK', 'card_pass_check');
+
+define('EVENT_CARD_NOT_PASS_CHECK', 'card_not_pass_check');
+
+define('EVENT_USER_GET_CARD', 'user_get_card');
+
+define('EVENT_USER_SEND_CARD', 'user_gifting_card');
+
+define('EVENT_USER_DELETE_CARD', 'user_del_card');
+
+define('EVENT_USER_CONSUME_CARD', 'user_consume_card');
+
+define('EVENT_USER_PAID', 'User_pay_from_pay_cell');
+
+define('EVENT_USER_VIEW_CARD', 'user_view_card');
+
+define('EVENT_USER_ENTER_SESSION', 'user_enter_session_from_card');
+
+define('EVENT_UPDATE_MEMBER_CARD', 'update_member_card');
+
+
+define('EVENT_CARD_SKU_REMIND', 'card_sku_remind');
+
+
+define('EVENT_CARD_PAY_ORDER', 'card_pay_order');
+
+define('EVENT_ACTIVE_MEMBER_CARD', 'submit_membercard_user_info');
+
+
 

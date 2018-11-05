@@ -2,26 +2,21 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class CardPayOrderEvent
+
+class CardPayOrderEvent extends CardEvent
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
-     * @return void
+     * @param $payload
      */
-    public function __construct()
+    public function __construct($payload)
     {
         //
+        parent::__construct($payload);
     }
 
     /**
