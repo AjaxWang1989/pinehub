@@ -84,8 +84,9 @@ class CardsController extends Controller
         $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
         $data['begin_at'] = $request->input('begin_at', null);
         $data['end_at'] = $request->input('end_at', null);
-        $data['card_type'] = $request->input('ticket_type');
+        $data['card_type'] = $request->input('card_type');
         $data['sync']   = $request->input('sync');
+        $data['issue_count'] = $request->input('issue_count', 0);
         return $this->repository->create($data);
     }
 
@@ -128,10 +129,11 @@ class CardsController extends Controller
      */
     public function updateCard($request, $id)
     {
-       $data['card_type'] = $request->input('ticket_type');
+       $data['card_type'] = $request->input('card_type');
        $data['card_info'] = $request->input('card_info');
        $data['begin_at'] = $request->input('begin_at', null);
        $data['end_at'] = $request->input('end_at', null);
+       $data['issue_count'] = $request->input('issue_count', 0);
        $card = $this->repository->find($id);
        tap($card, function (Card $card) use($data){
           $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
