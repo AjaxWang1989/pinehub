@@ -259,8 +259,12 @@ class AuthController extends Controller
 
             $user['mobile'] = $data['phoneNumber'];
 
-            $member = $this->userRepository->where('mobile', $user['mobile'])
-                ->firstOrCreate($user);
+            $member = $this->userRepository->findWhere(['mobile' => $user['mobile']])->first();
+            if($member) {
+                $member->update($user);
+            }else{
+                $member = $this->userRepository->create($user);
+            }
 
             $mpUser->mobile = $user['mobile'];
 
