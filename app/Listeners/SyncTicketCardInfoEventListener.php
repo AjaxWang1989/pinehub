@@ -53,7 +53,7 @@ class SyncTicketCardInfoEventListener
         }
 
         if(isset($cardInfo['advanced_info']['use_condition']) && isset($cardInfo['advanced_info']['use_condition']['least_cost'])) {
-            $cardInfo['advanced_info']['use_condition']['least_cost'] = (int)$cardInfo['advanced_info']['least_cost'];
+            $cardInfo['advanced_info']['use_condition']['least_cost'] = (int)$cardInfo['advanced_info']['use_condition']['least_cost'];
         }
 
         if(isset($cardInfo['base_info']['date_info']['begin_timestamp'])) {
