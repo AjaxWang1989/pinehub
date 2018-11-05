@@ -42,7 +42,7 @@ class SyncTicketCardInfoEventListener
         Log::info('card info', [$event->ticketInfo]);
         $cardInfo = isset($event->ticketInfo) && $event->ticketInfo ? $event->ticketInfo : $ticket->cardInfo;
         if(isset($cardInfo['discount'])) {
-            $cardInfo['discount'] = 100 - $cardInfo['discount'];
+            $cardInfo['discount'] = 100 - $cardInfo['discount'] * 10;
         }
 
         if(isset($cardInfo['reduce_cost'])) {
