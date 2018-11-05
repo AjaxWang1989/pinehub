@@ -377,8 +377,18 @@ class WechatService
     public function miniProgram()
     {
         if(!$this->miniProgram){
-            if(isset($this->config['mini_program']['app_secret'])) {
-                $this->miniProgram = Factory::miniProgram($this->config['mini_program']);
+            if(isset($this->config['mini_program']['app_secret']) || $this->appManager->miniProgram()->appSecret) {
+                if(!isset($this->config['mini_program']['app_secret'])) {
+                    $config = [
+                        'app_id'  => $this->appManager->miniProgram()->appId,
+                        'secret'  => $this->appManager->miniProgram()->appSecret,
+                        'token'   => $this->appManager->miniProgram()->token,
+                        'aes_key' => $this->appManager->miniProgram()->aesKey,
+                    ];
+                }else{
+                    $config = $this->config['mini_program'];
+                }
+                $this->miniProgram = Factory::miniProgram($config);
             }else{
                 $appId = $this->appManager->miniProgram()->appId;
                 $this->miniProgram = $this->openPlatform()->miniProgram($appId, $this->appManager->miniProgram->authorizerRefreshToken);
