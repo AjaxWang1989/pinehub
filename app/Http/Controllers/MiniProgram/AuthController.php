@@ -107,7 +107,6 @@ class AuthController extends Controller
                 $errCode = '用户已注册,不用重复操作';
                 throw new UserCodeException($errCode);
             }else{
-                
                 $mpUser = $this->mpUserRepository->create($data);
 
                 $param = [
@@ -230,7 +229,7 @@ class AuthController extends Controller
                 ->item($mpUser, new MvpLoginTransformer());
         }
 
-        return $this->response(new JsonResponse(['user_info' => $session]));
+        return $this->response(new JsonResponse( $session));
     }
 
     /**
