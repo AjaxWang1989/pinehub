@@ -168,7 +168,7 @@ class AuthController extends Controller
             return $this->response()
                 ->item($item, new AppAccessTransformer());
         }else{
-            $errCode = 'sign值传递错误';
+            $errCode = 'sign值传递错误'.$sign;
             throw new UserCodeException($errCode);
         }
     }
