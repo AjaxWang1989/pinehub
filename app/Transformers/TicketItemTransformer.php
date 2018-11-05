@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use App\Entities\Card as CardItem;
 
@@ -26,6 +27,7 @@ class TicketItemTransformer extends TransformerAbstract
         if(isset($model->cardInfo['base_info']) && isset($model->cardInfo['base_info']['date_info'])) {
             switch ($model->cardInfo['base_info']['date_info']['type']){
                 case DATE_TYPE_FIX_TIME_RANGE: {
+                    Log::info('app timezone',[config('app.timezone')]);
                     $activeTime .= Carbon::createFromTimestamp($model->cardInfo['base_info']['date_info']['begin_timestamp'], config('app.timezone'))
                         ->format('y-M-d h:m:s');
                     $activeTime .= ' - ';
