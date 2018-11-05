@@ -15,6 +15,8 @@ use App\Repositories\FeedBackMessageRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\FeedBackMessageTransformer;
+use Illuminate\Foundation\Bootstrap\LoadConfiguration;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -87,6 +89,7 @@ class UserController extends Controller
 
     public function feedBackMessage(Request $request){
         $user = $this->mpUser();
+        Log::info($user);
         $message = $request->all();
         $message['comment'] = $message['comment'] ? $message['comment'] : null;
         $message['mobile']  = $message['mobile'] ? $message['mobile'] : null;
