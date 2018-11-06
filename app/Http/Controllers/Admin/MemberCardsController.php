@@ -4,22 +4,18 @@ namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\MemberCardCriteria;
 use App\Criteria\Admin\SearchRequestCriteria;
-use App\Entities\Card;
 use App\Events\SyncMemberCardInfoEvent;
 use App\Http\Response\JsonResponse;
 
-use App\Services\AppManager;
-use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Exception;
 use App\Http\Requests\Admin\MemberCardCreateRequest;
 use App\Http\Requests\Admin\MemberCardUpdateRequest;
 use App\Transformers\MemberCardTransformer;
 use App\Transformers\MemberCardItemTransformer;
-use App\Repositories\MemberCardInfoRepository as MemberCardRepository;
+use App\Repositories\MemberCardInfoRepository;
 use App\Http\Controllers\Admin\CardsController as Controller;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Log;
 
 /**
  * Class MemberCardsController.
@@ -29,7 +25,7 @@ use Illuminate\Support\Facades\Log;
 class MemberCardsController extends Controller
 {
     /**
-     * @var MemberCardRepository
+     * @var MemberCardInfoRepository
      */
     protected $repository;
 
@@ -37,9 +33,9 @@ class MemberCardsController extends Controller
     /**
      * MemberCardsController constructor.
      *
-     * @param MemberCardRepository $repository
+     * @param MemberCardInfoRepository $repository
      */
-    public function __construct(MemberCardRepository $repository)
+    public function __construct(MemberCardInfoRepository $repository)
     {
         $this->repository = $repository;
         parent::__construct($repository);
@@ -53,6 +49,7 @@ class MemberCardsController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(MemberCardCriteria::class);
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
         $memberCards = parent::index();
         return $this->response()->paginator($memberCards, new MemberCardItemTransformer());
     }
@@ -68,7 +65,7 @@ class MemberCardsController extends Controller
      */
     public function store(MemberCardCreateRequest $request)
     {
-        $request->merge(['card_info' => $request->input('member_info')]);
+        $request->merge(['card_info' => $request->input('member_card_info'), 'card_type' => $request->input('member_card_type')]);
         $memberCard = parent::storeCard($request);
         $cardInfo = $memberCard->cardInfo;
         if(isset($cardInfo['background_material_id'])) {
