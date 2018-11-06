@@ -40,7 +40,9 @@ class SyncMemberCardInfoEventListener
         }
         $memberInfo = $event->memberInfo;
         $memberInfo['discount'] *= 10;
-        Log::info('member info', $memberInfo);
+        $memberInfo['auto_activate'] = (boolean)$memberInfo['auto_activate'];
+        $memberInfo['base_info']['can_share'] = (boolean)$memberInfo['base_info']['can_share'];
+
         if($memberCard->cardId === null) {
             $result = $event->wechat->card->create($memberCard->cardType, $memberInfo);
         } else {
