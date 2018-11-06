@@ -53,7 +53,7 @@ class MerchandisesController extends Controller
     public function index(Request $request)
     {
         $this->repository->pushCriteria(MerchandiseCriteria::class);
-        $this->pushCriteria(app(SearchRequestCriteria::class));
+        $this->repository->pushCriteria(app(SearchRequestCriteria::class));
         $merchandises = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($merchandises, new MerchandiseItemTransformer());
     }
