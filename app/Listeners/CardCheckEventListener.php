@@ -6,6 +6,7 @@ use App\Entities\Card;
 use App\Events\CardCheckEvent;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Log;
 
 class CardCheckEventListener
 {
@@ -26,6 +27,7 @@ class CardCheckEventListener
      */
     public function handle(CardCheckEvent $event)
     {
+        Log::info('check pass');
         //
         if($event->getCardId() && $event->getEvent()) {
             $card = Card::whereCardId($event->getCardId())->first();
