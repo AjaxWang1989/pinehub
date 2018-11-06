@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\CategoryCriteria;
 use App\Http\Response\JsonResponse;
 
+use Dingo\Api\Http\Request;
 use Exception;
 use App\Http\Requests\Admin\CategoryCreateRequest;
 use App\Http\Requests\Admin\CategoryUpdateRequest;
@@ -39,11 +41,13 @@ class CategoriesController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $categories = $this->repository->paginate();
+        $this->repository->pushCriteria(CategoryCriteria::class);
+        $categories = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
 
         return $this->response()->paginator($categories, new CategoryItemTransformer());
     }
