@@ -202,6 +202,7 @@ class AuthController extends Controller
             ->auth
             ->session($code);
 
+
         cache([$accessToken.'_session'=> $session], 60);
 
         $mpUser = $this->mpUserRepository
