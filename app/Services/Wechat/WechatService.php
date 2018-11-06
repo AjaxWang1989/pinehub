@@ -465,7 +465,7 @@ class WechatService
     public function officeAccountServerHandle(string  $appId)
     {
         $server = $this->officeAccountServer();
-        $server->push(function ($message, $server)use($appId) {
+        $server->push(function ($message)use($server, $appId) {
             return $this->serverMessageHandle($server, $message, $appId);
         });
         return $server->serve();
