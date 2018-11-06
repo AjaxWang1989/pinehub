@@ -24,7 +24,7 @@ use Overtrue\LaravelWeChat\Events\OpenPlatform\OpenPlatformEvent;
 class CardEvent extends OpenPlatformEvent
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
-
+    public $sysAppId = null;
     /**
      * Create a new event instance.
      *
@@ -33,6 +33,8 @@ class CardEvent extends OpenPlatformEvent
     public function __construct($payload)
     {
         //
+        $payload = $payload['message'];
+        $this->sysAppId = $payload['app_id'];
         parent::__construct($payload);
     }
 

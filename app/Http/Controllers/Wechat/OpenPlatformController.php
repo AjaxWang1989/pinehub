@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Wechat;
 
 use App\Entities\App;
+use App\Entities\WechatConfig;
 use App\Http\Requests\Admin\OpenPlatformAuthCallbackRequest as AuthCallbackRequest;
 use App\Http\Requests\Admin\OpenPlatformAuthRequest as AuthRequest;
 use App\Repositories\AppRepository;
 use App\Repositories\WechatConfigRepository;
+use App\Services\AppManager;
 use Carbon\Carbon;
 use Dingo\Api\Routing\Helpers;
 use EasyWeChat\OpenPlatform\Application;
@@ -59,6 +61,17 @@ class OpenPlatformController extends Controller
      * */
     public function serve(string $appId = null)
     {
+        $wx = $this->wechatRepository->with(['app'])->findWhere(['app_id' => $appId])->first();
+        if($wx) {
+            return with($wx, function (WechatConfig $config) {
+                app(AppManager::class)->setCurrentApp($config->app);
+                if($config->type === WECHAT_MINI_PROGRAM) {
+                    return app('wechat')->miniProgramServer();
+                }elseif ($config->type === WECHAT_OFFICIAL_ACCOUNT) {
+                    return app('wechat')->officeAccountServer();
+                }
+            });
+        }
         return app('wechat')->openPlatformServerHandle($appId);
     }
 

@@ -495,8 +495,7 @@ class WechatService
     public function openPlatformServerHandle(string $appId)
     {
         $server = $this->openPlatformServer();
-        dd($server);
-        app('wxCardEventHandler')->handle($server);
+
         $server->push(function ($message) use($appId, $server) {
             $this->serverMessageHandle($server, $message, $appId);
         });
@@ -516,7 +515,7 @@ class WechatService
             'app_id' => $appId,
             'message' => $message
         ];
-        dd(['payload' => $payload]);
+//        dd(['payload' => $payload]);
         Log::info('wechat open platform event payload', $payload);
         switch ($message['MsgType']) {
             case WECHAT_EVENT_MESSAGE: {
