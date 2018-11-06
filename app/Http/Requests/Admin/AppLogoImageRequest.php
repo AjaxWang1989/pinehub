@@ -26,7 +26,7 @@ class AppLogoImageRequest extends FormRequest
         $fileField = $this->input('file_field', 'file');
         return [
             //
-            $fileField => ['required', 'mimes:png', 'dimensions:ratio=1/1', 'max:2048']
+            $fileField => ['required', 'mimes:png',  'max:2048']
         ];
     }
 }
