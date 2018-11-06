@@ -516,20 +516,23 @@ class WechatService
             'app_id' => $appId,
             'message' => $message
         ];
-//        dd(['payload' => $payload]);
-        Log::info('wechat open platform event payload', $payload);
-        switch ($message['MsgType']) {
-            case WECHAT_EVENT_MESSAGE: {
-                return $server->dispatch($message['Event'], $payload);
-                break;
+        if(isset($message['MsgType'])) {
+            switch ($message['MsgType']) {
+                case WECHAT_EVENT_MESSAGE: {
+                    return $server->dispatch($message['Event'], $payload);
+                    break;
+                }
+                case WECHAT_TEXT_MESSAGE:
+                case WECHAT_IMAGE_MESSAGE:
+                case WECHAT_VOICE_MESSAGE:
+                default:
+                    return app(EchoStrHandler::class)->handle($message);
+                    break;
             }
-            case WECHAT_TEXT_MESSAGE:
-            case WECHAT_IMAGE_MESSAGE:
-            case WECHAT_VOICE_MESSAGE:
-            default:
-                return app(EchoStrHandler::class)->handle($message);
-                break;
+        }else{
+            return app(EchoStrHandler::class)->handle($message);
         }
+
     }
 
     /**
