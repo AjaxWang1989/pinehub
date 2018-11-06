@@ -511,6 +511,7 @@ class WechatService
      * */
     protected function serverMessageHandle(Guard $server, array $message, string $appId)
     {
+        app('wxCardEventHandler')->handle($server);
         $payload = [
             'app_id' => $appId,
             'message' => $message
