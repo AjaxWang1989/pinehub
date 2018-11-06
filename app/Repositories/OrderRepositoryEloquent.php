@@ -107,6 +107,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
             return $order
                 ->where(['shop_id'=>$userId])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
                 ->whereIn('type', [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION])
@@ -132,6 +133,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($userId,$startAt,$endAt) {
             return $order
                 ->where(['shop_id'=>$userId])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('send_start_time', '=', $startAt)
                 ->where('send_end_time', '=', $endAt)
                 ->whereIn('type', [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION])
@@ -198,6 +200,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($where,$startAt,$endAt,$type) {
             return $order
                 ->where($where)
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('orders.paid_at', '>=', $startAt)
                 ->where('orders.paid_at', '<', $endAt)
                 ->where('type',[$type]);
@@ -235,6 +238,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             return $order->select([
                 $request['date'],
                 DB::raw('sum( `payment_amount` ) as total_amount')])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
@@ -273,6 +277,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             return $order->select([
                 $request['date'],
                 DB::raw('sum( `payment_amount` ) as total_amount')])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
@@ -307,6 +312,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
                 ->where(['shop_id'=>$userId])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
                 ->whereIn('type', [Order::ORDERING_PAY,Order::E_SHOP_PAY]);
@@ -339,6 +345,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
                 ->where(['shop_id'=>$userId])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
                 ->whereIn('type', [Order::SITE_SELF_EXTRACTION,Order::SITE_DISTRIBUTION]);
@@ -370,6 +377,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         }
         $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt){
             return $order->where(['shop_id'=>$userId])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
@@ -391,6 +399,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
                 ->where(['shop_id'=>$request['store_id']])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
@@ -413,6 +422,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $this->scopeQuery(function (Order $order) use($request, $startAt, $endAt){
             return $order->select([DB::raw('sum(`payment_amount`) as total_amount')])
                 ->where(['shop_id'=>$request['store_id']])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
@@ -437,6 +447,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             return $order->select('week',
                 DB::raw('sum( `payment_amount` ) as total_amount'))
                 ->where(['shop_id'=>$request['store_id']])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
                 ->groupby('week')->orderBy('week')->limit($limit);
@@ -458,6 +469,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
         $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt){
             return $order->where(['shop_id'=>$request['store_id']])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
@@ -478,6 +490,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
         $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt){
             return $order->where(['shop_id'=>$request['store_id']])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
@@ -501,6 +514,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             return $order->select('week',
                 DB::raw('count( * ) as buy_mum'))
                 ->where(['shop_id'=>$request['store_id']])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
                 ->groupby('week')->orderBy('week')->limit($limit);
