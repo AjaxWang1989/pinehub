@@ -34,6 +34,7 @@ use App\Http\Response\JsonResponse;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Application;
+use App\Exceptions\UserCodeException;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -369,18 +370,28 @@ class OrderController extends Controller
     public function cancelOrder(int $id){
         $status = ['status' => Order::CANCEL];
 
-        $items = $this->orderItemRepository
-            ->findWhere(['order_id' => $id]);
+        $statusOrder = $this->orderRepository->find($id);
 
-        foreach ($items as $v) {
-            $this->orderItemRepository
-                ->update($status, $v['id']);
+        if ($statusOrder['status'] == '100' || $statusOrder['status'] == '200'){
+
+            $items = $this->orderItemRepository
+                ->findWhere(['order_id' => $id]);
+
+
+            foreach ($items as $v) {
+                $this->orderItemRepository
+                    ->update($status, $v['id']);
+            }
+
+            $item = $this->orderRepository
+                ->update($status, $id);
+
+            return $this->response()->item($item, new StatusOrdersTransformer());
+        }else{
+            $errCode = '状态提交错误';
+            throw new UserCodeException($errCode);
         }
 
-        $item = $this->orderRepository
-            ->update($status, $id);
-
-        return $this->response(new JsonResponse(['confirm_status' => $item]));
     }
 
     /**
@@ -391,18 +402,27 @@ class OrderController extends Controller
     public function confirmOrder(int $id){
         $status = ['status' => Order::COMPLETED];
 
-        $items = $this->orderItemRepository
-            ->findWhere(['order_id'=>$id]);
+        $statusOrder = $this->orderRepository->find($id);
 
-        foreach ($items as $v){
-            $this->orderItemRepository
-                ->update($status,$v['id']);
+        if ($statusOrder['status'] == '100' || $statusOrder['status'] == '200'){
+
+            $items = $this->orderItemRepository
+                ->findWhere(['order_id'=>$id]);
+
+            foreach ($items as $v){
+                $this->orderItemRepository
+                    ->update($status,$v['id']);
+            }
+
+            $item = $this->orderRepository
+                ->update($status, $id);
+
+            return $this->response()->item($item, new StatusOrdersTransformer());
+        }else{
+            $errCode = '状态提交错误';
+            throw new UserCodeException($errCode);
         }
 
-        $item = $this->orderRepository
-            ->update($status, $id);
-
-        return $this->response(new JsonResponse(['confirm_status' => $item['status']]));
     }
 
 }
