@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Entities\Merchandise;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class MerchandiseCreateRequest extends FormRequest
 {
@@ -31,13 +32,12 @@ class MerchandiseCreateRequest extends FormRequest
             'main_image' => ['required', 'url'],
             'images' => ['required', 'array'],
             'preview' => ['required', 'max:256'],
-            'detail' => ['required'],
             'origin_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric'],
             'cost_price' => ['numeric'],
             'factory_price' => ['numeric'],
             'stock_num' => ['required', 'integer'],
-            'status' => ['required', 'in:'.Merchandise::UP.','.Merchandise::DOWN]
+            'status' => ['required', Rule::in([Merchandise::UP,Merchandise::DOWN])]
         ];
     }
 }
