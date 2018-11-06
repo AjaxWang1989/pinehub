@@ -64,7 +64,6 @@ class CategoriesController extends Controller
      */
     public function store(CategoryCreateRequest $request)
     {
-        $request->merge(['app_id' => app(AppManager::class)->getAppId()]);
         $category = $this->repository->create($request->all());
         return $this->response()->item($category, new CategoryTransformer());
     }
