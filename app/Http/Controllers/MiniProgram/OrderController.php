@@ -404,7 +404,7 @@ class OrderController extends Controller
 
         $statusOrder = $this->orderRepository->find($id);
 
-        if ($statusOrder['status'] == '100' || $statusOrder['status'] == '200'){
+        if ($statusOrder['status'] == '300' || $statusOrder['status'] == '400'){
 
             $items = $this->orderItemRepository
                 ->findWhere(['order_id'=>$id]);
