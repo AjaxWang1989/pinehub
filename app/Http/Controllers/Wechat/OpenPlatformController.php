@@ -66,9 +66,9 @@ class OpenPlatformController extends Controller
             return with($wx, function (WechatConfig $config) {
                 app(AppManager::class)->setCurrentApp($config->app);
                 if($config->type === WECHAT_MINI_PROGRAM) {
-                    return app('wechat')->miniProgramServer();
+                    return app('wechat')->miniProgramServerHandle($config->wechatBindApp);
                 }elseif ($config->type === WECHAT_OFFICIAL_ACCOUNT) {
-                    return app('wechat')->officeAccountServer();
+                    return app('wechat')->officeAccountServerHandle($config->wechatBindApp);
                 }
             });
         }
