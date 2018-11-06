@@ -29,7 +29,7 @@ class StoreOrdersSummaryTransformer extends TransformerAbstract
             'receiver_mobile'  => $model->receiverMobile,
             'total_amount'     => $model->totalAmount,
             'payment_amount'   => $model->paymentAmount,
-            'created_at'       => $model->createdAt,
+            'created_at'       => $model->createdAt->format('Y-m-d H:i:s'),
             'order_item_merchandises' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
                 $data  = $orderItem->only(['name','sell_price','quality','total_amount']);
                 return $data;

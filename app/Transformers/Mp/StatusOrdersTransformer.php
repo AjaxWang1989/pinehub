@@ -18,17 +18,18 @@ class StatusOrdersTransformer extends TransformerAbstract
         return [
             'id'      => $model->id,
             'code'    => $model->code,
+            'type'    => $model->type,
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
             'receiver_address' => isset(json_decode($model->receiverAddress)->receiver_address) ?json_decode($model->receiverAddress)->receiver_address : $model->receiverAddress ,
             'build_num'        => isset(json_decode($model->receiverAddress)->build_num) ? json_decode($model->receiverAddress)->build_num : null,
             'room_num'         => isset(json_decode($model->receiverAddress)->room_num) ? json_decode($model->receiverAddress)->room_num : null,
             'receiver_mobile'  => $model->receiverMobile,
-            'quality'          => $model->merchandiseNum,
+            'quantity'          => $model->merchandiseNum,
             'total_amount'     => $model->totalAmount,
             'payment_amount'   => $model->paymentAmount,
-            'shop_end_hour'    => $model->shop->end_at,
-            'created_at'       => $model->createdAt,
+            'shop_end_hour'    => isset($model->shop->end_at) ? $model->shop->end_at : null ,
+            'created_at'       => $model->createdAt->format('Y-m-d H:i:s'),
             'order_item_merchandises' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
                 $data  = $orderItem->only(['name','sell_price','quality','total_amount','main_image']);
                 return $data;
