@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Entities\Category;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use App\Entities\Merchandise;
 
@@ -22,6 +23,7 @@ class MerchandiseTransformer extends TransformerAbstract
      */
     public function transform(Merchandise $model)
     {
+        Log::info('categories', $model->categories->only(['id']));
         return [
             'id'         => (int) $model->id,
             'categories' => $model->categories->only(['id'])->flatten(),
