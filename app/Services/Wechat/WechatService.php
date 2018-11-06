@@ -79,10 +79,11 @@ class WechatService
 
         if(!$this->officeAccount) {
             if(isset($this->config['official_account']['app_secret'])) {
+                dd('official1');
                 $this->officeAccount = Factory::officialAccount($this->config['official_account']);
             }else{
                 $appId = $this->appManager->officialAccount()->appId;
-                dd('official');
+                dd('official2');
                 $this->officeAccount = $this->openPlatform()->officialAccount($appId,
                     $this->appManager->officialAccount->authorizerRefreshToken);
             }
