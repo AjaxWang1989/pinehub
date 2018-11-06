@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\Events\OpenPlatform\OpenPlatformEvent;
 /**
  * @method string getToUserName()
@@ -33,6 +34,7 @@ class CardEvent extends OpenPlatformEvent
     public function __construct($payload)
     {
         //
+        Log::info('payload', $payload);
         $payload = $payload['message'];
         $this->sysAppId = $payload['app_id'];
         parent::__construct($payload);
