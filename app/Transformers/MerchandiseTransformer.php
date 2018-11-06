@@ -24,9 +24,7 @@ class MerchandiseTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-            'categories' => $model->categories->flatMap(function (Category $category) {
-                return $category->id;
-            }),
+            'categories' => $model->categories->only(['id'])->flatten(),
             /* place your other model properties here */
             'app_id' => $model->appId,
             'code' => $model->code,
