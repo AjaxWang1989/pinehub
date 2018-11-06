@@ -136,114 +136,117 @@ class OrderController extends Controller
         $user = $this->mpUser();
         $orders = $request->all();
 
-
-        if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
-            $address = [
-                'receiver_address' => $orders['receiver_address'],
-                'build_num'        => $orders['build_num'],
-                'room_num'         => $orders['room_num']
-            ];
-            $orders['receiver_address'] = json_encode($address);
-        }
-
-        if (isset($orders['send_time']) && $orders['send_time']){
-            //拆分字符串
-            $sendTime = explode('-',$orders['send_time']);
-            //去除字符串中的空格
-            $removeSpace = str_replace(' ','',$sendTime);
-            $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
-            $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
-        }
-
-        $orders['app_id'] = $user->appId;
-        $orders['member_id'] = $user->memberId;
-        $orders['wechat_app_id'] = $user->platformAppId;
-        $orders['customer_id'] = $user->id;
-        $orders['open_id']  = $user->platformOpenId;
-
-        $customerTicketRecord = $user->ticketRecords()->with('card')
-            ->where([
-                'card_id' => $orders['card_id'],
-                'status'  => CustomerTicketCard::STATUS_ON,
-                'active'  => CustomerTicketCard::ACTIVE_ON
-            ])
-            ->orderBy('id', 'asc')
-            ->first();
-
-        if ($customerTicketRecord){
-            $card = $customerTicketRecord['card'];
-
-            $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
-
-            $orders['card_id'] = $card['card_id'];
-
+        if (isset($orders['orders_id']) && $orders['orders_id']){
+            $order = $this->orderRepository->findWhere(['id'=>$orders['orders_id']])->first();
         }else{
-            return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+            if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
+                $address = [
+                    'receiver_address' => $orders['receiver_address'],
+                    'build_num'        => $orders['build_num'],
+                    'room_num'         => $orders['room_num']
+                ];
+                $orders['receiver_address'] = json_encode($address);
+            }
+
+            if (isset($orders['send_time']) && $orders['send_time']){
+                //拆分字符串
+                $sendTime = explode('-',$orders['send_time']);
+                //去除字符串中的空格
+                $removeSpace = str_replace(' ','',$sendTime);
+                $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
+                $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
+            }
+
+            $orders['app_id'] = $user->appId;
+            $orders['member_id'] = $user->memberId;
+            $orders['wechat_app_id'] = $user->platformAppId;
+            $orders['customer_id'] = $user->id;
+            $orders['open_id']  = $user->platformOpenId;
+
+            $customerTicketRecord = $user->ticketRecords()->with('card')
+                ->where([
+                    'card_id' => $orders['card_id'],
+                    'status'  => CustomerTicketCard::STATUS_ON,
+                    'active'  => CustomerTicketCard::ACTIVE_ON
+                ])
+                ->orderBy('id', 'asc')
+                ->first();
+
+            if ($customerTicketRecord){
+                $card = $customerTicketRecord['card'];
+
+                $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
+
+                $orders['card_id'] = $card['card_id'];
+
+            }else{
+                return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+            }
+
+            $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
+
+            //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
+            if (isset($orders['store_id']) && $orders['store_id']){
+                $shoppingCarts = $this->shoppingCartRepository
+                    ->findWhere([
+                        'customer_id' => $user->id,
+                        'shop_id'     =>$orders['store_id']
+                    ]);
+
+            }elseif (isset($orders['activity_id']) && $orders['activity_id']){
+                $shoppingCarts = $this->shoppingCartRepository
+                    ->findWhere([
+                        'customer_id'              => $user->id,
+                        'activity_id' => $orders['activity_id']]);
+
+            }else{
+                $shoppingCarts = $this->shoppingCartRepository
+                    ->findWhere([
+                        'customer_id'               => $user->id,
+                        'activity_id'  => null,
+                        'shop_id'                   => null
+                    ]);
+
+            }
+
+            $orders['merchandise_num'] = $shoppingCarts->sum('quality');
+            $orders['total_amount']    = $shoppingCarts->sum('amount');
+            $orders['payment_amount']  = $orders['total_amount'] - $orders['discount_amount'];
+
+            $orders['years'] = date('Y', time());
+            $orders['month'] = date('d', time());
+            $orders['week']  = date('w', time()) === 0 ? 7 : date('w', time());
+            $orders['hour']  = date('H', time());
+
+            $orderItems = [];
+            $deleteIds  = [];
+            //取出购物车商品信息组装成一个子订单数组
+            foreach ($shoppingCarts as $k => $v) {
+                $orderItems[$k]['activity_id'] = $v['activity_id'];
+                $orderItems[$k]['shop_id'] = $v['shop_id'];
+                $orderItems[$k]['customer_id'] = $v['customer_id'];
+                $orderItems[$k]['merchandise_id'] = $v['merchandise_id'];
+                $orderItems[$k]['quality'] = $v['quality'];
+                $orderItems[$k]['total_amount'] = $v['amount'];
+                $orderItems[$k]['discount_amount'] = 0;
+                $orderItems[$k]['payment_amount'] = $v['amount'];
+                $orderItems[$k]['sku_product_id'] = $v['sku_product_id'];
+                $orderItems[$k]['status'] = Order::WAIT;
+                $deleteIds[] = $v['id'];
+            }
+
+            $orders['shopping_cart_ids']    = $deleteIds;
+            $orders['order_items']          = $orderItems;
+
+            //生成提交中的订单
+            $order = $this->app
+                ->make('order.builder')
+                ->setInput($orders)
+                ->handle();
+
+            //更新优惠券状态为已使用
+            $card_use = $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
         }
-
-        $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
-
-        //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
-        if (isset($orders['store_id']) && $orders['store_id']){
-            $shoppingCarts = $this->shoppingCartRepository
-                ->findWhere([
-                    'customer_id' => $user->id,
-                    'shop_id'     =>$orders['store_id']
-                ]);
-
-        }elseif (isset($orders['activity_id']) && $orders['activity_id']){
-            $shoppingCarts = $this->shoppingCartRepository
-                ->findWhere([
-                'customer_id'              => $user->id,
-                'activity_id' => $orders['activity_id']]);
-
-        }else{
-            $shoppingCarts = $this->shoppingCartRepository
-                ->findWhere([
-                'customer_id'               => $user->id,
-                'activity_id'  => null,
-                'shop_id'                   => null
-            ]);
-
-        }
-        
-        $orders['merchandise_num'] = $shoppingCarts->sum('quality');
-        $orders['total_amount']    = $shoppingCarts->sum('amount');
-        $orders['payment_amount']  = $orders['total_amount'] - $orders['discount_amount'];
-
-        $orders['years'] = date('Y', time());
-        $orders['month'] = date('d', time());
-        $orders['week']  = date('w', time()) === 0 ? 7 : date('w', time());
-        $orders['hour']  = date('H', time());
-
-        $orderItems = [];
-        $deleteIds  = [];
-        //取出购物车商品信息组装成一个子订单数组
-        foreach ($shoppingCarts as $k => $v) {
-            $orderItems[$k]['activity_id'] = $v['activity_id'];
-            $orderItems[$k]['shop_id'] = $v['shop_id'];
-            $orderItems[$k]['customer_id'] = $v['customer_id'];
-            $orderItems[$k]['merchandise_id'] = $v['merchandise_id'];
-            $orderItems[$k]['quality'] = $v['quality'];
-            $orderItems[$k]['total_amount'] = $v['amount'];
-            $orderItems[$k]['discount_amount'] = 0;
-            $orderItems[$k]['payment_amount'] = $v['amount'];
-            $orderItems[$k]['sku_product_id'] = $v['sku_product_id'];
-            $orderItems[$k]['status'] = Order::WAIT;
-            $deleteIds[] = $v['id'];
-        }
-
-        $orders['shopping_cart_ids']    = $deleteIds;
-        $orders['order_items']          = $orderItems;
-
-        //生成提交中的订单
-        $order = $this->app
-            ->make('order.builder')
-            ->setInput($orders)
-            ->handle();
-
-        //更新优惠券状态为已使用
-        $card_use = $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
 
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
