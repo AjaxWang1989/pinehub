@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\MerchandiseCriteria;
 use App\Entities\Merchandise;
 use App\Http\Requests\Admin\MerchandiseImageRequest;
 use App\Http\Response\JsonResponse;
 
 use App\Repositories\FileRepository;
 use App\Services\AppManager;
+use Dingo\Api\Http\Request;
 use Exception;
 use App\Http\Requests\Admin\MerchandiseCreateRequest;
 use App\Http\Requests\Admin\MerchandiseUpdateRequest;
@@ -43,11 +45,13 @@ class MerchandisesController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $merchandises = $this->repository->paginate();
+        $this->repository->pushCriteria(MerchandiseCriteria::class);
+        $merchandises = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($merchandises, new MerchandiseItemTransformer());
     }
 

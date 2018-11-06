@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\CategoryCriteria;
 use App\Http\Response\JsonResponse;
 
 use Dingo\Api\Http\Request;
@@ -45,6 +46,7 @@ class CategoriesController extends Controller
      */
     public function index(Request $request)
     {
+        $this->repository->pushCriteria(CategoryCriteria::class);
         $categories = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
 
         return $this->response()->paginator($categories, new CategoryItemTransformer());
