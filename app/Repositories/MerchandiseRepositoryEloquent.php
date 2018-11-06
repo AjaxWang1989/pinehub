@@ -45,9 +45,6 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
      */
     public function boot()
     {
-        $this->pushCriteria(app(RequestCriteria::class));
-//        $this->pushCriteria(app(MerchandiseCriteria::class));
-        $this->pushCriteria(app(SearchRequestCriteria::class));
         Merchandise::creating(function (Merchandise $merchandise){
             $merchandise->appId = app(AppManager::class)->currentApp->id;
             $merchandise->code = app('uid.generator')->getUid(MERCHANDISE_CODE_FORMAT, MERCHANDISE_SEGMENT_MAX_LENGTH);

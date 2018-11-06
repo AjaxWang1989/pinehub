@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Criteria\Admin\CategoryCriteria;
 use App\Http\Response\JsonResponse;
 
+use App\Services\AppManager;
 use Dingo\Api\Http\Request;
 use Exception;
 use App\Http\Requests\Admin\CategoryCreateRequest;
