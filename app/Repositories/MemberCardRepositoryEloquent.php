@@ -4,9 +4,7 @@ namespace App\Repositories;
 
 use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\MemberCard;
-use App\Validators\MemberCardValidator;
 
 /**
  * Class MemberCardRepositoryEloquent.
@@ -16,6 +14,10 @@ use App\Validators\MemberCardValidator;
 class MemberCardRepositoryEloquent extends BaseRepository implements MemberCardRepository
 {
     use Destruct;
+
+    protected $fieldSearchable = [
+        'name' => ''
+    ];
     /**
      * Specify Model class name
      *
@@ -34,7 +36,7 @@ class MemberCardRepositoryEloquent extends BaseRepository implements MemberCardR
      */
     public function boot()
     {
-        $this->pushCriteria(app(RequestCriteria::class));
+
     }
     
 }

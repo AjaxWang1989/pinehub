@@ -31,7 +31,6 @@ class MerchandiseUpdateRequest extends FormRequest
             'main_image' => ['required', 'url'],
             'images' => ['required', 'array'],
             'preview' => ['required', 'max:256'],
-            'detail' => ['required'],
             'origin_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric'],
             'cost_price' => ['numeric'],

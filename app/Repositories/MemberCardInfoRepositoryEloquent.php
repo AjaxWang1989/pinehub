@@ -13,6 +13,9 @@ use App\Entities\MemberCardInfo;
  */
 class MemberCardInfoRepositoryEloquent extends CardRepositoryEloquent implements MemberCardInfoRepository
 {
+    protected $fieldSearchable = [
+        'card_info->title' => 'like'
+    ];
     /**
      * Specify Model class name
      *

@@ -2,6 +2,8 @@
 
 namespace App\Transformers;
 
+use App\Entities\Category;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use App\Entities\Merchandise;
 
@@ -23,7 +25,9 @@ class MerchandiseTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
-            'categories' => $model->categories,
+            'categories' => $model->categories->map(function (Category $category) {
+                return $category->id;
+            })->toArray(),
             /* place your other model properties here */
             'app_id' => $model->appId,
             'code' => $model->code,
