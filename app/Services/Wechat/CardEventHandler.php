@@ -37,7 +37,9 @@ class CardEventHandler implements InterfaceServiceHandler
             $events = app('events');
             $server->on(EVENT_CARD_PASS_CHECK, function ($payload) use($events) {
                 Log::info('EVENT_CARD_PASS_CHECK');
-                $events->fire(new CardCheckEvent($payload));
+                if(isset($payload['app_id'])) {
+                    $events->fire(new CardCheckEvent($payload));
+                }
             });
 
             $server->on(EVENT_CARD_NOT_PASS_CHECK, function ($payload) {
