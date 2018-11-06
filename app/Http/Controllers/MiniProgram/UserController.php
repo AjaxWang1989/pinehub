@@ -74,12 +74,13 @@ class UserController extends Controller
         $user = $this->mpUser();
         if (isset($request['store_id']) && $request['store_id']){
             $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['shop_id'=>$request['store_id'],'customer_id'=>$user['id']])->sum('amount');
-        } elseif (isset($request['activity_merchandises_id']) && $request['activity_merchandises_id']){
-            $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['activity_merchandises_id'=>$request['activity_merchandises_id'],'customer_id'=>$user['id']])->sum('amount');
+        } elseif (isset($request['activity_id']) && $request['activity_id']){
+            $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['activity_id'=>$request['activity_id'],'customer_id'=>$user['id']])->sum('amount');
         }else{
-            $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['activity_merchandises_id'=>null,'shop_id'=>null,'customer_id'=>$user['id']])->sum('amount');
+            $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['activity_id'=>null,'shop_id'=>null,'customer_id'=>$user['id']])->sum('amount');
         }
         $items = $this->customerTicketCardRepository->userTickets($status,$user['id'], $shoppingCartAmount);
+
         return $this->response()->paginator($items,new CustomerTicketCardTransformer());
     }
 
