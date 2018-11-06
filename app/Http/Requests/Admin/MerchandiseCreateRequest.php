@@ -27,7 +27,7 @@ class MerchandiseCreateRequest extends FormRequest
     {
         return [
             //
-            'categories' => ['required', 'array'],
+//            'categories' => ['required', 'array'],
 //            'name' => ['required', 'max:255'],
 //            'main_image' => ['required', 'url'],
 //            'images' => ['required', 'array'],
@@ -44,7 +44,7 @@ class MerchandiseCreateRequest extends FormRequest
     public function messages()
     {
         return [
-            'categories.required' => '分类必填' ,
+//            'categories.required' => '分类必填' ,
 //            'name.required' => '名称必填',
 //            'main_image.required' => '必须填写商品主图',
 //            'images.required' => '缺少商品图片列表',
