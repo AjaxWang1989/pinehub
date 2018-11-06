@@ -23,7 +23,7 @@ class MerchandiseTransformer extends TransformerAbstract
      */
     public function transform(Merchandise $model)
     {
-        Log::info('categories', $model->categories->only(['id'])->toArray());
+        Log::info('categories', $model->categories->toArray());
         return [
             'id'         => (int) $model->id,
             'categories' => $model->categories->only(['id'])->flatten(),
