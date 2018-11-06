@@ -24,7 +24,7 @@ use App\Events\UserViewCardEvent;
 use App\Services\InterfaceServiceHandler;
 use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
 use EasyWeChat\Kernel\ServerGuard;
-use Illuminate\Support\Facades\Event;
+use Event;
 use Illuminate\Support\Facades\Log;
 
 
