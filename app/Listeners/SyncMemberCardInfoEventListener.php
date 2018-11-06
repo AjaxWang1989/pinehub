@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Entities\Card;
 use App\Events\SyncMemberCardInfoEvent;
+use Illuminate\Support\Facades\Log;
 
 class SyncMemberCardInfoEventListener
 {
@@ -37,11 +38,15 @@ class SyncMemberCardInfoEventListener
         if($memberCard->sync === Card::SYNC_ING) {
             sleep(10);
         }
+        $memberInfo = $event->memberInfo;
+        $memberInfo['discount'] *= 10;
+        $memberInfo['auto_activate'] = (boolean)$memberInfo['auto_activate'];
+        $memberInfo['base_info']['can_share'] = (boolean)$memberInfo['base_info']['can_share'];
 
         if($memberCard->cardId === null) {
-            $result = $event->wechat->card->create($memberCard->cardType, $event->memberInfo);
+            $result = $event->wechat->card->create($memberCard->cardType, $memberInfo);
         } else {
-            $result = $event->wechat->card->update($memberCard->cardId, $memberCard->cardType, $event->memberInfo);
+            $result = $event->wechat->card->update($memberCard->cardId, $memberCard->cardType, $memberInfo);
         }
         if($result['errcode'] === 0) {
             $app = $memberCard->app()->first();
