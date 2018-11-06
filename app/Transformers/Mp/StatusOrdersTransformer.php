@@ -24,6 +24,7 @@ class StatusOrdersTransformer extends TransformerAbstract
             'build_num'        => isset(json_decode($model->receiverAddress)->build_num) ? json_decode($model->receiverAddress)->build_num : null,
             'room_num'         => isset(json_decode($model->receiverAddress)->room_num) ? json_decode($model->receiverAddress)->room_num : null,
             'receiver_mobile'  => $model->receiverMobile,
+            'quality'          => $model->merchandiseNum,
             'total_amount'     => $model->totalAmount,
             'payment_amount'   => $model->paymentAmount,
             'shop_end_hour'    => $model->shop->end_at,
