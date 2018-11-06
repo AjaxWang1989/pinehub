@@ -88,7 +88,7 @@ class WechatService
                     $this->appManager->officialAccount->authorizerRefreshToken);
             }
         }
-
+        dd('official3');
         $this->setWechatApplication($this->officeAccount, app());
 
         return ($this->officeAccount);
