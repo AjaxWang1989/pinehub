@@ -211,6 +211,13 @@ class AuthController extends Controller
 
 
         if($session && $mpUser) {
+
+            $shopUser = $this->shopRepository
+                ->findWhere(['user_id'  =>  $mpUser['member_id']])
+                ->first();
+
+            $mpUser['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
+
             $param = [
                 'platform_open_id' => $mpUser['platform_open_id'],
                 'password' => $mpUser['session_key']
