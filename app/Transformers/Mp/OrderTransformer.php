@@ -20,7 +20,8 @@ class OrderTransformer extends TransformerAbstract
             'receiver_address'=>$model->receiverAddress,
             'receiver_mobile'=>$model->receiverMobile,
             'type' => $model->type,
-            'send_time' => $model->sendTime,
+            'send_start_time' => $model->sendStartTime,
+            'send_end_time'   => $model->sendEndTime,
         ];
     }
 }

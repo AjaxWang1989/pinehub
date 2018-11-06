@@ -28,7 +28,7 @@ class StatusOrdersTransformer extends TransformerAbstract
             'total_amount'     => $model->totalAmount,
             'payment_amount'   => $model->paymentAmount,
             'shop_end_hour'    => $model->shop->end_at,
-            'created_at'       => $model->createdAt,
+            'created_at'       => $model->createdAt->format('Y-m-d H:i:s'),
             'order_item_merchandises' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
                 $data  = $orderItem->only(['name','sell_price','quality','total_amount','main_image']);
                 return $data;
