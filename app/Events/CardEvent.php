@@ -34,9 +34,8 @@ class CardEvent extends OpenPlatformEvent
     public function __construct($payload)
     {
         //
-        Log::info('payload', $payload);
-        $payload = $payload['message'];
         $this->sysAppId = $payload['app_id'];
+        $payload = $payload['message'];
         parent::__construct($payload);
     }
 
