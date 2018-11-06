@@ -16,6 +16,7 @@ class StoreMerchandiseTransformer extends TransformerAbstract
     public function transform(ShopMerchandise $model){
         return [
             'id'=> $model->merchandise->id,
+            'merchandise_id' => $model->merchandise->id,
             'name'=> $model->merchandise->name,
             'main_image'=> $model->merchandise->mainImage,
             'origin_price' => $model->merchandise->originPrice,
