@@ -23,12 +23,11 @@ class MerchandiseTransformer extends TransformerAbstract
      */
     public function transform(Merchandise $model)
     {
-        Log::info('categories', $model->categories->map(function (Category $category) {
-            return $category->id;
-        })->toArray());
         return [
             'id'         => (int) $model->id,
-            'categories' => $model->categories->only(['id'])->flatten(),
+            'categories' => $model->categories->map(function (Category $category) {
+                return $category->id;
+            })->toArray(),
             /* place your other model properties here */
             'app_id' => $model->appId,
             'code' => $model->code,
