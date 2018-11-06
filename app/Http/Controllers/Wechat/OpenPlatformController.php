@@ -59,7 +59,6 @@ class OpenPlatformController extends Controller
      * */
     public function serve(string $appId = null)
     {
-//        dump($appId);
         return app('wechat')->openPlatformServerHandle($appId);
     }
 
