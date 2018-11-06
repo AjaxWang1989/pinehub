@@ -26,7 +26,7 @@ class MerchandiseImageRequest extends FormRequest
         $fileField = $this->input('file_field', 'file');
         return [
             //
-            $fileField => ['required', 'mimes:png,jpg,jpeg', 'dimensions:ratio=1/1', 'max:2048']
+            $fileField => ['required', 'mimes:png,jpg,jpeg', 'max:2048']
         ];
     }
 }
