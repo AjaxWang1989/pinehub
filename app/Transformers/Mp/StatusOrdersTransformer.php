@@ -18,7 +18,7 @@ class StatusOrdersTransformer extends TransformerAbstract
         return [
             'id'      => $model->id,
             'code'    => $model->code,
-            'status'  => $model->status,
+            'type'    => $model->type,
             'receiver_name'    => $model->receiverName,
             'receiver_address' => isset(json_decode($model->receiverAddress)->receiver_address) ?json_decode($model->receiverAddress)->receiver_address : $model->receiverAddress ,
             'build_num'        => isset(json_decode($model->receiverAddress)->build_num) ? json_decode($model->receiverAddress)->build_num : null,
