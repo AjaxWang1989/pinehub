@@ -76,9 +76,9 @@ class MiniProgramApiRoutes extends ApiRoutes
 
             $router->post('/add/merchandise', ['as' => 'user.add.merchandise','uses' => 'ShoppingCartController@addMerchandise']);
             $router->post('/reduce/merchandise', ['as' => 'user.reduce.merchandise','uses' => 'ShoppingCartController@reduceMerchandise']);
-            $router->get('/empty/shop/merchandise/{storeId}', ['as' => 'user.empty.shop.merchandise','uses' => 'ShoppingCartController@emptyMerchandise']);
-            $router->get('/empty/activity/merchandise/{activityId}', ['as' => 'user.empty.activity.merchandise','uses' => 'ShoppingCartController@emptyMerchandise']);
-            $router->get('/empty/merchandise', ['as' => 'user.empty.merchandise','uses' => 'ShoppingCartController@emptyMerchandise']);
+            $router->get('/empty/shop/merchandises/{storeId}', ['as' => 'user.empty.shop.merchandise','uses' => 'ShoppingCartController@emptyMerchandise']);
+            $router->get('/empty/activity/merchandises/{activityId}', ['as' => 'user.empty.activity.merchandise','uses' => 'ShoppingCartController@emptyMerchandise']);
+            $router->get('/empty/merchandises', ['as' => 'user.empty.merchandise','uses' => 'ShoppingCartController@emptyMerchandise']);
             $router->get('/shoppingcart/shop/merchandises/{storeId}', ['as' => 'user.shoppingcart.shop.merchandises','uses' => 'ShoppingCartController@shoppingCartMerchandises']);
             $router->get('/shoppingcart/activity/merchandises/{activityId}', ['as' => 'user.shoppingcart.activity.merchandises','uses' => 'ShoppingCartController@shoppingCartMerchandises']);
             $router->get('/shoppingcart/merchandises', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@shoppingCartMerchandises']);
