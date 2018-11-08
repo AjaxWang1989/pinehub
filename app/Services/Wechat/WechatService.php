@@ -352,7 +352,6 @@ class WechatService
     {
         $this->config['payment']['app_id'] = $paymentAppId;
         $payment = $this->payment();
-        $token =  app('tymon.jwt.auth')->getToken();
         $query = $token ? ['token' => $token] : [];
         $notifyUrl = buildUrl('api.mp', $this->config['payment']['notify_url'], [], $query);
         if($order instanceof Order) {
