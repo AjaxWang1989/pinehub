@@ -137,6 +137,7 @@ class OrderController extends Controller
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
             $result = app('wechat')->unify($order, $order->wechatAppId);
+            return $result;
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
                 $order->paidAt = date('Y-m-d H:i:s',time());
@@ -146,7 +147,6 @@ class OrderController extends Controller
 
                 return $this->response(new JsonResponse($result));
             }else{
-                Log::info('payment error ', $result);
                 throw new UnifyOrderException($result['return_msg']);
             }
         });
