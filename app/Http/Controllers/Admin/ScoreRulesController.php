@@ -55,6 +55,10 @@ class ScoreRulesController extends Controller
         return $this->response()->paginator($scoreRules, new ScoreRuleItemTransformer());
     }
 
+
+    public function specialRules() {
+        return $this->index('special');
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -67,7 +71,6 @@ class ScoreRulesController extends Controller
     public function store(ScoreRuleCreateRequest $request)
     {
         $data = $request->all();
-        $data['app_id'] = app(AppManager::class)->currentApp->id;
         $scoreRule = $this->repository->create($data);
         return $this->response()->item($scoreRule, new ScoreRuleTransformer());
     }
@@ -127,5 +130,13 @@ class ScoreRulesController extends Controller
     {
         $deleted = $this->repository->delete($id);
         return $this->response(new JsonResponse(['delete_count' => $deleted]));
+    }
+
+
+    public function generalRule()
+    {
+        $scoreRule = $this->repository->findByField('type', ScoreRule::GENERAL_RULE)->first();
+
+        return $this->response()->item($scoreRule, new ScoreRuleTransformer());
     }
 }
