@@ -21,17 +21,17 @@ class ScoreRuleTransformer extends TransformerAbstract
      */
     public function transform(ScoreRule $model)
     {
-        return [
+        return array(
             'id'         => (int) $model->id,
             'type' => $model->type,
             'rule' => $model->rule,
-            'expires_at' => $model->expiresAt,
+            'expires_at' => $model->expiresAt->format('Y-m-d H:i:s'),
             'app_id' => $model->appId,
             'score' => $model->score,
             'total_score' => $model->totalScore,
             'notice_user' => $model->noticeUser,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
-        ];
+        );
     }
 }
