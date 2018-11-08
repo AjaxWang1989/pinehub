@@ -141,7 +141,7 @@ class OrderController extends Controller
 
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
-            Log::info('============ token =================',  app('tymon.jwt.auth')->getToken());
+            Log::info('============ token =================',  [app('tymon.jwt.auth')->getToken()]);
             $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
