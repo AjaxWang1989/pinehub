@@ -33,6 +33,7 @@ use App\Repositories\ShopRepository;
 use App\Http\Response\JsonResponse;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 use App\Exceptions\UserCodeException;
 use Illuminate\Support\Facades\Cache;
@@ -133,7 +134,6 @@ class OrderController extends Controller
 
     public function againOrder(int $orderId){
         $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
-        return $order->wechatAppId;
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
             $result = app('wechat')->unify($order, $order->wechatAppId);
@@ -146,6 +146,7 @@ class OrderController extends Controller
 
                 return $this->response(new JsonResponse($result));
             }else{
+                Log::info('payment error ', $result);
                 throw new UnifyOrderException($result['return_msg']);
             }
         });
