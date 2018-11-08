@@ -128,18 +128,37 @@ class OrderController extends Controller
     }
 
     /**
+     * 重新支付订单
+     */
+
+    public function againOrder(int $orderId){
+        $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
+        return DB::transaction(function () use(&$order){
+            //跟微信打交道生成预支付订单
+            $result = app('wechat')->unify($order, $order->wechatAppId);
+            if($result['return_code'] === 'SUCCESS'){
+                $order->status = Order::MAKE_SURE;
+                $order->paidAt = date('Y-m-d H:i:s',time());
+                $order->save();
+                $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
+                $result['sdk_config'] = $sdkConfig;
+
+                return $this->response(new JsonResponse($result));
+            }else{
+                throw new UnifyOrderException($result['return_msg']);
+            }
+        });
+    }
+
+    /**
      * 创建订单
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
     public function createOrder(OrderCreateRequest $request)
     {
-        $user = $this->mpUser();
-        $orders = $request->all();
-
-        if (isset($orders['order_id']) && $orders['order_id']){
-            $order = $this->orderRepository->findWhere(['id'=>$orders['order_id']])->first();
-        }else{
+            $user = $this->mpUser();
+            $orders = $request->all();
             if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
                 $address = [
                     'receiver_address' => $orders['receiver_address'],
@@ -247,7 +266,7 @@ class OrderController extends Controller
 
             //更新优惠券状态为已使用
             $card_use = $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
-        }
+
 
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
