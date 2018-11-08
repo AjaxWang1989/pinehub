@@ -14,6 +14,7 @@ use App\Transformers\ScoreRuleTransformer;
 use App\Transformers\ScoreRuleItemTransformer;
 use App\Repositories\ScoreRuleRepository;
 use App\Http\Controllers\Controller;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 /**
  * Class ScoreRulesController.
@@ -136,7 +137,11 @@ class ScoreRulesController extends Controller
     public function generalRule()
     {
         $scoreRule = $this->repository->findByField('type', ScoreRule::GENERAL_RULE)->first();
+        if($scoreRule) {
+            return $this->response()->item($scoreRule, new ScoreRuleTransformer());
+        }else{
+            throw new ResourceNotFoundException('尚未添加通用积分规则', MODEL_NOT_FOUND);
+        }
 
-        return $this->response()->item($scoreRule, new ScoreRuleTransformer());
     }
 }
