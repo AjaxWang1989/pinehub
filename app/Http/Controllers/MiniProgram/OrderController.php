@@ -137,8 +137,8 @@ class OrderController extends Controller
         $user = $this->mpUser();
         $orders = $request->all();
 
-        if (isset($orders['orders_id']) && $orders['orders_id']){
-            $order = $this->orderRepository->findWhere(['id'=>$orders['orders_id']])->first();
+        if (isset($orders['order_id']) && $orders['order_id']){
+            $order = $this->orderRepository->findWhere(['id'=>$orders['order_id']])->first();
         }else{
             if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
                 $address = [
