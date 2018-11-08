@@ -133,6 +133,7 @@ class OrderController extends Controller
 
     public function againOrder(int $orderId){
         $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
+        return $order->wechatAppId;
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
             $result = app('wechat')->unify($order, $order->wechatAppId);
