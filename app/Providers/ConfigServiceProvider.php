@@ -19,7 +19,7 @@ class ConfigServiceProvider extends ServiceProvider
             'ide-helper',
             'repository',
             'ali',
-            'wechat',
+
             'filesystems',
             'session',
             'database',
@@ -30,6 +30,7 @@ class ConfigServiceProvider extends ServiceProvider
             'logging',
             'view',
             'gateway',
+            'wechat',
             'routes'
                  ] as $name){
             laravelToLumen($this->app)->configure($name);

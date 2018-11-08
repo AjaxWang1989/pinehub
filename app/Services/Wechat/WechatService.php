@@ -348,22 +348,26 @@ class WechatService
      * @return array|string|Object|ResponseInterface
      * @throws
      * */
-    public function unify($order, string  $paymentAppId, $device = 'WEB')
+    public function unify($order, string  $paymentAppId, string $token = null, $device = 'WEB')
     {
         $this->config['payment']['app_id'] = $paymentAppId;
         $payment = $this->payment();
+        $token =  app('tymon.jwt.auth')->getToken();
+        $query = $token ? ['token' => $token] : [];
+        $notifyUrl = buildUrl('api.mp', $this->config['payment']['notify_url'], [], $query);
         if($order instanceof Order) {
             $unifyData = [
                 'body' => '扫码支付',
                 'out_trade_no' => $order->code,
                 'total_fee' => $order->paymentAmount * 100,
                 'spbill_create_ip' => $order->ip, // 可选，如不传该参数，SDK 将会自动获取相应 IP 地址
-                'notify_url' => $this->config['payment']['notify_url'], // 支付结果通知网址，如果不设置则会使用配置里的默认地址
+                'notify_url' => $notifyUrl, // 支付结果通知网址，如果不设置则会使用配置里的默认地址
                 'trade_type' => 'JSAPI',
                 'openid' => $order->openId,
                 'device_info' => $device
             ];
         }else{
+            $order['notify_url'] = $notifyUrl;
             $unifyData = $order;
         }
 

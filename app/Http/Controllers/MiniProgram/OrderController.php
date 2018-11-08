@@ -134,9 +134,14 @@ class OrderController extends Controller
 
     public function againOrder(int $orderId){
         $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
+        return $this->order($order);
+    }
+
+    public function order($order){
+
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
-            $result = app('wechat')->unify($order, $order->wechatAppId);
+            $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
                 $order->paidAt = date('Y-m-d H:i:s',time());
@@ -269,21 +274,7 @@ class OrderController extends Controller
             $card_use = $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
 
 
-        return DB::transaction(function () use(&$order){
-            //跟微信打交道生成预支付订单
-            $result = app('wechat')->unify($order, $order->wechatAppId);
-            if($result['return_code'] === 'SUCCESS'){
-                $order->status = Order::MAKE_SURE;
-                $order->paidAt = date('Y-m-d H:i:s',time());
-                $order->save();
-                $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
-                $result['sdk_config'] = $sdkConfig;
-
-                return $this->response(new JsonResponse($result));
-            }else{
-                throw new UnifyOrderException($result['return_msg']);
-            }
-        });
+            return $this->order($order);
     }
 
     /**

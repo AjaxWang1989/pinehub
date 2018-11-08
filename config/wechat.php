@@ -118,7 +118,7 @@ return [
              'key'                => env('WECHAT_PAYMENT_KEY', 'e4c7096983336907b9e04fd1489de954'),
              'cert_path'          => storage_path(env('WECHAT_PAYMENT_CERT_PATH', '/wechat/cert/apiclient_cert.pem')),    // XXX: 绝对路径！！！！
              'key_path'           => storage_path(env('WECHAT_PAYMENT_KEY_PATH', '/wechat/cert/apiclient_key.pem')),      // XXX: 绝对路径！！！！
-             'notify_url'         =>  '', //webUriGenerator(env('WECHAT_PAYMENT_NOTIFY_URL', '/payment/wechat/notify'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),                           // 默认支付结果通知地址
+             'notify_url'         =>  env('WECHAT_PAYMENT_NOTIFY_URL', ''),//buildUrl('api.mp', env('WECHAT_PAYMENT_NOTIFY_URL', '')), //webUriGenerator(env('WECHAT_PAYMENT_NOTIFY_URL', '/payment/wechat/notify'), env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN')),                           // 默认支付结果通知地址
          ],
      ],
 
