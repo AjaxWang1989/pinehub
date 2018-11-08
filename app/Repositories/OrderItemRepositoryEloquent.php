@@ -9,6 +9,7 @@ use Illuminate\Container\Container as Application;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\OrderItemRepository;
 use App\Entities\OrderItem;
+use App\Entities\Order;
 use App\Validators\OrderItemValidator;
 
 /**
@@ -106,6 +107,7 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
         }
         $this->scopeQuery(function (OrderItem $orderItem) use($userId,$request, $startAt, $endAt){
             return $orderItem->select([DB::raw('sum(`quality`) as total_amount')])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
@@ -142,6 +144,7 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
                 DB::raw('sum( `payment_amount` ) as total_amount')
             ])
                 ->join('customers', 'order_items.customer_id', '=', 'customers.id')
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
@@ -177,6 +180,7 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
             return $orderItem->select([
                 'name',
                 DB::raw('sum( `payment_amount` ) as total_amount')])
+                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
