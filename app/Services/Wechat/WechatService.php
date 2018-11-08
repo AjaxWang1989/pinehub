@@ -28,6 +28,7 @@ use EasyWeChat\Factory;
 use EasyWeChat\Kernel\Messages\Article;
 use EasyWeChat\Kernel\ServerGuard as Guard;
 use EasyWeChat\OfficialAccount\Server\Handlers\EchoStrHandler;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Overtrue\LaravelWeChat\CacheBridge;
 //use EasyWeChat\OpenPlatform\Auth\AccessToken as OpenPlatformAccessToken;
@@ -352,7 +353,14 @@ class WechatService
     {
         $this->config['payment']['app_id'] = $paymentAppId;
         $payment = $this->payment();
-        $query = $token ? ['token' => $token] : [];
+        if($token) {
+            $mdToken = md5($token);
+            Cache::put($mdToken, $token, 15);
+            $query = ['token' => $token];
+        }else{
+            $query = [];
+        }
+
         $notifyUrl = buildUrl('api.mp', $this->config['payment']['notify_url'], [], $query);
         if($order instanceof Order) {
             $unifyData = [

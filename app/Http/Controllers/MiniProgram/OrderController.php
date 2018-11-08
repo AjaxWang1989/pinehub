@@ -145,7 +145,6 @@ class OrderController extends Controller
             $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
-                $order->paidAt = date('Y-m-d H:i:s',time());
                 $order->save();
                 $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
                 $result['sdk_config'] = $sdkConfig;
