@@ -18,6 +18,7 @@ class ShoppingCartTransformer extends TransformerAbstract
             'id'=>$model->id,
             'merchandise_id'=>$model->merchandise_id,
             'name'=>$model->merchandise->name,
+            'main_image' => $model->merchandise->mainImage,
             'quality'=>$model->quality,
             'sell_price'=>$model->sell_price,
             'amount' => $model->amount,
