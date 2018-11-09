@@ -356,7 +356,7 @@ class WechatService
         if($token) {
             $mdToken = md5($token);
             Cache::put($mdToken, $token, 15);
-            $query = ['token' => $token];
+            $query = ['token' => $mdToken];
         }else{
             $query = [];
         }
