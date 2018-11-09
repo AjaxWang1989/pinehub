@@ -114,7 +114,7 @@ if(!function_exists('generatorUID')){
 if(!function_exists('buildUrl')) {
     function buildUrl(string $gateway, $path, array $params = [], array  $query = [], string  $proto = 'http://') {
         foreach ($params as $key => $param) {
-            $search[] = '/({'.$key.'})|({'.$key.'?})/';
+            $search[] = '/({'.$key.'})|({'.$key.'\?})/';
             $replace[] = $param;
         }
 
