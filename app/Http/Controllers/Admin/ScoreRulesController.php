@@ -48,9 +48,13 @@ class ScoreRulesController extends Controller
     {
         $this->repository->pushCriteria(ScoreRuleCriteria::class);
         if($type === 'general') {
-            $this->repository->findWhere(['type'=> ScoreRule::GENERAL_RULE]);
+            $this->repository->scopeQuery(function ($scoreRule) {
+                return $scoreRule->where('type', ScoreRule::GENERAL_RULE);
+            });
         }elseif ($type === 'special') {
-            $this->repository->findWhere([['type', '>', ScoreRule::SPECIAL_RULE]]);
+            $this->repository->scopeQuery(function ($scoreRule) {
+                return $scoreRule->where('type', '>=', ScoreRule::SPECIAL_RULE);
+            });
         }
         $scoreRules = $this->repository->paginate();
         return $this->response()->paginator($scoreRules, new ScoreRuleItemTransformer());
