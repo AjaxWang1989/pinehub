@@ -68,6 +68,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\Card $tickets
  * @property  string|null $cardCode
+ * @property  Activity|null $activity
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereActivityMerchandisesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
@@ -280,6 +281,11 @@ class Order extends Model implements Transformable
     public function activityMerchandises() :hasMany
     {
         return $this->hasMany(ActivityMerchandise::class,'activity_merchandises_id','id');
+    }
+
+    public function activity() : BelongsTo
+    {
+        return $this->belongsTo(Activity::class, 'activity_id', 'id');
     }
 
 

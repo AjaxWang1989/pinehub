@@ -51,6 +51,8 @@ class OrderItemTransformer extends TransformerAbstract
 
             'paid_at' => $model->paidAt,
 
+            'activity' => $model->activity,
+
             'pay_type' => $model->payType,
 
             'status' => $model->status,
