@@ -97,7 +97,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('/{type}/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
                 $router->get('/score-rule/{id}', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@show']);
                 $router->post('/score-rule', ['as' => 'score-rule.create', 'uses' => 'ScoreRulesController@store']);
-                $router->put('/score-rule/{id}', ['as' => 'score-rule.update', 'uses' => 'ScoreRulesController@store']);
+                $router->put('/score-rule/{id}', ['as' => 'score-rule.update', 'uses' => 'ScoreRulesController@update']);
 
                 $router->get('categories', ['as' => 'categories.list', 'uses' => 'CategoriesController@index']);
                 $router->post('category', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);
