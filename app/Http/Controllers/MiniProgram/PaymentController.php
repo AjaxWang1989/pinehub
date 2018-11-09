@@ -23,7 +23,7 @@ class PaymentController extends Controller
                 $data = $notify->notify($this->app->make('payment.notify'));
             }
         }
-
+        Log::info('------- notify -----', [$data]);
         return $this->response($data);
     }
 }
