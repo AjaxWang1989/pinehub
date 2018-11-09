@@ -20,7 +20,7 @@ class PaymentController extends Controller
             $token = Cache::get($token);
             if(app('tymon.jwt.auth')->authenticate($token)) {
                 $notify = app('payment.wechat.notify');
-                $data = $notify->notify($this->app->make('payment.notify'));
+                $data = $notify->notify(app('payment.notify'));
             }
         }
         Log::info('------- notify -----', [$data]);
