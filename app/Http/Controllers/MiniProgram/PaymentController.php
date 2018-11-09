@@ -11,12 +11,12 @@ use Payment\NotifyContext;
 class PaymentController extends Controller
 {
 
-    public function notify(Request $request)
+    public function notify(Request $request, string $token = null)
     {
         Log::info('--------------------- payment notify------------------------------------',
             [$_POST, $request->all(), @file_get_contents('php://input')]);
         $data = null;
-        if(($token = $request->input('token', null))) {
+        if($token) {
             $token = Cache::get($token);
             if(app('tymon.jwt.auth')->authenticate($token)) {
                 $notify = app('payment.wechat.notify');

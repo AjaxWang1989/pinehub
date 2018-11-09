@@ -356,12 +356,12 @@ class WechatService
         if($token) {
             $mdToken = md5($token);
             Cache::put($mdToken, $token, 15);
-            $query = ['token' => $mdToken];
+            $params = ['token' => $mdToken];
         }else{
-            $query = [];
+            $params = [];
         }
 
-        $notifyUrl = buildUrl('api.mp', $this->config['payment']['notify_url'], [], $query);
+        $notifyUrl = buildUrl('api.mp', $this->config['payment']['notify_url'], $params);
         if($order instanceof Order) {
             $unifyData = [
                 'body' => '扫码支付',
