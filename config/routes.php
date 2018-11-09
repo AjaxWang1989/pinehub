@@ -28,7 +28,7 @@ return [
 //        'prefix' => null,
         'namespace' => 'MiniProgram',
         'auth' => 'mp',
-        'provider' => null
+        'provider' => \App\Providers\MiniProgramServiceProvider::class
     ],
     [
         'gateway' => 'api.h5',
