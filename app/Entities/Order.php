@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -165,10 +166,13 @@ class Order extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'code', 'customer_id','card_id', 'card_code', 'merchandise_num','total_amount', 'payment_amount', 'discount_amount', 'paid_at', 'pay_type',
-        'status', 'cancellation', 'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
-        'receiver_district','receiver_name', 'receiver_address','receiver_mobile', 'send_start_time','send_end_time','comment','type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id', 'score_settle',
-        'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status','years','month','week','hour','activity_id'
+        'code', 'customer_id', 'card_id', 'card_code', 'merchandise_num', 'total_amount',
+        'payment_amount', 'discount_amount', 'paid_at', 'pay_type', 'status', 'cancellation',
+        'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
+        'receiver_district', 'receiver_name', 'receiver_address', 'receiver_mobile', 'send_start_time',
+        'send_end_time', 'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
+        'score_settle', 'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status',
+        'years', 'month', 'week', 'hour', 'activity_id'
     ];
 
     public static function boot()
@@ -181,62 +185,96 @@ class Order extends Model implements Transformable
 
         Order::updated(function (Order &$order) {
             if($order->getOriginal('status') !== $order->status) {
-                $order->orderItems()->update(['status' => $order->status,'paid_at' => date('Y-m-d H:i:s',time())]);
-                if (Order::PAY_FAILED === $order->status){
-                    $orderItems = $order->orderItems;
-                    $merchandiseIds = [];
-                    //获取店铺产品id放入id数组中
-                    $orderItems->each(function (OrderItem $item) use(&$merchandiseIds){
-                        array_push($merchandiseIds, $item->merchandiseId);
-                    });
-
-                    if ($order->shopId){
-                        $shop = $order->shop;
-
-                        //通过店铺中的产品关系查询符合符合条件的产品
-                        $merchandises = $shop->shopMerchandises()
-                            ->whereIn('id', $merchandiseIds)
-                            ->get();
-
-                        //修改查询到的商品的库存
-                        $merchandises->each(function (ShopMerchandise $merchandise) use(&$orderItems) {
-                            $orderItem = $orderItems->where('merchandise_id', $merchandise->id)
-                                ->first();
-                            $merchandise->stockNum += $orderItem->quality;
-                            $merchandise->sellNum -= $orderItem->quality;
-                        });
-
-                        //通过店铺商品关系保存修改过库存的商品
-                        $shop->shopMerchandises()
-                            ->saveMany($merchandises);
-
-                    }elseif ($order->activityMerchandisesId){
-
-                        $merchandises = $order->activityMerchandises()
-                            ->whereIn('merchandise_id',$merchandiseIds)
-                            ->get();
-
-                        //修改查询到的商品的库存
-                        $merchandises->each(function (ActivityMerchandise $merchandise) use(&$orderItems) {
-                            $orderItem = $orderItems->where('merchandise_id', $merchandise->id)
-                                ->first();
-                            $merchandise->stockNum += $orderItem->quality;
-                            $merchandise->sellNum -= $orderItem->quality;
-                        });
-
-                        //通过活动商品关系保存修改过库存的商品
-                        $order->activityMerchandises()->saveMany($merchandises);
-                    }else{
-                        $orderItems->each(function(OrderItem $orderItem)  {
-                            $orderItem->merchandise->stockNum += $orderItem->quality;
-                            $orderItem->merchandise->sellNum  -= $orderItem->quality;
-                            $orderItem->merchandise->save();
-                        });
-
-                    }
+                $order->updateOrderItemStatus();
+                if (Order::PAY_FAILED === $order->status) {
+                    $order->updateStock();
                 }
             }
         });
+    }
+
+    public function updateStock()
+    {
+        if ($this->shopId) {
+            $this->updateShopMerchandises();
+        }elseif ($this->activityMerchandisesId) {
+            $this->updateActivityMerchandises();
+        }else {
+            $this->updateMerchandises();
+        }
+    }
+
+    public function updateOrderItemStatus()
+    {
+        $this->orderItems()
+            ->update([
+                'status' => $this->status,
+                'paid_at' => $this->paidAt
+            ]);
+    }
+
+    public function updateMerchandises()
+    {
+        $orderItems = $this->orderItems;
+        $orderItems->each(function(OrderItem $orderItem) use(&$merchandises) {
+            $orderItem->merchandise->stockNum += $orderItem->quality;
+            $orderItem->merchandise->sellNum  -= $orderItem->quality;
+            $orderItem->merchandise->save();
+        });
+
+
+    }
+
+    public function updateActivityMerchandises()
+    {
+        $orderItems = $this->orderItems;
+        $merchandiseIds = [];
+        //获取店铺产品id放入id数组中
+        $orderItems->each(function (OrderItem $item) use(&$merchandiseIds){
+            array_push($merchandiseIds, $item->merchandiseId);
+        });
+        $merchandises = $this->activityMerchandises()
+            ->whereIn('merchandise_id', $merchandiseIds)
+            ->get();
+
+        //修改查询到的商品的库存
+        $merchandises->each(function (ActivityMerchandise $merchandise) use(&$orderItems) {
+            $orderItem = $orderItems->where('merchandise_id', $merchandise->id)
+                ->first();
+            $merchandise->stockNum += $orderItem->quality;
+            $merchandise->sellNum -= $orderItem->quality;
+        });
+
+        //通过活动商品关系保存修改过库存的商品
+        $this->activityMerchandises()->saveMany($merchandises);
+    }
+
+    public function updateShopMerchandises()
+    {
+        $orderItems = $this->orderItems;
+        $shop = $this->shop;
+        $merchandiseIds = [];
+        //获取店铺产品id放入id数组中
+        $orderItems->each(function (OrderItem $item) use(&$merchandiseIds){
+            array_push($merchandiseIds, $item->merchandiseId);
+        });
+
+        //通过店铺中的产品关系查询符合符合条件的产品
+        $merchandises = $this->shopMerchandises()
+            ->whereIn('id', $merchandiseIds)
+            ->get();
+
+        //修改查询到的商品的库存
+        $merchandises->each(function (ShopMerchandise $merchandise) use(&$orderItems) {
+            $orderItem = $orderItems->where('merchandise_id', $merchandise->id)
+                ->first();
+            $merchandise->stockNum += $orderItem->quality;
+            $merchandise->sellNum -= $orderItem->quality;
+        });
+
+        //通过店铺商品关系保存修改过库存的商品
+        $shop->shopMerchandises()
+            ->saveMany($merchandises);
     }
 
     public function activityMerchandises() :hasMany

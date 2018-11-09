@@ -53,7 +53,7 @@ class OrdersController extends Controller
         $this->repository->pushCriteria(OrderCriteria::class);
         $this->repository->pushCriteria(SearchRequestCriteria::class);
         $orders = $this->repository
-            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member'])
+            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity'])
             ->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($orders, new OrderItemTransformer());
     }
