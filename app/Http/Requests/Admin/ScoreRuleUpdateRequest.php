@@ -29,7 +29,7 @@ class ScoreRuleUpdateRequest extends FormRequest
             //
             'score' => ['integer'],
             'type' => [Rule::in([ScoreRule::SPECIAL_RULE, ScoreRule::ORDER_AMOUNT_RULE,
-                ScoreRule::ORDER_COUNT_RULE, ScoreRule::SUBSCRIBE_RULE])],
+                ScoreRule::ORDER_COUNT_RULE, ScoreRule::SUBSCRIBE_RULE, ScoreRule::GENERAL_RULE])],
             'expires_at' => ['date'],
             'notice_user' => ['boolean'],
             'rule' => ['array']
