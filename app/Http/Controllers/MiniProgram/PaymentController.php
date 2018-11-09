@@ -14,7 +14,7 @@ class PaymentController extends Controller
     public function notify(Request $request)
     {
         Log::info('--------------------- payment notify------------------------------------',
-            [$_POST, $request->all(), $GLOBALS['HTTP_RAW_POST_DATA']]);
+            [$_POST, $request->all(), @file_get_contents('php://input')]);
         $data = null;
         if(($token = $request->input('token', null))) {
             $token = Cache::get($token);
