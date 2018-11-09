@@ -25,7 +25,7 @@ class ScoreRuleTransformer extends TransformerAbstract
             'id'         => (int) $model->id,
             'type' => $model->type,
             'rule' => $model->rule,
-            'expires_at' => $model->expiresAt->format('Y-m-d H:i:s'),
+            'expires_at' => $model->expiresAt ? $model->expiresAt->format('Y-m-d H:i:s') : null,
             'app_id' => $model->appId,
             'score' => $model->score,
             'total_score' => $model->totalScore,
