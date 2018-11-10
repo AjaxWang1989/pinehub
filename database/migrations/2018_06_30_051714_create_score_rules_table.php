@@ -17,7 +17,7 @@ class CreateScoreRulesTable extends Migration
             $table->increments('id');
             $table->string('name', 16)->nullable()->default(null)->comment('规则名称');
             $table->string('app_id', 16)->comment('系统应用appid');
-            $table->unsignedTinyInteger('score')->comment('增加的积分数');
+            $table->unsignedInteger('score')->comment('增加的积分数');
             $table->unsignedInteger('total_score')->comment('累计积分数');
             $table->tinyInteger('type')->default(0)->comment('类型 0-通用规则 type & 8 == true 特殊规则 ');
             $table->timestamp('expires_at')->default(null)->comment('过去日期，null表示永远有效');
