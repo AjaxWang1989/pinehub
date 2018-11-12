@@ -85,6 +85,7 @@ class PurchaseOrderController extends Controller
     {
         $user = $this->user();
         $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
+        $shopUser['id'] = 1;
         if ($shopUser){
             $userId = $shopUser['id'];
             $request = $request->all();

@@ -128,9 +128,8 @@ class StorePurchaseOrdersRepositoryEloquent extends BaseRepository implements St
         }
 
         $this->scopeQuery(function (StorePurchaseOrders $storePurchaseOrders) use($userId,$request, $startAt, $endAt){
-            return $storePurchaseOrders->select([
-                'code','paid_at','type','status','payment_amount'])
-                ->where(['shop_id'=>$userId])
+            return $storePurchaseOrders
+                ->where('shop_id', $userId)
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
