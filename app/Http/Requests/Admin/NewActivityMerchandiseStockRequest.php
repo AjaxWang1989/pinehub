@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
-use AlbertCht\Form\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 
 class NewActivityMerchandiseStockRequest extends FormRequest
