@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -173,9 +172,9 @@ class Shop extends Model implements Transformable
         return $this->hasMany(ShopMerchandise::class, 'shop_id', 'id');
     }
 
-    public function shopManager() : HasOne
+    public function shopManager() : BelongsTo
     {
-        return $this->HasOne(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function country() : BelongsTo

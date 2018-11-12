@@ -29,7 +29,7 @@ class ShopPositionTransformer extends TransformerAbstract
             'lng' => $this->lng,
             'lat' => $this->lat,
             'address' => $model->address,
-            'mobile' => $model->shopManager->mobile
+            'mobile' => isset($model->shopManager->mobile) ? $model->shopManager->mobile : null,
         ];
     }
 }
