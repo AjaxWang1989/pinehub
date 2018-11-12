@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\Merchandise;
 use League\Fractal\TransformerAbstract;
 use App\Entities\ActivityMerchandise;
 
@@ -27,6 +28,7 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
             'name' => $model->merchandise->name,
             'sell_price' => $model->merchandise->sellPrice,
             'origin_price' => $model->merchandise->originPrice,
+            'status' => Merchandise::UP,
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
             'tags' => explode(',', $model->tags),
