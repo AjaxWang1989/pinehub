@@ -17,6 +17,7 @@ use App\Transformers\ActivityTransformer;
 use App\Transformers\ActivityMerchandiseTransformer;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class NewMerchandiseActivityController extends Controller
 {
@@ -57,6 +58,7 @@ class NewMerchandiseActivityController extends Controller
     {
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
+        Log::info('file info', $request->all());
         $request->request->set('dir', "{$appId}/newMerchandiseActivity");
         return $this->upload($request, $driver);
     }
