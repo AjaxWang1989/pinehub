@@ -16,6 +16,7 @@ class CustomerTicketCardTransformer extends TransformerAbstract
     public function transform(CustomerTicketCard $model){
         return [
             'card_id'=>$model->card->cardId,
+            'card_code' =>$model->cardCode,
             'title' => $model->card->card_info['base_info']['title'],
             'discount' => isset($model->card->cardInfo['discount']) ? $model->card->cardInfo['discount'] : null ,
             'type' => mb_strtoupper($model->card->cardType),

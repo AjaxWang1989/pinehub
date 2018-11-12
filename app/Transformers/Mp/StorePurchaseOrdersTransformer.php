@@ -14,6 +14,12 @@ use App\Entities\StorePurchaseOrders;
 class StorePurchaseOrdersTransformer extends TransformerAbstract
 {
     public function transform(StorePurchaseOrders $model){
-        return $model;
+        return [
+            'code' => $model->code,
+            'paid_at' => $model->paidAt->format('Y-m-d H:i:s'),
+            'type' => $model->type,
+            'status' => $model->status,
+            'payment_amount' => $model->paymentAmount
+        ];
     }
 }

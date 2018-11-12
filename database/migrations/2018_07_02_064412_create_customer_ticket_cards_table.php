@@ -16,7 +16,7 @@ class CreateCustomerTicketCardsTable extends Migration
         Schema::create('customer_ticket_cards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('card_id', 32)->default('')->comment('卡券id');
-            $table->string('card_code', 12)->comment('核销码');
+            $table->string('card_code', 20)->comment('核销码');
             $table->string('app_id', 16)->comment('应用id');
             $table->boolean('is_give_by_friend')->default(false)->comment('是否朋友赠送');
             $table->string('friend_open_id', 64)->nullable()->default(null)->comment('好友微信open id');

@@ -110,8 +110,8 @@ class ShopsController extends Controller
             $request = $request->all();
             //查询出截止当前时间,星期,天数每条数据的金额总和
             $orderStatistics = $this->orderRepository->orderStatistics($request,$userId);
-            //查询出截止当前时间,星期,天数的最后一条数据
-            $orderDateHigh  = $this->orderRepository->orderDateHigh($request,$userId);
+//            //查询出截止当前时间,星期,天数的最后一条数据
+//            $orderDateHigh  = $this->orderRepository->orderDateHigh($request,$userId);
 
             //没有值的话默认给当前截止时间
             if (empty($orderDateHigh) && $request['date'] == 'hour'){
