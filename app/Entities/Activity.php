@@ -6,7 +6,7 @@ use App\Entities\Traits\ModelRelationShip;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
@@ -22,8 +22,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string $posterImg 海报图片
  * @property string $description 详情
  * @property int $status 0 未开始 1 进行中 2 已结束
- * @property string|null $startAt 活动开始时间
- * @property string|null $endAt 活动结束时间
+ * @property Carbon|null $startAt 活动开始时间
+ * @property Carbon|null $endAt 活动结束时间
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Customer[] $customers

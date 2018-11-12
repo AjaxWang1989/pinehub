@@ -18,8 +18,10 @@ class ActivityTransformer extends TransformerAbstract
     {
         return [
             'id'  => $model->id,
-            'title'=>$model->title,
-            'poster_img'=>$model->posterImg,
+            'title' => $model->title,
+            'poster_img' => $model->posterImg,
+            'start_at' => $model->startAt ? $model->startAt->format('Y-m-d H:i:s') : null,
+            'end_at' => $model->endAt ? $model->endAt->format('Y-m-d H:i:s') : null,
             'description' => $model->description,
         ];
     }

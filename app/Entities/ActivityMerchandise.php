@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $endAt 结业时间
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Merchandise[] $merchandise
+ * @property-read \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise $merchandise
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereDescribe($value)
