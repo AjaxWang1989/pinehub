@@ -32,7 +32,10 @@ class NewMerchandiseActivityController extends Controller
     {
         $this->activityRepository->pushCriteria(NewMerchandiseActivityCriteria::class);
         $activity = $this->activityRepository->first();
-        return $this->response()->item($activity, new ActivityTransformer());
+        if($activity)
+            return $this->response()->item($activity, new ActivityTransformer());
+        else
+            throw new ModelNotFoundException('没有相应的新品活动');
     }
 
     //
