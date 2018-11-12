@@ -204,7 +204,6 @@ class OrderController extends Controller
                 $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
 
                 $orders['card_id'] = $card['card_id'];
-
             }else{
                 return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
             }
