@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
-use AlbertCht\Form\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 
 class NewActivityRequest extends FormRequest
@@ -14,7 +14,7 @@ class NewActivityRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**

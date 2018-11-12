@@ -4,7 +4,6 @@ namespace App\Http\Requests\Admin;
 
 use App\Entities\Activity;
 use App\Entities\PaymentActivity;
-use App\Repositories\ActivityRepository;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
