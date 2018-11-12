@@ -171,7 +171,7 @@ class ShoppingCartController extends Controller
             ])->first();
         }
 
-        if ($shoppingMerchandise['quality'] > 0){
+        if ($shoppingMerchandise['quality'] > 1){
             $shoppingCart['quality'] = $shoppingMerchandise['quality']-1;
             $shoppingCart['amount'] = $shoppingMerchandise['sell_price'] * $shoppingCart['quality'];
             $item = $this->shoppingCartRepository->update($shoppingCart, $shoppingMerchandise['id']);
