@@ -26,7 +26,7 @@ class NewMerchandiseActivityCriteria implements CriteriaInterface
     {
         $model = $model->where('app_id', app(AppManager::class)->getAppId());
         $model = $model->where('type', Activity::NEW_PRODUCT_ACTIVITY);
-        $model = $model->where('status', Activity::HAVE_IN_HAND);
+        //$model = $model->where('status', Activity::HAVE_IN_HAND);
         return $model;
     }
 }

@@ -28,8 +28,8 @@ class NewActivityRequest extends FormRequest
             //
             'title' => ['required'],
             'poster_img' => ['required', 'url'],
-            'start_at' => ['date'],
-            'end_at' => ['date']
+            'start_at' => ['date', 'before:end_at'],
+            'end_at' => ['date', 'after:start_at']
         ];
     }
 }
