@@ -171,15 +171,16 @@ class ShoppingCartController extends Controller
             ])->first();
         }
 
-        if ($shoppingMerchandise['quality'] != 1){
+        if ($shoppingMerchandise['quality'] > 0){
             $shoppingCart['quality'] = $shoppingMerchandise['quality']-1;
             $shoppingCart['amount'] = $shoppingMerchandise['sell_price'] * $shoppingCart['quality'];
             $item = $this->shoppingCartRepository->update($shoppingCart, $shoppingMerchandise['id']);
-            return $this->response()->item($item, new ShoppingCartTransformer);
-        }else{
-            $item= $this->shoppingCartRepository->delete($shoppingMerchandise['id']);
-            return $this->response(new JsonResponse(['delete_count' => $item]));
+        }else {
+            $item = $this->shoppingCartRepository->find($shoppingMerchandise['id']);
+            $item->quality = 0;
+            $item->delete();
         }
+        return $this->response()->item($item, new ShoppingCartTransformer);
     }
 
     /**
