@@ -58,6 +58,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int|null $month 月
  * @property int|null $week 星期
  * @property int|null $hour 小时
+ * @property int|null $receivingShopId 自提收货店铺id
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
@@ -173,7 +174,7 @@ class Order extends Model implements Transformable
         'receiver_district', 'receiver_name', 'receiver_address', 'receiver_mobile', 'send_start_time',
         'send_end_time', 'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
         'score_settle', 'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status',
-        'years', 'month', 'week', 'hour', 'activity_id'
+        'years', 'month', 'week', 'hour', 'activity_id','receiving_shop_id'
     ];
 
     public static function boot()
@@ -196,9 +197,9 @@ class Order extends Model implements Transformable
 
     public function updateStock()
     {
-        if ($this->shopId) {
+        if ($this->shopId && !$this->activityId) {
             $this->updateShopMerchandises();
-        }elseif ($this->activityMerchandisesId) {
+        }elseif ($this->activityId) {
             $this->updateActivityMerchandises();
         }else {
             $this->updateMerchandises();

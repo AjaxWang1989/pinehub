@@ -119,4 +119,11 @@ interface OrderRepository extends RepositoryInterface
      * @return mixed
      */
     public function orderDateHigh(array $request,int $userId);
+
+    /**
+     * @param int $activity
+     * @param int $userId
+     * @return mixed
+     */
+    public function receivingShopAddress(int $activity , int $userId);
 }

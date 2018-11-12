@@ -435,4 +435,11 @@ class OrderController extends Controller
 
     }
 
+    public function receivingShopAddress(int $activityId){
+        $user = $this->mpUser();
+        $user['id'] = 43;
+        $receivingShopOrders = $this->orderRepository->receivingShopAddress($activityId,$user['id']);
+        return $receivingShopOrders;
+    }
+
 }

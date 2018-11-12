@@ -520,4 +520,13 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         });
         return $this->get();
     }
+
+    public function receivingShopAddress(int $activity , int $userId,$limit = '3'){
+        $this->scopeQuery(function (Order $order) use($activity , $userId ,$limit){
+            return $order->where('customer_id',$userId)->where('activity_id',$activity)->orderBy('receiving_shop_id')->limit($limit);
+        });
+        return $this->get();
+    }
+
+
 }
