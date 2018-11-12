@@ -99,6 +99,15 @@ class BackendApiRoutes extends ApiRoutes
                 $router->post('/score-rule', ['as' => 'score-rule.create', 'uses' => 'ScoreRulesController@store']);
                 $router->put('/score-rule/{id}', ['as' => 'score-rule.update', 'uses' => 'ScoreRulesController@update']);
 
+                $router->get('new/merchandise/activity', ['as' => 'new-merchandise-activity', 'uses' => 'NewMerchandiseActivityController@activity']);
+                $router->post('new/merchandise/activity', ['as' => 'new-merchandise-activity-create', 'uses' => 'NewMerchandiseActivityController@storeActivity']);
+                $router->put('new/merchandise/activity/{id}', ['as' => 'new-merchandise-activity-update', 'uses' => 'NewMerchandiseActivityController@updateActivity']);
+                $router->post('new/merchandise/activity/{activityId}/merchandise', ['as' => 'new-merchandise-activity-add-merchandise', 'uses' => 'NewMerchandiseActivityController@addMerchandise']);
+                $router->post('new/merchandise/activity/upload/image', ['as' => 'new-merchandise-activity-upload-image', 'uses' => 'NewMerchandiseActivityController@uploadImage']);
+                $router->put('new/merchandise/activity/{activityId}/merchandise/{merchandiseId}/stock', ['as' => 'new-merchandise-activity-merchandise-stock-update', 'uses' => 'NewMerchandiseActivityController@updateStock']);
+
+
+
                 $router->get('categories', ['as' => 'categories.list', 'uses' => 'CategoriesController@index']);
                 $router->post('category', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);
 

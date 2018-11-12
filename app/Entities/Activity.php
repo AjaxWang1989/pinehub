@@ -94,4 +94,9 @@ class Activity extends Model implements Transformable
         return $this->belongsToMany(Customer::class, 'orders', 'activity_id', 'customer_id');
     }
 
+    public function merchandises() : HasMany
+    {
+        return $this->hasMany(ActivityMerchandise::class, 'activity_id', 'id');
+    }
+
 }

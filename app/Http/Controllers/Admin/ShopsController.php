@@ -8,15 +8,18 @@ use App\Entities\Order;
 use App\Entities\Role;
 use App\Entities\Shop;
 use App\Entities\ShopManager;
+use App\Entities\ShopMerchandise;
 use App\Http\Response\JsonResponse;
 
 use App\Repositories\SellerRepository;
 use App\Repositories\ShopManagerRepository;
 use App\Services\AppManager;
+use App\Transformers\ShopMerchandiseTransformer;
 use App\Utils\GeoHash;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request as IlluminateRequest;
 use Exception;
 use App\Http\Requests\Admin\ShopCreateRequest;
@@ -264,6 +267,19 @@ class ShopsController extends Controller
         }
 
         return redirect()->back()->with('message', 'Shop deleted.');
+    }
+
+    public function addMerchandise(int $shopId, Request $request)
+    {
+        $shop = $this->repository->find($shopId);
+        if($shop) {
+            $merchandise = with($shop, function (Shop $shop) use($request){
+                return $shop->shopMerchandises()->save(new ShopMerchandise($request->all()));
+            });
+            return $this->response()->item($merchandise, new ShopMerchandiseTransformer());
+        }else{
+            throw new ModelNotFoundException('没有相应店铺信息');
+        }
     }
 
     public function __destruct()

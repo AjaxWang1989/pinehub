@@ -55,4 +55,10 @@ class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepos
         });
         return $this->get()->first();
     }
+
+    public function first()
+    {
+        // TODO: Implement first() method.
+        return $this->model->first();
+    }
 }
