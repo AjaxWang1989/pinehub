@@ -156,7 +156,8 @@ class OrderBuilder implements InterfaceServiceHandler
             'ali_app_id',
             'customer_id',
             'ip',
-            'member_id'
+            'member_id',
+            'receiving_shop_id'
         ]);
 
         $order['status'] = Order::WAIT;
