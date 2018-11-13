@@ -62,6 +62,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedTinyInteger('month')->nullable()->default(null)->comment('月');
             $table->unsignedTinyInteger('week')->nullable()->default(null)->comment('星期');
             $table->unsignedTinyInteger('hour')->nullable()->default(null)->comment('小时');
+            $table->unsignedInteger('receiving_shop_id')->nullable()->default(null)->comment('收货店铺id');
             $table->timestamps();
             $table->softDeletes();
             $table->index('code');

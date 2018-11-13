@@ -29,7 +29,6 @@ class ShopPositionTransformer extends TransformerAbstract
             'lng' => $this->lng,
             'lat' => $this->lat,
             'address' => $model->address,
-            'mobile' =>  null,
         ];
     }
 }

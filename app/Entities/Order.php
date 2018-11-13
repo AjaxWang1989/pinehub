@@ -315,6 +315,11 @@ class Order extends Model implements Transformable
         return $this->BelongsTo(Card::class,'card_id','card_id');
     }
 
+    public function receivingShopAddress():BelongsTo
+    {
+        return $this->belongsTo(Shop::class, 'receiving_shop_id', 'id');
+    }
+
 //    public function orderItemMerchandises() : HasMany
 //    {
 //        return $this->hasMany(OrderItemMerchandise::class, 'order_id', 'id');
