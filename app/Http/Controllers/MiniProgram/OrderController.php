@@ -29,6 +29,7 @@ use App\Transformers\Mp\OrderStoreBuffetTransformer;
 use App\Transformers\Mp\OrderStoreSendTransformer;
 use App\Transformers\Mp\StatusOrdersTransformer;
 use App\Transformers\Mp\StoreOrdersSummaryTransformer;
+use App\Transformers\Mp\ReceivingShopAddressTransformer;
 use App\Repositories\ShopRepository;
 use App\Http\Response\JsonResponse;
 use Illuminate\Database\Eloquent\Collection;
@@ -433,6 +434,17 @@ class OrderController extends Controller
             throw new UserCodeException($errCode);
         }
 
+    }
+
+    /**
+     * 新品预定获取常用地址
+     * @param int $activityId
+     * @return \Dingo\Api\Http\Response
+     */
+    public function receivingShopAddress(int $activityId){
+        $user = $this->mpUser();
+        $receivingShopOrders = $this->orderRepository->receivingShopAddress($activityId,$user['id']);
+        return $this->response()->paginator($receivingShopOrders,new ReceivingShopAddressTransformer());
     }
 
 }
