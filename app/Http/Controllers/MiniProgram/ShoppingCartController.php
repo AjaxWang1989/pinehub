@@ -163,7 +163,7 @@ class ShoppingCartController extends Controller
                 'customer_id'=>$user['id']
             ])->first();
         }else{
-            $shoppingMerchandise = $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
+            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
                 'merchandise_id'=>$shoppingCart['merchandise_id'],
                 'shop_id' => null,
                 'activity_id' => null,
