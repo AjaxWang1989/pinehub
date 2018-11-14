@@ -29,6 +29,7 @@ class ShopPositionTransformer extends TransformerAbstract
             'lng'  => $this->lng,
             'lat'  => $this->lat,
             'address'  => $model->address,
+            'mobile'   => $model->shopManager->mobile,
             'start_at' => $model->startAt,
             'end_at'   => $model->endAt
         ];
