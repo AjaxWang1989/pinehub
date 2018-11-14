@@ -31,7 +31,7 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
             'status' => Merchandise::UP,
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
-            'tags' => explode(',', $model->tags),
+            'tags' => $model->tags,
             'describe' => $model->describe,
             'main_image' => $model->merchandise->mainImage,
         ];

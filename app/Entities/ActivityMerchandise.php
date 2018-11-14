@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $productId sku单品ID
  * @property int $stockNum 参与活动的数量:-1无限制，大于0参与活动商品数量，0售罄
  * @property int $sellNum 已售出数量
- * @property string $tags 产品标签
+ * @property array $tags 产品标签
  * @property string $describe 产品介绍
  * @property string|null $startAt 开售时间
  * @property string|null $endAt 结业时间
@@ -47,6 +47,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class ActivityMerchandise extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
+
+    protected $casts = [
+        'tags' => 'array'
+    ];
 
     /**
      * The attributes that are mass assignable.
