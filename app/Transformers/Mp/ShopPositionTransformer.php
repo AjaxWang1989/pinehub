@@ -24,11 +24,14 @@ class ShopPositionTransformer extends TransformerAbstract
             $this->lng = $point->getLng();
         });
         return [
-            'id'         => $model->id,
+            'id'   => $model->id,
             'name' => $model->name,
-            'lng' => $this->lng,
-            'lat' => $this->lat,
-            'address' => $model->address,
+            'lng'  => $this->lng,
+            'lat'  => $this->lat,
+            'address'  => $model->address,
+            'mobile'   => $model->shopManager->mobile,
+            'start_at' => $model->startAt,
+            'end_at'   => $model->endAt
         ];
     }
 }
