@@ -280,7 +280,7 @@ class ShopsController extends Controller
         if($shop) {
             $repository->pushCriteria(app(RequestCriteria::class));
             $repository->pushCriteria(app(SearchRequestCriteria::class));
-            $items = $repository->with(['merchandise.categories'])->scopeQuery(function ($model) use($shopId){
+            $items = $repository->with(['merchandise.categories.category'])->scopeQuery(function ($model) use($shopId){
                 return $model->where('shop_id', $shopId);
             })->paginate($request->input('limit', PAGE_LIMIT));
             return $this->response()->paginator($items, new ShopMerchandiseTransformer());
