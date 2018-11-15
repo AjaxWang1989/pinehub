@@ -7,7 +7,6 @@ use App\Entities\Activity;
 use App\Entities\Order;
 use App\Entities\PaymentActivity;
 use App\Http\Response\JsonResponse;
-use App\Repositories\OrderRepository;
 use App\Services\AppManager;
 use Carbon\Carbon;
 use Exception;
@@ -166,7 +165,7 @@ class PaymentActivityController extends Controller
                     $activity->status =  Activity::NOT_BEGINNING;
                     $activity->title = $request->input('title');
                     $activity->startAt = Carbon::createFromFormat(config('app.timezone'), $request->input('start_at'));
-                    $activity->endAt = Carbon::createFromFormat(config('app.timezone'), $request->input('end_at');
+                    $activity->endAt = Carbon::createFromFormat(config('app.timezone'), $request->input('end_at'));
                     $activity->save();
                     //根据活动id修改创建的活动
                     $activity->paymentActivities()->update($request->input('items'));
