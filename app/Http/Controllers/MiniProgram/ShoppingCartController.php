@@ -88,12 +88,11 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function activityShoppingCartMerchandiseNumChange(int $activityId, ActivityShoppingCartRequest $request)
+    public function activityShoppingCartMerchandiseNumChange(int $activityId,int $shoppingCartId, ActivityShoppingCartRequest $request)
     {
-        $shoppingCart = $this->shoppingCartRepository->findWhere([
-            'activity_id'    => $activityId,
-            'merchandise_id' => $request->input('merchandise_id')
-        ])->first();
+        $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($activityId,$request){
+            return $shoppingCart->where('activity_id', $activityId)->where('merchandise_id',$request->input('merchandise_id'));
+        })->find($shoppingCartId);
 
         $quality = $request->input('quality');
         $message = '活动';
@@ -107,12 +106,11 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeShoppingCartMerchandiseNumChange(int $storeId, StoreShoppingCartRequest $request)
+    public function storeShoppingCartMerchandiseNumChange(int $storeId,int $shoppingCartId, StoreShoppingCartRequest $request)
     {
-        $shoppingCart = $this->shoppingCartRepository->findWhere([
-            'shop_id'=>$storeId,
-            'merchandise_id'=>$request->input('merchandise_id'),
-        ])->first();
+        $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($storeId,$request){
+            return $shoppingCart->where('shop_id', $storeId)->where('merchandise_id',$request->input('merchandise_id'));
+        })->find($shoppingCartId);
 
         $quality = $request->input('quality');
         $message = '店铺';
@@ -125,13 +123,11 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function bookingMallShoppingCartMerchandiseNumChange(BookingMallShoppingCartRequest $request)
+    public function bookingMallShoppingCartMerchandiseNumChange(int $shoppingCartId,BookingMallShoppingCartRequest $request)
     {
-        $shoppingCart = $this->shoppingCartRepository->findWhere([
-            'activity_id' => null,
-            'shop_id'     => null,
-            'merchandise_id'=>$request->input('merchandise_id'),
-        ])->first();
+        $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($request){
+            return $shoppingCart->where('merchandise_id',$request->input('merchandise_id'));
+        })->find($shoppingCartId);
 
         $quality = $request->input('quality');
         $message = '预定商城';
