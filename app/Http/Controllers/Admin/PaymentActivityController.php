@@ -108,6 +108,7 @@ class PaymentActivityController extends Controller
             $item['cost']         = isset($v['cost']) ? $v['cost'] : 0;
             $item['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : 0;
             $item['score']        = isset($v['score']) ? $v['score'] : 0;
+            $item['ticket_count']        = isset($v['ticket_count']) ? $v['ticket_count'] : 0;
             array_push($paymentActivities, new PaymentActivity($item));
         }
         //支付活动对应子活动条件创建
@@ -185,8 +186,7 @@ class PaymentActivityController extends Controller
                 $paymentActivities[$k]['cost']         = isset($v['cost']) ? $v['cost'] : null;
                 $paymentActivities[$k]['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : null;
                 $paymentActivities[$k]['score']        = isset($v['score']) ? $v['score'] : null;
-                $paymentActivities[$k]['created_at']   = date('Y-m-d H:i:s');
-                $paymentActivities[$k]['updated_at']   = date('Y-m-d H:i:s');
+                $paymentActivities[$k]['ticket_count']        = isset($v['ticket_count']) ? $v['ticket_count'] : 0;
             }
             //创建子活动
             DB::table('payment_activity')->insert($paymentActivities);
