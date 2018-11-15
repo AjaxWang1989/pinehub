@@ -28,6 +28,8 @@ class CreateSKUProductsTable extends Migration
             $table->unsignedTinyInteger('status')->default(0)->comment('状态：0-下架 1-上架');
             $table->timestamps();
             $table->softDeletes();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->index('merchandise_id');
             $table->index('code');
             $table->index('status');

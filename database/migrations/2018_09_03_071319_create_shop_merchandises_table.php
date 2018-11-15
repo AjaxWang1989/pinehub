@@ -24,6 +24,9 @@ class CreateShopMerchandisesTable extends Migration
             $table->unsignedInteger('stock_num')->default(0)->comment('库存数量');
             $table->unsignedInteger('sell_num')->default(0)->comment('销售数量');
             $table->timestamps();
+            $table->softDeletes();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->index('shop_id');
             $table->index('merchandise_id');
             $table->index('product_id');

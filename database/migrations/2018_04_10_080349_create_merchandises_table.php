@@ -32,6 +32,8 @@ class CreateMerchandisesTable extends Migration
             $table->unsignedInteger('sell_num')->default('0')->comment('已售出数量');
             $table->unsignedTinyInteger('status')->default(0)->comment('状态：0-下架 1-上架');
             $table->timestamps();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->softDeletes();
             $table->index('code');
             $table->index('status');

@@ -3,13 +3,11 @@
 namespace App\Providers;
 
 use App\Repositories\MerchandiseRepository;
-use App\Repositories\OrderItemMerchandiseRepository;
 use App\Repositories\OrderItemRepository;
 use App\Repositories\OrderPostRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\SKUProductRepository;
 use App\Services\OrderBuilder;
-use Dingo\Api\Http\Request;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application;
 
@@ -44,7 +42,6 @@ class OrderServiceProvider extends ServiceProvider
                 $app->make(MerchandiseRepository::class),
                 $app->make(OrderItemRepository::class),
                 $app->make(SKUProductRepository::class),
-                $app->make(OrderItemMerchandiseRepository::class),
                 $app->make(OrderPostRepository::class)
             );
         });

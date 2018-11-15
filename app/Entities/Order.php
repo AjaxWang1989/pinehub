@@ -320,11 +320,6 @@ class Order extends Model implements Transformable
         return $this->belongsTo(Shop::class, 'receiving_shop_id', 'id');
     }
 
-//    public function orderItemMerchandises() : HasMany
-//    {
-//        return $this->hasMany(OrderItemMerchandise::class, 'order_id', 'id');
-//    }
-
     public function buildAliWapPaymentOrder(){
         $now = Carbon::now();
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
