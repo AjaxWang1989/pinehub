@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 use App\Entities\ShopMerchandise;
 
@@ -21,6 +22,7 @@ class ShopMerchandiseTransformer extends TransformerAbstract
      */
     public function transform(ShopMerchandise $model)
     {
+        Log::info('shop merchandise', $model->tags);
         return [
             'id'=>$model->id,
             'main_image' => $model->merchandise->mainImage,
