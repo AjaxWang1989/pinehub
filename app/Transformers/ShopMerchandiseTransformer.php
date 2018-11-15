@@ -27,6 +27,7 @@ class ShopMerchandiseTransformer extends TransformerAbstract
             'name' => $model->merchandise->name,
             'sell_price' => $model->merchandise->sellPrice,
             'origin_price' => $model->merchandise->originPrice,
+            'status' => $model->merchandise->status,
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
             'main_image' => $model->merchandise->mainImage,
