@@ -190,23 +190,24 @@ class OrderController extends Controller
             $orders['customer_id'] = $user->id;
             $orders['open_id']  = $user->platformOpenId;
 
-            $customerTicketRecord = $user->ticketRecords()->with('card')
-                ->where([
-                    'card_id' => $orders['card_id'],
-                    'status'  => CustomerTicketCard::STATUS_ON,
-                    'active'  => CustomerTicketCard::ACTIVE_ON
-                ])
-                ->orderBy('id', 'asc')
-                ->first();
+            if(isset($orders['card_id']) && $orders['card_id']){
+                $customerTicketRecord = $user->ticketRecords()->with('card')
+                    ->where([
+                        'card_id' => $orders['card_id'],
+                        'status'  => CustomerTicketCard::STATUS_ON,
+                        'active'  => CustomerTicketCard::ACTIVE_ON
+                    ])
+                    ->orderBy('id', 'asc')
+                    ->first();
+                if ($customerTicketRecord){
+                    $card = $customerTicketRecord['card'];
 
-            if ($customerTicketRecord){
-                $card = $customerTicketRecord['card'];
+                    $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
 
-                $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
-
-                $orders['card_id'] = $card['card_id'];
-            }else{
-                return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+                    $orders['card_id'] = $card['card_id'];
+                }else{
+                    return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+                }
             }
 
             $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
