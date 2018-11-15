@@ -6,6 +6,8 @@ use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Activity;
 use App\Entities\Order;
 use App\Entities\PaymentActivity;
+use App\Exceptions\TicketSyncException;
+use App\Exceptions\UpdateActivityFailed;
 use App\Http\Response\JsonResponse;
 use App\Services\AppManager;
 use Carbon\Carbon;
@@ -160,7 +162,7 @@ class PaymentActivityController extends Controller
         if($activity) {
             return with($activity, function (Activity $activity) use($request) {
                 if ($activity->startAt->getTimestamp() < time()){
-                    return $this->response(new JsonResponse(['message' => '活动已开始不能修改']));
+                    throw new UpdateActivityFailed('活动已开始不能修改', ACTIVITY_RUN_CANNOT_UPDATE);
                 }else{
                     $activity->status =  Activity::NOT_BEGINNING;
                     $activity->title = $request->input('title');
