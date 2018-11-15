@@ -8,7 +8,9 @@
 
 namespace App\Http\Controllers\MiniProgram;
 
-use App\Http\Requests\MiniProgram\ShoppingCartCreateRequest;
+use App\Http\Requests\MiniProgram\BookingMallShoppingCartRequest;
+use App\Http\Requests\MiniProgram\StoreShoppingCartRequest;
+use App\Http\Requests\MiniProgram\ActivityShoppingCartRequest;
 use App\Services\AppManager;
 use App\Entities\ShoppingCart;
 use Dingo\Api\Http\Request;
@@ -18,6 +20,7 @@ use App\Repositories\ShoppingCartRepository;
 use App\Repositories\ActivityMerchandiseRepository;
 use App\Transformers\Mp\ShoppingCartTransformer;
 use App\Http\Response\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Cache;
 use App\Repositories\ShopMerchandiseRepository;
 
@@ -68,119 +71,161 @@ class ShoppingCartController extends Controller
         $this->activityMerchandiseRepository = $activityMerchandiseRepository;
     }
 
+    public function shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message)
+    {
+        if($shoppingCart) {
+            $shoppingCart->quality = $quality;
+            $shoppingCart->amount = $shoppingCart->sellPrice * $quality;
+            $shoppingCart->save();
+            return $this->response()->item($shoppingCart, new ShoppingCartTransformer());
+        }else{
+            throw new ModelNotFoundException($message.'购物车没有相应商品无法修改数量。');
+        }
+    }
     /**
-     * 加入购物车
-     * @param ShoppingCartCreateRequest $request
+     * 增加和修改活动商品购物车
+     * @param int $activityId
+     * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function addMerchandise(ShoppingCartCreateRequest $request){
-        $user = $this->mpUser();
-        $shoppingCart = $request->all();
-
-        //根据商品id查询商品的所有信息
-        $merchandise = $this->merchandiseRepository->findWhere([
-            'id'=>$shoppingCart['merchandise_id']
+    public function activityShoppingCartMerchandiseNumChange(int $activityId, ActivityShoppingCartRequest $request)
+    {
+        $shoppingCart = $this->shoppingCartRepository->findWhere([
+            'activity_id'    => $activityId,
+            'merchandise_id' => $request->input('merchandise_id')
         ])->first();
 
+        $quality = $request->input('quality');
+        $message = '活动';
 
-        if (isset($shoppingCart['store_id']) && $shoppingCart['store_id']){
-            //根据店铺id和商品id查询此店铺此商品的信息
-            $Merchandise = $this->shopMerchandiseRepository->findWhere([
-                'shop_id'=>$shoppingCart['store_id'],
-                'merchandise_id'=>$shoppingCart['merchandise_id']
-            ])->first();
+        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+    }
 
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'shop_id'=>$shoppingCart['store_id'],
-                'merchandise_id'=>$shoppingCart['merchandise_id'],
-                'customer_id'=>$user['id']
-            ])->first();
+    /**
+     * 赠加和修改店铺购物车
+     * @param int $storeId
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function storeShoppingCartMerchandiseNumChange(int $storeId, StoreShoppingCartRequest $request)
+    {
+        $shoppingCart = $this->shoppingCartRepository->findWhere([
+            'shop_id'=>$storeId,
+            'merchandise_id'=>$request->input('merchandise_id'),
+        ])->first();
 
-        }elseif (isset($shoppingCart['activity_id']) && $shoppingCart['activity_id']){
-            //根据活动商品id查询此活动商品的库存
-            $Merchandise = $this->activityMerchandiseRepository->findWhere([
-                'merchandise_id'=>$shoppingCart['merchandise_id']
-            ])->first();
+        $quality = $request->input('quality');
+        $message = '店铺';
 
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'activity_id'=>$shoppingCart['activity_id'],
-                'merchandise_id'=>$shoppingCart['merchandise_id'],
-                'customer_id'=>$user['id']
-            ])->first();
-        }else{
-            $Merchandise = $merchandise;
+        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+    }
 
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'merchandise_id'=>$shoppingCart['merchandise_id'],
-                'shop_id' => null,
-                'activity_id' => null,
-                'customer_id' => $user['id']
-            ])->first();
-        }
+    /**
+     * 增加和修改预定商城购物车
+     * @param Request $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function bookingMallShoppingCartMerchandiseNumChange(BookingMallShoppingCartRequest $request)
+    {
+        $shoppingCart = $this->shoppingCartRepository->findWhere([
+            'activity_id' => null,
+            'shop_id'     => null,
+            'merchandise_id'=>$request->input('merchandise_id'),
+        ])->first();
 
-        if ($Merchandise['stock_num'] <=0){
-            return $this->response(new JsonResponse(['message' => '此商品没有库存了']));
-        }
+        $quality = $request->input('quality');
+        $message = '预定商城';
 
-        $shoppingCart['shop_id'] = isset($shoppingCart['store_id']) ? $shoppingCart['store_id'] : null;
-        $shoppingCart['activity_id'] = isset($shoppingCart['activity_id']) ? $shoppingCart['activity_id'] : null;
-        $shoppingCart['name'] = $merchandise['name'];
+        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+    }
+
+    public function shoppingCartAddMerchandise($shoppingCart,$merchandise)
+    {
+        $user = $this->mpUser();
         $shoppingCart['customer_id'] = $user->id;
         $shoppingCart['member_id'] = $user->memberId ? $user->memberId : null;
         $shoppingCart['sell_price'] = $merchandise['sell_price'];
         $shoppingCart['app_id'] = $user->appId;
-        if ($shoppingMerchandise){
-            $shoppingCart['quality'] = $shoppingMerchandise['quality']+1;
-            $shoppingCart['amount'] = $merchandise['sell_price'] * $shoppingCart['quality'];
-            $item = $this->shoppingCartRepository->update($shoppingCart, $shoppingMerchandise['id']);
-            return $this->response()->item($item, new ShoppingCartTransformer);
-        }else{
-            $shoppingCart['amount'] = $merchandise['sell_price'] * $shoppingCart['quality'];
-            $item = $this->shoppingCartRepository->create($shoppingCart);
-            return $this->response()->item($item, new ShoppingCartTransformer);
+        $shoppingCart['amount'] = $shoppingCart['sell_price'] * $shoppingCart['quality'];
+
+        $item = $this->shoppingCartRepository->create($shoppingCart);
+        return $this->response()->item($item, new ShoppingCartTransformer);
+    }
+    /**
+     * 新增一条活动商品购物车
+     * @param int $activityId
+     * @param Request $request
+     * @return $this|\Dingo\Api\Http\Response
+     */
+    public function activityShoppingCartAddMerchandise(int $activityId, ActivityShoppingCartRequest $request)
+    {
+        $merchandise = $this->activityMerchandiseRepository->findWhere([
+            'activity_id' => $activityId,
+            'merchandise_id'=>$request->input('merchandise_id')
+        ])->first();
+
+        if ($merchandise['stock_num'] <=0){
+            return $this->response(new JsonResponse(['message' => '活动此商品没有库存了']));
         }
+
+        $shoppingCart['activity_id'] = $activityId;
+        $shoppingCart['quality'] = $request->input('quality');
+        $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
+
+        return $this->shoppingCartAddMerchandise($shoppingCart,$merchandise);
     }
 
     /**
-     * 减少购物车商品
-     * @param ShoppingCartCreateRequest $request
-     * @return \Dingo\Api\Http\Response
+     * 新增一条店铺购物车
+     * @param int $storeId
+     * @param Request $request
+     * @return $this|\Dingo\Api\Http\Response
      */
-    public function reduceMerchandise(ShoppingCartCreateRequest $request){
-        $user = $this->mpUser();
-        $shoppingCart = $request->all();
+    public function storeShoppingCartAddMerchandise(int $storeId, StoreShoppingCartRequest $request)
+    {
+        $merchandise = $this->shopMerchandiseRepository->findWhere([
+            'shop_id' => $storeId,
+            'merchandise_id'=>$request->input('merchandise_id')
+        ])->first();
 
-        if (isset($shoppingCart['store_id']) && $shoppingCart['store_id']){
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'shop_id'=>$shoppingCart['store_id'],
-                'merchandise_id'=>$shoppingCart['merchandise_id'],
-                'customer_id'=>$user['id']
-            ])->first();
-        }elseif (isset($shoppingCart['activity_id']) && $shoppingCart['activity_id']){
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'activity_id'=>$shoppingCart['activity_id'],
-                'merchandise_id'=>$shoppingCart['merchandise_id'],
-                'customer_id'=>$user['id']
-            ])->first();
-        }else{
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'merchandise_id'=>$shoppingCart['merchandise_id'],
-                'shop_id' => null,
-                'activity_id' => null,
-                'customer_id'=>$user['id']
-            ])->first();
+        if ($merchandise['stock_num'] <=0){
+            return $this->response(new JsonResponse(['message' => '店铺此商品没有库存了']));
         }
 
-        if ($shoppingMerchandise['quality'] > 1){
-            $shoppingCart['quality'] = $shoppingMerchandise['quality']-1;
-            $shoppingCart['amount'] = $shoppingMerchandise['sell_price'] * $shoppingCart['quality'];
-            $item = $this->shoppingCartRepository->update($shoppingCart, $shoppingMerchandise['id']);
-        }else {
-            $item = $this->shoppingCartRepository->find($shoppingMerchandise['id']);
-            $item->quality = 0;
-            $item->delete();
+        $shoppingCart['shop_id'] = $storeId;
+        $shoppingCart['quality'] = $request->input('quality');
+        $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
+
+        return $this->shoppingCartAddMerchandise($shoppingCart,$merchandise);
+    }
+
+    /**
+     * 新增一条预定商城购物车
+     * @param Request $request
+     * @return $this|\Dingo\Api\Http\Response
+     */
+    public function bookingMallShoppingCartAddMerchandise(BookingMallShoppingCartRequest $request)
+    {
+        $merchandise = $this->merchandiseRepository->findWhere([
+            'id'=>$request->input('merchandise_id')
+        ])->first();
+
+        if ($merchandise['stock_num'] <=0){
+            return $this->response(new JsonResponse(['message' => '预定此商品没有库存了']));
         }
-        return $this->response()->item($item, new ShoppingCartTransformer);
+
+        $shoppingCart['quality'] = $request->input('quality');
+        $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
+        return $this->shoppingCartAddMerchandise($shoppingCart,$merchandise);
+    }
+
+    /**
+     * 删除一条购物车数据
+     * @param int $id
+     */
+    public function shoppingCartDelete(int $id) {
+        $result = $this->shoppingCartRepository->delete($id);
+        return $this->response(new JsonResponse(['delete_count' => $result]));
     }
 
     /**
@@ -212,7 +257,7 @@ class ShoppingCartController extends Controller
 
 
     /**
-     * 清空购物车
+     * 清空店铺购物车
      * @param int $storeId
      * @return \Dingo\Api\Http\Response
      */
@@ -221,12 +266,21 @@ class ShoppingCartController extends Controller
     }
 
     /**
-     * 清空购物车
+     * 清空活动购物车
      * @param int|null $activityId
      * @return \Dingo\Api\Http\Response
      */
     public function clearActivityShoppingCart(int $activityId = null){
         return $this->clearShoppingCart(null, $activityId);
+    }
+
+    /**
+     * 清空预定商城购物车
+     * @param int|null $activityId
+     * @return \Dingo\Api\Http\Response
+     */
+    public function clearBookingMallShoppingCart(){
+        return $this->clearShoppingCart();
     }
 
     /**
@@ -245,6 +299,17 @@ class ShoppingCartController extends Controller
      */
     public function activityShoppingCartMerchandises(int $activityId = null){
         return $this->shoppingCartMerchandises(null, $activityId);
+    }
+
+
+
+    /**
+     * 预定商城购物车
+     * @param int|null $activityId
+     * @return \Dingo\Api\Http\Response
+     */
+    public function bookingMallShoppingCartMerchandises(){
+        return $this->shoppingCartMerchandises();
     }
 
 

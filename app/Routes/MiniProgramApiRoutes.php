@@ -78,8 +78,16 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->get('/store/code/order/merchandise/up', ['as' => 'user.store.code.order.merchandise.up','uses' => 'PurchaseOrderController@storeCodeOrderMerchandiseUp']);
 
 
-            $router->post('shoppingcart/add/merchandise', ['as' => 'user.add.merchandise','uses' => 'ShoppingCartController@addMerchandise']);
-            $router->post('shoppingcart/reduce/merchandise', ['as' => 'user.reduce.merchandise','uses' => 'ShoppingCartController@reduceMerchandise']);
+            $router->post('/shop/{storeId}/shoppingcart', ['as' => 'user.add.shop.shoppingcart','uses' => 'ShoppingCartController@storeShoppingCartAddMerchandise']);
+            $router->post('/activity/{activityId}/shoppingcart', ['as' => 'user.add.activity.shoppingcart','uses' => 'ShoppingCartController@activityShoppingCartAddMerchandise']);
+            $router->post('/shoppingcart', ['as' => 'user.add.shoppingcart','uses' => 'ShoppingCartController@bookingMallShoppingCartAddMerchandise']);
+
+            $router->put('/shop/{storeId}/shoppingcart', ['as' => 'user.change.shop.shoppingcart','uses' => 'ShoppingCartController@storeShoppingCartMerchandiseNumChange']);
+            $router->put('/activity/{activityId}/shoppingcart', ['as' => 'user.change.activity.shoppingcart','uses' => 'ShoppingCartController@activityShoppingCartMerchandiseNumChange']);
+            $router->put('/shoppingcart', ['as' => 'user.change.shoppingcart','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
+
+            $router->delete('/delete/shoppingcart/{shoppingCartId}', ['as' => 'user.delete.shoppingcart','uses' => 'ShoppingCartController@shoppingCartDelete']);
+
             $router->get('/clear/shop/{storeId}/shoppingcart', ['as' => 'user.clear.shop.merchandise','uses' => 'ShoppingCartController@clearStoreShoppingCart']);
             $router->get('/clear/activity/{activityId}/shoppingcart', ['as' => 'user.clear.activity.merchandise','uses' => 'ShoppingCartController@clearActivityShoppingCart']);
             $router->get('/clear/shoppingcart', ['as' => 'user.clear.merchandise','uses' => 'ShoppingCartController@clearMerchandise']);
