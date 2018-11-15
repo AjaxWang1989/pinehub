@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Entities\Category $category
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Shop $shop
+ * @property  array|null $tags
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereId($value)

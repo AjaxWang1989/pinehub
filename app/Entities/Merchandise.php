@@ -36,6 +36,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\SKUProduct[] $skuProducts
+ * @property  array|null $tags
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCapacity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCode($value)

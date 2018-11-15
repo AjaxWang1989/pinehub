@@ -33,7 +33,6 @@ class ShopMerchandiseTransformer extends TransformerAbstract
             'status' => $model->merchandise->status,
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
-            'main_image' => $model->merchandise->mainImage,
         ];
     }
 }

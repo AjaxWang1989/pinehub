@@ -33,6 +33,7 @@ class MerchandiseTransformer extends TransformerAbstract
             'code' => $model->code,
             'name' => $model->name,
             'main_image' => $model->mainImage,
+            'tags' => $model->tags,
             'images' => $model->images,
             'preview' => $model->preview,
             'detail' => $model->detail,
