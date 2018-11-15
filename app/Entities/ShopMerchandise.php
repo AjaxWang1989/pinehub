@@ -50,7 +50,7 @@ class ShopMerchandise extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'shop_id','merchandise_id','category_id','product_id','stock_num','sell_num','sell_price'
+        'shop_id','merchandise_id','category_id','product_id','stock_num','sell_num','sell_price', 'tags'
     ];
 
     public function category() : BelongsTo
