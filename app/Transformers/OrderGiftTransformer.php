@@ -46,8 +46,8 @@ class OrderGiftTransformer extends TransformerAbstract
         return [
             'id'         => (int) $model->id,
             'title'      => $model->title,
-            'start_at'   => $model->startAt,
-            'end_at'     => $model->endAt,
+            'start_at'   => $model->startAt->format('Y-m-d H:i:s'),
+            'end_at'     => $model->endAt->format('Y-m-d H:i:s'),
             'status'     => $model->status,
             'type'       => $model->type,
             'gifts' => $gifts,
