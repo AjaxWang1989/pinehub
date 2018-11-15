@@ -19,6 +19,7 @@ use App\Repositories\ActivityRepository;
 use App\Repositories\PaymentActivityRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -156,41 +157,24 @@ class PaymentActivityController extends Controller
     public function update(OrderGiftUpdateRequest $request, $id)
     {
         //根据活动id查询创建的活动
-        $activityPayment = $this->repository->find($id);
-        if ($activityPayment['start_at'] < date("Y-m-d H:i:s",time())){
-            return $this->response(new JsonResponse(['message' => '活动已开始不能修改']));
+        $activity = $this->repository->find($id);
+        if($activity) {
+            return with($activity, function (Activity $activity) use($request) {
+                if ($activity->startAt->getTimestamp() < time()){
+                    return $this->response(new JsonResponse(['message' => '活动已开始不能修改']));
+                }else{
+                    $activity->status =  Activity::NOT_BEGINNING;
+                    $activity->title = $request->input('title');
+                    $activity->startAt = Carbon::createFromFormat(config('app.timezone'), $request->input('start_at'));
+                    $activity->endAt = Carbon::createFromFormat(config('app.timezone'), $request->input('end_at');
+                    $activity->save();
+                    //根据活动id修改创建的活动
+                    $activity->paymentActivities()->update($request->input('items'));
+                    return $this->response()->item($activity, new OrderGiftTransformer());
+                }
+            });
         }else{
-            $activity = $request->all();
-            $activity['status'] =  Activity::NOT_BEGINNING;
-            $activity['poster_img'] = isset($activity['poster_img']) ? $activity['poster_img'] : '';
-            $activity['description'] = isset($activity['description']) ? $activity['description'] : '';
-            //根据活动id修改创建的活动
-            $activityUpdate = $this->repository->update($activity,$id);
-
-            //根据活动id查询此活动下子活动的原始数据
-            $payments = $this->paymentActivity->findWhere(['activity_id'=>$activityPayment['id']]);
-            $paymentDeleteIds = [];
-            foreach ($payments as $k => $v){
-                $paymentDeleteIds[$k] = $v['id'];
-            }
-            //删除此活动下子活动的数据
-            PaymentActivity::destroy($paymentDeleteIds);
-
-            //根据更新的活动id创建此活动下子活动的数据
-            $paymentActivities = [];
-            foreach ($activity['payment_activity'] as $k => $v){
-                $paymentActivities[$k]['activity_id']  = $id;
-                $paymentActivities[$k]['type']         = $v['type'];
-                $paymentActivities[$k]['ticket_id']    = isset($v['ticket_id']) ? $v['ticket_id'] : null;
-                $paymentActivities[$k]['discount']     = isset($v['discount']) ? $v['discount'] : null;
-                $paymentActivities[$k]['cost']         = isset($v['cost']) ? $v['cost'] : null;
-                $paymentActivities[$k]['least_amount'] = isset($v['least_amount']) ? $v['least_amount'] : null;
-                $paymentActivities[$k]['score']        = isset($v['score']) ? $v['score'] : null;
-                $paymentActivities[$k]['ticket_count']        = isset($v['ticket_count']) ? $v['ticket_count'] : 0;
-            }
-            //创建子活动
-            DB::table('payment_activity')->insert($paymentActivities);
-            return $this->response()->item($activityUpdate, new OrderGiftTransformer());
+            throw new ModelNotFoundException('活动不存在');
         }
     }
 
