@@ -205,6 +205,9 @@ class OrderController extends Controller
                     $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
 
                     $orders['card_id'] = $card['card_id'];
+                    //更新优惠券状态为已使用
+                    
+                     $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
                 }else{
                     return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
                 }
@@ -270,10 +273,6 @@ class OrderController extends Controller
                 ->make('order.builder')
                 ->setInput($orders)
                 ->handle();
-
-            //更新优惠券状态为已使用
-            $card_use = $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
-
 
             return $this->order($order);
     }
