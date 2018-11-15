@@ -269,6 +269,19 @@ class ShopsController extends Controller
         return redirect()->back()->with('message', 'Shop deleted.');
     }
 
+    public function merchandises(int $shopId, Request $request)
+    {
+        $shop = $this->repository->find($shopId);
+        if($shop) {
+            return with($shop, function (Shop $shop) use($request){
+                $items = $shop->shopMerchandises()->with(['merchandise'])->paginate($request->input('limit', PAGE_LIMIT));
+                $this->response()->paginator($items, new ShopMerchandiseTransformer());
+            });
+        }else{
+            throw new ModelNotFoundException('没有相应店铺信息');
+        }
+    }
+
     public function addMerchandise(int $shopId, Request $request)
     {
         $shop = $this->repository->find($shopId);
