@@ -25,6 +25,8 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
         return [
             'id'=>$model->id,
             'merchandise_id'=>$model->merchandiseId,
+            'main_image' => $model->merchandise->mainImage,
+            'categories' => $model->merchandise->categories,
             'name' => $model->merchandise->name,
             'sell_price' => $model->merchandise->sellPrice,
             'origin_price' => $model->merchandise->originPrice,
@@ -32,8 +34,7 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
             'tags' => $model->tags,
-            'describe' => $model->describe,
-            'main_image' => $model->merchandise->mainImage,
+            'describe' => $model->describe
         ];
     }
 }
