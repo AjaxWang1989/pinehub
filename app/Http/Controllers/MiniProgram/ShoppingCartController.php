@@ -79,7 +79,7 @@ class ShoppingCartController extends Controller
     {
         if($shoppingCart) {
             $shoppingCart->quality = $quality;
-            $shoppingCart->amount = $shoppingCart->sellPrice * $quality;
+            $shoppingCart->amount = round($shoppingCart->sellPrice,2) * $quality;
             $shoppingCart->save();
             return $this->response()->item($shoppingCart, new ShoppingCartTransformer());
         }else{
@@ -144,9 +144,9 @@ class ShoppingCartController extends Controller
         $user = $this->mpUser();
         $shoppingCart['customer_id'] = $user->id;
         $shoppingCart['member_id'] = $user->memberId ? $user->memberId : null;
-        $shoppingCart['sell_price'] = $merchandise['sell_price'];
+        $shoppingCart['sell_price'] = round($merchandise['sell_price'],2);
         $shoppingCart['app_id'] = $user->appId;
-        $shoppingCart['amount'] = $shoppingCart['sell_price'] * $shoppingCart['quality'];
+        $shoppingCart['amount'] = round($merchandise['sell_price'],2) * $shoppingCart['quality'];
 
         $item = $this->shoppingCartRepository->create($shoppingCart);
         return $this->response()->item($item, new ShoppingCartTransformer);

@@ -20,7 +20,7 @@ class ShoppingCartTransformer extends TransformerAbstract
             'name'=>$model->merchandise->name,
             'main_image' => $model->merchandise->mainImage,
             'quality'=>$model->quality,
-            'sell_price'=>$model->sell_price,
+            'sell_price'=>round($model->sell_price,2),
             'amount' => $model->amount,
         ];
     }
