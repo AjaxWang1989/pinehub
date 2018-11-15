@@ -11,6 +11,10 @@ namespace App\Http\Controllers\MiniProgram;
 use App\Http\Requests\MiniProgram\BookingMallShoppingCartRequest;
 use App\Http\Requests\MiniProgram\StoreShoppingCartRequest;
 use App\Http\Requests\MiniProgram\ActivityShoppingCartRequest;
+
+use App\Http\Requests\MiniProgram\ActivityShoppingCartAddRequest;
+use App\Http\Requests\MiniProgram\StoreShoppingCartAddRequest;
+use App\Http\Requests\MiniProgram\BookingMallShoppingCartAddRequest;
 use App\Services\AppManager;
 use App\Entities\ShoppingCart;
 use Dingo\Api\Http\Request;
@@ -153,7 +157,7 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return $this|\Dingo\Api\Http\Response
      */
-    public function activityShoppingCartAddMerchandise(int $activityId, ActivityShoppingCartRequest $request)
+    public function activityShoppingCartAddMerchandise(int $activityId, ActivityShoppingCartAddRequest $request)
     {
         $merchandise = $this->activityMerchandiseRepository->findWhere([
             'activity_id' => $activityId,
@@ -177,7 +181,7 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return $this|\Dingo\Api\Http\Response
      */
-    public function storeShoppingCartAddMerchandise(int $storeId, StoreShoppingCartRequest $request)
+    public function storeShoppingCartAddMerchandise(int $storeId, StoreShoppingCartAddRequest $request)
     {
         $merchandise = $this->shopMerchandiseRepository->findWhere([
             'shop_id' => $storeId,
@@ -200,7 +204,7 @@ class ShoppingCartController extends Controller
      * @param Request $request
      * @return $this|\Dingo\Api\Http\Response
      */
-    public function bookingMallShoppingCartAddMerchandise(BookingMallShoppingCartRequest $request)
+    public function bookingMallShoppingCartAddMerchandise(BookingMallShoppingCartAddRequest $request)
     {
         $merchandise = $this->merchandiseRepository->findWhere([
             'id'=>$request->input('merchandise_id')
