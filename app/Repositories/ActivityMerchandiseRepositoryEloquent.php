@@ -16,6 +16,12 @@ use App\Validators\ActivityMerchandiseValidator;
  */
 class ActivityMerchandiseRepositoryEloquent extends BaseRepository implements ActivityMerchandiseRepository
 {
+    protected $fieldSearchable = [
+        'merchandise.name' => 'like',
+        'sell_num'=>'*',
+        'sell_price' => '*',
+        'merchandise.status' => '='
+    ];
     /**
      * Specify Model class name
      *
