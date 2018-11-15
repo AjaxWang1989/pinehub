@@ -7,12 +7,12 @@
  */
 
 namespace App\Transformers\Mp;
+use App\Entities\Order;
 use League\Fractal\TransformerAbstract;
-use App\Entities\OrderItemMerchandise;
 
 class StoreSellStatisticsTransformer extends TransformerAbstract
 {
-    public function transform(OrderItemMerchandise $model)
+    public function transform(Order $model)
     {
         return $model;
     }

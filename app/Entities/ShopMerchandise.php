@@ -24,6 +24,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read \App\Entities\Category $category
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Shop $shop
+ * @property  array|null $tags
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereId($value)
@@ -40,13 +41,17 @@ class ShopMerchandise extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    protected $casts = [
+        'tags' => 'array'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'shop_id','merchandise_id','category_id','product_id','stock_num','sell_num','sell_price'
+        'shop_id','merchandise_id','category_id','product_id','stock_num','sell_num','sell_price', 'tags'
     ];
 
     public function category() : BelongsTo

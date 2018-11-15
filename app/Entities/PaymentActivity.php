@@ -15,6 +15,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $activityId 活动ID
  * @property string $type 支付活动方式：满减送 PAY_FULL/支付礼包 PAY_GIFT
  * @property int|null $ticketId 优惠券id
+ * @property int $ticketCount 优惠券数量
  * @property float $discount 折扣
  * @property float $cost 抵用金额
  * @property float $leastAmount 最低消费
@@ -60,7 +61,7 @@ class PaymentActivity extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['activity_id','type','ticket_id','discount','cost','least_amount','score'];
+    protected $fillable = ['activity_id','type','ticket_id','discount','cost','least_amount','score', 'ticket_count'];
 
     public function activity() :BelongsTo
     {

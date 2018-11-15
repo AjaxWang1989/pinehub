@@ -43,7 +43,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $deletedAt
  * @property-read \App\Entities\StorePurchaseOrders $PurchaseOrder
  * @property-read \App\Entities\Merchandise|null $merchandise
- * @property-read \App\Entities\OrderItemMerchandise $orderMerchandise
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\SKUProduct|null $skuProduct
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereAppId($value)
@@ -121,10 +120,4 @@ class OrderPurchaseItems extends Model implements Transformable
     {
         return $this->belongsTo(StorePurchaseOrders::class, 'order_id', 'id');
     }
-
-    public function orderMerchandise(): HasOne
-    {
-        return $this->hasOne(OrderItemMerchandise::class, 'order_item_id', 'id');
-    }
-
 }

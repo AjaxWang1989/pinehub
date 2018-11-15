@@ -21,6 +21,8 @@ class CreateCategoriesTable extends Migration
             $table->unsignedInteger('parent_id')->default(null)->comment('分类父级');
             $table->timestamps();
             $table->softDeletes();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
             $table->index('app_id');
         });
     }

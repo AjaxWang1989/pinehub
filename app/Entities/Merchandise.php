@@ -36,6 +36,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\SKUProduct[] $skuProducts
+ * @property  array|null $tags
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCapacity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCode($value)
@@ -65,7 +66,8 @@ class Merchandise extends Model implements Transformable
     const DOWN = 0;
 
     protected $casts = [
-        'images' => 'array'
+        'images' => 'array',
+        'tags' => 'array'
     ];
 
     /**
@@ -75,7 +77,7 @@ class Merchandise extends Model implements Transformable
      */
     protected $fillable = [
         'code', 'name', 'main_image', 'images', 'preview', 'detail', 'origin_price', 'cost_price', 'sell_price', 'factory_price',
-        'stock_num', 'sell_num', 'status', 'capacity'
+        'stock_num', 'sell_num', 'status', 'capacity', 'tags'
     ];
 
     public function orderItems() : HasMany

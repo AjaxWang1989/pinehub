@@ -28,6 +28,12 @@ class CreateActivityMerchandisesTable extends Migration
             $table->timestamp('start_at')->nullable()->default(null)->comment('开售时间');
             $table->timestamp('end_at')->nullable()->default(null)->comment('结业时间');
             $table->timestamps();
+            $table->softDeletes();
+            $table->charset = 'utf8mb4';
+            $table->collation = 'utf8mb4_unicode_ci';
+            $table->index('activity_id');
+            $table->index('shop_id');
+            $table->index('merchandise_id');
         });
     }
 

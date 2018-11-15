@@ -39,9 +39,4 @@ interface OrderItemRepository extends RepositoryInterface
      */
     public function sellMerchandiseTop(array $request,int $userId);
 
-    /**
-     * @param int $id
-     * @return mixed
-     */
-    public function OrderItemMerchandises(int $id);
 }

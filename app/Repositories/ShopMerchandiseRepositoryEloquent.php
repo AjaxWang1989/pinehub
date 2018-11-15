@@ -16,6 +16,12 @@ use App\Entities\ShopMerchandise;
  */
 class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMerchandiseRepository
 {
+    protected $fieldSearchable = [
+        'merchandise.name' => 'like',
+        'sell_num'=>'*',
+        'sell_price' => '*',
+        'merchandise.status' => '='
+    ];
     /**
      * Specify Model class name
      *

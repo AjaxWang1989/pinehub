@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\App;
 use App\Entities\Merchandise;
 use App\Entities\Order;
@@ -13,6 +14,7 @@ use App\Http\Response\JsonResponse;
 
 use App\Repositories\SellerRepository;
 use App\Repositories\ShopManagerRepository;
+use App\Repositories\ShopMerchandiseRepository;
 use App\Services\AppManager;
 use App\Transformers\ShopMerchandiseTransformer;
 use App\Utils\GeoHash;
@@ -30,6 +32,7 @@ use App\Repositories\ShopRepository;
 use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Prettus\Repository\Criteria\RequestCriteria;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Http\Controllers\Controller;
 
@@ -74,6 +77,8 @@ class ShopsController extends Controller
      */
     public function index(Request $request)
     {
+        $this->repository->pushCriteria(app(RequestCriteria::class));
+        $this->repository->pushCriteria(app(SearchRequestCriteria::class));
         $shops = $this->repository->with(['country', 'province', 'city', 'county', 'shopManager'])
             ->withLastMonthAmount()
             ->withMerchandiseCount()
@@ -267,6 +272,21 @@ class ShopsController extends Controller
         }
 
         return redirect()->back()->with('message', 'Shop deleted.');
+    }
+
+    public function merchandises(int $shopId, Request $request, ShopMerchandiseRepository $repository)
+    {
+        $shop = $this->repository->find($shopId);
+        if($shop) {
+            $repository->pushCriteria(app(RequestCriteria::class));
+            $repository->pushCriteria(app(SearchRequestCriteria::class));
+            $items = $repository->with(['merchandise.categories'])->scopeQuery(function ($model) use($shopId){
+                return $model->where('shop_id', $shopId);
+            })->paginate($request->input('limit', PAGE_LIMIT));
+            return $this->response()->paginator($items, new ShopMerchandiseTransformer());
+        }else{
+            throw new ModelNotFoundException('没有相应店铺信息');
+        }
     }
 
     public function addMerchandise(int $shopId, Request $request)

@@ -20,7 +20,6 @@ use App\Entities\ActivityMerchandise;
 use App\Entities\User;
 use App\Repositories\ActivityMerchandiseRepository;
 use App\Repositories\MerchandiseRepository;
-use App\Repositories\OrderItemMerchandiseRepository;
 use App\Repositories\OrderItemRepository;
 use App\Repositories\OrderPostRepository;
 use App\Repositories\OrderRepository;
@@ -32,9 +31,7 @@ use Dingo\Api\Exception\ValidationHttpException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\MessageBag;
-use function PHPSTORM_META\type;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 
 class OrderBuilder implements InterfaceServiceHandler
@@ -54,10 +51,6 @@ class OrderBuilder implements InterfaceServiceHandler
      * */
     protected $orderItem = null;
 
-    /**
-     * @var OrderItemMerchandiseRepository $orderItemMerchandise
-     * */
-    protected $orderItemMerchandise = null;
 
     /**
      * @var OrderPostRepository $orderPost
@@ -100,7 +93,6 @@ class OrderBuilder implements InterfaceServiceHandler
                                  MerchandiseRepository $merchandise,
                                  OrderItemRepository $orderItem = null,
                                  SKUProductRepository $skuProduct = null,
-                                 OrderItemMerchandiseRepository $orderItemMerchandise =null, 
                                  OrderPostRepository $orderPost = null)
     {
         $this->auth = $auth;
@@ -108,7 +100,6 @@ class OrderBuilder implements InterfaceServiceHandler
         $this->order = $order;
         $this->orderPost = $orderPost;
         $this->orderItem = $orderItem;
-        $this->orderItemMerchandise = $orderItemMerchandise;
         $this->merchandise = $merchandise;
         $this->skuProduct = $skuProduct;
     }
