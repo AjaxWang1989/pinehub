@@ -26,6 +26,7 @@ class ShopMerchandiseTransformer extends TransformerAbstract
             'main_image' => $model->merchandise->mainImage,
             'categories' => $model->merchandise->categories,
             'merchandise_id'=>$model->merchandiseId,
+            'tags'=> $model->tags,
             'name' => $model->merchandise->name,
             'sell_price' => $model->merchandise->sellPrice,
             'origin_price' => $model->merchandise->originPrice,
