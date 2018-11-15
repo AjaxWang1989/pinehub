@@ -191,7 +191,7 @@ class OrderController extends Controller
             $orders['open_id']  = $user->platformOpenId;
 
             $orders['discount_amount'] = 0;
-            
+
             if(isset($orders['card_id']) && $orders['card_id']){
                 $customerTicketRecord = $user->ticketRecords()->with('card')
                     ->where([
