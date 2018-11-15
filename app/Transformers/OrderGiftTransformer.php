@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Entities\PaymentActivity;
 use League\Fractal\TransformerAbstract;
 use App\Entities\Activity;
 
@@ -21,6 +22,27 @@ class OrderGiftTransformer extends TransformerAbstract
      */
     public function transform( Activity $model)
     {
+        $gifts = $model->paymentActivities;
+        $gifts = $gifts->map(function (PaymentActivity $activity) {
+            $types = [];
+            if($activity->score) {
+                array_push($types, 'score');
+            }
+
+            if($activity->discount) {
+                array_push($types, 'discount');
+            }
+
+            if($activity->cost) {
+                array_push($types, 'cost');
+            }
+
+            if($activity->ticketId) {
+                array_push($types, 'ticket_id');
+            }
+            $activity['gift_types'] = $types;
+            return $activity;
+        });
         return [
             'id'         => (int) $model->id,
             'title'      => $model->title,
@@ -28,7 +50,7 @@ class OrderGiftTransformer extends TransformerAbstract
             'end_at'     => $model->endAt,
             'status'     => $model->status,
             'type'       => $model->type,
-            'gifts' => $model->paymentActivities,
+            'gifts' => $gifts,
         ];
     }
 }
