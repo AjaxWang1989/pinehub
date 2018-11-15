@@ -40,6 +40,7 @@ class PaymentActivityController extends Controller
      * PaymentActivityController constructor.
      *
      * @param ActivityRepository $repository
+     * @param PaymentActivityRepository $activityRepository
      */
     public function __construct( ActivityRepository $repository,PaymentActivityRepository $activityRepository)
     {

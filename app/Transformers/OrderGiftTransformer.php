@@ -28,7 +28,7 @@ class OrderGiftTransformer extends TransformerAbstract
             'end_at'     => $model->endAt,
             'status'     => $model->status,
             'type'       => $model->type,
-            'paymentActivities' => $model->paymentActivities,
+            'gifts' => $model->paymentActivities,
         ];
     }
 }
