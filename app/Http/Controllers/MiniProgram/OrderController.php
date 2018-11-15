@@ -190,6 +190,8 @@ class OrderController extends Controller
             $orders['customer_id'] = $user->id;
             $orders['open_id']  = $user->platformOpenId;
 
+            $orders['discount_amount'] = 0;
+            
             if(isset($orders['card_id']) && $orders['card_id']){
                 $customerTicketRecord = $user->ticketRecords()->with('card')
                     ->where([
@@ -206,7 +208,7 @@ class OrderController extends Controller
 
                     $orders['card_id'] = $card['card_id'];
                     //更新优惠券状态为已使用
-                    
+
                      $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
                 }else{
                     return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
