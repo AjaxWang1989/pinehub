@@ -16,7 +16,6 @@ class PaymentController extends Controller
         Log::info('--------------------- payment notify------------------------------------',
             [$_POST, $request->all(), @file_get_contents('php://input')]);
         $data = null;
-        log::info('-------------------------------token-------------------------------',$token);
         if($token) {
             $token = Cache::get($token);
             if(app('tymon.jwt.auth')->authenticate($token)) {
