@@ -78,19 +78,20 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->get('/store/code/order/merchandise/up', ['as' => 'user.store.code.order.merchandise.up','uses' => 'PurchaseOrderController@storeCodeOrderMerchandiseUp']);
 
 
-            $router->post('/shop/{storeId}/shoppingcart', ['as' => 'user.add.shop.shoppingcart','uses' => 'ShoppingCartController@storeShoppingCartAddMerchandise']);
-            $router->post('/activity/{activityId}/shoppingcart', ['as' => 'user.add.activity.shoppingcart','uses' => 'ShoppingCartController@activityShoppingCartAddMerchandise']);
-            $router->post('/shoppingcart', ['as' => 'user.add.shoppingcart','uses' => 'ShoppingCartController@bookingMallShoppingCartAddMerchandise']);
+            $router->post('/shop/{storeId}/shoppingcart/merchandise', ['as' => 'user.add.shop.shoppingcart','uses' => 'ShoppingCartController@storeShoppingCartAddMerchandise']);
+            $router->post('/activity/{activityId}/shoppingcart/merchandise', ['as' => 'user.add.activity.shoppingcart','uses' => 'ShoppingCartController@activityShoppingCartAddMerchandise']);
+            $router->post('/shoppingcart/merchandise', ['as' => 'user.add.shoppingcart','uses' => 'ShoppingCartController@bookingMallShoppingCartAddMerchandise']);
 
-            $router->put('/shop/{storeId}/shoppingcart', ['as' => 'user.change.shop.shoppingcart','uses' => 'ShoppingCartController@storeShoppingCartMerchandiseNumChange']);
-            $router->put('/activity/{activityId}/shoppingcart', ['as' => 'user.change.activity.shoppingcart','uses' => 'ShoppingCartController@activityShoppingCartMerchandiseNumChange']);
-            $router->put('/shoppingcart', ['as' => 'user.change.shoppingcart','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
+            $router->put('/shop/{storeId}/shoppingcart/merchandise', ['as' => 'user.change.shop.shoppingcart','uses' => 'ShoppingCartController@storeShoppingCartMerchandiseNumChange']);
+            $router->put('/activity/{activityId}/shoppingcart/merchandise', ['as' => 'user.change.activity.shoppingcart','uses' => 'ShoppingCartController@activityShoppingCartMerchandiseNumChange']);
+            $router->put('/shoppingcart', ['as' => 'user.change.shoppingcart/merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
 
             $router->delete('/delete/shoppingcart/{shoppingCartId}', ['as' => 'user.delete.shoppingcart','uses' => 'ShoppingCartController@shoppingCartDelete']);
 
             $router->get('/clear/shop/{storeId}/shoppingcart', ['as' => 'user.clear.shop.merchandise','uses' => 'ShoppingCartController@clearStoreShoppingCart']);
             $router->get('/clear/activity/{activityId}/shoppingcart', ['as' => 'user.clear.activity.merchandise','uses' => 'ShoppingCartController@clearActivityShoppingCart']);
             $router->get('/clear/shoppingcart', ['as' => 'user.clear.merchandise','uses' => 'ShoppingCartController@clearMerchandise']);
+
             $router->get('/shop/{storeId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.shop.merchandises','uses' => 'ShoppingCartController@storeShoppingCartMerchandises']);
             $router->get('/activity/{activityId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.activity.merchandises','uses' => 'ShoppingCartController@activityShoppingCartMerchandises']);
             $router->get('/shoppingcart/merchandises', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@shoppingCartMerchandises']);
