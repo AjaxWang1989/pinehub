@@ -65,7 +65,8 @@ class Merchandise extends Model implements Transformable
     const DOWN = 0;
 
     protected $casts = [
-        'images' => 'array'
+        'images' => 'array',
+        'tags' => 'array'
     ];
 
     /**

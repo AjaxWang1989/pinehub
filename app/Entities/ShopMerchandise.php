@@ -40,6 +40,10 @@ class ShopMerchandise extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
 
+    protected $casts = [
+        'tags' => 'array'
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
