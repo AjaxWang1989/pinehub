@@ -275,7 +275,7 @@ class ShopsController extends Controller
         if($shop) {
             return with($shop, function (Shop $shop) use($request){
                 $items = $shop->shopMerchandises()->with(['merchandise'])->paginate($request->input('limit', PAGE_LIMIT));
-                $this->response()->paginator($items, new ShopMerchandiseTransformer());
+                return $this->response()->paginator($items, new ShopMerchandiseTransformer());
             });
         }else{
             throw new ModelNotFoundException('没有相应店铺信息');
