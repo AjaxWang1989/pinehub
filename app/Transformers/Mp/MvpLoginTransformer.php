@@ -17,6 +17,7 @@ class MvpLoginTransformer extends TransformerAbstract
     {
         return [
             'token' => $model->token,
+            'nickname' => $model->nickname,
             'open_id' => $model->platformOpenId,
             'session_key' => $model->sessionKey,
             'shop_id'   => $model->shopId,
