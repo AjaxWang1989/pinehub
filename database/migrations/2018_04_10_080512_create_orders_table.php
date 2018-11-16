@@ -42,7 +42,7 @@ class CreateOrdersTable extends Migration
             $table->string('receiver_city', 16)->nullable()->default(null)->comment('收货城市');
             $table->string('receiver_district', 16)->nullable()->default(null)->comment('收货人所在城市区县');
             $table->string('receiver_name', 16)->nullable()->default(null)->comment('收货姓名');
-            $table->string('receiver_address', 32)->nullable()->default(null)->comment('收货地址');
+            $table->string('receiver_address', 100)->nullable()->default(null)->comment('收货地址');
             $table->string('receiver_mobile', 11)->nullable()->default(null)->comment('收货人电话');
             $table->timestamp('send_start_time')->nullable()->default(null)->comment('配送开始时间');
             $table->timestamp('send_end_time')->nullable()->default(null)->comment('配送结束时间');

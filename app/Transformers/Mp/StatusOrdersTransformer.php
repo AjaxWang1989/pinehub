@@ -18,6 +18,7 @@ class StatusOrdersTransformer extends TransformerAbstract
         return [
             'id'      => $model->id,
             'code'    => $model->code,
+            'write_code'     => buildUrl('api.mp','/confirm/order', $model->id),
             'type'    => $model->type,
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,

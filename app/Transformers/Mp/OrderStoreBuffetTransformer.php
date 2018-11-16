@@ -20,6 +20,7 @@ class OrderStoreBuffetTransformer extends TransformerAbstract
         return [
             'id'      => $model->id,
             'code'    => $model->code,
+            'write_code'     => buildUrl('api.mp','/confirm/order', $model->id),
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
             'receiver_address' => json_decode($model->receiverAddress)->receiver_address,
