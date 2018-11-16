@@ -17,6 +17,7 @@ class OrderStoreSendTransformer extends TransformerAbstract
     public function transform(Order $model){
         return [
             'id'      => $model->id,
+            'write_code'     => buildUrl('api.mp','/confirm/order', $model->id),
             'code'    => $model->code,
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
