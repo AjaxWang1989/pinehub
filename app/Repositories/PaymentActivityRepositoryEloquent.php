@@ -22,7 +22,6 @@ class PaymentActivityRepositoryEloquent extends BaseRepository implements Paymen
      */
     public function model()
     {
-        new PaymentActivity();
         return PaymentActivity::class;
     }
 
@@ -34,12 +33,7 @@ class PaymentActivityRepositoryEloquent extends BaseRepository implements Paymen
      */
     public function boot()
     {
-        $this->pushCriteria(app(RequestCriteria::class));
-        $this->pushCriteria(PaymentActivityCriteria::class);
-//        PaymentActivity::creating(function (PaymentActivity $gift) {
-//            $gift->appId = app(AppManager::class)->currentApp->id;
-//            return $gift;
-//        });
+
     }
 
 }

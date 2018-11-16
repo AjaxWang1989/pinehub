@@ -16,6 +16,9 @@ use App\Validators\CategoryValidator;
  */
 class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepository
 {
+    protected $fieldSearchable = [
+        'app_id' => '='
+    ];
     /**
      * Specify Model class name
      *

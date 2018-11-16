@@ -54,7 +54,9 @@ class MerchandisesController extends Controller
     {
         $this->repository->pushCriteria(MerchandiseCriteria::class);
         $this->repository->pushCriteria(app(SearchRequestCriteria::class));
-        $merchandises = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
+        $merchandises = $this->repository->scopeQuery(function ($merchandise) {
+            return $merchandise->where('app_id', app(AppManager::class)->getAppId());
+        })->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($merchandises, new MerchandiseItemTransformer());
     }
 
