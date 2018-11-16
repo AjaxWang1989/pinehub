@@ -23,6 +23,7 @@ class ShopTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
+            'code' => $model->code,
             'name'  => $model->name,
             /* place your other model properties here */
             'country' => $model->country->name,
