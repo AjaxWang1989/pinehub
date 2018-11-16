@@ -60,6 +60,7 @@ class MiniProgramApiRoutes extends ApiRoutes
 
 
             $router->get('/user/tickets/{status}', ['as' => 'user.user.tickets','uses' => 'UserController@UserTickets']);
+            $router->get('/customer/ticket/cards/{status}', ['as' => 'user.customer.ticket.cards','uses' => 'UserController@customerTicketCards']);
             $router->post('/feed/back/message', ['as' => 'user.feed.back.message','uses' => 'UserController@feedBackMessage']);
 
 

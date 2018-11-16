@@ -18,4 +18,11 @@ interface CustomerTicketCardRepository extends RepositoryInterface
      * @return mixed
      */
     public function userTickets(int $status,int $userId,string $shoppingCartAmount);
+
+    /**
+     * @param int $userId
+     * @param int $status
+     * @return mixed
+     */
+    public function customerTicketCards (int $userId,int $status);
 }

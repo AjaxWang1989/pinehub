@@ -60,5 +60,26 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
         });
         return $this->paginate();
     }
+
+    /**
+     * @param int $userId
+     * @param int $status
+     * @return mixed
+     */
+    public function customerTicketCards (int $userId,int $status)
+    {
+        $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($userId,$status) {
+            return $customerTicketCard
+                ->where(['customer_id'=>$userId, 'customer_ticket_cards.status'=>$status])
+                ->join('cards', 'customer_ticket_cards.card_id', '=', 'cards.card_id')
+                ->with(['card' => function ($card) use ($userId){
+                    return $card->withCount(['records as record_count' => function ($records) use ($userId) {
+                        return $records->where('customer_id' , $userId);
+                    }]);
+                }])
+                ->groupBy('customer_ticket_cards.card_id');
+        });
+        return $this->paginate();
+    }
     
 }

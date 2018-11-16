@@ -85,6 +85,17 @@ class UserController extends Controller
     }
 
     /**
+     * 个人中心获取所有优惠券
+     * @return \Dingo\Api\Http\Response
+     */
+    public function customerTicketCards(int $status)
+    {
+        $user = $this->mpUser();
+        $items = $this->customerTicketCardRepository->customerTicketCards($user['id'],$status);
+        return $this->response()->paginator($items,new CustomerTicketCardTransformer());
+    }
+
+    /**
      * 提交意见反馈
      * @param Request $request
      * @return \Dingo\Api\Http\Response
