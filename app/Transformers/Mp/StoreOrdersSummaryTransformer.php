@@ -18,6 +18,7 @@ class StoreOrdersSummaryTransformer extends TransformerAbstract
         return [
             'id'      => $model->id,
             'code'    => $model->code,
+            'write_code'     => buildUrl('api.mp','/confirm/order', $model->id),
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
             'card_id' => $model->cardId,
