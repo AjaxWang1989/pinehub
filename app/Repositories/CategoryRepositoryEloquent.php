@@ -34,10 +34,6 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
      */
     public function boot()
     {
-        Category::creating(function (Category $category) {
-            $category->appId = app(AppManager::class)->currentApp->id;
-            return $category;
-        });
     }
     
 }
