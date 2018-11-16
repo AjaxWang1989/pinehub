@@ -22,7 +22,6 @@ class ShopMerchandiseTransformer extends TransformerAbstract
      */
     public function transform(ShopMerchandise $model)
     {
-        Log::info('shop merchandise', $model->tags);
         return [
             'id'=>$model->id,
             'main_image' => $model->merchandise->mainImage,
