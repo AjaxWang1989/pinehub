@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Entities\AuthSecretKey;
 use App\Entities\User;
+use App\Exceptions\UserDonnotLoginException;
 use App\Http\Response\JsonResponse;
 use App\Http\Response\UpdateResponse;
 use App\Repositories\UserRepository;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Prettus\Validator\Contracts\ValidatorInterface;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
@@ -58,17 +60,20 @@ class AuthController extends Controller
 
     public function refreshToken()
     {
-        $this->auth();
-        if (Auth::getToken()) {
-            $token = Auth::refresh();
-            $tokenMeta = [
-                'token' => $token,
-                'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
-                'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
-            ];
-            return $this->response(new JsonResponse($tokenMeta));
-        } else {
-            $this->response()->error('用户未登录', 400);
+        try{
+            if (Auth::check()) {
+                $token = Auth::refresh();
+                $tokenMeta = [
+                    'token' => $token,
+                    'ttl' => Carbon::now()->addMinute(config('jwt.ttl')),
+                    'refresh_ttl' => Carbon::now()->addMinute(config('jwt.refresh_ttl'))
+                ];
+                return $this->response(new JsonResponse($tokenMeta));
+            } else {
+                throw new UserDonnotLoginException(AUTH_NOT_LOGIN, '未登录');
+            }
+        }catch (\Exception $exception) {
+            throw $exception;
         }
     }
 

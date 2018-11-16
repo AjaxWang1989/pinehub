@@ -25,7 +25,9 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
         'name' => 'like',
         'sell_num'=>'*',
         'sell_price' => '*',
-        'status' => '='
+        'status' => '=',
+        'app_id' => '=',
+        'code' => 'like'
     ];
     /**
      * Specify Model class name

@@ -16,6 +16,9 @@ use App\Validators\CategoryValidator;
  */
 class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepository
 {
+    protected $fieldSearchable = [
+        'app_id' => '='
+    ];
     /**
      * Specify Model class name
      *
@@ -34,10 +37,6 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
      */
     public function boot()
     {
-        Category::creating(function (Category $category) {
-            $category->appId = app(AppManager::class)->currentApp->id;
-            return $category;
-        });
     }
     
 }

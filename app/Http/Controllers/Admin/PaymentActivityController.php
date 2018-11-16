@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Criteria\Admin\PaymentActivityCriteria;
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Activity;
 use App\Entities\Order;
@@ -22,6 +23,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Prettus\Repository\Criteria\RequestCriteria;
 
 /**
  * Class PaymentActivityController.
@@ -58,6 +60,8 @@ class PaymentActivityController extends Controller
     public function index($type)
     {
         $type = PaymentActivity::TYPES[$type];
+        $this->repository->pushCriteria(app(RequestCriteria::class));
+        $this->repository->pushCriteria(PaymentActivityCriteria::class);
         $this->repository->pushCriteria(app(SearchRequestCriteria::class));
         $activities = $this->repository
             ->withCount(['orders as order_count', 'customers as customer_count'=> function(Builder $query) {

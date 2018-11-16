@@ -23,6 +23,7 @@ class ShopTransformer extends TransformerAbstract
     {
         return [
             'id'         => (int) $model->id,
+            'code' => $model->code,
             'name'  => $model->name,
             /* place your other model properties here */
             'country' => $model->country->name,
@@ -37,7 +38,7 @@ class ShopTransformer extends TransformerAbstract
             'lat' => $model->position->getLat(),
             'lng' => $model->position->getLng(),
             'manager'  => $model->shopManager->only(['id', 'user_name', 'nickname', 'mobile', 'real_name']),
-            'manager_name' => $model->shopManager->realName,
+            'manager_name' => $model->shopManager->realName ? $model->shopManager->realName : $model->shopManager->nickname,
             'manager_mobile' => $model->shopManager->mobile,
             'description' => $model->description,
             'total_amount' => $model->totalAmount,
