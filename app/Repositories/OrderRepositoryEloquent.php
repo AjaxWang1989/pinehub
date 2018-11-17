@@ -176,7 +176,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
 
-        $type = [];
+        $type = null;
         //type传reserve就是预定商品  type传self_lift 就是自提商品
         if ($request['type'] == 'self_lift'){
             $type = [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION];
@@ -198,11 +198,14 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $endAt = $request['paid_end_time'];
 
         $this->scopeQuery(function (Order $order) use($where,$startAt,$endAt,$type) {
-            return $order
+            $order = $order
                 ->where($where)
                 ->where('paid_at', '>=', $startAt)
-                ->where('paid_at', '<', $endAt)
-                ->whereIn('type', $type);
+                ->where('paid_at', '<', $endAt);
+            if($type)
+                return $order->whereIn('type', $type);
+            else
+                return $order;
         });
         return $this->paginate();
     }
