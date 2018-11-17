@@ -180,7 +180,7 @@ class OrderController extends Controller
 
                 if (isset($orders['send_time']) && $orders['send_time']){
                     //拆分字符串
-                    $sendTime = explode('-',$orders['send_time']);
+                    $sendTime = explode('~',$orders['send_time']);
                     //去除字符串中的空格
                     $removeSpace = str_replace(' ','',$sendTime);
                     $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
