@@ -28,6 +28,8 @@ class CustomerTicketCardTransformer extends TransformerAbstract
             'record_count' => $model->card->recordCount,
             'begin_timestamp' => isset($model->card->card_info['base_info']['date_info']['begin_timestamp']) ? date('Y-m-d H:i:s',$model->card->card_info['base_info']['date_info']['begin_timestamp']) : '',
             'end_timestamp' => isset($model->card->card_info['base_info']['date_info']['end_timestamp']) ? date('Y-m-d H:i:s',$model->card->card_info['base_info']['date_info']['end_timestamp']) : '',
+            'fixed_begin_term' => isset($model->card->card_info['base_info']['date_info']['fixed_begin_term']) ? $model->card->card_info['base_info']['date_info']['fixed_begin_term'] : '',
+            'fixed_term'       =>  isset($model->card->card_info['base_info']['date_info']['fixed_term']) ? $model->card->card_info['base_info']['date_info']['fixed_term'] : '',
         ];
     }
 }
