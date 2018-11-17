@@ -26,6 +26,8 @@ class CreateCustomerTicketCardsTable extends Migration
             $table->string('outer_str')->nullable()->default(null)->comment('领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加Addcard接口中自定义该字段的字符串值。');
             $table->boolean('active')->default(false)->comment('是否激活');
             $table->unsignedTinyInteger('status')->default(0)->comment('0-不可用，1-可用，2-已使用，3-过期');
+            $table->timestamp('begin_at')->nullable()->default(null)->comment('开始时间');
+            $table->timestamp('end_at')->nullable()->default(null)->comment('结束时间');
             $table->timestamps();
             $table->index('app_id');
             $table->index('customer_id');

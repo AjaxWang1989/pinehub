@@ -17,6 +17,9 @@ class CustomerTicketCardTransformer extends TransformerAbstract
         return [
             'card_id'=>$model->card->cardId,
             'card_code' =>$model->cardCode,
+            'begin_at'  => $model->beginAt,
+            'end_at'    => $model->endAt,
+            'status'    => $model->status,
             'title' => $model->card->card_info['base_info']['title'],
             'discount' => isset($model->card->cardInfo['discount']) ? round($model->card->cardInfo['discount']/10,2) : null ,
             'type' => mb_strtoupper($model->card->cardType),

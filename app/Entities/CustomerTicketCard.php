@@ -23,6 +23,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $outerStr 领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加Addcard接口中自定义该字段的字符串值。
  * @property int $active 是否激活
  * @property int $status 0-不可用，1-可用，2-已使用，3-过期
+ * @property  string|null $beginAt 开始时间
+ * @property  string|null $endAt 结束时间
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\App $app
@@ -77,6 +79,8 @@ class CustomerTicketCard extends Model implements Transformable
         'outer_str',
         'active',
         'status',
+        'begin_at',
+        'end_at',
         'created_at',
         'updated_at'
     ];
