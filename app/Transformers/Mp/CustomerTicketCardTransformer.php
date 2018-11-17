@@ -18,10 +18,10 @@ class CustomerTicketCardTransformer extends TransformerAbstract
             'card_id'=>$model->card->cardId,
             'card_code' =>$model->cardCode,
             'title' => $model->card->card_info['base_info']['title'],
-            'discount' => isset($model->card->cardInfo['discount']) ? $model->card->cardInfo['discount'] : null ,
+            'discount' => isset($model->card->cardInfo['discount']) ? round($model->card->cardInfo['discount']/10,2) : null ,
             'type' => mb_strtoupper($model->card->cardType),
-            'least_cost' => isset($model->card->card_info['least_cost']) ?$model->card->card_info['least_cost']/100 : null,
-            'reduce_cost' => isset($model->card->card_info['reduce_cost']) ?$model->card->card_info['reduce_cost']/100 : null,
+            'least_cost' => isset($model->card->card_info['least_cost']) ? round($model->card->card_info['least_cost']/100,2) : null,
+            'reduce_cost' => isset($model->card->card_info['reduce_cost']) ? round($model->card->card_info['reduce_cost']/100,2) : null,
             'is_limited'  => isset($model->card->card_info['base_info']['get_limit']) && $model->card->card_info['base_info']['get_limit'] ? true : false,
             'card_type'   => isset($model->card->card_info['base_info']['date_info']['begin_timestamp']) && $model->card->card_info['base_info']['date_info']['begin_timestamp'] == 0
             ? $model->card->card_info['base_info']['date_info']['type'].'_0' : $model->card->card_info['base_info']['date_info']['type'].'_1',
