@@ -12,17 +12,17 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface CustomerTicketCardRepository extends RepositoryInterface
 {
     /**
-     * @param int $status
+     * @param string $status
      * @param int $userId
      * @param string $shoppingCartAmount
      * @return mixed
      */
-    public function userTickets(int $status,int $userId,string $shoppingCartAmount);
+    public function userTickets(string $status,int $userId,string $shoppingCartAmount);
 
     /**
      * @param int $userId
-     * @param int $status
+     * @param string $status
      * @return mixed
      */
-    public function customerTicketCards (int $userId,int $status);
+    public function customerTicketCards (int $userId,string $status);
 }

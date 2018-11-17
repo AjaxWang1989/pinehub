@@ -65,11 +65,11 @@ class UserController extends Controller
 
     /**
      * 获取用户优惠券信息
-     * @param int $status
+     * @param string $status
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function userTickets(int $status,Request $request){
+    public function userTickets(string $status,Request $request){
         $request = $request->all();
         $user = $this->mpUser();
         if (isset($request['store_id']) && $request['store_id']){
@@ -88,7 +88,7 @@ class UserController extends Controller
      * 个人中心获取所有优惠券
      * @return \Dingo\Api\Http\Response
      */
-    public function customerTicketCards(int $status)
+    public function customerTicketCards(string $status)
     {
         $user = $this->mpUser();
         $items = $this->customerTicketCardRepository->customerTicketCards($user['id'],$status);
