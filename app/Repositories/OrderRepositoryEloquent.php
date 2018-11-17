@@ -202,7 +202,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 ->where($where)
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->whereIn('type',[$type]);
+                ->whereIn('type', $type);
         });
         return $this->paginate();
     }
