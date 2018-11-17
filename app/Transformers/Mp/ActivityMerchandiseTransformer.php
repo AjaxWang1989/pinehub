@@ -22,7 +22,7 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
             'origin_price' => $model->merchandise->originPrice,
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
-            'tags' => $model->tags,
+            'tags' => isset($model->tags) ? $model->tags : [] ,
             'describe' => $model->describe,
             'main_image' => $model->merchandise->mainImage,
         ];
