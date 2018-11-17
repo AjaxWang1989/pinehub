@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Repositories\Traits\Destruct;
-use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\CustomerTicketCard;
@@ -58,14 +57,12 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
 
         $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($status, $userId, $shoppingCartAmount) {
             return $customerTicketCard
-                ->select([DB::raw('customer_ticket_cards.*'), DB::raw('cards.*')])
-                ->where(['customer_id'=>$userId, 'customer_ticket_cards.status'=>$status])
-                ->join('cards', 'customer_ticket_cards.card_id', '=', 'cards.card_id')
-                ->where(function ($query) use($shoppingCartAmount){
-                    $query->where('cards.card_info->least_cost', '<=', $shoppingCartAmount)
-                        ->orWhereNull('cards.card_info->least_cost');
+                ->where(['customer_id'=>$userId, 'status'=>$status])
+                ->whereHas('card', function ($query) use($shoppingCartAmount){
+                    $query->where('card_info->least_cost', '<=', $shoppingCartAmount)
+                        ->orWhereNull('card_info->least_cost');
                 })
-                ->groupBy('customer_ticket_cards.card_id');
+                ->groupBy('card_id');
         });
         return $this->paginate();
     }
