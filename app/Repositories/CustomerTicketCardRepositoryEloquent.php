@@ -43,8 +43,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
      * @param string $limit
      * @return mixed
      */
-    public function userTickets(string $status,int $userId,string $shoppingCartAmount){
-        $shoppingCartAmount = $shoppingCartAmount*100;
+    public function userTickets(string $status,int $userId,string $shoppingCartAmount) {
 
         if ($status == 'unavailable'){
             $status = CustomerTicketCard::STATUS_OFF;
@@ -59,7 +58,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
         $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($status, $userId, $shoppingCartAmount) {
             return $customerTicketCard
                 ->where(['customer_id'=>$userId, 'customer_ticket_cards.status'=>$status])
-                ->join('cards', 'customer_ticket_cards.card_id', '=', 'cards.card_id')
+                ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
                 ->where(function ($query) use($shoppingCartAmount){
                     $query->where('cards.card_info->least_cost', '<=', $shoppingCartAmount)
                         ->orWhereNull('cards.card_info->least_cost');
