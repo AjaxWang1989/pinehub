@@ -178,9 +178,9 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
         $type = [];
         //type传reserve就是预定商品  type传self_lift 就是自提商品
-        if ($request['type'] == 'reserve'){
+        if ($request['type'] == 'self_lift'){
             $type = [Order::ORDERING_PAY,Order::SITE_SELF_EXTRACTION];
-        }elseif ($request['type'] == 'self_lift'){
+        }elseif ($request['type'] == 'reserve'){
             $type = [Order::E_SHOP_PAY,Order::SITE_DISTRIBUTION];
         }
 
