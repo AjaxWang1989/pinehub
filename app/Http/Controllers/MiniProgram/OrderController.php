@@ -250,6 +250,7 @@ class OrderController extends Controller
             $now = Carbon::now();
             $orders['years'] = $now->year;
             $orders['month'] = $now->month;
+            $order ['day']   = $now->day;
             $orders['week']  = $now->dayOfWeekIso;
             $orders['hour']  = $now->hour;
 
