@@ -182,9 +182,10 @@ class ShopsController extends Controller
         //本周购买总用户和总数额
         $weekStatistics = $this->orderRepository->weekStatistics($request);
 
+        $orders['week']  = date('w', time()) === 0 ? 7 : date('w', time());
         //组装本周购买的用户
         $weekBuyNumStatics = [];
-        for ($i=0; $i < 7 ; $i++){
+        for ($i=0; $i < $orders['week'] ; $i++){
             $weekBuyNumStatics[$i] = 0;
             foreach ($weekStatistics as $k=>  $v) {
                 if($v['week'] == $i + 1){
@@ -196,7 +197,7 @@ class ShopsController extends Controller
         //组装本周购买的金额
         $sellAmount = $this->orderRepository->sellAmount($request);
         $weekBuyNumAmount = [];
-        for ($i=0; $i < 7 ; $i++){
+        for ($i=0; $i < $orders['week'] ; $i++){
             $weekBuyNumAmount[$i] = 0;
             foreach ($sellAmount as $k=>  $v) {
                 if($v['week'] == $i + 1){
