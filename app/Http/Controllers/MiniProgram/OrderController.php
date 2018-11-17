@@ -14,6 +14,7 @@ use App\Entities\MemberCard;
 use App\Entities\Order;
 use App\Entities\ShoppingCart;
 use App\Exceptions\UnifyOrderException;
+use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
 use App\Http\Requests\MiniProgram\OrderCreateRequest;
@@ -179,12 +180,8 @@ class OrderController extends Controller
                 }
 
                 if (isset($orders['send_time']) && $orders['send_time']){
-                    //拆分字符串
-                    $sendTime = explode('~',$orders['send_time']);
-                    //去除字符串中的空格
-                    $removeSpace = str_replace(' ','',$sendTime);
-                    $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
-                    $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
+                    $orders['send_start_time'] = date('Y-m-d '.$orders['send_time'][0].':'.'00',time());
+                    $orders['send_end_time']   = date('Y-m-d '.$orders['send_time'][1].':'.'00',time());
                 }
 
                 $orders['app_id'] = $user->appId;
@@ -250,11 +247,11 @@ class OrderController extends Controller
             $orders['merchandise_num'] = $shoppingCarts->sum('quality');
             $orders['total_amount']    = $shoppingCarts->sum('amount');
             $orders['payment_amount']  = $orders['total_amount'] - $orders['discount_amount'];
-
-            $orders['years'] = date('Y', time());
-            $orders['month'] = date('d', time());
-            $orders['week']  = date('w', time()) === 0 ? 7 : date('w', time());
-            $orders['hour']  = date('H', time());
+            $now = Carbon::now();
+            $orders['years'] = $now->year;
+            $orders['month'] = $now->month;
+            $orders['week']  = $now->dayOfWeekIso;
+            $orders['hour']  = $now->hour;
 
             $orderItems = [];
             $deleteIds  = [];
@@ -275,7 +272,6 @@ class OrderController extends Controller
 
             $orders['shopping_cart_ids']    = $deleteIds;
             $orders['order_items']          = $orderItems;
-
             //生成提交中的订单
             $order = $this->app
                 ->make('order.builder')
