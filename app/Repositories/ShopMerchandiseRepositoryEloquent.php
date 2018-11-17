@@ -55,7 +55,6 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
                 DB::raw('categories.name as name')
             ])
                 ->join('categories', 'shop_merchandises.category_id', '=', 'categories.id')
-                ->has('merchandises')
                 ->where(['shop_id'=>$id])
                 ->groupBy('category_id');
         });
