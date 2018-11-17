@@ -46,6 +46,16 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
     public function userTickets(int $status,int $userId,string $shoppingCartAmount){
         $shoppingCartAmount = $shoppingCartAmount*100;
 
+        if ($status == 'status_off'){
+            $status = CustomerTicketCard::STATUS_OFF;
+        }elseif ($status == 'status_on'){
+            $status = CustomerTicketCard::STATUS_ON;
+        }elseif ($status == 'status_use'){
+            $status = CustomerTicketCard::STATUS_USE;
+        }elseif ($status == 'status_expire'){
+            $status = CustomerTicketCard::STATUS_EXPIRE;
+        }
+
         $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($status, $userId, $shoppingCartAmount) {
             return $customerTicketCard
                 ->where(['customer_id'=>$userId, 'customer_ticket_cards.status'=>$status])
