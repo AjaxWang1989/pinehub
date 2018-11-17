@@ -26,12 +26,13 @@ class StatusOrdersTransformer extends TransformerAbstract
             'room_num'         => isset(json_decode($model->receiverAddress)->room_num) ? json_decode($model->receiverAddress)->room_num : null,
             'receiver_mobile'  => $model->receiverMobile,
             'quantity'          => $model->merchandiseNum,
-            'total_amount'     => $model->totalAmount,
-            'payment_amount'   => $model->paymentAmount,
+            'total_amount'     => round($model->totalAmount,2),
+            'payment_amount'   => round($model->paymentAmount,2),
             'shop_end_hour'    => isset($model->shop->end_at) ? $model->shop->end_at : null ,
             'created_at'       => $model->createdAt->format('Y-m-d H:i:s'),
             'order_item_merchandises' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
                 $data  = $orderItem->only(['name','sell_price','quality','total_amount','main_image']);
+                $data['sell_price'] = number_format($data['sell_price'], 2);
                 return $data;
             }) : null,
         ];

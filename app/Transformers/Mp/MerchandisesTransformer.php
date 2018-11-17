@@ -19,8 +19,8 @@ class MerchandisesTransformer extends TransformerAbstract
             'merchandise_id' => $model->merchandise->id,
             'name'=> $model->merchandise->name,
             'main_image'=> $model->merchandise->mainImage,
-            'origin_price' => $model->merchandise->originPrice,
-            'sell_price' => $model->merchandise->sellPrice,
+            'origin_price' => round($model->merchandise->originPrice,2),
+            'sell_price' => round($model->merchandise->sellPrice,2),
             'stock_num' => $model->merchandise->stockNum,
             'sell_num' => $model->merchandise->sellNum,
         ];

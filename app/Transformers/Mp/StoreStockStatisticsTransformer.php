@@ -17,7 +17,7 @@ class StoreStockStatisticsTransformer extends TransformerAbstract
         return [
             'id'=> $model->merchandise->id,
             'name'=> $model->merchandise->name,
-            'sell_price' => $model->merchandise->sellPrice,
+            'sell_price' => round($model->merchandise->sellPrice),
             'stock_num' => $model->stockNum,
             'code' => $model->shop->code,
         ];
