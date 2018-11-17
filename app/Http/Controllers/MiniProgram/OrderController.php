@@ -361,7 +361,7 @@ class OrderController extends Controller
         $shopUser = $this->shopRepository
             ->findWhere(['user_id'  =>  $user['member_id']])
             ->first();
-        
+
         if ($shopUser) {
             $userId = $shopUser['id'];
 
