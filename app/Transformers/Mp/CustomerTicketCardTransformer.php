@@ -15,6 +15,7 @@ class CustomerTicketCardTransformer extends TransformerAbstract
 {
     public function transform(CustomerTicketCard $model){
         return [
+            'id' => $model->id,
             'card_id'=>$model->card->cardId,
             'card_code' => $model->cardCode,
             'begin_at'  => isset($model->beginAt) ? $model->beginAt->format('Y-m-d H:i:s') : null,
