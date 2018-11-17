@@ -38,6 +38,7 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 use App\Exceptions\UserCodeException;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\MiniProgram\StoreOrdersSummaryRequest;
 
 /**
  * @property CardRepository cardRepository
@@ -355,7 +356,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeOrdersSummary(Request $request){
+    public function storeOrdersSummary(StoreOrdersSummaryRequest $request){
         $user = $this->mpUser();
 
         $shopUser = $this->shopRepository
