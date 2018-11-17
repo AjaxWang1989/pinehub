@@ -167,58 +167,33 @@ class OrderController extends Controller
      */
     public function createOrder(OrderCreateRequest $request)
     {
-            $user = $this->mpUser();
-            $orders = $request->all();
-            if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
-                $address = [
-                    'receiver_address' => $orders['receiver_address'],
-                    'build_num'        => $orders['build_num'],
-                    'room_num'         => $orders['room_num']
-                ];
-                $orders['receiver_address'] = json_encode($address);
-            }
-
-            if (isset($orders['send_time']) && $orders['send_time']){
-                //拆分字符串
-                $sendTime = explode('-',$orders['send_time']);
-                //去除字符串中的空格
-                $removeSpace = str_replace(' ','',$sendTime);
-                $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
-                $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
-            }
-
-            $orders['app_id'] = $user->appId;
-            $orders['member_id'] = $user->memberId;
-            $orders['wechat_app_id'] = $user->platformAppId;
-            $orders['customer_id'] = $user->id;
-            $orders['open_id']  = $user->platformOpenId;
-
-            $orders['discount_amount'] = 0;
-
-            if(isset($orders['card_id']) && $orders['card_id']){
-                $customerTicketRecord = $user->ticketRecords()->with('card')
-                    ->where([
-                        'card_id' => $orders['card_id'],
-                        'status'  => CustomerTicketCard::STATUS_ON,
-                        'active'  => CustomerTicketCard::ACTIVE_ON
-                    ])
-                    ->orderBy('id', 'asc')
-                    ->first();
-                if ($customerTicketRecord){
-                    $card = $customerTicketRecord['card'];
-
-                    $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
-
-                    $orders['card_id'] = $card['card_id'];
-                    //更新优惠券状态为已使用
-
-                     $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
-                }else{
-                    return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+                $user = $this->mpUser();
+                $orders = $request->all();
+                if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
+                    $address = [
+                        'receiver_address' => $orders['receiver_address'],
+                        'build_num'        => $orders['build_num'],
+                        'room_num'         => $orders['room_num']
+                    ];
+                    $orders['receiver_address'] = json_encode($address);
                 }
-            }
 
-            $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
+                if (isset($orders['send_time']) && $orders['send_time']){
+                    //拆分字符串
+                    $sendTime = explode('-',$orders['send_time']);
+                    //去除字符串中的空格
+                    $removeSpace = str_replace(' ','',$sendTime);
+                    $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
+                    $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
+                }
+
+                $orders['app_id'] = $user->appId;
+                $orders['member_id'] = $user->memberId;
+                $orders['wechat_app_id'] = $user->platformAppId;
+                $orders['customer_id'] = $user->id;
+                $orders['open_id']  = $user->platformOpenId;
+
+                $orders['discount_amount'] = 0;
 
             //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
             if (isset($orders['store_id']) && $orders['store_id']){
@@ -243,6 +218,34 @@ class OrderController extends Controller
                     ]);
 
             }
+
+            if(isset($orders['card_id']) && $orders['card_id']){
+                $customerTicketRecord = $user->ticketRecords()->with('card')
+                    ->where([
+                        'card_id' => $orders['card_id'],
+                        'status'  => CustomerTicketCard::STATUS_ON,
+                        'active'  => CustomerTicketCard::ACTIVE_ON
+                    ])
+                    ->orderBy('id', 'asc')
+                    ->first();
+                if ($customerTicketRecord){
+                    $card = $customerTicketRecord['card'];
+
+                    if ($card['card_info']['least_cost'] === null){
+                        $orders['discount_amount'] = $shoppingCarts->sum('amount') * ($card['card_info']['discount']/10);
+                    }else{
+                        $orders['discount_amount'] = $card['card_info']['reduce_cost']/100;
+                    }
+                    $orders['card_id'] = $card['card_id'];
+                    //更新优惠券状态为已使用
+
+                     $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
+                }else{
+                    return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+                }
+            }
+
+            $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
 
             $orders['merchandise_num'] = $shoppingCarts->sum('quality');
             $orders['total_amount']    = $shoppingCarts->sum('amount');
