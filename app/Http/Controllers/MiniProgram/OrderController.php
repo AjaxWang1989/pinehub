@@ -39,6 +39,8 @@ use Laravel\Lumen\Application;
 use App\Exceptions\UserCodeException;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\MiniProgram\StoreOrdersSummaryRequest;
+use App\Http\Requests\MiniProgram\StoreSendOrdersRequest;
+use App\Http\Requests\MiniProgram\StoreBuffetOrdersRequest;
 
 /**
  * @property CardRepository cardRepository
@@ -285,7 +287,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeBuffetOrders(Request $request){
+    public function storeBuffetOrders(StoreBuffetOrdersRequest $request){
         $user = $this->mpUser();
 
         $shopUser = $this->shopRepository
@@ -311,7 +313,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeSendOrders(Request $request)
+    public function storeSendOrders(StoreSendOrdersRequest $request)
     {
         $user = $this->mpUser();
 

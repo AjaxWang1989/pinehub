@@ -38,7 +38,7 @@ class OrderCreateRequest extends FormRequest
             'receiver_address' => 'required|string',
             'receiver_mobile' => 'required|mobile',
             'comment' => 'string',
-            'type' => Rule::in(Order::OFF_LINE_PAY,Order::ORDERING_PAY,Order::E_SHOP_PAY,Order::SITE_SELF_EXTRACTION,Order::SITE_DISTRIBUTION,Order::ACTIVITY_PAY),
+            'type' => Rule::in(Order::OFF_LINE_PAY,Order::ORDERING_PAY,Order::E_SHOP_PAY,Order::SITE_SELF_EXTRACTION,Order::SITE_DISTRIBUTION),
             'send_time' => 'string',
             'card_id' => 'string',
             'store_id' => 'integer',
