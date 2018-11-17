@@ -55,7 +55,7 @@ class OrderCreateRequest extends FormRequest
             'receiver_address.required' => '地址不能为空',
             'comment.string' => '备注不是字符串类型',
             'type' => 'type不在给定的数字中',
-            'send_time.string' => '配送时间不是正常时间格式',
+            'send_time.string' => '配送时间不是一个数组',
             'card_id.string' => '优惠券id字符串类型',
             'store_id.integer' => '店铺id不是整型',
             'activity_id.integer' => '活动id不是整型',
