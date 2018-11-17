@@ -28,7 +28,7 @@ class CustomerTicketCardTransformer extends TransformerAbstract
             'is_limited'  => isset($model->card->card_info['base_info']['get_limit']) && $model->card->card_info['base_info']['get_limit'] ? true : false,
             'card_type'   => isset($model->card->card_info['base_info']['date_info']['begin_timestamp']) && $model->card->card_info['base_info']['date_info']['begin_timestamp'] == 0
             ? $model->card->card_info['base_info']['date_info']['type'].'_0' : $model->card->card_info['base_info']['date_info']['type'].'_1',
-            'record_count' => $model->card->recordCount,
+//            'record_count' => $model->card->recordCount,
             'begin_timestamp' => isset($model->card->card_info['base_info']['date_info']['begin_timestamp']) ? date('Y-m-d H:i:s',$model->card->card_info['base_info']['date_info']['begin_timestamp']) : '',
             'end_timestamp' => isset($model->card->card_info['base_info']['date_info']['end_timestamp']) ? date('Y-m-d H:i:s',$model->card->card_info['base_info']['date_info']['end_timestamp']) : '',
             'fixed_begin_term' => isset($model->card->card_info['base_info']['date_info']['fixed_begin_term']) ? $model->card->card_info['base_info']['date_info']['fixed_begin_term'] : '',
