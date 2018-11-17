@@ -217,34 +217,38 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      */
     public function orderStatistics(array $request,int $userId)
     {
-        $startAt = null;
-        $endAt = null;
-        $limit =  null;
+        $startAt =  null;
+        $endAt   =  null;
+        $limit   =  null;
+        $date    =  null;
         if ($request['date'] == 'hour')
         {
             $startAt = $this->hourStartAt;
             $endAt  = $this->hourEndAt;
             $limit = '24';
+            $date = 'hour';
         }else if($request['date'] == 'week')
         {
             $startAt = $this->weekStartAt;
             $endAt  = $this->weekEndAt;
             $limit = '7';
+            $date = 'week';
         }else if($request['date'] == 'month')
         {
             $startAt = $this->montStartAt;
             $endAt  = $this->monthEndAt;
             $limit = '31';
+            $date = 'day';
         }
-        $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt,$limit) {
+        $this->scopeQuery(function (Order $order) use($userId,$date, $startAt, $endAt,$limit) {
             return $order->select([
-                $request['date'],
+                $date,
                 DB::raw('sum( `payment_amount` ) as total_amount')])
                 ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->groupby($request['date'])->orderBy($request['date'],'desc')->limit($limit);
+                ->groupby($date)->orderBy($date,'desc')->limit($limit);
         });
         return $this->get();
     }
@@ -259,31 +263,35 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         $startAt = null;
         $endAt = null;
         $limit =  null;
+        $date    =  null;
         if ($request['date'] == 'hour')
         {
             $startAt = $this->hourStartAt;
             $endAt  = $this->hourEndAt;
             $limit = '24';
+            $date = 'hour';
         }else if($request['date'] == 'week')
         {
             $startAt = $this->weekStartAt;
             $endAt  = $this->weekEndAt;
             $limit = '7';
+            $date = 'week';
         }else if($request['date'] == 'month')
         {
             $startAt = $this->montStartAt;
             $endAt  = $this->monthEndAt;
             $limit = '31';
+            $date = 'day';
         }
-        $this->scopeQuery(function (Order $order) use($userId,$request, $startAt, $endAt,$limit) {
+        $this->scopeQuery(function (Order $order) use($userId,$date, $startAt, $endAt,$limit) {
             return $order->select([
-                $request['date'],
+                $date,
                 DB::raw('sum( `payment_amount` ) as total_amount')])
                 ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where(['shop_id'=>$userId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->groupby($request['date'])->orderBy($request['date'],'desc')->limit(1);
+                ->groupby($date)->orderBy($date,'desc')->limit(1);
         });
         return $this->get()->first();
     }
