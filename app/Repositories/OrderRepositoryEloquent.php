@@ -514,7 +514,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
         $this->scopeQuery(function (Order $order) use ($request, $startAt, $endAt,$limit){
             return $order->select('week',
-                DB::raw('count( * ) as buy_mum'))
+                DB::raw('count( * ) as buy_num'))
                 ->where(['shop_id'=>$request['store_id']])
                 ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
                 ->where('paid_at', '>=', $startAt)
