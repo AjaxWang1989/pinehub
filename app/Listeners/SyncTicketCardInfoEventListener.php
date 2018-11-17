@@ -48,7 +48,9 @@ class SyncTicketCardInfoEventListener
         if(isset($cardInfo['reduce_cost'])) {
             $cardInfo['reduce_cost'] *= 100;
         }
-
+        if($cardInfo['least_cost'] === null) {
+            unset($cardInfo['least_cost']);
+        }
         if(isset($cardInfo['least_cost'])) {
             $cardInfo['least_cost'] *= 100;
         }
