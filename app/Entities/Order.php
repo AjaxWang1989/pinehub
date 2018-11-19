@@ -192,8 +192,21 @@ class Order extends Model implements Transformable
                 if (Order::PAY_FAILED === $order->status) {
                     $order->updateStock();
                 }
+
+                if(Order::PAID === $order->status) {
+                    $order->useTicket();
+                }
             }
         });
+    }
+
+    public function useTicket()
+    {
+        if($this->cardCode) {
+            $this->customerTicket()->update([
+                'status' => CustomerTicketCard::STATUS_USE
+            ]);
+        }
     }
 
     public function updateStock()
@@ -313,7 +326,12 @@ class Order extends Model implements Transformable
 
     public function tickets():BelongsTo
     {
-        return $this->BelongsTo(Card::class,'card_id','card_id');
+        return $this->belongsTo(Card::class,'card_id','card_id');
+    }
+
+    public function customerTicket () :BelongsTo
+    {
+        return $this->belongsTo(CustomerTicketCard::class, 'card_code', 'card_code');
     }
 
     public function receivingShopAddress():BelongsTo
