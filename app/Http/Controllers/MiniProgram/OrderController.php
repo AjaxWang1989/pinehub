@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 
+use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MemberCard;
 use App\Entities\Order;
@@ -187,39 +188,23 @@ class OrderController extends Controller
         $orders['open_id']  = $user->platformOpenId;
 
         $orders['discount_amount'] = 0;
+            //更新优惠券状态为已使用
 
-        if(isset($orders['card_id']) && $orders['card_id']){
-            $customerTicketRecord = $user->ticketRecords()->with('card')
-                ->where([
-                    'card_id' => $orders['card_id'],
-                    'status'  => CustomerTicketCard::STATUS_ON,
-                    'active'  => CustomerTicketCard::ACTIVE_ON
-                ])
-                ->orderBy('id', 'asc')
-                ->first();
-            if ($customerTicketRecord){
-                $card = $customerTicketRecord['card'];
-
-                $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
-
-                $orders['card_id'] = $card['card_id'];
-            }
+        if (isset($orders['send_time']) && $orders['send_time']){
+            $orders['send_start_time'] = date('Y-m-d '.$orders['send_time'][0].':'.'00',time());
+            $orders['send_end_time']   = date('Y-m-d '.$orders['send_time'][1].':'.'00',time());
         }
-                //更新优惠券状态为已使用
 
-            if (isset($orders['send_time']) && $orders['send_time']){
-                $orders['send_start_time'] = date('Y-m-d '.$orders['send_time'][0].':'.'00',time());
-                $orders['send_end_time']   = date('Y-m-d '.$orders['send_time'][1].':'.'00',time());
-            }
+        $orders['app_id'] = $user->appId;
+        $orders['member_id'] = $user->memberId;
+        $orders['wechat_app_id'] = $user->platformAppId;
+        $orders['customer_id'] = $user->id;
+        $orders['open_id']  = $user->platformOpenId;
 
-            $orders['app_id'] = $user->appId;
-            $orders['member_id'] = $user->memberId;
-            $orders['wechat_app_id'] = $user->platformAppId;
-            $orders['customer_id'] = $user->id;
-            $orders['open_id']  = $user->platformOpenId;
+        $orders['discount_amount'] = 0;
 
-            $orders['discount_amount'] = 0;
-
+        /** @var Collection $shoppingCarts */
+        $shoppingCarts = null;
         //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         if (isset($orders['store_id']) && $orders['store_id']){
             $shoppingCarts = $this->shoppingCartRepository
@@ -243,7 +228,7 @@ class OrderController extends Controller
                 ]);
 
         }
-
+        $orders['total_amount']    = round($shoppingCarts->sum('amount'),2);
         if(isset($orders['card_id']) && $orders['card_id'] ){
             $condition = [
                 'card_id' => $orders['card_id'],
@@ -259,17 +244,14 @@ class OrderController extends Controller
                 ->first();
             if ($customerTicketRecord){
                 $card = $customerTicketRecord['card'];
-
-                if ($card['card_info']['least_cost'] === null){
-                    $orders['discount_amount'] = round($shoppingCarts->sum('amount') * ($card['card_info']['discount']/10),2);
-                }else{
-                    $orders['discount_amount'] = round($card['card_info']['reduce_cost']/100,2);
-                }
+                with($card, function (Card $card) use($orders){
+                    if ($card->cardType === Card::DISCOUNT) {
+                        $orders['discount_amount'] = $card->cardInfo['discount'] * $orders['total_amount'];
+                    }else if($card->cardType === Card::CASH){
+                        $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost'] : 0;
+                    }
+                });
                 $orders['card_id'] = $card['card_id'];
-                $orders['card_code'] = $card['card_code'];
-                //更新优惠券状态为已使用
-                //$this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
-
             }else{
                 throw new ModelNotFoundException('使用的优惠券不存在');
             }
@@ -278,7 +260,7 @@ class OrderController extends Controller
         $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
 
         $orders['merchandise_num'] = $shoppingCarts->sum('quality');
-        $orders['total_amount']    = round($shoppingCarts->sum('amount'),2);
+
         $orders['payment_amount']  = round(($orders['total_amount'] - $orders['discount_amount']),2);
         $now = Carbon::now();
         $orders['years'] = $now->year;
