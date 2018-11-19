@@ -171,7 +171,7 @@ class OrderController extends Controller
     {
         $user = $this->mpUser();
         $orders = $request->all();
-        if ($orders['receiver_address'] && $orders['build_num'] && $orders['room_num']){
+        if (isset($orders['receiver_address']) && isset($orders['build_num']) && isset($orders['room_num'])){
             $address = [
                 'receiver_address' => $orders['receiver_address'],
                 'build_num'        => $orders['build_num'],
