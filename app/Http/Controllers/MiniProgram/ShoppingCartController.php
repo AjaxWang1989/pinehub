@@ -159,9 +159,8 @@ class ShoppingCartController extends Controller
      */
     public function activityShoppingCartAddMerchandise(int $activityId, ActivityShoppingCartAddRequest $request)
     {
-        $merchandise = $this->activityMerchandiseRepository->findWhere([
-            'activity_id' => $activityId,
-            'merchandise_id'=>$request->input('merchandise_id')
+        $merchandise = $this->merchandiseRepository->findWhere([
+            'id'=>$request->input('merchandise_id')
         ])->first();
 
         if ($merchandise['stock_num'] <=0){
@@ -183,9 +182,8 @@ class ShoppingCartController extends Controller
      */
     public function storeShoppingCartAddMerchandise(int $storeId, StoreShoppingCartAddRequest $request)
     {
-        $merchandise = $this->shopMerchandiseRepository->findWhere([
-            'shop_id' => $storeId,
-            'merchandise_id'=>$request->input('merchandise_id')
+        $merchandise = $this->merchandiseRepository->findWhere([
+            'id'=>$request->input('merchandise_id')
         ])->first();
 
         if ($merchandise['stock_num'] <=0){

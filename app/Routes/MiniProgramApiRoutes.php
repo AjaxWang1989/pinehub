@@ -60,6 +60,7 @@ class MiniProgramApiRoutes extends ApiRoutes
 
 
             $router->get('/user/tickets/{status}', ['as' => 'user.user.tickets','uses' => 'UserController@UserTickets']);
+            $router->get('/customer/ticket/cards/{status}', ['as' => 'user.customer.ticket.cards','uses' => 'UserController@customerTicketCards']);
             $router->post('/feed/back/message', ['as' => 'user.feed.back.message','uses' => 'UserController@feedBackMessage']);
 
 
@@ -90,11 +91,11 @@ class MiniProgramApiRoutes extends ApiRoutes
 
             $router->get('/clear/shop/{storeId}/shoppingcart', ['as' => 'user.clear.shop.merchandise','uses' => 'ShoppingCartController@clearStoreShoppingCart']);
             $router->get('/clear/activity/{activityId}/shoppingcart', ['as' => 'user.clear.activity.merchandise','uses' => 'ShoppingCartController@clearActivityShoppingCart']);
-            $router->get('/clear/shoppingcart', ['as' => 'user.clear.merchandise','uses' => 'ShoppingCartController@clearMerchandise']);
+            $router->get('/clear/shoppingcart', ['as' => 'user.clear.merchandise','uses' => 'ShoppingCartController@clearBookingMallShoppingCart']);
 
             $router->get('/shop/{storeId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.shop.merchandises','uses' => 'ShoppingCartController@storeShoppingCartMerchandises']);
             $router->get('/activity/{activityId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.activity.merchandises','uses' => 'ShoppingCartController@activityShoppingCartMerchandises']);
-            $router->get('/shoppingcart/merchandises', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@shoppingCartMerchandises']);
+            $router->get('/shoppingcart/merchandises', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandises']);
         });
 
         $router->addRoute(['GET', 'POST'], '/payment/notify/{token?}', ['middleware' => 'setPaymentConfig', 'as' => 'payment.notify', 'uses' => 'PaymentController@notify']);

@@ -14,6 +14,7 @@ use App\Entities\MemberCard;
 use App\Entities\Order;
 use App\Entities\ShoppingCart;
 use App\Exceptions\UnifyOrderException;
+use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
 use App\Http\Requests\MiniProgram\OrderCreateRequest;
@@ -38,6 +39,9 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 use App\Exceptions\UserCodeException;
 use Illuminate\Support\Facades\Cache;
+use App\Http\Requests\MiniProgram\StoreOrdersSummaryRequest;
+use App\Http\Requests\MiniProgram\StoreSendOrdersRequest;
+use App\Http\Requests\MiniProgram\StoreBuffetOrdersRequest;
 
 /**
  * @property CardRepository cardRepository
@@ -198,15 +202,22 @@ class OrderController extends Controller
                     $orders['discount_amount'] = $card ? $card['card_info']['reduce_cost']/100 : '';
 
                     $orders['card_id'] = $card['card_id'];
-                    //更新优惠券状态为已使用
-
-                     $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
-                }else{
-                    return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
                 }
             }
+                    //更新优惠券状态为已使用
 
-            $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
+                if (isset($orders['send_time']) && $orders['send_time']){
+                    $orders['send_start_time'] = date('Y-m-d '.$orders['send_time'][0].':'.'00',time());
+                    $orders['send_end_time']   = date('Y-m-d '.$orders['send_time'][1].':'.'00',time());
+                }
+
+                $orders['app_id'] = $user->appId;
+                $orders['member_id'] = $user->memberId;
+                $orders['wechat_app_id'] = $user->platformAppId;
+                $orders['customer_id'] = $user->id;
+                $orders['open_id']  = $user->platformOpenId;
+
+                $orders['discount_amount'] = 0;
 
             //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
             if (isset($orders['store_id']) && $orders['store_id']){
@@ -232,14 +243,43 @@ class OrderController extends Controller
 
             }
 
-            $orders['merchandise_num'] = $shoppingCarts->sum('quality');
-            $orders['total_amount']    = $shoppingCarts->sum('amount');
-            $orders['payment_amount']  = $orders['total_amount'] - $orders['discount_amount'];
+            if(isset($orders['card_id']) && $orders['card_id']){
+                $customerTicketRecord = $user->ticketRecords()->with('card')
+                    ->where([
+                        'card_id' => $orders['card_id'],
+                        'status'  => CustomerTicketCard::STATUS_ON,
+                        'active'  => CustomerTicketCard::ACTIVE_ON
+                    ])
+                    ->orderBy('id', 'asc')
+                    ->first();
+                if ($customerTicketRecord){
+                    $card = $customerTicketRecord['card'];
 
-            $orders['years'] = date('Y', time());
-            $orders['month'] = date('d', time());
-            $orders['week']  = date('w', time()) === 0 ? 7 : date('w', time());
-            $orders['hour']  = date('H', time());
+                    if ($card['card_info']['least_cost'] === null){
+                        $orders['discount_amount'] = round($shoppingCarts->sum('amount') * ($card['card_info']['discount']/10),2);
+                    }else{
+                        $orders['discount_amount'] = round($card['card_info']['reduce_cost']/100,2);
+                    }
+                    $orders['card_id'] = $card['card_id'];
+                    //更新优惠券状态为已使用
+
+                     $this->customerTicketCardRepository->update(['status'=>CustomerTicketCard::STATUS_USE],$customerTicketRecord['id']);
+                }else{
+                    return $this->response(new JsonResponse(['card_id' => '登陆用户没有此优惠券']));
+                }
+            }
+
+            $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
+
+            $orders['merchandise_num'] = $shoppingCarts->sum('quality');
+            $orders['total_amount']    = round($shoppingCarts->sum('amount'),2);
+            $orders['payment_amount']  = round(($orders['total_amount'] - $orders['discount_amount']),2);
+            $now = Carbon::now();
+            $orders['years'] = $now->year;
+            $orders['month'] = $now->month;
+            $order ['day']   = $now->day;
+            $orders['week']  = $now->dayOfWeekIso;
+            $orders['hour']  = $now->hour;
 
             $orderItems = [];
             $deleteIds  = [];
@@ -250,9 +290,9 @@ class OrderController extends Controller
                 $orderItems[$k]['customer_id'] = $v['customer_id'];
                 $orderItems[$k]['merchandise_id'] = $v['merchandise_id'];
                 $orderItems[$k]['quality'] = $v['quality'];
-                $orderItems[$k]['total_amount'] = $v['amount'];
+                $orderItems[$k]['total_amount'] = round($v['amount'],2);
                 $orderItems[$k]['discount_amount'] = 0;
-                $orderItems[$k]['payment_amount'] = $v['amount'];
+                $orderItems[$k]['payment_amount'] = round($v['amount'],2);
                 $orderItems[$k]['sku_product_id'] = $v['sku_product_id'];
                 $orderItems[$k]['status'] = Order::WAIT;
                 $deleteIds[] = $v['id'];
@@ -260,7 +300,6 @@ class OrderController extends Controller
 
             $orders['shopping_cart_ids']    = $deleteIds;
             $orders['order_items']          = $orderItems;
-
             //生成提交中的订单
             $order = $this->app
                 ->make('order.builder')
@@ -275,7 +314,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeBuffetOrders(Request $request){
+    public function storeBuffetOrders(StoreBuffetOrdersRequest $request){
         $user = $this->mpUser();
 
         $shopUser = $this->shopRepository
@@ -301,7 +340,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeSendOrders(Request $request)
+    public function storeSendOrders(StoreSendOrdersRequest $request)
     {
         $user = $this->mpUser();
 
@@ -346,7 +385,7 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeOrdersSummary(Request $request){
+    public function storeOrdersSummary(StoreOrdersSummaryRequest $request){
         $user = $this->mpUser();
 
         $shopUser = $this->shopRepository

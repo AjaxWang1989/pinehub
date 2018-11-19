@@ -131,6 +131,7 @@ class OrderBuilder implements InterfaceServiceHandler
             'status',
             'years',
             'month',
+            'day',
             'week',
             'hour',
             'total_amount',

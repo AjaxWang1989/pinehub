@@ -39,7 +39,11 @@ class TicketController extends Controller
      */
     public function store(TicketCreateRequest $request)
     {
-        $request->merge(['card_info' => $request->input('ticket_info'), 'card_type' => $request->input('ticket_type', Ticket::CASH)]);
+        $ticket = $request->input('ticket_info');
+        if($request->input('ticket_type', Ticket::CASH) === Ticket::DISCOUNT) {
+            $ticket['least_cost'] = null;
+        }
+        $request->merge(['card_info' => $ticket, 'card_type' => $request->input('ticket_type', Ticket::CASH)]);
         $ticket = parent::storeCard($request);
 
         if ($request->input('sync', false)) {

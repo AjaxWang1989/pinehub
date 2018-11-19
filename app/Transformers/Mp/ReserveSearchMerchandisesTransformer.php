@@ -18,8 +18,8 @@ class ReserveSearchMerchandisesTransformer extends TransformerAbstract
             'id'=>$model->id,
             'name'=>$model->name,
             'main_image'=> $model->mainImage,
-            'origin_price' => $model->originPrice,
-            'sell_price' => $model->sellPrice,
+            'origin_price' => round($model->originPrice,2),
+            'sell_price' => round($model->sellPrice,2),
             'stock_num' => $model->stockNum,
             'sell_num' => $model->sellNum,
         ];

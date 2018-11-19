@@ -19,6 +19,7 @@ use Dingo\Api\Http\Request;
 use App\Transformers\Mp\StoreSellStatisticsTransformer;
 use App\Transformers\Mp\StoreMerchandiseTransformer;
 use App\Http\Response\JsonResponse;
+use Carbon\Carbon;
 
 class ShopsController extends Controller
 {
@@ -112,19 +113,19 @@ class ShopsController extends Controller
             $orderStatistics = $this->orderRepository->orderStatistics($request,$userId);
 //            //查询出截止当前时间,星期,天数的最后一条数据
 //            $orderDateHigh  = $this->orderRepository->orderDateHigh($request,$userId);
-
+            $now = Carbon::now();
             //没有值的话默认给当前截止时间
             if (empty($orderDateHigh) && $request['date'] == 'hour'){
 
-                $orderDateHigh[$request['date']] = date('H',time());
+                $orderDateHigh[$request['date']] = $now->hour;;
 
             }elseif (empty($orderDateHigh) && $request['date'] == 'week'){
 
-                $orderDateHigh[$request['date']] = date('w', time()) === 0 ? 7 : date('w', time());
+                $orderDateHigh[$request['date']] = $now->dayOfWeekIso;
 
             }elseif (empty($orderDateHigh) && $request['date'] == 'month'){
 
-                $orderDateHigh[$request['date']] = date('d', time());
+                $orderDateHigh[$request['date']] = $now->day;
 
             }
             $statics = [ ];

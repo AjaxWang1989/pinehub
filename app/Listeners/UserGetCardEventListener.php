@@ -7,6 +7,7 @@ use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MemberCard;
 use App\Events\UserGetCardEvent;
+use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -68,6 +69,22 @@ class UserGetCardEventListener
                 case Card::COUPON_CARD:
                 case Card::DISCOUNT: {
                     $ticketCard = new CustomerTicketCard();
+                    $dateInfo = $card->cardInfo['base_info']['date_info'];
+                    switch ($dateInfo['type']) {
+                        case 'DATE_TYPE_FIX_TIME_RANGE': {
+                            $ticketCard->beginAt = Carbon::createFromTimestamp($dateInfo['begin_timestamp'], config('app.timezone'));
+                            $ticketCard->endAt = Carbon::createFromTimestamp($dateInfo['end_timestamp'], config('app.timezone'));
+                            break;
+                        }
+                        case 'DATE_TYPE_FIX_TERM': {
+                            $ticketCard->beginAt = Carbon::now(config('app.timezone'))->addDay($dateInfo['fixed_begin_term']);
+                            $ticketCard->endAt = Carbon::now(config('app.timezone'))->addDay($dateInfo['fixed_begin_term'] + $dateInfo['fixed_term']);
+                            break;
+                        }
+                    }
+                    if($ticketCard->beginAt->timestamp <= time()) {
+                        $ticketCard->status = CustomerTicketCard::STATUS_ON;
+                    }
                     $ticketCard->cardId = $card->id;
                     $ticketCard->customerId = $customer->id;
                     $ticketCard->cardCode = $event->getUserCardCode();
@@ -77,7 +94,6 @@ class UserGetCardEventListener
                     $ticketCard->isGiveByFriend = $event->getIsGiveByFriend();
                     $ticketCard->friendOpenId = $event->getFriendUserName();
                     $ticketCard->active = true;
-                    $ticketCard->status = CustomerTicketCard::STATUS_ON;
                     if($ticketCard->card->cardInfo['base_info']['sku']['quantity'] > 0){
                         $ticketCard->card->cardInfo['base_info']['sku']['quantity'] -= 1;
                         $ticketCard->card->save();

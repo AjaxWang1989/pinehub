@@ -57,6 +57,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
  * @property int|null $years 年
  * @property int|null $month 月
+ * @property int|null $day  日
  * @property int|null $week 星期
  * @property int|null $hour 小时
  * @property int|null $receivingShopId 自提收货店铺id
@@ -143,7 +144,6 @@ class Order extends Model implements Transformable
     const E_SHOP_PAY =2;
     const SITE_SELF_EXTRACTION = 3;
     const SITE_DISTRIBUTION = 4;
-    const ACTIVITY_PAY = 5;
 
     const EXPIRES_SECOND = 600;
 
@@ -175,7 +175,7 @@ class Order extends Model implements Transformable
         'receiver_district', 'receiver_name', 'receiver_address', 'receiver_mobile', 'send_start_time',
         'send_end_time', 'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
         'score_settle', 'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status',
-        'years', 'month', 'week', 'hour', 'activity_id','receiving_shop_id', 'send_batch'
+        'years', 'month', 'week', 'hour', 'activity_id','receiving_shop_id', 'send_batch', 'day'
     ];
 
     public static function boot()
