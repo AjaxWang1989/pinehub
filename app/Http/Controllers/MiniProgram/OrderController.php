@@ -229,9 +229,9 @@ class OrderController extends Controller
                     $card = $customerTicketRecord['card'];
 
                     if ($card['card_info']['least_cost'] === null){
-                        $orders['discount_amount'] = $shoppingCarts->sum('amount') * ($card['card_info']['discount']/10);
+                        $orders['discount_amount'] = round($shoppingCarts->sum('amount') * ($card['card_info']['discount']/10),2);
                     }else{
-                        $orders['discount_amount'] = $card['card_info']['reduce_cost']/100;
+                        $orders['discount_amount'] = round($card['card_info']['reduce_cost']/100,2);
                     }
                     $orders['card_id'] = $card['card_id'];
                     //更新优惠券状态为已使用
@@ -245,8 +245,8 @@ class OrderController extends Controller
             $orders['shop_id'] = isset($orders['store_id']) ? $orders['store_id'] : null;
 
             $orders['merchandise_num'] = $shoppingCarts->sum('quality');
-            $orders['total_amount']    = $shoppingCarts->sum('amount');
-            $orders['payment_amount']  = $orders['total_amount'] - $orders['discount_amount'];
+            $orders['total_amount']    = round($shoppingCarts->sum('amount'),2);
+            $orders['payment_amount']  = round(($orders['total_amount'] - $orders['discount_amount']),2);
             $now = Carbon::now();
             $orders['years'] = $now->year;
             $orders['month'] = $now->month;
@@ -263,9 +263,9 @@ class OrderController extends Controller
                 $orderItems[$k]['customer_id'] = $v['customer_id'];
                 $orderItems[$k]['merchandise_id'] = $v['merchandise_id'];
                 $orderItems[$k]['quality'] = $v['quality'];
-                $orderItems[$k]['total_amount'] = $v['amount'];
+                $orderItems[$k]['total_amount'] = round($v['amount'],2);
                 $orderItems[$k]['discount_amount'] = 0;
-                $orderItems[$k]['payment_amount'] = $v['amount'];
+                $orderItems[$k]['payment_amount'] = round($v['amount'],2);
                 $orderItems[$k]['sku_product_id'] = $v['sku_product_id'];
                 $orderItems[$k]['status'] = Order::WAIT;
                 $deleteIds[] = $v['id'];
