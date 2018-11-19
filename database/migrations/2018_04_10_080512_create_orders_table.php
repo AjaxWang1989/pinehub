@@ -38,6 +38,7 @@ class CreateOrdersTable extends Migration
                 ->comment('订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败 ');
             $table->unsignedTinyInteger('cancellation')->default(0)
                 ->comment('取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消 ');
+            $table->unsignedTinyInteger('send_batch')->default(0)->comment('配送批次');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
             $table->string('receiver_city', 16)->nullable()->default(null)->comment('收货城市');
             $table->string('receiver_district', 16)->nullable()->default(null)->comment('收货人所在城市区县');

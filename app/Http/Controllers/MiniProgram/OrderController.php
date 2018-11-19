@@ -175,15 +175,6 @@ class OrderController extends Controller
                 $orders['receiver_address'] = json_encode($address);
             }
 
-            if (isset($orders['send_time']) && $orders['send_time']){
-                //拆分字符串
-                $sendTime = explode('-',$orders['send_time']);
-                //去除字符串中的空格
-                $removeSpace = str_replace(' ','',$sendTime);
-                $orders['send_start_time'] = date('Y-m-d '.$removeSpace[0].':'.'00',time());
-                $orders['send_end_time']   = date('Y-m-d '.$removeSpace[1].':'.'00',time());
-            }
-
             $orders['app_id'] = $user->appId;
             $orders['member_id'] = $user->memberId;
             $orders['wechat_app_id'] = $user->platformAppId;

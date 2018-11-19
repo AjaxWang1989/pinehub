@@ -52,6 +52,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $postName 快递公司名称
  * @property string|null $transactionId 支付交易流水
  * @property string|null $ip 支付终端ip地址
+ * @property int|null $sendBatch
  * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
  *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
  * @property int|null $years 年
@@ -174,7 +175,7 @@ class Order extends Model implements Transformable
         'receiver_district', 'receiver_name', 'receiver_address', 'receiver_mobile', 'send_start_time',
         'send_end_time', 'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
         'score_settle', 'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status',
-        'years', 'month', 'week', 'hour', 'activity_id','receiving_shop_id'
+        'years', 'month', 'week', 'hour', 'activity_id','receiving_shop_id', 'send_batch'
     ];
 
     public static function boot()
