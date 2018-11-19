@@ -214,23 +214,29 @@ class OrderBuilder implements InterfaceServiceHandler
     }
 
     protected function updateStockNum() {
-
-        $skuSQLs = collect($this->updateStockNumSqlContainer['sku'])->map(/**
+         collect($this->updateStockNumSqlContainer['sku'])->map(/**
          * @param SKUProduct|ShopProduct $sku
          * @return string
          */
             function ( $sku) {
                 if(get_class($sku) === SKUProduct::class) {
-                    return /** @lang text */
-                        "UPDATE `sku_products` SET `stock_num` = {$sku->stockNum},`sell_num` = {$sku->sellNum} WHERE `id` = {$sku->id}";
+                    return/** @lang text */
+                        DB::update("UPDATE `sku_products` SET 
+                        `stock_num` = {$sku->stockNum},
+                        `sell_num` = {$sku->sellNum} 
+                        WHERE `id` = {$sku->id}");
+
                 }elseif(get_class($sku) === ShopProduct::class){
                     return /** @lang text */
-                        "UPDATE `shop_products` SET `stock_num` = {$sku->stockNum},`sell_num` = {$sku->sellNum} WHERE `id` = {$sku->id}";
+                        DB::update("UPDATE `shop_products` SET 
+                        `stock_num` = {$sku->stockNum},
+                        `sell_num` = {$sku->sellNum} 
+                        WHERE `id` = {$sku->id}");
                 }
 
-        })->toArray();
+        });
 
-        $merchandiseSQLs = collect($this->updateStockNumSqlContainer['merchandise'])->map(/**
+        collect($this->updateStockNumSqlContainer['merchandise'])->map(/**
          * @param Merchandise|ShopMerchandise|ActivityMerchandise $merchandise
          * @return string
          */
@@ -238,24 +244,30 @@ class OrderBuilder implements InterfaceServiceHandler
             switch(get_class($merchandise)) {
                 case Merchandise::class: {
                     return /** @lang text */
-                        "UPDATE `merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
+                        DB::update("UPDATE `merchandises` SET 
+                        `stock_num` = {$merchandise->stockNum} ,
+                        `sell_num` = {$merchandise->sellNum} 
+                        WHERE `id` = {$merchandise->id}");
                     break;
                 }
                 case ShopMerchandise::class: {
                     return /** @lang text */
-                        "UPDATE `shop_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
+                        DB::update("UPDATE `shop_merchandises` SET
+                         `stock_num` = {$merchandise->stockNum} ,
+                         `sell_num` = {$merchandise->sellNum} 
+                         WHERE `id` = {$merchandise->id}");
                     break;
                 }
                 case ActivityMerchandise::class: {
                     return /** @lang text */
-                        "UPDATE `activity_merchandises` SET `stock_num` = {$merchandise->stockNum} ,`sell_num` = {$merchandise->sellNum} WHERE `id` = {$merchandise->id}";
+                        DB::update("UPDATE `activity_merchandises` SET 
+                        `stock_num` = {$merchandise->stockNum} ,
+                        `sell_num` = {$merchandise->sellNum} 
+                        WHERE `id` = {$merchandise->id}");
                     break;
                 }
             }
-        })->toArray();
-        $updateSQLs = array_merge($skuSQLs, $merchandiseSQLs);
-        $sqlStr = implode(';', $updateSQLs);
-        DB::update(DB::raw($sqlStr));
+        });
     }
 
     protected function buildOrderItems (Collection $orderItems)
