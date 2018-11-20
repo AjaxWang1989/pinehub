@@ -391,7 +391,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 'quality' => 'SKU库存不足'
             ]));
         }
-
+        Log::info('order item SKUProduct/Merchandise', [$model]);
 //        $this->merchandise($model, $quality);
 
         $data['customer_id'] = $customerId;
