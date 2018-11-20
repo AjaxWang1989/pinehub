@@ -288,6 +288,8 @@ class OrderController extends Controller
 
         $orders['shopping_cart_ids']    = $deleteIds;
         $orders['order_items']          = $orderItems;
+        Log::info('shopping carts', $shoppingCarts);
+        Log::info('order_items', $orderItems);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
