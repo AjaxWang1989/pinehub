@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\Card;
 use App\Repositories\Traits\Destruct;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -39,11 +40,10 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
     /**
      * @param string $status
      * @param int $userId
-     * @param string $shoppingCartAmount
-     * @param string $limit
+     * @param float $shoppingCartAmount
      * @return mixed
      */
-    public function userTickets(string $status,int $userId,string $shoppingCartAmount) {
+    public function userTickets(string $status, int $userId, float $shoppingCartAmount = null) {
 
         if ($status == 'unavailable'){
             $status = CustomerTicketCard::STATUS_OFF;
@@ -59,8 +59,14 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
             return $customerTicketCard
                 ->where(['customer_id'=>$userId, 'status'=>$status])
                 ->whereHas('card', function ($query) use($shoppingCartAmount){
-                    $query->where('card_info->least_cost', '<=', (float)$shoppingCartAmount)
-                        ->orWhereNull('card_info->least_cost');
+                    if($shoppingCartAmount) {
+                        $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH])
+                            ->where('card_info->least_cost', '<=', (float)$shoppingCartAmount)
+                            ->orWhereNull('card_info->least_cost');
+                    }else{
+                        $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
+                    }
+
                 })
                 ->groupBy('card_id');
         });

@@ -14,10 +14,10 @@ interface CustomerTicketCardRepository extends RepositoryInterface
     /**
      * @param string $status
      * @param int $userId
-     * @param string $shoppingCartAmount
+     * @param float $shoppingCartAmount
      * @return mixed
      */
-    public function userTickets(string $status,int $userId,string $shoppingCartAmount);
+    public function userTickets(string $status,int $userId, float $shoppingCartAmount = null);
 
     /**
      * @param int $userId
