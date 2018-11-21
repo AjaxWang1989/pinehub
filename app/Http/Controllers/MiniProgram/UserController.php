@@ -81,7 +81,7 @@ class UserController extends Controller
                 ->findWhere(['activity_id'=>null,'shop_id'=>null,'customer_id'=>$user['id']])
                 ->sum('amount');
         }
-        if ($request->input('use', null)) {
+        if (!$request->input('use', null)) {
             $items = $this->customerTicketCardRepository->userTickets($status, $user['id'], $shoppingCartAmount);
         }else{
             $items = $this->customerTicketCardRepository->userTickets($status, $user['id']);
