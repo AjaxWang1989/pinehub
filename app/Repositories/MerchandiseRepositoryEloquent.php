@@ -61,9 +61,9 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
      */
     public function findMerchandises(string $name){
         $this->scopeQuery(function (Merchandise $merchandise) use($name){
-            return $merchandise->where('name','like','%'.$name.'%');
+            return $merchandise->where('status', Merchandise::UP)->where('name','like','%'.$name.'%');
         });
-        return $this->get();
+        return $this->paginate();
     }
 
     /**
@@ -72,7 +72,7 @@ class MerchandiseRepositoryEloquent extends BaseRepository implements Merchandis
      */
     public function searchMerchandises(string $name){
         $this->scopeQuery(function (Merchandise $merchandise) use($name){
-            return $merchandise->where('name','like','%'.$name.'%');
+            return $merchandise->where('status', Merchandise::UP)->where('name','like','%'.$name.'%');
         });
         return $this->paginate();
     }

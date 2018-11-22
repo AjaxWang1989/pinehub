@@ -59,6 +59,7 @@ class CategoriesController extends Controller
      * @var ShopRepository|null
      */
     protected  $shopRepository = null;
+    private $merchandiseStockModifyRepository;
 
     /**
      * CategoriesController constructor.
