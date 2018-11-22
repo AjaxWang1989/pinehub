@@ -121,6 +121,8 @@ class AuthController extends Controller
 
                 $mpUser['token'] = $token;
 
+                Cache::put($token['value'].'_session', $session, 60);
+
                 return $this->response()
                     ->item($mpUser, new MpUserTransformer());
             }
@@ -213,6 +215,10 @@ class AuthController extends Controller
             ->findByField('platform_open_id', $session['openid'])
             ->first();
 
+        $mpSession = [
+            'open_id' => $session['openid'],
+            'session_key' => $session['session_key']
+        ];
 
         if($session && $mpUser) {
 
@@ -229,6 +235,8 @@ class AuthController extends Controller
 
             $token = Auth::attempt($param);
 
+            Cache::put($token['value'].'_session', $mpSession, 60);
+
             $mpUser['token'] = $token;
 
             if ($mpUser['member_id']){
@@ -241,10 +249,7 @@ class AuthController extends Controller
             return $this->response()
                 ->item($mpUser, new MvpLoginTransformer());
         }
-        $mpSession = [
-            'open_id' => $session['openid'],
-            'session_key' => $session['session_key']
-        ];
+
         return $this->response(new JsonResponse($mpSession));
     }
 
