@@ -221,7 +221,6 @@ class AuthController extends Controller
         ];
 
         if($session && $mpUser) {
-
             $shopUser = $this->shopRepository
                 ->findWhere(['user_id'  =>  $mpUser['member_id']])
                 ->first();
@@ -238,13 +237,19 @@ class AuthController extends Controller
 
             $mpUser['token'] = $token;
 
-            if ($mpUser['member_id']){
-                with($mpUser, function (MpUser $mpUser) {
+            with($mpUser, function (MpUser $mpUser) use($session){
+                if ($mpUser['member_id']){
                     $mpUser->member()->update([
                         'last_login_at' => Carbon::now()
                     ]);
-                });
-            }
+                }
+
+                $mpUser->platformOpenId = $session['openid'];
+                $mpUser->sessionKey = $session['session_key'];
+                $mpUser->save();
+
+            });
+
             return $this->response()
                 ->item($mpUser, new MvpLoginTransformer());
         }
