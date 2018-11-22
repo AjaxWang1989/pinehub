@@ -107,6 +107,7 @@ class AuthController extends Controller
                 $errCode = '用户已注册,不用重复操作';
                 throw new UserCodeException($errCode);
             }else{
+                Log::info('================ register mp user =================');
                 $mpUser = $this->mpUserRepository->create($data);
 
                 $param = [
