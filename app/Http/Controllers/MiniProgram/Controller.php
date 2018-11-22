@@ -49,6 +49,9 @@ class Controller extends BaseController
         Log::info('!!!!!!!!!!!!!!!! session token !!!!!!!!!!!! '.$accessToken);
         if($accessToken){
             $session = Cache::get($accessToken.'_session');
+            if (!$session) {
+                $session = Cache::get(Auth::getToken().'_session');
+            }
         }else{
             $user  = Auth::user();
             if($user) {
