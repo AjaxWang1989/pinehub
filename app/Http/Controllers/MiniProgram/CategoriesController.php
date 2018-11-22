@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\MiniProgram;
 use App\Entities\Category;
+use App\Entities\Merchandise;
 use App\Repositories\CategoryRepository;
 use App\Repositories\AppRepository;
 use App\Repositories\MerchandiseCategoryRepository;
@@ -96,7 +97,9 @@ class CategoriesController extends Controller
     public function categories()
     {
         $items = $this->categoryRepository->scopeQuery(function (Category $category) {
-            return $category->has('merchandises');
+            return $category->whereHas('merchandises', function ($query) {
+                return $query->where('status', Merchandise::UP);
+            });
         })->paginate();
         return $this->response()->paginator($items,new CategoriesTransformer);
     }
