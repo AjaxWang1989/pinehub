@@ -96,7 +96,7 @@ class AuthController extends Controller
 
         //根据小程序id和登陆接口返回的解析后的用户信息
         list($errCode, $data) = app()->makeWith('bizDataCrypt', [$currentApp, $session['session_key']])
-            ->decryptData($request->input('encrypted_data'), $request->input('iv') );
+            ->decryptData(urldecode($request->input('encrypted_data')), urldecode($request->input('iv')));
 
         if ($errCode == 0) {
 
