@@ -234,7 +234,7 @@ class AuthController extends Controller
             ];
 
             $token = Auth::attempt($param);
-
+            Log::info('token ======', [$token]);
             Cache::put($token['value'].'_session', $session, 60);
 
             $mpUser['token'] = $token;
