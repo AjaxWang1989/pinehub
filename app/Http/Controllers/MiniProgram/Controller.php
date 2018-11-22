@@ -51,6 +51,7 @@ class Controller extends BaseController
             $session = Cache::get($accessToken.'_session');
             if (!$session) {
                 $session = Cache::get(Auth::getToken().'_session');
+                Log::info('session =====', [$session]);
             }
         }else{
             $user  = Auth::user();
