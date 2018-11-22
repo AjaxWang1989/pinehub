@@ -90,6 +90,7 @@ class AuthController extends Controller
     {
         $session = $this->session();
 
+        Log::info('############### wechat session ################', [$session]);
         //获取小程序app_id
         $currentApp = app(AppManager::class)->currentApp;
 
