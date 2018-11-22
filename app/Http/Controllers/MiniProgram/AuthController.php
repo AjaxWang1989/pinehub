@@ -263,7 +263,7 @@ class AuthController extends Controller
 
         //解密手机号码
         list($errCode, $data) = app()->makeWith('bizDataCrypt', [$currentApp, $session['session_key']])
-            ->decryptData($request->input('encrypted_data'), $request->input('iv') );
+            ->decryptData(urldecode($request->input('encrypted_data')), urldecode($request->input('iv')));
 
         if ($errCode == 0) {
             $user = $mpUser->only(['nickname', 'city', 'province', 'city', 'avatar', 'can_use_score', 'total_score',
