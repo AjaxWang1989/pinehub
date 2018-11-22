@@ -24,6 +24,7 @@ use App\Transformers\Mp\MvpLoginTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Response\JsonResponse;
 use App\Exceptions\UserCodeException;
