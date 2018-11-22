@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\Merchandise;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Repositories\MerchandiseCategoryRepository;
@@ -41,7 +42,11 @@ class MerchandiseCategoryRepositoryEloquent extends BaseRepository implements Me
      */
     public function merchandises(int $id){
         $this->scopeQuery(function (MerchandiseCategory $merchandiseCategory) use($id) {
-            return $merchandiseCategory->with('merchandise')->where(['category_id' => $id]);
+            return $merchandiseCategory->with('merchandise')
+                ->has('merchandise', function ($query) {
+                    return $query->where('status', Merchandise::UP);
+                })
+                ->where(['category_id' => $id]);
         });
         return $this->paginate();
     }
