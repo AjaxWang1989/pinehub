@@ -43,7 +43,7 @@ class MerchandiseCategoryRepositoryEloquent extends BaseRepository implements Me
     public function merchandises(int $id){
         $this->scopeQuery(function (MerchandiseCategory $merchandiseCategory) use($id) {
             return $merchandiseCategory->with('merchandise')
-                ->has('merchandise', function ($query) {
+                ->whereHas('merchandise', function ($query) {
                     return $query->where('status', Merchandise::UP);
                 })
                 ->where(['category_id' => $id]);
