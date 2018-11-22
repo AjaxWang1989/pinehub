@@ -12,6 +12,7 @@ use App\Entities\MpUser;
 use App\Http\Controllers\Controller as BaseController;
 use App\Repositories\AppRepository;
 use App\Services\AppManager;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request as LRequest;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,11 +27,12 @@ class Controller extends BaseController
         parent::__construct();
         $this->appRepository = $appRepository;
         $accessToken = $request->input('access_token', null);
-
+        Log::info('access token '.$accessToken.' app id '.Cache::get($accessToken));
         if($accessToken) {
             $appId = Cache::get($accessToken);
             $app = $this->appRepository->find($appId);
         }
+
         $user = Auth::user();
 
         if($user) {

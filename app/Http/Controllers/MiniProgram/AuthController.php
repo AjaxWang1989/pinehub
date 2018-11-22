@@ -176,6 +176,7 @@ class AuthController extends Controller
             app(AppManager::class)->setCurrentApp($item)
                 ->setAccessToken($accessToken);
 
+            Log::info('@@@@@@@@@@@@@ access token '.$accessToken.' app id '.Cache::get($accessToken));
             $item['access_token'] = $accessToken;
 
             return $this->response()
