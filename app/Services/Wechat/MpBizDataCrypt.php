@@ -10,6 +10,7 @@ namespace App\Services\Wechat;
 
 
 use App\Services\AppManager;
+use Illuminate\Support\Facades\Log;
 
 class MpBizDataCrypt
 {
@@ -48,7 +49,7 @@ class MpBizDataCrypt
         }
         $aesKey=base64_decode($this->sessionKey);
 
-
+        Log::info('iv +++++', [$iv, strlen($iv)]);
         if (strlen($iv) != 24) {
             return [self::ILLEGAL_IV, null];
         }
