@@ -225,17 +225,6 @@ class AuthController extends Controller
                 ->findWhere(['user_id'  =>  $mpUser['member_id']])
                 ->first();
 
-            $mpUser['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
-
-            $param = [
-                'platform_open_id' => $mpUser['platform_open_id'],
-                'password' => $mpUser['session_key']
-            ];
-
-            $token = Auth::attempt($param);
-            Cache::put($token.'_session', $session, 60);
-
-            $mpUser['token'] = $token;
 
             with($mpUser, function (MpUser $mpUser) use($session){
                 if ($mpUser['member_id']){
@@ -249,6 +238,18 @@ class AuthController extends Controller
                 $mpUser->save();
 
             });
+
+            $mpUser['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
+
+            $param = [
+                'platform_open_id' => $mpUser['platform_open_id'],
+                'password' => $mpUser['session_key']
+            ];
+
+            $token = Auth::attempt($param);
+            Cache::put($token.'_session', $session, 60);
+
+            $mpUser['token'] = $token;
 
             return $this->response()
                 ->item($mpUser, new MvpLoginTransformer());
