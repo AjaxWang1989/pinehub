@@ -207,6 +207,7 @@ class AuthController extends Controller
             ->session($code);
 
         cache([$accessToken.'_session'=> $session], 60);
+        Log::info('################## session ################', [$accessToken.'_session'=> $session]);
 
         $mpUser = $this->mpUserRepository
             ->findByField('platform_open_id', $session['openid'])

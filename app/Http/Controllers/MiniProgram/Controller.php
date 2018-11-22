@@ -46,6 +46,7 @@ class Controller extends BaseController
     public function session() {
         $accessToken = LRequest::input('access_token', null);
         $session = [];
+        Log::info('!!!!!!!!!!!!!!!! session token !!!!!!!!!!!! '.$accessToken);
         if($accessToken){
             $session = Cache::get($accessToken.'_session');
         }else{
