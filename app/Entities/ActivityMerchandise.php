@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $sellNum 已售出数量
  * @property array $tags 产品标签
  * @property string $describe 产品介绍
+ * @property string $mainImage 活动产品图片
  * @property string|null $startAt 开售时间
  * @property string|null $endAt 结业时间
  * @property \Illuminate\Support\Carbon|null $createdAt
@@ -58,7 +59,7 @@ class ActivityMerchandise extends Model implements Transformable
      * @var array
      */
     protected $fillable = ['activity_id','shop_id','shop_merchandise_id','merchandise_id','product_id','stock_num','sell_num',
-        'start_at','end_at','tags','describe','sell_price'
+        'start_at','end_at','tags','describe','sell_price', 'main_image'
     ];
 
     public function merchandise() : BelongsTo

@@ -19,6 +19,7 @@ class CreateActivityMerchandisesTable extends Migration
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺活动时显示的店铺ID');
             $table->unsignedInteger('shop_merchandise_id')->nullable()->default(null)->comment('店铺活动时显示的店铺产品ID');
             $table->unsignedInteger('merchandise_id')->comment('产品ID');
+            $table->string('main_image')->default('')->comment('活动产品图片');
             $table->float('sell_price')->default(0)->comment('售价');
             $table->unsignedInteger('product_id')->nullable()->default(null)->comment('sku单品ID');
             $table->integer('stock_num')->default(-1)->comment('参与活动的数量:-1无限制，大于0参与活动商品数量，0售罄');

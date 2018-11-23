@@ -60,7 +60,8 @@ class NewMerchandiseActivityController extends Controller
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
         Log::info('file info', $request->all());
-        $request->request->set('dir', "{$appId}/newMerchandiseActivity");
+        $dir = $request->input('file_field', 'newMerchandiseActivity');
+        $request->request->set('dir', "{$appId}/{$dir}");
         return $this->upload($request, $driver);
     }
 
