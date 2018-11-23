@@ -9,6 +9,8 @@ use App\Http\Requests\Admin\NewActivityImageRequest;
 use App\Http\Requests\Admin\NewActivityMerchandiseRequest;
 use App\Http\Requests\Admin\NewActivityMerchandiseStockRequest;
 use App\Http\Requests\Admin\NewActivityRequest;
+use App\Http\Response\JsonResponse;
+use App\Repositories\ActivityMerchandiseRepository;
 use App\Repositories\ActivityRepository;
 use App\Repositories\FileRepository;
 use App\Services\AppManager;
@@ -16,6 +18,7 @@ use App\Http\Controllers\FileManager\UploadController as Controller;
 use App\Transformers\ActivityTransformer;
 use App\Transformers\ActivityMerchandiseTransformer;
 use Carbon\Carbon;
+use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
@@ -78,6 +81,17 @@ class NewMerchandiseActivityController extends Controller
             throw new ModelNotFoundException('找不到相应的活动');
         }
 
+    }
+
+    public function removeMerchandise(int $id, ActivityMerchandiseRepository $activityMerchandiseRepository)
+    {
+        $result = $activityMerchandiseRepository->delete($id);
+
+        if($result) {
+            return $this->response(new JsonResponse(['message' => '删除成功']));
+        }else{
+            throw new StoreResourceFailedException('删除失败');
+        }
     }
 
     public function updateStock(int $activityId, int $id, NewActivityMerchandiseStockRequest $request)
