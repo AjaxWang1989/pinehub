@@ -27,6 +27,10 @@ use App\Transformers\Mp\ReserveSearchMerchandisesTransformer;
 use App\Repositories\ShopMerchandiseRepository;
 use App\Repositories\MerchandiseRepository;
 use App\Http\Response\JsonResponse;
+use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Query\Builder;
 
 
 class CategoriesController extends Controller
@@ -101,7 +105,7 @@ class CategoriesController extends Controller
                 return $query->where('status', Merchandise::UP);
             });
         })->paginate();
-        return $this->response()->paginator($items,new CategoriesTransformer);
+        return $this->response()->paginator($items, new CategoriesTransformer);
     }
     /*
      * 根据分类获取所有商品信息
@@ -111,7 +115,7 @@ class CategoriesController extends Controller
     public function categoriesMerchandises(int $id)
     {
       $items = $this->merchandiseCategoryRepository->merchandises($id);
-      return $this->response()->paginator($items,new MerchandisesTransformer());
+      return $this->response()->paginator($items, new MerchandisesTransformer());
     }
 
     /*
@@ -122,23 +126,24 @@ class CategoriesController extends Controller
     public function storeCategories(int $id)
     {
         $items = $this->shopMerchandiseRepository->storeCategories($id);
-        return $this->response()->paginator($items,new StoreCategoriesTransformer);
+        return $this->response()->paginator($items, new StoreCategoriesTransformer);
     }
 
     /**
      * 一个店铺分类下的商品信息
      * @param int $id
      * @param int $categoryId
+     * @return Response
      */
     public function storeCategoryMerchandise(int $id ,int $categoryId)
     {
         $items = $this->shopMerchandiseRepository->storeCategoryMerchandises($id,$categoryId);
-        return $this->response()->paginator($items,new StoreMerchandiseTransformer());
+        return $this->response()->paginator($items, new StoreMerchandiseTransformer());
     }
 
     /**
      * 库存统计
-     * @param Request $request
+     * @param StoreStockListRequest $request
      * @return \Dingo\Api\Http\Response
      */
     public function storeStockStatistics(StoreStockListRequest $request)
@@ -148,7 +153,7 @@ class CategoriesController extends Controller
         $user['shop_id'] = $shopUser['id'];
         $store = $request->all();
         if ($store['store_id'] != $user['shop_id']){
-            return $this->response(new JsonResponse(['message' => '所传店铺id不是当前登陆用户的店铺id']));
+            throw new ModelNotFoundException('所传店铺id不是当前登陆用户的店铺id');
         }
         $items  = $this->shopMerchandiseRepository->storeStockMerchandise($store);
         return $this->response()->paginator($items,new StoreStockStatisticsTransformer);
@@ -156,11 +161,11 @@ class CategoriesController extends Controller
 
     /**
      * 修改库存
-     * @param $id
-     * @param Request $request
+     * @param $merchandiseId
+     * @param StoreStockUpdateRequest $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeMerchandiseStock(int $merchandiseId,StoreStockUpdateRequest $request)
+    public function storeMerchandiseStock(int $merchandiseId, StoreStockUpdateRequest $request)
     {
         $user = $this->mpUser();
         $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
@@ -187,19 +192,22 @@ class CategoriesController extends Controller
             $this->merchandiseStockModifyRepository->create($storeStockModify);
             return $this->response()->item($item,new ShopMerchandiseStockModifyTransformer());
         }
-            return $this->response(new JsonResponse(['message' => '库存修改失败,请稍后再试']));
+
+        throw new ModelNotFoundException('库存修改失败,请稍后再试');
     }
 
     /**
      * 预定商城搜索商品
      * @param Request $request
+     * @return Response
+     * @throws
      */
     public function reserveSearchMerchandises(Request $request){
         if ($request['name']){
             $items = $this->merchandiseRepository->searchMerchandises($request['name']);
-            return $this->response()->paginator($items,new ReserveSearchMerchandisesTransformer());
+            return $this->response()->paginator($items, new ReserveSearchMerchandisesTransformer());
         }else{
-            return $this->response(new JsonResponse(['message' => '搜索的商品名字不能为空']));
+            throw new ModelNotFoundException('搜索的商品名字不能为空');
         }
     }
 }
