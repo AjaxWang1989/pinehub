@@ -102,7 +102,7 @@ class ShoppingCartController extends Controller
     {
         $activityMerchandise = $this->activityMerchandiseRepository
             ->with(['merchandise'])
-            ->scopeQuery(function (ActivityMerchandise $merchandise) use($activityId, $request){
+            ->scopeQuery(function ($merchandise) use($activityId, $request){
                 return $merchandise->where('activity_id', $activityId)
                     ->where('merchandise_id', $request->input('merchandise_id'));
             })->first();
@@ -135,7 +135,7 @@ class ShoppingCartController extends Controller
     {
         $shopMerchandise = $this->shopMerchandiseRepository
             ->with(['merchandise'])
-            ->scopeQuery(function (ShopMerchandise $merchandise) use($storeId, $request){
+            ->scopeQuery(function ($merchandise) use($storeId, $request){
                 return $merchandise->where('store_id', $storeId)
                     ->where('merchandise_id', $request->input('merchandise_id'));
             })->first();
@@ -208,7 +208,7 @@ class ShoppingCartController extends Controller
     {
         $activityMerchandise = $this->activityMerchandiseRepository
             ->with(['merchandise'])
-            ->scopeQuery(function (ActivityMerchandise $merchandise) use($activityId, $request){
+            ->scopeQuery(function ( $merchandise) use($activityId, $request){
             return $merchandise->where('activity_id', $activityId)
                 ->where('merchandise_id', $request->input('merchandise_id'));
         })->first();
@@ -238,7 +238,7 @@ class ShoppingCartController extends Controller
     {
         $shopMerchandise = $this->shopMerchandiseRepository
             ->with(['merchandise'])
-            ->scopeQuery(function (ShopMerchandise $merchandise) use($storeId, $request){
+            ->scopeQuery(function ($merchandise) use($storeId, $request){
                 return $merchandise->where('store_id', $storeId)
                     ->where('merchandise_id', $request->input('merchandise_id'));
             })->first();
