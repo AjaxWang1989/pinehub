@@ -66,4 +66,9 @@ class ActivityMerchandise extends Model implements Transformable
     {
         return $this->BelongsTo(Merchandise::class, 'merchandise_id', 'id');
     }
+
+    public function category ()
+    {
+        return $this->hasOne();
+    }
 }
