@@ -25,7 +25,7 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
         return [
             'id'=>$model->id,
             'merchandise_id'=>$model->merchandiseId,
-            'main_image' => $model->mainImage,
+            'main_image' => $model->mainImage ? $model->mainImage : $model->merchandise->mainImage,
             'categories' => $model->merchandise->categories,
             'name' => $model->merchandise->name,
             'sell_price' => $model->merchandise->sellPrice,
