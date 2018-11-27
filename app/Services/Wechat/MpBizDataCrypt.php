@@ -10,6 +10,7 @@ namespace App\Services\Wechat;
 
 
 use App\Services\AppManager;
+use Illuminate\Support\Facades\Log;
 
 class MpBizDataCrypt
 {
@@ -37,8 +38,6 @@ class MpBizDataCrypt
      * 检验数据的真实性，并且获取解密后的明文.
      * @param $encryptedData string 加密的用户数据
      * @param $iv string 与用户数据一同返回的初始向量
-     * @param $data string 解密后的原文
-     *
      * @return array 成功0，失败返回对应的错误码
      */
     public function decryptData( $encryptedData, $iv )
@@ -48,7 +47,7 @@ class MpBizDataCrypt
         }
         $aesKey=base64_decode($this->sessionKey);
 
-
+        Log::info('iv +++++', [$iv, strlen($iv)]);
         if (strlen($iv) != 24) {
             return [self::ILLEGAL_IV, null];
         }

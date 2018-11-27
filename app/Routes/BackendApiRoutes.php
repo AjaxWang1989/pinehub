@@ -110,6 +110,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->post('new/merchandise/activity/upload/image/{driver?}', ['as' => 'new-merchandise-activity-upload-image', 'uses' => 'NewMerchandiseActivityController@uploadImage']);
                 $router->put('new/merchandise/activity/{activityId}/merchandise/{merchandiseId}/stock', ['as' => 'new-merchandise-activity-merchandise-stock-update', 'uses' => 'NewMerchandiseActivityController@updateStock']);
                 $router->get('new/merchandise/activity/{activityId}/merchandises', ['as' => 'new-merchandise-activity-merchandises', 'uses' => 'NewMerchandiseActivityController@merchandises']);
+                $router->delete('new/merchandise/{id}/activity', ['as' => 'delete-merchandise-activity-merchandises', 'uses' => 'NewMerchandiseActivityController@removeMerchandise']);
 
 
 

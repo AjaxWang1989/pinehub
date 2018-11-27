@@ -9,15 +9,12 @@
 namespace App\Http\Controllers\MiniProgram;
 use App\Repositories\AppRepository;
 use Dingo\Api\Http\Request;
-use App\Repositories\UserTicketRepository;
 use App\Repositories\CustomerTicketCardRepository;
 use App\Repositories\FeedBackMessageRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\FeedBackMessageTransformer;
 use App\Http\Requests\MiniProgram\FeedBackMessageRequest;
-use App\Exceptions\UserCodeException;
-use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
@@ -70,16 +67,26 @@ class UserController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function userTickets(string $status,Request $request){
-        $request = $request->all();
         $user = $this->mpUser();
-        if (isset($request['store_id']) && $request['store_id']){
-            $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['shop_id'=>$request['store_id'],'customer_id'=>$user['id']])->sum('amount');
-        } elseif (isset($request['activity_id']) && $request['activity_id']){
-            $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['activity_id'=>$request['activity_id'],'customer_id'=>$user['id']])->sum('amount');
+        if ($request->input('store_id', null)){
+            $shoppingCartAmount = $this->shoppingCartRepository
+                ->findWhere(['shop_id'=>$request->input('store_id', null),'customer_id'=>$user['id']])
+                ->sum('amount');
+        } elseif ($request->input('activity_id', null)){
+            $shoppingCartAmount = $this->shoppingCartRepository
+                ->findWhere(['activity_id'=>$request->input('activity_id', null),'customer_id'=>$user['id']])
+                ->sum('amount');
         }else{
-            $shoppingCartAmount = $this->shoppingCartRepository->findWhere(['activity_id'=>null,'shop_id'=>null,'customer_id'=>$user['id']])->sum('amount');
+            $shoppingCartAmount = $this->shoppingCartRepository
+                ->findWhere(['activity_id'=>null,'shop_id'=>null,'customer_id'=>$user['id']])
+                ->sum('amount');
         }
-        $items = $this->customerTicketCardRepository->userTickets($status,$user['id'], $shoppingCartAmount);
+        if (!$request->input('use', null)) {
+            $items = $this->customerTicketCardRepository->userTickets($status, $user['id'], $shoppingCartAmount);
+        }else{
+            $items = $this->customerTicketCardRepository->userTickets($status, $user['id']);
+        }
+
         Log::info('----------------------------card------------------',$items->toArray());
         return $this->response()->paginator($items,new CustomerTicketCardTransformer());
     }
@@ -97,7 +104,7 @@ class UserController extends Controller
 
     /**
      * 提交意见反馈
-     * @param Request $request
+     * @param FeedBackMessageRequest $request
      * @return \Dingo\Api\Http\Response
      */
 

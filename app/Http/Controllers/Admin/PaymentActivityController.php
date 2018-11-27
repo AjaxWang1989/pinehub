@@ -98,7 +98,7 @@ class PaymentActivityController extends Controller
         }elseif(Carbon::parse($activity['start_at'])->timestamp > Carbon::now(config('app.timezone'))->timestamp){
             $activity['status'] =  Activity::NOT_BEGINNING;
         }
-
+        $activity['type'] = Activity::PAYMENT_ACTIVITY;
         $activity['poster_img'] = isset($activity['poster_img']) ? $activity['poster_img'] : '';
         $activity['description'] = isset($activity['description']) ? $activity['description'] : '';
         //创建一个支付活动

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\Merchandise;
 use App\Repositories\Traits\Destruct;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -68,7 +69,11 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      */
     public function storeCategoryMerchandises(int $id,int $categoryId){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($id,$categoryId) {
-            return $ShopMerchandise->with('merchandise')->where(['shop_id'=>$id,'category_id'=>$categoryId]);
+            return $ShopMerchandise->with('merchandise')
+                ->whereHas('merchandise', function ($query) {
+                    return $query->where('status', Merchandise::UP);
+                })
+                ->where(['shop_id'=>$id,'category_id'=>$categoryId]);
         });
         return $this->paginate();
     }
@@ -79,7 +84,11 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      */
     public function storeStockMerchandise($store){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($store) {
-            return $ShopMerchandise->with('merchandise')->where(['shop_id'=>$store['store_id'],'category_id'=>$store['category_id']]);
+            return $ShopMerchandise->with('merchandise')
+                ->whereHas('merchandise', function ($query) {
+                    return $query->where('status', Merchandise::UP);
+                })
+                ->where(['shop_id'=>$store['store_id'],'category_id'=>$store['category_id']]);
         });
         return $this->paginate();
     }
@@ -92,6 +101,9 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
     public function shopMerchandises(int $shopId,array $merchandisesIds){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($shopId,$merchandisesIds) {
             return $ShopMerchandise->where('shop_id',$shopId)
+                ->whereHas('merchandise', function ($query) {
+                    return $query->where('status', Merchandise::UP);
+                })
                 ->whereIn('id',$merchandisesIds);
         });
         return $this->paginate();

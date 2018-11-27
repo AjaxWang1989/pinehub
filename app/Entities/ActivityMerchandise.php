@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $sellNum 已售出数量
  * @property array $tags 产品标签
  * @property string $describe 产品介绍
+ * @property string $mainImage 活动产品图片
  * @property string|null $startAt 开售时间
  * @property string|null $endAt 结业时间
  * @property string|null $mainImage
@@ -65,5 +66,10 @@ class ActivityMerchandise extends Model implements Transformable
     public function merchandise() : BelongsTo
     {
         return $this->BelongsTo(Merchandise::class, 'merchandise_id', 'id');
+    }
+
+    public function category ()
+    {
+        return $this->hasOne();
     }
 }

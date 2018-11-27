@@ -47,8 +47,8 @@ class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepos
         $nowTime = date('Y-m-d H:i:s',time());
 
         $this->scopeQuery(function (Activity $activity) use($nowTime){
-            return $activity
-                ->where('status',Activity::HAVE_IN_HAND)
+            return $activity->where('status',Activity::HAVE_IN_HAND)
+                ->where('type', Activity::NEW_PRODUCT_ACTIVITY)
                 ->where('start_at', '<=', $nowTime)
                 ->where('end_at', '>', $nowTime)
                 ->OrderBy('id','desc');

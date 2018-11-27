@@ -379,7 +379,7 @@ class OrderBuilder implements InterfaceServiceHandler
 
     /**
      * 创建order_items表单项
-     * @param SKUProduct|Merchandise|Model $model
+     * @param ShopMerchandise|ShopProduct|ActivityMerchandise|SKUProduct|Merchandise|Model $model
      * @param int $quality
      * @param $customerId
      * @return Collection
@@ -391,12 +391,18 @@ class OrderBuilder implements InterfaceServiceHandler
                 'quality' => 'SKU库存不足'
             ]));
         }
-
+        Log::info('order item SKUProduct/Merchandise', [$model]);
 //        $this->merchandise($model, $quality);
+        $sellPrice = 0;
+        if ($model instanceof ShopMerchandise || $model instanceof ShopProduct || $model instanceof ActivityMerchandise) {
+            $sellPrice = $model->merchandise->sellPrice;
+        }else {
+            $sellPrice = $model->sellPrice;
+        }
 
         $data['customer_id'] = $customerId;
         $data['shop_id'] = isset($this->input['shop_id']) ? $this->input['shop_id'] : null;
-        $data['total_amount'] =  $model->sellPrice * $quality;
+        $data['total_amount'] =  $sellPrice * $quality;
         $data['discount_amount'] = 0;
         $data['payment_amount'] = $data['total_amount'] - $data['discount_amount'];
         return collect($data);
