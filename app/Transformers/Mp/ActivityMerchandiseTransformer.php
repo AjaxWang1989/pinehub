@@ -24,7 +24,7 @@ class ActivityMerchandiseTransformer extends TransformerAbstract
             'sell_num' => $model->sellNum,
             'tags' => isset($model->tags) ? $model->tags : [] ,
             'describe' => $model->describe,
-            'main_image' => $model->merchandise->mainImage,
+            'main_image' => $model->mainImage ? $model->mainImage : $model->merchandise->mainImage,
         ];
     }
 }
