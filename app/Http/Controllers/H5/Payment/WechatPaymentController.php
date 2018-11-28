@@ -36,7 +36,7 @@ class WechatPaymentController extends Controller
         $customer = session('customer', null);
 
         $order = [
-            'type' => Order::OFF_LINE_PAY,
+            'type' => Order::OFF_LINE_PAYMENT_ORDER,
             'pay_type' => Order::WECHAT_PAY,
             'open_id' => $customer->platformOpenId,
             'app_id' => $customer->appId,

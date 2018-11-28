@@ -263,7 +263,7 @@ class OrderController extends Controller
 
         $orders['payment_amount']  = round(($orders['total_amount'] - $orders['discount_amount']),2);
         $now = Carbon::now();
-        $orders['years'] = $now->year;
+        $orders['year'] = $now->year;
         $orders['month'] = $now->month;
         $order ['day']   = $now->day;
         $orders['week']  = $now->dayOfWeekIso;
@@ -288,8 +288,7 @@ class OrderController extends Controller
 
         $orders['shopping_cart_ids']    = $deleteIds;
         $orders['order_items']          = $orderItems;
-        Log::info('shopping carts', [$shoppingCarts]);
-        Log::info('order_items', [$orderItems]);
+
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
@@ -301,7 +300,7 @@ class OrderController extends Controller
 
     /**
      * 自提订单
-     * @param Request $request
+     * @param StoreBuffetOrdersRequest $request
      * @return \Dingo\Api\Http\Response
      */
     public function storeBuffetOrders(StoreBuffetOrdersRequest $request){

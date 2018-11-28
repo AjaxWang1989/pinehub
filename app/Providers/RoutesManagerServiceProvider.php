@@ -11,6 +11,7 @@ use Illuminate\Session\SessionManager;
 use Illuminate\Session\SessionServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
+use Maatwebsite\Excel\ExcelServiceProvider;
 use Zoran\JwtAuthGuard\JwtAuthGuardServiceProvider;
 use Tymon\JWTAuth\Providers\JWTAuthServiceProvider;
 use Illuminate\Http\Request;
@@ -67,7 +68,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
             throw new GatewayNotAllowed('网关错误');
         }
         $this->app['isApiServer'] = $this->app->make('api.gateways')->has($this->gateway);
-
+        $this->app->register(ExcelServiceProvider::class);
         $this->app->register(JWTAuthServiceProvider::class);
         $this->app->register(JwtAuthGuardServiceProvider::class);
         $this->registerRouter();

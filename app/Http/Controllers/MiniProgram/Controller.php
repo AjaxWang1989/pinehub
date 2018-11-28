@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 use App\Entities\MpUser;
+use App\Entities\ShopManager;
 use App\Http\Controllers\Controller as BaseController;
 use App\Repositories\AppRepository;
 use App\Services\AppManager;
@@ -73,5 +74,10 @@ class Controller extends BaseController
      * */
     public function mpUser() {
         return $this->user();
+    }
+
+    public function shopManager()
+    {
+        return ShopManager::find($this->mpUser()->memberId);
     }
 }

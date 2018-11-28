@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -25,18 +27,18 @@ interface OrderRepository extends RepositoryInterface
      * @param $userId
      * @return mixed
      */
-    public function storeBuffetOrders(array $sendTime,int $userId);
+    public function storeBuffetOrders(array $sendTime, int $userId);
 
     /**
      * @param $sendTime
      * @param $userId
      * @return mixed
      */
-    public function storeSendOrders(array $sendTime,int $userId);
+    public function storeSendOrders(array $sendTime, int $userId);
 
     /**
      * @param $status
-     * @param $userId
+     * @param $customerId
      * @return mixed
      */
     public function orders(string $status,int $customerId);
@@ -49,81 +51,21 @@ interface OrderRepository extends RepositoryInterface
     public function storeOrdersSummary(array $request,int $userId);
 
     /**
-     * @param array $request
-     * @param int $userId
-     * @return mixed'
+     * @param int $shopId
+     * @param string $unit
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $limit
+     * @return Collection
      */
-    public function orderStatistics(array $request,int $userId);
+    public function orderStatistics(int $shopId, string $unit, Carbon $startAt, Carbon $endAt, int $limit);
 
     /**
-     * @param array $request
-     * @param int $userId
-     * @return mixed'
+     *
+     * @param Collection $orders
+     * @param $count
+     * @param $unit
+     * @return array
      */
-    public function bookPaymentAmount(array $request,int $userId);
-
-    /**
-     * @param array $request
-     * @param int $userId
-     * @return mixed'
-     */
-    public function sitePaymentAmount(array $request,int $userId);
-
-    /**
-     * @param array $request
-     * @param int $userId
-     * @return mixed
-     */
-    public function sellOrderNum(array $request,int $userId);
-
-    /**
-     * @param array $request
-     * @return mixed
-     */
-    public function todaySellAmount(array $request);
-
-    /**
-     * @param array $request
-     * @return mixed
-     */
-    public function weekSellAmount(array $request);
-
-    /**
-     * @param array $request
-     * @return mixed
-     */
-    public function sellAmount(array $request);
-
-    /**
-     * @param array $request
-     * @return mixed
-     */
-
-    public function todayBuyNum(array $request);
-
-    /**
-     * @param array $request
-     * @return mixed
-     */
-    public function weekBuyNum(array $request);
-
-    /**
-     * @param array $request
-     * @return mixed
-     */
-    public function weekStatistics(array $request);
-
-    /**
-     * @param array $request
-     * @param int $userId
-     * @return mixed
-     */
-    public function orderDateHigh(array $request,int $userId);
-
-    /**
-     * @param int $activity
-     * @param int $userId
-     * @return mixed
-     */
-    public function receivingShopAddress(int $activity , int $userId);
+    public function buildOrderStatisticData(Collection $orders, $count, $unit);
 }

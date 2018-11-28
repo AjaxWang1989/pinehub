@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use Carbon\Carbon;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -11,32 +12,33 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface OrderItemRepository extends RepositoryInterface
 {
-    //
-    /**
-     * @param int $userId
-     * @return mixed
-     */
-    public function orderItemUser(int $userId);
 
     /**
-     * @param array $request
-     * @param int $userId
+     * @param int $shopId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
      * @return mixed
      */
-    public function sellMerchandiseNum(array $request,int $userId);
+    public function sellMerchandiseNum(int $shopId, Carbon $startAt, Carbon $endAt);
 
     /**
-     * @param array $request
-     * @param int $userId
+     * 消费排名
+     * @param int $shopId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $limit
      * @return mixed
      */
-    public function sellTop(array $request,int $userId);
+    public function consumptionRanking(int $shopId, Carbon $startAt, Carbon $endAt, int $limit = 5);
+
 
     /**
-     * @param array $request
-     * @param int $userId
+     * @param int $shopId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $limit
      * @return mixed
      */
-    public function sellMerchandiseTop(array $request,int $userId);
+    public function merchandiseSalesRanking(int $shopId, Carbon $startAt, Carbon $endAt, int $limit = 5);
 
 }

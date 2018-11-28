@@ -44,7 +44,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $sendEndTime 配送结束时间
  * @property string|null $comment 备注
  * @property \Illuminate\Support\Carbon|null $consignedAt 发货时间
- * @property int $type 订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手  5-活动商品订单
+ * @property int $type 订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单
+ * @property int $pickUpMethod 取货方式：0-不需要取货 1-送货上门 2-自提
  * @property int $postType 0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运
  * @property int $scoreSettle 积分是否已经结算
  * @property string|null $postNo 快递编号
@@ -55,7 +56,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int|null $sendBatch
  * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
  *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
- * @property int|null $years 年
+ * @property int|null $year 年
  * @property int|null $month 月
  * @property int|null $day  日
  * @property int|null $week 星期
@@ -138,12 +139,27 @@ class Order extends Model implements Transformable
 
     const WECHAT_PAY = 2;
 
+    // 取货方式
+    const NOT_NEED_PICK_UPMETHOD = 0;
+    const SEND_ORDER_TO_USER = 1;// 送货上门
+    const USER_SELF_PICK_UP = 2; // 自提
 
-    const OFF_LINE_PAY = 0;
-    const ORDERING_PAY = 1;
-    const E_SHOP_PAY =2;
-    const SITE_SELF_EXTRACTION = 3;
-    const SITE_DISTRIBUTION = 4;
+
+    // 订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手  5-商家进货订单
+//    const OFF_LINE_PAY = 0;
+//    const ORDERING_PAY = 1;
+//    const E_SHOP_PAY =2;
+//    const SITE_SELF_EXTRACTION = 3;
+//    const SITE_DISTRIBUTION = 4;
+
+    // 订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单
+    const OFF_LINE_PAYMENT_ORDER = 0;
+
+    const SHOPPING_MALL_ORDER = 1;
+
+    const SITE_USER_ORDER = 2;
+
+    const SHOP_PURCHASE_ORDER = 3;
 
     const EXPIRES_SECOND = 600;
 
@@ -174,8 +190,9 @@ class Order extends Model implements Transformable
         'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
         'receiver_district', 'receiver_name', 'receiver_address', 'receiver_mobile', 'send_start_time',
         'send_end_time', 'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
-        'score_settle', 'ip', 'open_id', 'transaction_id','shop_id', 'member_id', 'trade_status',
-        'years', 'month', 'week', 'hour', 'activity_id','receiving_shop_id', 'send_batch', 'day'
+        'score_settle', 'ip', 'open_id', 'transaction_id', 'shop_id', 'member_id', 'trade_status',
+        'year', 'month', 'week', 'hour', 'activity_id', 'receiving_shop_id', 'send_batch', 'day',
+        'pick_up_method'
     ];
 
     public static function boot()

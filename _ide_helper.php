@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel Lumen (5.6.4) (Laravel Components 5.6.*) on 2018-08-21 05:36:32.
+ * Generated for Laravel Lumen (5.6.4) (Laravel Components 5.6.*) on 2018-11-28 06:30:05.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -116,7 +116,7 @@ if (! function_exists('array_except')) {
 
 if (! function_exists('array_first')) {
     /**
-     * Return the first element in an array passing a given truth Test.
+     * Return the first element in an array passing a given truth test.
      *
      * @param  array  $array
      * @param  callable|null  $callback
@@ -188,7 +188,7 @@ if (! function_exists('array_has')) {
 
 if (! function_exists('array_last')) {
     /**
-     * Return the last element in an array passing a given truth Test.
+     * Return the last element in an array passing a given truth test.
      *
      * @param  array  $array
      * @param  callable|null  $callback

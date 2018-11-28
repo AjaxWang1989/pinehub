@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Repositories\Traits\Destruct;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Illuminate\Container\Container as Application;
@@ -67,48 +68,16 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
     }
 
     /**
-     * @param int $userId
-     * @param string $limit
-     * @return mixed
-     */
-    public function orderItemUser (int $userId)
-    {
-        $this->scopeQuery(function (OrderItem $orderItem)use($userId){
-            return $orderItem->select([
-                'customer_id',
-                DB::raw('sum( `payment_amount` ) as total_amount')])
-                ->where(['shop_id'=>$userId])
-                ->groupby('customer_id')->orderBy('total_amount');
-        });
-        return $this->paginate();
-    }
-
-    /**
      * @param array $request
      * @param int $userId
      * @return mixed
      */
-    public function sellMerchandiseNum(array $request,int $userId)
+    public function sellMerchandiseNum(int $shopId, Carbon $startAt, Carbon $endAt)
     {
-        $startAt = null;
-        $endAt = null;
-        if ($request['date'] == 'hour')
-        {
-            $startAt = $this->hourStartAt;
-            $endAt  = $this->hourEndAt;
-        }else if($request['date'] == 'week')
-        {
-            $startAt = $this->weekStartAt;
-            $endAt  = $this->weekEndAt;
-        }else if($request['date'] == 'month')
-        {
-            $startAt = $this->montStartAt;
-            $endAt  = $this->monthEndAt;
-        }
-        $this->scopeQuery(function (OrderItem $orderItem) use($userId,$request, $startAt, $endAt){
+        $this->scopeQuery(function (OrderItem $orderItem) use($shopId, $startAt, $endAt){
             return $orderItem->select([DB::raw('sum(`quality`) as total_amount')])
-                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
-                ->where(['shop_id'=>$userId])
+                ->whereIn('status',[Order::PAID, Order::SEND, Order::COMPLETED])
+                ->where(['shop_id' => $shopId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
@@ -116,75 +85,49 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
     }
 
     /**
-     * @param array $request
-     * @param int $userId
+     * 消费排名
+     * @param int $storeId
      * @param string $limit
      * @return mixed
      */
-    public function sellTop(array $request,int $userId,$limit='5')
+    public function consumptionRanking(int $storeId, Carbon $startAt, Carbon $endAt, $limit = 5)
     {
-        $startAt = null;
-        $endAt = null;
-        if ($request['date'] == 'hour')
-        {
-            $startAt = $this->hourStartAt;
-            $endAt  = $this->hourEndAt;
-        }else if($request['date'] == 'week')
-        {
-            $startAt = $this->weekStartAt;
-            $endAt  = $this->weekEndAt;
-        }else if($request['date'] == 'month')
-        {
-            $startAt = $this->montStartAt;
-            $endAt  = $this->monthEndAt;
-        }
-        $this->scopeQuery(function (OrderItem $orderItem) use($userId,$request, $startAt, $endAt,$limit) {
+        $this->scopeQuery(function (OrderItem $orderItem) use($storeId, $startAt, $endAt,$limit) {
             return $orderItem->select([
                 DB::raw('customers.nickname as customer_nickname'),
-                DB::raw('sum( `payment_amount` ) as total_amount')
-            ])
-                ->join('customers', 'order_items.customer_id', '=', 'customers.id')
-                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
-                ->where(['shop_id'=>$userId])
+                DB::raw('sum( `payment_amount` ) as total_payment_amount')
+            ])->join('customers', 'order_items.customer_id', '=', 'customers.id')
+                ->whereIn('status',[Order::PAID, Order::SEND, Order::COMPLETED])
+                ->where(['shop_id' => $storeId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->groupby('customer_id')->orderBy('total_amount','desc')->limit($limit);
+                ->whereIn('type', [Order::SITE_USER_ORDER, Order::SHOPPING_MALL_ORDER,
+                    Order::OFF_LINE_PAYMENT_ORDER])
+                ->groupby('customer_id')
+                ->orderBy('total_payment_amount','desc')
+                ->limit($limit);
         });
         return $this->get();
     }
 
     /**
-     * @param array $request
-     * @param int $userId
+     * @param int $storeId
      * @param string $limit
      * @return mixed
      */
-    public function sellMerchandiseTop(array $request,int $userId,$limit='5')
+    public function merchandiseSalesRanking(int $storeId, Carbon $startAt, Carbon $endAt, $limit = 5)
     {
-        $startAt = null;
-        $endAt = null;
-        if ($request['date'] == 'hour')
-        {
-            $startAt = $this->hourStartAt;
-            $endAt  = $this->hourEndAt;
-        }else if($request['date'] == 'week')
-        {
-            $startAt = $this->weekStartAt;
-            $endAt  = $this->weekEndAt;
-        }else if($request['date'] == 'month')
-        {
-            $startAt = $this->montStartAt;
-            $endAt  = $this->monthEndAt;
-        }
-        $this->scopeQuery(function (OrderItem $orderItem) use($userId,$request, $startAt, $endAt,$limit) {
+        $this->scopeQuery(function (OrderItem $orderItem) use($storeId, $startAt, $endAt, $limit) {
             return $orderItem->select([
-                'name',
-                DB::raw('sum( `payment_amount` ) as total_amount')])
-                ->whereIn('status',[Order::PAID,Order::SEND,Order::COMPLETED])
-                ->where(['shop_id'=>$userId])
+                'merchandise_name',
+                DB::raw('sum( `payment_amount` ) as total_payment_amount')])
+                ->whereIn('status',[Order::PAID, Order::SEND, Order::COMPLETED])
+                ->where(['shop_id' => $storeId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->groupby('name')->orderBy('total_amount','desc')->limit($limit);
+                ->groupby('name')
+                ->orderBy('total_amount','desc')
+                ->limit($limit);
         });
         return $this->get();
     }

@@ -26,7 +26,7 @@ class CreateOrderItemsTable extends Migration
             $table->string('code', 18)->comment('订单子项编码');
             $table->unsignedInteger('merchandise_id')->nullable()->default(null)->comment('产品id');
             $table->unsignedInteger('sku_product_id')->nullable()->default(null)->comment('规格产品ID');
-            $table->string('name', 64)->nullable()->default(null)->comment('产品名称');
+            $table->string('merchandise_name', 64)->nullable()->default(null)->comment('产品名称');
             $table->string('main_image')->nullable()->default(null)->comment('产品主图');
             $table->float('origin_price')->default(0)->comment('原价');
             $table->float('sell_price')->default(0)->comment('售价');
@@ -36,6 +36,8 @@ class CreateOrderItemsTable extends Migration
             $table->float('discount_amount')->default(0)->comment('优惠');
             $table->float('payment_amount')->default(0)->comment('实付');
             $table->timestamp('paid_at')->nullable()->default(null)->comment('支付时间');
+            $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单');
+            $table->unsignedTinyInteger('pick_up_method')->default(0)->comment('取货方式：0-不需要取货 1-送货上门 2-自提');
             $table->unsignedInteger('status')->default(10)
                 ->comment('订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');

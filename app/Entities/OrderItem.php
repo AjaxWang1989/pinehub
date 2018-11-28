@@ -22,7 +22,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $code 订单子项编码
  * @property int|null $merchandiseId 产品id
  * @property int|null $skuProductId 规格产品ID
- * @property string|null $name 产品名称
+ * @property string|null $merchandiseName 产品名称
  * @property string|null $mainImage 产品主图
  * @property float $originPrice 原价
  * @property float $sellPrice 售价
@@ -44,6 +44,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Order $order
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\SKUProduct|null $skuProduct
+ * @property  int $type
+ * @property int  $pickUpMethod 取货方式：0-不需要取货 1-送货上门 2-自提
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereActivityMerchandisesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCode($value)
@@ -88,9 +90,9 @@ class OrderItem extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'app_id','shop_id','member_id','customer_id','order_id','code','merchandise_id','sku_product_id','name',
+        'app_id','shop_id','member_id','customer_id','order_id','code','merchandise_id','sku_product_id','merchandise_name',
         'main_image','origin_price','sell_price','cost_price','quality','total_amount','discount_amount','payment_amount',
-        'paid_at','status','signed_at','consigned_at','activity_id'
+        'paid_at','status','signed_at','consigned_at','activity_id', 'type', 'pick_up_method'
     ];
 
     public function member() : BelongsTo

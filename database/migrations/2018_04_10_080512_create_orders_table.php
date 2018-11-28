@@ -49,8 +49,10 @@ class CreateOrdersTable extends Migration
             $table->timestamp('send_end_time')->nullable()->default(null)->comment('配送结束时间');
             $table->string('comment', 255)->nullable()->default(null)->comment('备注');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
-            $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-预定自提 2-商城订单 3-今日下单自提 4-今日下单送到手  5-活动商品订单');
-            $table->unsignedMediumInteger('post_type')->default(0)->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
+            $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单');
+            $table->unsignedTinyInteger('pick_up_method')->default(0)->comment('取货方式：0-不需要取货 1-送货上门 2-自提');
+            $table->unsignedMediumInteger('post_type')->default(0)
+                ->comment('0-无需物流，1000 - 未知运输方式 2000-空运， 3000-公路， 4000-铁路， 5000-高铁， 6000-海运 ');
             $table->boolean('score_settle')->default(false)->comment('积分是否已经结算');
             $table->string('post_no', 32)->nullable()->default(null)->comment('快递编号');
             $table->string('post_code', 6)->nullable()->default(null)->comment('邮编');
@@ -59,7 +61,7 @@ class CreateOrdersTable extends Migration
             $table->string('ip', 15)->nullable()->default(null)->comment('支付终端ip地址');
             $table->string('trade_status', 16)->nullable()->default(Order::TRADE_FINISHED)->comment('交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付');
-            $table->unsignedSmallInteger('years')->nullable()->default(null)->comment('年');
+            $table->unsignedSmallInteger('year')->nullable()->default(null)->comment('年');
             $table->unsignedTinyInteger('month')->nullable()->default(null)->comment('月');
             $table->unsignedTinyInteger('day')->nullable()->default(null)->comment('日');
             $table->unsignedTinyInteger('week')->nullable()->default(null)->comment('星期');
