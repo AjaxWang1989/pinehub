@@ -290,18 +290,19 @@ class OrderController extends Controller
         $this->setCustomerInfoForOrder($order, $user);
         $order['discount_amount'] = 0;
         $shop = null;
-        if($order['receiving_shop_id']) {
+        if(isset($order['receiving_shop_id']) && $order['receiving_shop_id']) {
             $shop = Shop::find($order['receiving_shop_id']);
         }
-        if(!$shop && $order['store_id']) {
+        if(!$shop && isset($order['store_id']) && $order['store_id']) {
             $shop = Shop::find($order['store_id']);
         }
         if (!isset($order['pick_date']) || !$order['pick_date']){
             $order['pick_date'] = Carbon::now()->format('Y-m-d');
         }
-
-        $order['pick_up_start_time'] = "{$order['pick_date']} {$shop->startAt}:00";
-        $order['pick_up_end_time']   = "{$order['pick_date']} {$shop->endAt}:00";
+        $start = ($shop ? $shop->startAt : '7:00');
+        $end = ($shop ? $shop->endAt : '19:00');
+        $order['pick_up_start_time'] = "{$order['pick_date']} {$start}:00";
+        $order['pick_up_end_time']   = "{$order['pick_date']} {$end}:00";
         unset($order['pick_date']);
 
         /** @var Collection $shoppingCarts */
