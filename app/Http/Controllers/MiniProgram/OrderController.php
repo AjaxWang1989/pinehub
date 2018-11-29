@@ -12,6 +12,7 @@ namespace App\Http\Controllers\MiniProgram;
 use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MemberCard;
+use App\Entities\MpUser;
 use App\Entities\Order;
 use App\Entities\ShoppingCart;
 use App\Exceptions\UnifyOrderException;
@@ -137,6 +138,8 @@ class OrderController extends Controller
 
     /**
      * 重新支付订单
+     * @param int $orderId
+     * @return mixed
      */
 
     public function againOrder(int $orderId){
@@ -144,11 +147,10 @@ class OrderController extends Controller
         return $this->order($order);
     }
 
-    public function order($order){
+    protected function order($order){
 
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
-            Log::info('============ token =================',  [app('tymon.jwt.auth')->getToken()]);
             $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
@@ -164,63 +166,29 @@ class OrderController extends Controller
     }
 
     /**
-     * 创建订单
-     * @param Request $request
-     * @return \Dingo\Api\Http\Response
+     * 获取购物车
+     * @param array $order
+     * @param MpUser $user
+     * @return Collection
      */
-    public function createOrder(OrderCreateRequest $request)
+    protected function getShoppingCarts(array $order, MpUser $user)
     {
-        $user = $this->mpUser();
-        $order = $request->all();
-        if (isset($order['receiver_address']) && isset($order['build_num']) && isset($order['room_num'])){
-            $address = [
-                'receiver_address' => $order['receiver_address'],
-                'build_num'        => $order['build_num'],
-                'room_num'         => $order['room_num']
-            ];
-            $order['receiver_address'] = json_encode($address);
-        }
-
-        $order['app_id'] = $user->appId;
-        $order['member_id'] = $user->memberId;
-        $order['wechat_app_id'] = $user->platformAppId;
-        $order['customer_id'] = $user->id;
-        $order['open_id']  = $user->platformOpenId;
-
-        $order['discount_amount'] = 0;
-            //更新优惠券状态为已使用
-
-        if (isset($order['send_time']) && $order['send_time']){
-            $order['send_start_time'] = $order['send_time'][0];
-            $order['send_end_time']   = $order['send_time'][1];
-        }
-
-        $order['app_id'] = $user->appId;
-        $order['member_id'] = $user->memberId;
-        $order['wechat_app_id'] = $user->platformAppId;
-        $order['customer_id'] = $user->id;
-        $order['open_id']  = $user->platformOpenId;
-
-        $order['discount_amount'] = 0;
-
-        /** @var Collection $shoppingCarts */
-        $shoppingCarts = null;
         //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         if (isset($order['store_id']) && $order['store_id']){
-            $shoppingCarts = $this->shoppingCartRepository
+            return $this->shoppingCartRepository
                 ->findWhere([
                     'customer_id' => $user->id,
                     'shop_id'     =>$order['store_id']
                 ]);
 
         }elseif (isset($order['activity_id']) && $order['activity_id']){
-            $shoppingCarts = $this->shoppingCartRepository
+            return $this->shoppingCartRepository
                 ->findWhere([
                     'customer_id'              => $user->id,
                     'activity_id' => $order['activity_id']]);
 
         }else{
-            $shoppingCarts = $this->shoppingCartRepository
+            return $this->shoppingCartRepository
                 ->findWhere([
                     'customer_id'               => $user->id,
                     'activity_id'  => null,
@@ -228,7 +196,10 @@ class OrderController extends Controller
                 ]);
 
         }
-        $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
+    }
+
+    protected function useTicket(array &$order, MpUser $user)
+    {
         if(isset($order['card_id']) && $order['card_id'] ){
             $condition = [
                 'card_id' => $order['card_id'],
@@ -256,24 +227,22 @@ class OrderController extends Controller
                 throw new ModelNotFoundException('使用的优惠券不存在');
             }
         }
+    }
 
-        $order['shop_id'] = isset($order['store_id']) ? $order['store_id'] : null;
-
-        $order['merchandise_num'] = $shoppingCarts->sum('quality');
-
-        $order['payment_amount']  = round(($order['total_amount'] - $order['discount_amount']),2);
-        $now = Carbon::now();
-        $order['year'] = $now->year;
-        $order['month'] = $now->month;
-        $order ['day']   = $now->day;
-        $order['week']  = $now->dayOfWeekIso;
-        $order['hour']  = $now->hour;
-
+    /**
+     * 创建自订单
+     *
+     * @param array $order
+     * @param Collection $shoppingCarts
+     */
+    protected function buildOrderItemsFromShoppingCarts(array &$order, Collection $shoppingCarts)
+    {
         $order['order_items'] = [];
         $order['shopping_cart_ids']  = [];
         //取出购物车商品信息组装成一个子订单数组
         $shoppingCarts->map(function (ShoppingCart $cart) use($order){
-            $orderItem = $cart->only(['activity_id', 'shop_id', 'customer_id', 'merchandise_id', 'quality', 'sku_product_id'])->toArray();
+            $orderItem = $cart->only(['activity_id', 'shop_id', 'customer_id', 'merchandise_id', 'quality', 'sku_product_id'])
+                ->toArray();
             $orderItem['total_amount'] = $cart->amount;
             $orderItem['payment_amount'] = $cart->amount;
             $orderItem['status'] = Order::WAIT;
@@ -282,6 +251,67 @@ class OrderController extends Controller
             array_push($order['order_items'], $orderItem);
             array_push($order['shopping_cart_ids'], $cart->id);
         });
+    }
+
+    protected function setCustomerInfoForOrder(array &$order, MpUser $user)
+    {
+        $order['app_id'] = $user->appId;
+        $order['member_id'] = $user->memberId;
+        $order['wechat_app_id'] = $user->platformAppId;
+        $order['customer_id'] = $user->id;
+        $order['open_id']  = $user->platformOpenId;
+        $order['app_id'] = $user->appId;
+        $order['member_id'] = $user->memberId;
+        $order['wechat_app_id'] = $user->platformAppId;
+        $order['customer_id'] = $user->id;
+        $order['open_id']  = $user->platformOpenId;
+    }
+
+    /**
+     * 创建订单
+     * @param OrderCreateRequest $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function createOrder(OrderCreateRequest $request)
+    {
+        $user = $this->mpUser();
+        $order = $request->all();
+        $now = Carbon::now();
+        if (isset($order['receiver_address']) && isset($order['build_num']) && isset($order['room_num'])){
+            $address = [
+                'receiver_address' => $order['receiver_address'],
+                'build_num'        => $order['build_num'],
+                'room_num'         => $order['room_num']
+            ];
+            $order['receiver_address'] = json_encode($address);
+        }
+
+        $this->setCustomerInfoForOrder($order, $user);
+        $order['discount_amount'] = 0;
+        if (isset($order['send_time']) && $order['send_time']){
+            $order['send_start_time'] = $order['send_time'][0];
+            $order['send_end_time']   = $order['send_time'][1];
+        }
+
+        /** @var Collection $shoppingCarts */
+        $shoppingCarts = $this->getShoppingCarts($order, $user);
+
+        $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
+
+        $this->useTicket($order, $user);
+
+        $order['shop_id'] = isset($order['store_id']) ? $order['store_id'] : null;
+
+        $order['merchandise_num'] = $shoppingCarts->sum('quality');
+
+        $order['payment_amount']  = round(($order['total_amount'] - $order['discount_amount']),2);
+
+        $order['year'] = $now->year;
+        $order['month'] = $now->month;
+        $order ['day']   = $now->day;
+        $order['week']  = $now->dayOfWeekIso;
+        $order['hour']  = $now->hour;
+        $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
