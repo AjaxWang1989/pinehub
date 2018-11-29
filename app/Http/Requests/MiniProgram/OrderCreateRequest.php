@@ -45,7 +45,8 @@ class OrderCreateRequest extends FormRequest
             'card_id' => 'string',
             'store_id' => 'integer',
             'activity_id' => 'integer',
-            'activity_merchandises_id' =>'integer'
+            'activity_merchandises_id' =>'integer',
+            'pick_up_method' => Rule::in(Order::USER_SELF_PICK_UP, Order::SEND_ORDER_TO_USER, Order::NOT_NEED_PICK_UPMETHOD)
         ];
     }
 
