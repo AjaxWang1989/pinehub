@@ -222,7 +222,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                 $unit,
                 DB::raw('sum( `payment_amount` ) as total_payment_amount'),
                 'type',
-                DB::raw('count(`*`) as order_count'),
+                DB::raw('count(*) as order_count'),
                 DB::raw('sum( `merchandise_num` ) as merchandise_count'),
                 'paid_at'])
                 ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED])
