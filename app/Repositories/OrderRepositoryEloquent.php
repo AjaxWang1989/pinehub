@@ -269,7 +269,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         //销售笔数
         $sellOrderNum = $orders->sum('order_count');
         return [
-            'statistics_data' => $statisticsData,
+            'order_statistics' => $statisticsData,
             'total_order_amount' => $bookPaymentAmount + $sitePaymentAmount,
             'booking_order_total_payment_amount' => $bookPaymentAmount,
             'store_order_total_payment_amount' => $sitePaymentAmount,
