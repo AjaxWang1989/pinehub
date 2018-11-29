@@ -19,6 +19,7 @@ class StatusOrdersTransformer extends TransformerAbstract
             'id'      => $model->id,
             'code'    => $model->code,
             'type'    => $model->type,
+            'pick_up_method' => $model->pickUpMethod,
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
             'receiver_address' => isset(json_decode($model->receiverAddress)->receiver_address) ?json_decode($model->receiverAddress)->receiver_address : $model->receiverAddress ,
