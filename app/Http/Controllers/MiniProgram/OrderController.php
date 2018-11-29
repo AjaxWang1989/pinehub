@@ -245,6 +245,7 @@ class OrderController extends Controller
             $orderItem = $cart->only(['activity_id', 'shop_id', 'customer_id', 'merchandise_id', 'quality', 'sku_product_id']);
             $orderItem['total_amount'] = $cart->amount;
             $orderItem['payment_amount'] = $cart->amount;
+            $orderItem['discount_amount'] = 0;
             $orderItem['status'] = Order::WAIT;
             $orderItem['type'] = $order['type'];
             $orderItem['pick_up_method'] = $order['pick_up_method'];
