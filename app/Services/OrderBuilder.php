@@ -452,9 +452,9 @@ class OrderBuilder implements InterfaceServiceHandler
             'origin_price',
             'sell_price',
             'cost_price',
-            'main_image',
-            'name'
+            'main_image'
         ]));
+        $data['merchandise_name'] = $merchandise->name;
         return collect($data);
     }
 

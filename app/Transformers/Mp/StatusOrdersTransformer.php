@@ -31,7 +31,7 @@ class StatusOrdersTransformer extends TransformerAbstract
             'shop_end_hour'    => isset($model->shop->end_at) ? $model->shop->end_at : null ,
             'created_at'       => $model->createdAt->format('Y-m-d H:i:s'),
             'order_item_merchandises' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
-                $data  = $orderItem->only(['name','sell_price','quality','total_amount','main_image']);
+                $data  = $orderItem->only(['merchandise_name','sell_price','quality','total_amount','main_image']);
                 $data['sell_price'] = number_format($data['sell_price'], 2);
                 return $data;
             }) : null,
