@@ -23,11 +23,13 @@ interface OrderRepository extends RepositoryInterface
     public function insertMerchandise( array $itemMerchandises);
 
     /**
-     * @param $sendTime
-     * @param $shopId
+     * 自提订单
+     * @param $startAt
+     * @param $endAt
+     * @param int $shopId
      * @return mixed
      */
-    public function storeBuffetOrders(array $sendTime, int $shopId);
+    public function storeBuffetOrders($startAt, $endAt, int $shopId);
 
     /**
      * @param $sendTime
