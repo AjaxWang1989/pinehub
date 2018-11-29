@@ -22,6 +22,7 @@ use App\Transformers\Mp\StoreMerchandiseTransformer;
 use App\Http\Response\JsonResponse;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class ShopsController extends Controller
 {
@@ -199,6 +200,7 @@ class ShopsController extends Controller
             return $this->response(new JsonResponse($shop));
 
         }catch (\Exception $exception) {
+            Log::info('exception', $exception->getTrace());
             throw new ModelNotFoundException('你不是店主无法访问接口');
         }
     }
