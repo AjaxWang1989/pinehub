@@ -24,10 +24,10 @@ interface OrderRepository extends RepositoryInterface
 
     /**
      * @param $sendTime
-     * @param $userId
+     * @param $shopId
      * @return mixed
      */
-    public function storeBuffetOrders(array $sendTime, int $userId);
+    public function storeBuffetOrders(array $sendTime, int $shopId);
 
     /**
      * @param $sendTime

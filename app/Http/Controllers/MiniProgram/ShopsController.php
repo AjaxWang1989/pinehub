@@ -50,6 +50,12 @@ class ShopsController extends Controller
      */
     protected  $shopMerchandiseRepository = null;
 
+    const SEND_BATCH_COLLECTION = [
+        ['5:00', '6:00'],
+        ['10:00', '11:00'],
+        ['14:00', '15:00']
+    ];
+
     /**
      * ShopsController constructor.
      * @param ShopRepository $shopRepository

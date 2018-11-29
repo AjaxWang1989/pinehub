@@ -40,8 +40,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $receiverName 收货姓名
  * @property string|null $receiverAddress 收货地址
  * @property string|null $receiverMobile 收货人电话
- * @property string|null $sendStartTime 配送开始时间
- * @property string|null $sendEndTime 配送结束时间
+ * @property string|null $pickUpStartTime 配送开始时间
+ * @property string|null $pickUpEndTime 配送结束时间
  * @property string|null $comment 备注
  * @property \Illuminate\Support\Carbon|null $consignedAt 发货时间
  * @property int $type 订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单
@@ -124,13 +124,13 @@ use App\Entities\Traits\ModelAttributesAccess;
 class Order extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
-    const CANCEL = 0;
-    const WAIT = 100;
-    const MAKE_SURE = 200;
-    const PAID = 300;
-    const SEND = 400;
-    const COMPLETED = 500;
-    const PAY_FAILED = 600;
+    const CANCEL = 0;// 关闭
+    const WAIT = 100;// 等待提交
+    const MAKE_SURE = 200;// 等待支付
+    const PAID = 300;// 完成支付
+    const SEND = 400;// 已经配送
+    const COMPLETED = 500;// 支付完成
+    const PAY_FAILED = 600;// 支付失败
 
     const ORDER_NUMBER_PREFIX = 'PH';
 
@@ -188,11 +188,11 @@ class Order extends Model implements Transformable
         'code', 'customer_id', 'card_id', 'card_code', 'merchandise_num', 'total_amount',
         'payment_amount', 'discount_amount', 'paid_at', 'pay_type', 'status', 'cancellation',
         'signed_at', 'consigned_at', 'post_no', 'post_code', 'post_name', 'receiver_city',
-        'receiver_district', 'receiver_name', 'receiver_address', 'receiver_mobile', 'send_start_time',
-        'send_end_time', 'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
+        'receiver_district', 'receiver_name', 'receiver_address', 'receiver_mobile',
+        'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
         'score_settle', 'ip', 'open_id', 'transaction_id', 'shop_id', 'member_id', 'trade_status',
         'year', 'month', 'week', 'hour', 'activity_id', 'receiving_shop_id', 'send_batch', 'day',
-        'pick_up_method'
+        'pick_up_method', 'pick_up_start_time', 'pick_up_end_time'
     ];
 
     public static function boot()

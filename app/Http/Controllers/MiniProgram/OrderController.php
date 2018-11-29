@@ -14,6 +14,7 @@ use App\Entities\CustomerTicketCard;
 use App\Entities\MemberCard;
 use App\Entities\MpUser;
 use App\Entities\Order;
+use App\Entities\Shop;
 use App\Entities\ShoppingCart;
 use App\Exceptions\UnifyOrderException;
 use Carbon\Carbon;
@@ -288,10 +289,20 @@ class OrderController extends Controller
 
         $this->setCustomerInfoForOrder($order, $user);
         $order['discount_amount'] = 0;
-        if (isset($order['send_time']) && $order['send_time']){
-            $order['send_start_time'] = $order['send_time'][0];
-            $order['send_end_time']   = $order['send_time'][1];
+        $shop = null;
+        if($order['receiving_shop_id']) {
+            $shop = Shop::find($order['receiving_shop_id']);
         }
+        if(!$shop && $order['store_id']) {
+            $shop = Shop::find($order['store_id']);
+        }
+        if (!isset($order['pick_date']) || !$order['pick_date']){
+            $order['pick_date'] = Carbon::now()->format('Y-m-d');
+        }
+
+        $order['pick_up_start_time'] = "{$order['pick_date']} {$shop->startAt}:00";
+        $order['pick_up_end_time']   = "{$order['pick_date']} {$shop->endAt}:00";
+        unset($order['pick_date']);
 
         /** @var Collection $shoppingCarts */
         $shoppingCarts = $this->getShoppingCarts($order, $user);
@@ -327,24 +338,24 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function storeBuffetOrders(StoreBuffetOrdersRequest $request){
-        $user = $this->mpUser();
+        $user = $this->shopManager();
 
-        $shopUser = $this->shopRepository
-            ->findWhere(['user_id'  =>  $user['member_id']])
+        /** @var Shop $shop */
+        $shop = $this->shopRepository
+            ->findWhere(['user_id'  =>  $user->id])
             ->first();
 
-        if ($shopUser){
-            $userId = $shopUser['id'];
+        if ($shop){
             $sendTime = $request->all();
-
             //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
-                ->storeBuffetOrders($sendTime,  $userId);
+                ->storeBuffetOrders($sendTime,  $shop->id);
 
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
+        }else{
+            throw new ModelNotFoundException('您不是店铺老板无权查询此接口');
         }
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**

@@ -99,14 +99,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      */
 
-    public function storeBuffetOrders(array $sendTime,int $shopId)
+    public function storeBuffetOrders($startAt, $endAt, int $shopId)
     {
-        $startAt = null;
-        $endAt = null;
-
-        $startAt = $sendTime['paid_start_time'];
-        $endAt = $sendTime['paid_end_time'];
-
         $this->scopeQuery(function (Order $order) use($shopId,$startAt,$endAt) {
             return $order
                 ->where(['shop_id' => $shopId])
@@ -114,8 +108,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                     Order::PAID,
                     Order::SEND,
                     Order::COMPLETED])
-                ->where('paid_at', '>=', $startAt)
-                ->where('paid_at', '<', $endAt)
+                ->where('pick_up_start_time', '>=', $startAt)
+                ->where('pick_up_end_time', '<', $endAt)
                 ->whereIn('type', [
                     Order::SHOPPING_MALL_ORDER,
                     Order::SITE_USER_ORDER
