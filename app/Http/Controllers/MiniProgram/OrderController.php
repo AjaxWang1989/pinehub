@@ -240,10 +240,8 @@ class OrderController extends Controller
     {
         $order['order_items'] = [];
         $order['shopping_cart_ids']  = [];
-        Log::info('shopping carts', $shoppingCarts->toArray());
         //取出购物车商品信息组装成一个子订单数组
-        $shoppingCarts->map(function (ShoppingCart $cart) use($order){
-            Log::info('shopping cart', $cart->toArray());
+        $shoppingCarts->map(function (ShoppingCart $cart) use(&$order){
             $orderItem = $cart->only(['activity_id', 'shop_id', 'customer_id', 'merchandise_id', 'quality', 'sku_product_id']);
             $orderItem['total_amount'] = $cart->amount;
             $orderItem['payment_amount'] = $cart->amount;
