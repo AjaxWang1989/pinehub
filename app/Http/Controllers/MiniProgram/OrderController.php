@@ -349,7 +349,7 @@ class OrderController extends Controller
             $sendTime = $request->all();
             //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
-                ->storeBuffetOrders($sendTime,  $shop->id);
+                ->storeBuffetOrders($request->input('start_at'), $request->input('end_at'),  $shop->id);
 
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
