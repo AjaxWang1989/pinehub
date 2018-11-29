@@ -247,8 +247,6 @@ class OrderController extends Controller
             $orderItem['payment_amount'] = $cart->amount;
             $orderItem['discount_amount'] = 0;
             $orderItem['status'] = Order::WAIT;
-            $orderItem['type'] = $order['type'];
-            $orderItem['pick_up_method'] = $order['pick_up_method'];
             array_push($order['order_items'], $orderItem);
             array_push($order['shopping_cart_ids'], $cart->id);
         });

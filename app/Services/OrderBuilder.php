@@ -196,6 +196,8 @@ class OrderBuilder implements InterfaceServiceHandler
                     $orderItem['app_id'] =  $orderModel->appId;
                     $orderItem['member_id'] =  $orderModel->memberId;
                     $orderItem['status'] =  $orderModel->status;
+                    $orderItem['type'] = $orderModel->type;
+                    $orderItem['pick_up_method'] = $orderModel->pickUpMethod;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);
                     return new OrderItem($orderItem->toArray());
                 });
