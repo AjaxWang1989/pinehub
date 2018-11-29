@@ -240,6 +240,7 @@ class OrderController extends Controller
     {
         $order['order_items'] = [];
         $order['shopping_cart_ids']  = [];
+        Log::info('shopping carts', $shoppingCarts->toArray());
         //取出购物车商品信息组装成一个子订单数组
         $shoppingCarts->map(function (ShoppingCart $cart) use($order){
             Log::info('shopping cart', $cart->toArray());
