@@ -200,7 +200,7 @@ class ShopsController extends Controller
             return $this->response(new JsonResponse($shop));
 
         }catch (\Exception $exception) {
-            Log::info('exception', $exception->getTrace());
+            Log::info('exception', [$exception->getMessage(), $exception->getTrace()]);
             throw new ModelNotFoundException('你不是店主无法访问接口');
         }
     }
