@@ -51,7 +51,7 @@ class PaymentNotify implements PayNotifyInterface
                 if($result) {
                     //发送模版消息
                     $orderData=[];
-                    if($order->type !== Order::OFF_LINE_PAY){
+                    if($order->type !== Order::OFF_LINE_PAYMENT_ORDER){
                         $orderData['signed_at'] = $order->signedAt;
                         $orderData['consigned_at'] = $order->consignedAt;
                     }
@@ -67,7 +67,7 @@ class PaymentNotify implements PayNotifyInterface
 
     protected function offLinePayOrder(Order &$order)
     {
-        if($order->type !== Order::OFF_LINE_PAY)
+        if($order->type !== Order::OFF_LINE_PAYMENT_ORDER)
             return;
         $now = Carbon::now();
         $order->signedAt = $now;

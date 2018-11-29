@@ -45,7 +45,7 @@ class UserCardPaidListener
             $order = new Order();
             $order->cardId = $event->getCardId();
             $order->cardCode = $event->getUserCardCode();
-            $order->type = Order::OFF_LINE_PAY;
+            $order->type = Order::OFF_LINE_PAYMENT_ORDER;
             $order->appId = $customer->appId;
             $order->openId = $customer->platformOpenId;
             $order->wechatAppId = $customer->platformAppId;
