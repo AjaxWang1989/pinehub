@@ -66,7 +66,7 @@ class MiniProgramApiRoutes extends ApiRoutes
 
             $router->get('/cancel/order/{id}', ['as' => 'user.cancel.order.','uses' => 'OrderController@cancelOrder']);
             $router->get('/confirm/order/{id}', ['as' => 'user.confirm.order.','uses' => 'OrderController@confirmOrder']);
-            $router->get('/{status}/orders', ['as' => 'user.orders','uses' => 'OrderController@Orders']);
+            $router->get('/{status}/orders', ['as' => 'user.orders','uses' => 'OrderController@userOrders']);
             $router->post('/create/order', ['as' => 'user.create.order','uses' => 'OrderController@createOrder']);
             $router->get('/again/order/{orderId}', ['as' => 'user.again.order','uses' => 'OrderController@againOrder']);
             $router->get('/store/buffet/orders', ['as' => 'user.store.buffet.orders','uses' => 'OrderController@storeBuffetOrders']);

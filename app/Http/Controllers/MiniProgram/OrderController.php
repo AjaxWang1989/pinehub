@@ -393,13 +393,11 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
 
-    public function orders(string  $status){
-        $user   = $this->mpUser();
-
-        $customerId = $user['id'];
+    public function userOrders(string  $status){
+        $customer   = $this->mpUser();
 
         $items = $this->orderRepository
-            ->orders($status,   $customerId);
+            ->userOrders($status,   $customer->id);
         return $this->response()
             ->paginator($items, new StatusOrdersTransformer());
     }

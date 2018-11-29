@@ -158,7 +158,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param string $limit
      * @return mixed
      */
-    public function orders(string $status, int $customerId)
+    public function userOrders(string $status, int $customerId)
     {
         $where = [];
         if ($status == 'success'){
@@ -169,7 +169,10 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
             $where = ['customer_id' => $customerId];
         }
         $this->scopeQuery(function (Order $order) use($where){
-            return $order->where($where)->orderBy('id','desc');
+            return $order->where($where)
+                ->whereIn('type', [Order::SITE_USER_ORDER, Order::OFF_LINE_PAYMENT_ORDER,
+                    Order::SHOPPING_MALL_ORDER])
+                ->orderBy('id','desc');
         });
         return $this->paginate();
     }
