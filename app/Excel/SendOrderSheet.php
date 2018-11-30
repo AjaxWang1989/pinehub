@@ -71,7 +71,12 @@ class SendOrderSheet
                 $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
                     $rows = $this->getSheetData();
                     $sheet->rows($rows)->row(1, function (CellWriter $row) {
-                        $row->setFontSize('18px');
+//                        $row->setFontSize('18px');
+                        $row->setFont(array(   //设置标题的样式
+                            'family' => 'Calibri',
+                            'size' => '16',
+                            'bold' => true
+                        ));
                         $row->setAlignment('center');
                         $row->setValignment('center');
                         //$row->setFontWeight();
