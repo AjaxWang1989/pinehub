@@ -68,8 +68,10 @@ class SendOrderSheet
             $this->excel->create($this->getFilename(), function (LaravelExcelWriter $sheet) {
                 $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
                     $rows = $this->getSheetData();
-                    $sheet->setFont([
-                        'size' => 14
+                    $sheet->setStyle([
+                        'font' => [
+                            'size' => 14
+                        ]
                     ]);
                     $sheet->rows($rows)
                         ->row(1, function (CellWriter $row) {
