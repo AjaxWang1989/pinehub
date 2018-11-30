@@ -213,7 +213,7 @@ class BackendApiRoutes extends ApiRoutes
                     app()->make(SendOrderSheet::class)->download();
                 }catch (\Exception $exception) {
                     Log::info('exception '.$exception->getMessage());
-                    return 'exception '.$exception->getMessage();
+                    return 'exception '.$exception->getMessage().' '.$exception->getTraceAsString();
                 }
 
                 return 'test';
