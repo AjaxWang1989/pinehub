@@ -82,13 +82,14 @@ class SendOrderSheet
 
                         });
                     // 设置每一列的宽度
-                    $sheet->setStyle([
-                        'A' => 100,
-                        'B' => 10,
-                        'C' => 10,
-                        'D' => 10,
-                        'E' => 10
-                    ]);
+                    $sheet->setWidth('A', 1000);
+//                    $sheet->setStyle([
+//                        'A' => 100,
+//                        'B' => 10,
+//                        'C' => 10,
+//                        'D' => 10,
+//                        'E' => 10
+//                    ]);
                 });
             })->export();
         } catch (LaravelExcelException $e) {
