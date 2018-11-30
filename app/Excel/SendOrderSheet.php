@@ -75,8 +75,9 @@ class SendOrderSheet
                         $row->setAlignment('center');
                         $row->setValignment('center');
                         //$row->setFontWeight();
+                        $row->sheet->mergeCells($row->cells);
                     });
-                    $sheet->mergeCells('A1:E1');
+//                    $sheet->mergeCells('A1:E1');
                     //                $sheet->setStyle([]);
                 });
             })->export();
