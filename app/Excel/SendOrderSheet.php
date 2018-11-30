@@ -69,7 +69,7 @@ class SendOrderSheet
                 $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
                     $rows = $this->getSheetData();
                     $sheet->setStyle([
-                        'A' => 10,
+                        'A' => 100,
                         'B' => 10,
                         'C' => 10,
                         'D' => 10,
