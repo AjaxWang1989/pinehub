@@ -6,6 +6,8 @@
  * Time: 下午12:40
  */
 namespace App\Routes;
+use App\Excel\SendOrderSheet;
+use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Router as DingoRouter;
 use Dingo\Api\Routing\Router;
 use Laravel\Lumen\Routing\Router as LumenRouter;
@@ -204,6 +206,10 @@ class BackendApiRoutes extends ApiRoutes
             $router->post('/city/{cityId}/county', ['as' => 'county.create.city', 'uses' => 'CountiesController@store']);
             $router->post('/county', ['as' => 'county.create', 'uses' => 'CountiesController@store']);
             $router->put('/county/{id}', ['as' => 'county.update', 'uses' => 'CountiesController@update']);
+
+            $router->get('excel/test', function (Request $request) {
+                return app()->make(SendOrderSheet::class)->download();
+            });
 
         });
     }

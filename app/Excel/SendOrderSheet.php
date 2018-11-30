@@ -15,6 +15,7 @@ use App\Entities\Shop;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Files\NewExcelFile;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
 
@@ -28,7 +29,7 @@ class SendOrderSheet extends NewExcelFile
     protected $date = null;
 
     protected $endAt = null;
-    protected $shops = null;
+//    protected $shops = null;
 
     public function getFilename()
     {
@@ -36,15 +37,16 @@ class SendOrderSheet extends NewExcelFile
         return "{$this->date}配送订单";
     }
 
-    public function __construct(Collection $shops, string $date)
+    public function __construct(Excel $excel, string $date)
     {
+        parent::__construct(app(), $excel);
         $this->headers = [
             ['配送订单'],
             ['', '', '', '日期：', $date],
             ['餐车/自提点编号', '序号', '产品名称', '产品数量', '配送批次']
         ];
         $this->date = $date;
-        $this->shops = $shops;
+//        $this->shops = $shops;
     }
 
     /**
@@ -60,6 +62,7 @@ class SendOrderSheet extends NewExcelFile
     {
         $sheet = $this->sheet("{$this->date}配送订单", function (LaravelExcelWorksheet $sheet) {
             $sheet->rows($this->getSheetData());
+            $sheet->mergeCells('A1:E1');
         });
 
         $sheet->download();
