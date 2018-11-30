@@ -12,6 +12,10 @@ use Dingo\Api\Routing\Router as DingoRouter;
 use Dingo\Api\Routing\Router;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Router as LumenRouter;
+use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Readers\LaravelExcelReader;
+
 class BackendApiRoutes extends ApiRoutes
 {
 
@@ -210,7 +214,20 @@ class BackendApiRoutes extends ApiRoutes
 
             $router->get('excel/test', function (Request $request) {
                 try{
-                    app()->make(SendOrderSheet::class)->download();
+                    //app()->make(SendOrderSheet::class)->download();
+                    $cellData = [
+                        ['学号','姓名','成绩'],
+                        ['10001','AAAAA','99'],
+                        ['10002','BBBBB','92'],
+                        ['10003','CCCCC','95'],
+                        ['10004','DDDDD','89'],
+                        ['10005','EEEEE','96'],
+                    ];
+                    Excel::create('学生成绩',function(LaravelExcelReader $excel) use ($cellData){
+                        $excel->sheet('score', function(LaravelExcelWorksheet $sheet) use ($cellData){
+                            $sheet->rows($cellData);
+                        });
+                    })->export('xls');
                 }catch (\Exception $exception) {
                     Log::info('exception '.$exception->getMessage());
                     return 'exception '.$exception->getMessage().' '.$exception->getTraceAsString();
