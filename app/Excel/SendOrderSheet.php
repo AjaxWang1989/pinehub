@@ -43,7 +43,6 @@ class SendOrderSheet
 
     public function __construct(Excel $excel, string $date = null)
     {
-        //parent::__construct(app()->make(Application::class), $excel);
         $this->excel = $excel;
         $date = $date ? $date : Carbon::now()->format('Y-m-d');
         $this->headers = [
@@ -52,7 +51,6 @@ class SendOrderSheet
             ['餐车/自提点编号', '序号', '产品名称', '产品数量', '配送批次']
         ];
         $this->date = $date;
-//        $this->shops = $shops;
     }
 
     /**
@@ -70,20 +68,19 @@ class SendOrderSheet
             $this->excel->create($this->getFilename(), function (LaravelExcelWriter $sheet) {
                 $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
                     $rows = $this->getSheetData();
-                    $sheet->rows($rows)->row(1, function (CellWriter $row) {
-//                        $row->setFontSize('18px');
-                        $row->setFont(array(   //设置标题的样式
-                            'family' => 'Calibri',
-                            'size' => '16',
-                            'bold' => true
-                        ));
-                        $row->setAlignment('center');
-                        $row->setValignment('center');
-                        //$row->setFontWeight();
-                        $row->sheet->mergeCells($row->cells);
-                    });
-//                    $sheet->mergeCells('A1:E1');
-                    //                $sheet->setStyle([]);
+                    $sheet->rows($rows)
+                        ->row(1, function (CellWriter $row) {
+                            $row->setFont(array(
+                                'family' => 'Calibri',
+                                'size' => '14',
+                                'bold' => true
+                            ));
+                            $row->setAlignment('center');
+                            //$row->setValignment('center');
+                            $row->sheet->mergeCells($row->cells);
+                            $row->sheet->getStyle($row->cells);
+
+                        });
                 });
             })->export();
         } catch (LaravelExcelException $e) {
