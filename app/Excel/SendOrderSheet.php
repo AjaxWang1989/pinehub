@@ -68,11 +68,14 @@ class SendOrderSheet
             $this->excel->create($this->getFilename(), function (LaravelExcelWriter $sheet) {
                 $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
                     $rows = $this->getSheetData();
+                    $sheet->setFont([
+                        'size' => 14
+                    ]);
                     $sheet->rows($rows)
                         ->row(1, function (CellWriter $row) {
                             $row->setFont(array(
                                 'family' => 'Calibri',
-                                'size' => '14',
+                                'size' => 18,
                                 'bold' => true
                             ));
                             $row->setAlignment('center');
