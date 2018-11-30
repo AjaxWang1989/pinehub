@@ -73,7 +73,6 @@ $app->bind('path.config', function (){
  ]);
 
 
-
 /**
  *fix cache and auth manager bug
  * */
@@ -107,7 +106,8 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
 
 
-
+$app->configure('filesystems');
+$app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

@@ -41,7 +41,7 @@ class SendOrderSheet extends NewExcelFile
 
     public function __construct(Excel $excel, string $date = null)
     {
-        parent::__construct(app()->make(Application::class), $excel);
+        parent::__construct(app(), $excel);
         $date = $date ? $date : Carbon::now()->format('Y-m-d');
         $this->headers = [
             ['配送订单'],
