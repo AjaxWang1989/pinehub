@@ -208,7 +208,12 @@ class BackendApiRoutes extends ApiRoutes
             $router->put('/county/{id}', ['as' => 'county.update', 'uses' => 'CountiesController@update']);
 
             $router->get('excel/test', function (Request $request) {
-                app()->make(SendOrderSheet::class)->download();
+                try{
+                    app()->make(SendOrderSheet::class)->download();
+                }catch (\Exception $exception) {
+                    throw $exception;
+                }
+
                 return 'test';
             });
 
