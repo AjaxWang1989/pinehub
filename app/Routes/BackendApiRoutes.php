@@ -15,6 +15,7 @@ use Laravel\Lumen\Routing\Router as LumenRouter;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Facades\Excel;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
+use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
 class BackendApiRoutes extends ApiRoutes
 {
@@ -223,7 +224,7 @@ class BackendApiRoutes extends ApiRoutes
                         ['10004','DDDDD','89'],
                         ['10005','EEEEE','96'],
                     ];
-                    Excel::create('学生成绩',function(LaravelExcelReader $excel) use ($cellData){
+                    Excel::create('学生成绩',function(LaravelExcelWriter $excel) use ($cellData){
                         $excel->sheet('score', function(LaravelExcelWorksheet $sheet) use ($cellData){
                             $sheet->rows($cellData);
                         });
