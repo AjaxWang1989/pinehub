@@ -13,6 +13,7 @@ use App\Entities\Order;
 use App\Entities\OrderItem;
 use App\Entities\Shop;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Excel;
@@ -37,9 +38,10 @@ class SendOrderSheet extends NewExcelFile
         return "{$this->date}配送订单";
     }
 
-    public function __construct(Excel $excel, string $date)
+    public function __construct(Excel $excel, string $date = null)
     {
         parent::__construct(app(), $excel);
+        $date = $date ? $date : Carbon::now()->format('Y-m-d');
         $this->headers = [
             ['配送订单'],
             ['', '', '', '日期：', $date],
