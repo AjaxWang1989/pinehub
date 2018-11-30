@@ -76,10 +76,8 @@ class SendOrderSheet
                                 'bold' => true
                             ));
                             $row->setAlignment('center');
-                            //$row->setValignment('center');
+                            $row->setValignment('center');
                             $row->sheet->mergeCells($row->cells);
-                            $row->sheet->getStyle($row->cells);
-
                         });
                     // 设置每一列的宽度
                     $sheet->setWidth('A', 20);
