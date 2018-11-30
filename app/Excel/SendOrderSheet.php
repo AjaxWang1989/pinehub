@@ -68,13 +68,6 @@ class SendOrderSheet
             $this->excel->create($this->getFilename(), function (LaravelExcelWriter $sheet) {
                 $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
                     $rows = $this->getSheetData();
-                    $sheet->setStyle([
-                        'A' => 100,
-                        'B' => 10,
-                        'C' => 10,
-                        'D' => 10,
-                        'E' => 10
-                    ]);
                     $sheet->rows($rows)
                         ->row(1, function (CellWriter $row) {
                             $row->setFont(array(
@@ -88,6 +81,14 @@ class SendOrderSheet
                             $row->sheet->getStyle($row->cells);
 
                         });
+                    // 设置每一列的宽度
+                    $sheet->setStyle([
+                        'A' => 100,
+                        'B' => 10,
+                        'C' => 10,
+                        'D' => 10,
+                        'E' => 10
+                    ]);
                 });
             })->export();
         } catch (LaravelExcelException $e) {
