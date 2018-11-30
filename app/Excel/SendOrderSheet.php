@@ -68,6 +68,6 @@ class SendOrderSheet extends NewExcelFile
             $sheet->mergeCells('A1:E1');
         });
 
-        $sheet->download();
+        return $sheet->download();
     }
 }
