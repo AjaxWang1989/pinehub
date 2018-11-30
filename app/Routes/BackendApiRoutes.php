@@ -10,6 +10,7 @@ use App\Excel\SendOrderSheet;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Router as DingoRouter;
 use Dingo\Api\Routing\Router;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Router as LumenRouter;
 class BackendApiRoutes extends ApiRoutes
 {
@@ -211,7 +212,7 @@ class BackendApiRoutes extends ApiRoutes
                 try{
                     app()->make(SendOrderSheet::class)->download();
                 }catch (\Exception $exception) {
-                    throw $exception;
+                    Log::info('exception '.$exception->getMessage());
                 }
 
                 return 'test';
