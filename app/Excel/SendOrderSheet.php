@@ -82,7 +82,7 @@ class SendOrderSheet
 
                         });
                     // 设置每一列的宽度
-                    $sheet->setWidth('A', 200);
+                    $sheet->setWidth('A', 50);
 //                    $sheet->setStyle([
 //                        'A' => 300,
 //                        'B' => 50,
