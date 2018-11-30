@@ -63,7 +63,7 @@ class SendOrderSheet
 
     public function download()
     {
-        $sheet = $this->excel->sheet("{$this->date}配送订单", function (LaravelExcelWorksheet $sheet) {
+        $sheet = $this->excel->create("{$this->date}配送订单", function (LaravelExcelWorksheet $sheet) {
             $sheet->rows($this->getSheetData());
             $sheet->mergeCells('A1:E1');
         });
