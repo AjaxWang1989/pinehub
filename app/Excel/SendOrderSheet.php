@@ -71,10 +71,10 @@ class SendOrderSheet
                 $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
                     $rows = $this->getSheetData();
                     $sheet->rows($rows)->row(1, function (CellWriter $row) {
-                        $row->setFontSize('18px');
+                        //$row->setFontSize('18px');
                         $row->setAlignment('center');
                         $row->setValignment('center');
-                        $row->setFontWeight();
+                        //$row->setFontWeight();
                     });
                     $sheet->mergeCells('A1:E1');
                     //                $sheet->setStyle([]);
