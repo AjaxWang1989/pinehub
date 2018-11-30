@@ -20,6 +20,7 @@ use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Files\NewExcelFile;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
+use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
 class SendOrderSheet
 {
@@ -63,9 +64,11 @@ class SendOrderSheet
 
     public function download()
     {
-        $sheet = $this->excel->create("{$this->date}配送订单", function (LaravelExcelWorksheet $sheet) {
-            $sheet->rows($this->getSheetData());
-            $sheet->mergeCells('A1:E1');
+        $sheet = $this->excel->create($this->getFilename(), function (LaravelExcelWriter $sheet) {
+            $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
+                $sheet->rows($this->getSheetData());
+                $sheet->mergeCells('A1:E1');
+            });
         });
 
         return $sheet->download();
