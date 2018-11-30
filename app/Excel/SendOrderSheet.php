@@ -21,12 +21,11 @@ use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Files\NewExcelFile;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
 
-/**
- * @method LaravelExcelReader sheet($sheetId, $callback)
- * */
-class SendOrderSheet extends NewExcelFile
+class SendOrderSheet
 {
     protected $headers = [];
+
+    protected $excel = null;
 
     protected $date = null;
 
@@ -41,7 +40,8 @@ class SendOrderSheet extends NewExcelFile
 
     public function __construct(Excel $excel, string $date = null)
     {
-        parent::__construct(app()->make(Application::class), $excel);
+        //parent::__construct(app()->make(Application::class), $excel);
+        $this->excel = $excel;
         $date = $date ? $date : Carbon::now()->format('Y-m-d');
         $this->headers = [
             ['配送订单'],
@@ -63,7 +63,7 @@ class SendOrderSheet extends NewExcelFile
 
     public function download()
     {
-        $sheet = $this->sheet("{$this->date}配送订单", function (LaravelExcelWorksheet $sheet) {
+        $sheet = $this->excel->sheet("{$this->date}配送订单", function (LaravelExcelWorksheet $sheet) {
             $sheet->rows($this->getSheetData());
             $sheet->mergeCells('A1:E1');
         });

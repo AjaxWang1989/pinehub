@@ -215,20 +215,20 @@ class BackendApiRoutes extends ApiRoutes
 
             $router->get('excel/test', function (Request $request) {
                 try{
-                    //app()->make(SendOrderSheet::class)->download();
-                    $cellData = [
-                        ['学号','姓名','成绩'],
-                        ['10001','AAAAA','99'],
-                        ['10002','BBBBB','92'],
-                        ['10003','CCCCC','95'],
-                        ['10004','DDDDD','89'],
-                        ['10005','EEEEE','96'],
-                    ];
-                    Excel::create('学生成绩',function(LaravelExcelWriter $excel) use ($cellData){
-                        $excel->sheet('score', function(LaravelExcelWorksheet $sheet) use ($cellData){
-                            $sheet->rows($cellData);
-                        });
-                    })->export('xls');
+                    app()->make(SendOrderSheet::class)->download();
+//                    $cellData = [
+//                        ['学号','姓名','成绩'],
+//                        ['10001','AAAAA','99'],
+//                        ['10002','BBBBB','92'],
+//                        ['10003','CCCCC','95'],
+//                        ['10004','DDDDD','89'],
+//                        ['10005','EEEEE','96'],
+//                    ];
+//                    Excel::create('学生成绩',function(LaravelExcelWriter $excel) use ($cellData){
+//                        $excel->sheet('score', function(LaravelExcelWorksheet $sheet) use ($cellData){
+//                            $sheet->rows($cellData);
+//                        });
+//                    })->export('xls');
                 }catch (\Exception $exception) {
                     Log::info('exception '.$exception->getMessage());
                     return 'exception '.$exception->getMessage().' '.$exception->getTraceAsString();
