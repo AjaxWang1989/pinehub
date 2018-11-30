@@ -18,8 +18,10 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Exceptions\LaravelExcelException;
 use Maatwebsite\Excel\Files\NewExcelFile;
 use Maatwebsite\Excel\Readers\LaravelExcelReader;
+use Maatwebsite\Excel\Writers\CellWriter;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
 class SendOrderSheet
@@ -54,23 +56,31 @@ class SendOrderSheet
     }
 
     /**
-     * @return array
+     * @return \Illuminate\Support\Collection
      * @throws
      * */
     protected function getSheetData() {
         $data = $this->headers;
-        return $data;
+        return collect($data);
     }
 
     public function download()
     {
-        $sheet = $this->excel->create($this->getFilename(), function (LaravelExcelWriter $sheet) {
-            $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
-                $sheet->rows($this->getSheetData());
-                $sheet->mergeCells('A1:E1');
-            });
-        });
-
-        return $sheet->download();
+        try {
+            $this->excel->create($this->getFilename(), function (LaravelExcelWriter $sheet) {
+                $sheet->sheet($this->date, function (LaravelExcelWorksheet $sheet) {
+                    $rows = $this->getSheetData();
+                    $sheet->rows($rows)->row(1, function (CellWriter $row) {
+                        $row->setFontSize('18px');
+                        $row->setAlignment('center');
+                        $row->setValignment('center');
+                        $row->setFontWeight();
+                    });
+                    $sheet->mergeCells('A1:E1');
+                    //                $sheet->setStyle([]);
+                });
+            })->export();
+        } catch (LaravelExcelException $e) {
+        }
     }
 }
