@@ -56,7 +56,7 @@ class Activity extends Model implements Transformable
     const FINISHED      = 2;
     const INVALID = 3;
 
-    const NEW_PRODUCT_ACTIVITY = 'NEW_PRODUCT';
+    const NEW_EVENTS_ACTIVITY = 'NEW_EVENTS';
     const PAYMENT_ACTIVITY = "PAYMENT";
 
     protected $casts = [

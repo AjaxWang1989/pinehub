@@ -41,24 +41,18 @@ class ActivityRepositoryEloquent extends BaseRepository implements ActivityRepos
     /**
      * @return mixed
      */
-    public function newActivity(){
+    public function newEventsActivity(){
         $nowTime = null;
 
         $nowTime = date('Y-m-d H:i:s',time());
 
         $this->scopeQuery(function (Activity $activity) use($nowTime){
             return $activity->where('status',Activity::HAVE_IN_HAND)
-                ->where('type', Activity::NEW_PRODUCT_ACTIVITY)
+                ->where('type', Activity::NEW_EVENTS_ACTIVITY)
                 ->where('start_at', '<=', $nowTime)
                 ->where('end_at', '>', $nowTime)
                 ->OrderBy('id','desc');
         });
         return $this->get()->first();
     }
-
-//    public function first()
-//    {
-//        // TODO: Implement first() method.
-//        return $this->model->first();
-//    }
 }

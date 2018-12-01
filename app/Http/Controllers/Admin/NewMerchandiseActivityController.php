@@ -46,14 +46,14 @@ class NewMerchandiseActivityController extends Controller
     //
     public function storeActivity(NewActivityRequest $request)
     {
-        $request->merge(['type' => Activity::NEW_PRODUCT_ACTIVITY, 'status' => Activity::HAVE_IN_HAND]);
+        $request->merge(['type' => Activity::NEW_EVENTS_ACTIVITY, 'status' => Activity::HAVE_IN_HAND]);
         $activity = $this->activityRepository->create($request->all());
         return $this->response()->item($activity, new ActivityTransformer());
     }
 
     public function updateActivity(int $id, NewActivityRequest $request)
     {
-        $request->merge(['type' => Activity::NEW_PRODUCT_ACTIVITY, 'status' => Activity::HAVE_IN_HAND]);
+        $request->merge(['type' => Activity::NEW_EVENTS_ACTIVITY, 'status' => Activity::HAVE_IN_HAND]);
         $activity = $this->activityRepository->update($request->all(), $id);
         return $this->response()->item($activity, new ActivityTransformer());
     }

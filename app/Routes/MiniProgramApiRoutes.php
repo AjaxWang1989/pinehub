@@ -39,8 +39,8 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->post('/save/mobile', ['as' => 'user.save.mobile','uses' => 'AuthController@saveMobile']);
 
 
-            $router->get('/new/activity', ['as' => 'user.new.activity','uses' => 'ActivityController@newActivity']);
-            $router->get('/new/activity/{activityId}/merchandises', ['as' => 'user.new.activity.merchandises','uses' => 'ActivityController@newActivityMerchandises']);
+            $router->get('/new/events', ['as' => 'user.new.events','uses' => 'ActivityController@newEventsActivity']);
+            $router->get('/new/events/{activityId}/merchandises', ['as' => 'user.new.activity.merchandises','uses' => 'ActivityController@newActivityMerchandises']);
 
 
             $router->get('/nearest/store', ['as' => 'user.nearest.store','uses' => 'ShopsController@nearestStore']);
@@ -80,21 +80,21 @@ class MiniProgramApiRoutes extends ApiRoutes
 
 
             $router->post('/shop/{storeId}/shoppingcart/merchandise', ['as' => 'user.add.shop.shoppingcart.merchandise','uses' => 'ShoppingCartController@storeShoppingCartAddMerchandise']);
-            $router->post('/activity/{activityId}/shoppingcart/merchandise', ['as' => 'user.add.activity.shoppingcart.merchandise','uses' => 'ShoppingCartController@activityShoppingCartAddMerchandise']);
+            $router->post('/new/events/{activityId}/shoppingcart/merchandise', ['as' => 'user.add.activity.shoppingcart.merchandise','uses' => 'ShoppingCartController@activityShoppingCartAddMerchandise']);
             $router->post('/shoppingcart/merchandise', ['as' => 'user.add.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartAddMerchandise']);
 
             $router->put('/shop/{storeId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shop.shoppingcart.merchandise','uses' => 'ShoppingCartController@storeShoppingCartMerchandiseNumChange']);
-            $router->put('/activity/{activityId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.activity.shoppingcart.merchandise','uses' => 'ShoppingCartController@activityShoppingCartMerchandiseNumChange']);
+            $router->put('/new/events/{activityId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.activity.shoppingcart.merchandise','uses' => 'ShoppingCartController@activityShoppingCartMerchandiseNumChange']);
             $router->put('/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
 
             $router->delete('/shoppingcart/{shoppingCartId}', ['as' => 'user.delete.shoppingcart','uses' => 'ShoppingCartController@shoppingCartDelete']);
 
             $router->get('/clear/shop/{storeId}/shoppingcart', ['as' => 'user.clear.shop.merchandise','uses' => 'ShoppingCartController@clearStoreShoppingCart']);
-            $router->get('/clear/activity/{activityId}/shoppingcart', ['as' => 'user.clear.activity.merchandise','uses' => 'ShoppingCartController@clearActivityShoppingCart']);
+            $router->get('/clear/new/events/{activityId}/shoppingcart', ['as' => 'user.clear.activity.merchandise','uses' => 'ShoppingCartController@clearActivityShoppingCart']);
             $router->get('/clear/shoppingcart', ['as' => 'user.clear.merchandise','uses' => 'ShoppingCartController@clearBookingMallShoppingCart']);
 
             $router->get('/shop/{storeId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.shop.merchandises','uses' => 'ShoppingCartController@storeShoppingCartMerchandises']);
-            $router->get('/activity/{activityId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.activity.merchandises','uses' => 'ShoppingCartController@activityShoppingCartMerchandises']);
+            $router->get('/new/events/{activityId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.activity.merchandises','uses' => 'ShoppingCartController@activityShoppingCartMerchandises']);
             $router->get('/shoppingcart/merchandises', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandises']);
         });
 

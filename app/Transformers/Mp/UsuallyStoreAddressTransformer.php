@@ -11,7 +11,7 @@ use League\Fractal\TransformerAbstract;
 use App\Entities\Order;
 
 
-class ReceivingShopAddressTransformer extends TransformerAbstract
+class UsuallyStoreAddressTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
         return [

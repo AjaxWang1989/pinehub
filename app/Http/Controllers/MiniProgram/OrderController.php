@@ -33,7 +33,7 @@ use App\Transformers\Mp\OrderStoreBuffetTransformer;
 use App\Transformers\Mp\OrderStoreSendTransformer;
 use App\Transformers\Mp\StatusOrdersTransformer;
 use App\Transformers\Mp\StoreOrdersSummaryTransformer;
-use App\Transformers\Mp\ReceivingShopAddressTransformer;
+use App\Transformers\Mp\UsuallyStoreAddressTransformer;
 use App\Repositories\ShopRepository;
 use App\Http\Response\JsonResponse;
 use Illuminate\Database\Eloquent\Collection;
@@ -396,7 +396,7 @@ class OrderController extends Controller
 
     /**
      * 销售订单汇总
-     * @param Request $request
+     * @param StoreOrdersSummaryRequest $request
      * @return \Dingo\Api\Http\Response
      */
     public function storeOrdersSummary(StoreOrdersSummaryRequest $request){
@@ -423,6 +423,7 @@ class OrderController extends Controller
     /**
      * 取消订单
      * @param int $id
+     * @return \Dingo\Api\Http\Response
      */
     public function cancelOrder(int $id){
         $status = ['status' => Order::CANCEL];
@@ -481,16 +482,4 @@ class OrderController extends Controller
         }
 
     }
-
-    /**
-     * 新品预定获取常用地址
-     * @param int $activityId
-     * @return \Dingo\Api\Http\Response
-     */
-    public function receivingShopAddress(int $activityId){
-        $user = $this->mpUser();
-        $receivingShopOrders = $this->orderRepository->receivingShopAddress($activityId,$user['id']);
-        return $this->response()->paginator($receivingShopOrders,new ReceivingShopAddressTransformer());
-    }
-
 }

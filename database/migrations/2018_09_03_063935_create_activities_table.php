@@ -16,7 +16,7 @@ class CreateActivitiesTable extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->increments('id');
             $table->string('app_id')->comment('项目应用ID');
-            $table->string('type', 32)->comment('活动类型 NEW_PRODUCT PAYMENT ');
+            $table->string('type', 32)->comment('活动类型 NEW_EVENTS PAYMENT ');
             $table->unsignedInteger('shop_id')->nullable()->default(null)->comment('店铺id');
             $table->string('title', 16)->comment('活动名称');
             $table->string('poster_img')->default('')->comment('海报图片');
