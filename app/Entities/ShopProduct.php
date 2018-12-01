@@ -24,6 +24,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Shop $shop
  * @property-read \App\Entities\SKUProduct|null $skuProduct
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopProduct newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopProduct query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopProduct whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopProduct whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopProduct whereId($value)

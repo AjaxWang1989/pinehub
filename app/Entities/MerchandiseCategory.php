@@ -19,6 +19,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $deletedAt
  * @property-read \App\Entities\Category $category
  * @property-read \App\Entities\Merchandise $merchandise
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MerchandiseCategory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MerchandiseCategory query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MerchandiseCategory whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MerchandiseCategory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MerchandiseCategory whereDeletedAt($value)

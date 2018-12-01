@@ -24,26 +24,27 @@ interface OrderRepository extends RepositoryInterface
 
     /**
      * 自提订单
-     * @param $startAt
-     * @param $endAt
+     * @param string $date
+     * @param int $batch
      * @param int $shopId
      * @return mixed
      */
-    public function storeBuffetOrders($startAt, $endAt, int $shopId);
+    public function storeBuffetOrders(string $date, int $batch, int $shopId);
 
     /**
-     * @param $sendTime
-     * @param $userId
+     * @param string $date
+     * @param int $batch
+     * @param int $shopId
      * @return mixed
      */
-    public function storeSendOrders(array $sendTime, int $userId);
+    public function storeSendOrders(string $date, int $batch,  int $shopId);
 
     /**
      * @param $status
      * @param $customerId
      * @return mixed
      */
-    public function userOrders(string $status,int $customerId);
+    public function userOrders(string $status, int $customerId);
 
     /**
      * @param $status

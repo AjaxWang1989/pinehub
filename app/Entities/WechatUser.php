@@ -39,6 +39,8 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property-read \App\Entities\App|null $app
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \App\Entities\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatUser whereCity($value)

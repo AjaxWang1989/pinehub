@@ -82,7 +82,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     }
 
     /**
-     * @param $data
+     * @param array $itemMerchandises
      * @return bool
      */
     public function insertMerchandise(array $itemMerchandises)
@@ -93,23 +93,23 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
     /**
      * 自提
-     * @param $sendTime
-     * @param $shopId
-     * @param string $limit
+     * @param string $date
+     * @param int $batch
+     * @param int $shopId
      * @return mixed
      */
 
-    public function storeBuffetOrders($startAt, $endAt, int $shopId)
+    public function storeBuffetOrders(string $date, int $batch, int $shopId)
     {
-        $this->scopeQuery(function (Order $order) use($shopId,$startAt,$endAt) {
+        $this->scopeQuery(function (Order $order) use($shopId, $date, $batch) {
             return $order
                 ->where(['shop_id' => $shopId])
                 ->whereIn('status',[
                     Order::PAID,
                     Order::SEND,
                     Order::COMPLETED])
-                ->where('pick_up_start_time', '>=', $startAt)
-                ->where('pick_up_end_time', '<', $endAt)
+                ->where('send_date', $date)
+                ->where('send_batch', $batch)
                 ->whereIn('type', [
                     Order::SHOPPING_MALL_ORDER,
                     Order::SITE_USER_ORDER
@@ -121,28 +121,22 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
 
     /**
      * 配送订单
-     * @param $sendTime
-     * @param $shopId
-     * @param string $limit
+     * @param string $date
+     * @param int $batch
+     * @param int $shopId
      * @return mixed
      */
-    public function storeSendOrders(array $sendTime,int $shopId)
+    public function storeSendOrders(string $date, int $batch, int $shopId)
     {
-        $startAt = null;
-        $endAt = null;
-
-        $startAt = $sendTime['send_start_time'];
-        $endAt = $sendTime['send_end_time'];
-
-        $this->scopeQuery(function (Order $order) use($shopId, $startAt, $endAt) {
+        $this->scopeQuery(function (Order $order) use($shopId, $date, $batch) {
             return $order
-                ->where(['shop_id'=>$shopId])
+                ->where(['shop_id' => $shopId])
                 ->whereIn('status',[
                     Order::PAID,
                     Order::SEND,
                     Order::COMPLETED
-                ])->where('send_start_time', '=', $startAt)
-                ->where('send_end_time', '=', $endAt)
+                ])->where('send_date', $date)
+                ->where('send_batch', $batch)
                 ->whereIn('type', [
                     Order::SHOPPING_MALL_ORDER,
                     Order::SITE_USER_ORDER
@@ -155,7 +149,6 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     /**
      * @param string $status
      * @param int $customerId
-     * @param string $limit
      * @return mixed
      */
     public function userOrders(string $status, int $customerId)

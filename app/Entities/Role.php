@@ -20,6 +20,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\Group|null $group
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\User[] $users
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereDisplayName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Role whereGroupId($value)

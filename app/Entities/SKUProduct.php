@@ -29,6 +29,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $deletedAt
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCapacity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\SKUProduct whereCostPrice($value)

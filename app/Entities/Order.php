@@ -25,6 +25,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int|null $activityId 新品活动id
  * @property int|null $memberId 买家会员id
  * @property string $cardId 优惠券id
+ * @property string $cardCode 优惠券code
  * @property int|null $customerId 买家
  * @property int|null $merchandiseNum 此订单商品数量总数
  * @property float $totalAmount 应付款
@@ -34,14 +35,14 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property int $payType 支付方式默认微信支付:0-未知，1-支付宝，2-微信支付
  * @property int $status 订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败
  * @property int $cancellation 取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消
+ * @property string $sendDate 配送日期
+ * @property int $sendBatch 配送批次
  * @property \Illuminate\Support\Carbon|null $signedAt 签收时间
  * @property string|null $receiverCity 收货城市
  * @property string|null $receiverDistrict 收货人所在城市区县
  * @property string|null $receiverName 收货姓名
  * @property string|null $receiverAddress 收货地址
  * @property string|null $receiverMobile 收货人电话
- * @property string|null $pickUpStartTime 配送开始时间
- * @property string|null $pickUpEndTime 配送结束时间
  * @property string|null $comment 备注
  * @property \Illuminate\Support\Carbon|null $consignedAt 发货时间
  * @property int $type 订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单
@@ -53,37 +54,40 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $postName 快递公司名称
  * @property string|null $transactionId 支付交易流水
  * @property string|null $ip 支付终端ip地址
- * @property int|null $sendBatch
  * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
  *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
  * @property int|null $year 年
  * @property int|null $month 月
- * @property int|null $day  日
+ * @property int|null $day 日
  * @property int|null $week 星期
  * @property int|null $hour 小时
- * @property int|null $receivingShopId 自提收货店铺id
+ * @property int|null $receivingShopId 收货店铺id
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read \App\Entities\Activity|null $activity
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\ActivityMerchandise[] $activityMerchandises
  * @property-read \App\Entities\Customer|null $customer
+ * @property-read \App\Entities\CustomerTicketCard $customerTicket
  * @property-read \App\Entities\Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
+ * @property-read \App\Entities\Shop|null $receivingShopAddress
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\Card $tickets
- * @property  string|null $cardCode
- * @property  Activity|null $activity
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereActivityId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereActivityMerchandisesId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCancellation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCardCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereConsignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereCustomerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDay($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereDiscountAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereHour($value)
@@ -96,6 +100,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaidAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePayType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePaymentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePickUpMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order wherePostNo($value)
@@ -105,9 +110,10 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverDistrict($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverMobile($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceiverName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereReceivingShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereScoreSettle($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSendEndTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSendStartTime($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSendBatch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSendDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereSignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereStatus($value)
@@ -118,7 +124,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWechatAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereWeek($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereYears($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereYear($value)
  * @mixin \Eloquent
  */
 class Order extends Model implements Transformable

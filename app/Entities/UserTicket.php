@@ -20,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\Card $tickets
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereCardCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereCreatedAt($value)

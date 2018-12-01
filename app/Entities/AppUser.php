@@ -21,6 +21,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\WechatUser $miniProgramUser
  * @property-read \App\Entities\WechatUser $officialAccountUser
  * @property-read \App\Entities\User|null $user
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AppUser whereId($value)

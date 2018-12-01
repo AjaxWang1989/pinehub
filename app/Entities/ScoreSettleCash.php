@@ -22,6 +22,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\Customer $scoreUser
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ScoreSettleCash whereId($value)

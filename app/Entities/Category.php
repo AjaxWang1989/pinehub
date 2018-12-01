@@ -25,6 +25,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Category[] $children
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Merchandise[] $merchandises
  * @property-read \App\Entities\Category $parent
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereDeletedAt($value)

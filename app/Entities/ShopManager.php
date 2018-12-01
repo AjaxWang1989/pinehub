@@ -41,6 +41,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\MemberCard $memberCard
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager whereBalance($value)

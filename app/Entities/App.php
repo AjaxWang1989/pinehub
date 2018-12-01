@@ -33,6 +33,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\User|null $owner
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\User[] $users
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactPhoneNum($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereCreatedAt($value)

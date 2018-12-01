@@ -45,6 +45,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Merchandise|null $merchandise
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\SKUProduct|null $skuProduct
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPurchaseItems whereConsignedAt($value)

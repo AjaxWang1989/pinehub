@@ -43,6 +43,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
  * @property-read \App\Entities\User $shop
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Seller newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Seller query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Seller whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Seller whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Seller whereBalance($value)

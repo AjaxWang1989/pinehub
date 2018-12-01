@@ -123,8 +123,8 @@ class OrderBuilder implements InterfaceServiceHandler
             'receiver_name',
             'receiver_mobile',
             'comment',
-            'pick_up_start_time',
-            'pick_up_end_time',
+            'send_date',
+            'send_batch',
             'pick_up_method',
             'card_id',
             'shop_id',
@@ -196,6 +196,8 @@ class OrderBuilder implements InterfaceServiceHandler
                     $orderItem['app_id'] =  $orderModel->appId;
                     $orderItem['member_id'] =  $orderModel->memberId;
                     $orderItem['status'] =  $orderModel->status;
+                    $orderItem['send_date'] = $orderModel->sendDate;
+                    $orderItem['send_batch'] = $orderModel->sendBatch;
                     $orderItem['type'] = $orderModel->type;
                     $orderItem['pick_up_method'] = $orderModel->pickUpMethod;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);

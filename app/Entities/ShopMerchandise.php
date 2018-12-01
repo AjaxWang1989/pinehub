@@ -16,17 +16,21 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property float $sellPrice 售价
  * @property int $merchandiseId 商品ID
  * @property int $categoryId 分类ID
+ * @property array $tags 标签
  * @property int|null $productId sku单品ID
  * @property int $stockNum 库存数量
  * @property int $sellNum 销售数量
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property string|null $deletedAt
  * @property-read \App\Entities\Category $category
  * @property-read \App\Entities\Merchandise $merchandise
  * @property-read \App\Entities\Shop $shop
- * @property  array|null $tags
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereMerchandiseId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereProductId($value)
@@ -34,6 +38,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereSellPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereStockNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereTags($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandise whereUpdatedAt($value)
  * @mixin \Eloquent
  */

@@ -17,22 +17,22 @@ use App\Entities\Traits\ModelAttributesAccess;
  *
  * @property int $id
  * @property string $appId 项目应用ID
- * @property string $type 活动类型
+ * @property string $type 活动类型 NEW_PRODUCT PAYMENT
  * @property int|null $shopId 店铺id
  * @property string $title 活动名称
  * @property string $posterImg 海报图片
  * @property string $description 详情
  * @property int $status 0 未开始 1 进行中 2 已结束
- * @property Carbon|null $startAt 活动开始时间
- * @property Carbon|null $endAt 活动结束时间
+ * @property \Illuminate\Support\Carbon|null $startAt 活动开始时间
+ * @property \Illuminate\Support\Carbon|null $endAt 活动结束时间
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Customer[] $customers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\ActivityMerchandise[] $merchandises
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\PaymentActivity[] $paymentActivities
- * @property  int $orderCount
- * @property  int $customerCount
- * @property  float $paymentAmount
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereDescription($value)
@@ -45,6 +45,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Activity whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Activity extends Model implements Transformable
 {

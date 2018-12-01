@@ -17,6 +17,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $menus menus
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMenu whereId($value)

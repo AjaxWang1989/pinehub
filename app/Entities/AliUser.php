@@ -27,6 +27,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  *              性别（F：女性；M：男性）。
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\AliUser whereCity($value)

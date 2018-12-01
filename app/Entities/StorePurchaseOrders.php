@@ -59,6 +59,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderPurchaseItems[] $orderItems
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\StorePurchaseOrders whereCancellation($value)

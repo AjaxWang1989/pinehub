@@ -30,7 +30,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $cityId 城市id
  * @property int $countyId 所属区县id
  * @property string|null $address 详细地址
- * @property Point $position 店铺定位
+ * @property mixed $position 店铺定位
  * @property string|null $description 店铺描述
  * @property string|null $geoHash 位置hash编码
  * @property float $balance 店铺余额
@@ -79,10 +79,13 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop equals($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop intersects($geometryColumn, $geometry)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop near($lng, $lat, $distance)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop overlaps($geometryColumn, $geometry)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereBalance($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Shop whereCountryId($value)

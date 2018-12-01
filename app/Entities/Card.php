@@ -13,13 +13,15 @@ use Prettus\Repository\Traits\TransformableTrait;
  * App\Entities\Card
  *
  * @property int $id
- * @property string $code 订单编号
+ * @property string $code 卡卷编号
  * @property string $cardId 卡券id
  * @property string|null $wechatAppId 微信app id
  * @property string|null $aliAppId 支付宝app id
  * @property string|null $appId 系统app id
  * @property string $cardType 卡券类型
  * @property array $cardInfo 卡券信息
+ * @property int $issueCount 发行数量
+ * @property int $userGetCount 领取数量
  * @property int $status 0-审核中 1-审核通过 2-审核未通过
  * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
  * @property \Illuminate\Support\Carbon|null $beginAt 开始日期
@@ -29,22 +31,24 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $deletedAt
  * @property-read \App\Entities\App|null $app
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
- * @property  int $usedCount
- * @property  int $userGetCount
- * @property  int $issueCount
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAliAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereBeginAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereEndAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereIssueCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereSync($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereUserGetCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereWechatAppId($value)
  * @mixin \Eloquent
  */

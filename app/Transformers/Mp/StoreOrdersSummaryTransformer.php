@@ -15,6 +15,7 @@ use App\Entities\Order;
 class StoreOrdersSummaryTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
+        $receiverAddress = json_encode($model->receiverAddress, true);
         return [
             'id'      => $model->id,
             'code'    => $model->code,
@@ -22,11 +23,11 @@ class StoreOrdersSummaryTransformer extends TransformerAbstract
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
             'card_id' => $model->cardId,
-            'sell_point' => '',
+            'sell_point' => 0,
             'reduce_cost'  => $model->tickets() ? $model->tickets['card_info']['base_info']['title'] : null,
-            'receiver_address' => isset(json_decode($model->receiverAddress)->receiver_address) ? json_decode($model->receiverAddress)->receiver_address : $model->receiverAddress,
-            'build_num'        => isset(json_decode($model->receiverAddress)->build_num) ? json_decode($model->receiverAddress)->build_num : null,
-            'room_num'         => isset(json_decode($model->receiverAddress)->room_num) ? json_decode($model->receiverAddress)->room_num : null ,
+            'receiver_address' => is_array($receiverAddress) ? $receiverAddress['receiver_address'] : $model->receiverAddress,
+            'build_num'        => is_array($receiverAddress) ? $receiverAddress['build_num'] : null,
+            'room_num'         => is_array($receiverAddress) ? $receiverAddress['room_num'] : null ,
             'receiver_mobile'  => $model->receiverMobile,
             'total_amount'     => round($model->totalAmount,2),
             'payment_amount'   => round($model->paymentAmount,2),

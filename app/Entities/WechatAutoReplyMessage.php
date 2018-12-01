@@ -20,6 +20,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $content 回复消息内容
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereContent($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatAutoReplyMessage whereCreatedAt($value)

@@ -16,6 +16,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Group whereDisplayName($value)

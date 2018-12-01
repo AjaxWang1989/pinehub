@@ -33,6 +33,10 @@ class SendOrderSheet
     protected $date = null;
 
     protected $endAt = null;
+    protected $mergeRows = [
+        'A' => [],
+        'E' => []
+    ];
 //    protected $shops = null;
 
     public function getFilename()
@@ -84,6 +88,16 @@ class SendOrderSheet
                             $row->setValignment('center');
                             $row->sheet->mergeCells($row->cells);
                         });
+
+                    foreach ($this->mergeRows as $column => $rows) {
+                        if(count($rows) > 0) {
+                            $sheet->setMergeColumn([
+                                'columns' => (array)$column,
+                                'rows' => $rows
+                            ]);
+                        }
+
+                    }
                     // 设置每一列的宽度
                     $sheet->setWidth('A', 20);
                     $sheet->setWidth('B', 10);

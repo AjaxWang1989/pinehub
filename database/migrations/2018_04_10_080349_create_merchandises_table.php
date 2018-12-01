@@ -27,6 +27,9 @@ class CreateMerchandisesTable extends Migration
             $table->float('sell_price')->default(0)->comment('售价');
             $table->float('cost_price')->default(0)->comment('成本价格');
             $table->float('factory_price')->default(0)->comment('工厂价格');
+            $table->enum('type', MERCHANDISE_STATUS_COLLECTION)
+                ->default(UNLIMITED_MERCHANDISE)
+                ->comment('产品类型');
             $table->unsignedInteger('capacity')->default(0)->comment('产能（工厂生产能力）');
             $table->unsignedInteger('stock_num')->default(0)->comment('库存');
             $table->unsignedInteger('sell_num')->default('0')->comment('已售出数量');

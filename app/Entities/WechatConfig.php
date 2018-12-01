@@ -50,6 +50,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\WechatMenu $menu
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAesKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAlias($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatConfig whereAppId($value)

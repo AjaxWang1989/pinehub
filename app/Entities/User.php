@@ -51,6 +51,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property-read \App\Entities\MemberCard $memberCard
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereBalance($value)

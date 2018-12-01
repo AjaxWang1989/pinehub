@@ -18,6 +18,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $isGiveByFriend 是否朋友赠送
  * @property string|null $friendOpenId 好友微信open id
  * @property int|null $userId 用户id
+ * @property int $bonus 会员积分
+ * @property float $balance 会员卡余额
  * @property string|null $openId 微信open id
  * @property string|null $unionId 微信open id
  * @property string|null $outerStr 领取场景值，用于领取渠道数据统计。可在生成二维码接口及添加Addcard接口中自定义该字段的字符串值。
@@ -27,10 +29,12 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\App $app
  * @property-read \App\Entities\Card $card
  * @property-read \App\Entities\User|null $user
- * @property  int $bonus
- * @property float $balance
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereBonus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCardCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MemberCard whereCreatedAt($value)

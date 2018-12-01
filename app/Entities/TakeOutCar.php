@@ -10,6 +10,8 @@ use Prettus\Repository\Traits\TransformableTrait;
 /**
  * App\Entities\TakeOutCar
  *
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\TakeOutCar newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\TakeOutCar query()
  * @mixin \Eloquent
  */
 class TakeOutCar extends Model implements Transformable

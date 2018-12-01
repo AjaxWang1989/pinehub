@@ -18,6 +18,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $code 产品编号
  * @property string $name 产品名称
  * @property string $mainImage 主图
+ * @property array $tags 标签
  * @property array $images 轮播图数组
  * @property string $preview 简介
  * @property string $detail 详情
@@ -25,6 +26,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property float $sellPrice 售价
  * @property float $costPrice 成本价格
  * @property float $factoryPrice 工厂价格
+ * @property string $type 产品类型
  * @property int $capacity 产能（工厂生产能力）
  * @property int $stockNum 库存
  * @property int $sellNum 已售出数量
@@ -36,7 +38,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\OrderItem[] $orderItems
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\SKUProduct[] $skuProducts
- * @property  array|null $tags
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCapacity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereCode($value)
@@ -55,6 +58,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereSellPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereStockNum($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereTags($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise whereUpdatedAt($value)
  * @mixin \Eloquent
  */

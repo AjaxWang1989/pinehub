@@ -13,6 +13,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $userVersion 模版版本号
  * @property string $userDesc 模版描述
  * @property string $createTime 模版创建时间
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramTemplate newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramTemplate query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramTemplate whereCreateTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramTemplate whereTemplateId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgramTemplate whereUserDesc($value)

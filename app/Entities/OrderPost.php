@@ -21,6 +21,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $postName 物流公司名称
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderPost whereId($value)

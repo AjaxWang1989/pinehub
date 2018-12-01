@@ -58,6 +58,8 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property-read \App\Entities\Member|null $member
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $ticketRecords
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MpUser whereCanUseScore($value)

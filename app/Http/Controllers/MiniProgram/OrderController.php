@@ -294,14 +294,9 @@ class OrderController extends Controller
         if(!$shop && isset($order['store_id']) && $order['store_id']) {
             $shop = Shop::find($order['store_id']);
         }
-        if (!isset($order['pick_date']) || !$order['pick_date']){
-            $order['pick_date'] = Carbon::now()->format('Y-m-d');
+        if (!isset($order['send_date']) || !$order['send_date']){
+            $order['send_date'] = Carbon::now()->addDay(1)->format('Y-m-d');
         }
-        $start = ($shop ? $shop->startAt : '7:00');
-        $end = ($shop ? $shop->endAt : '19:00');
-        $order['pick_up_start_time'] = "{$order['pick_date']} {$start}:00";
-        $order['pick_up_end_time']   = "{$order['pick_date']} {$end}:00";
-        unset($order['pick_date']);
 
         /** @var Collection $shoppingCarts */
         $shoppingCarts = $this->getShoppingCarts($order, $user);
@@ -346,10 +341,10 @@ class OrderController extends Controller
             ->first();
 
         if ($shop){
-            $sendTime = $request->all();
             //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
-                ->storeBuffetOrders($request->input('start_at'), $request->input('end_at'),  $shop->id);
+                ->storeBuffetOrders($request->input('date', null),
+                    $request->input('batch', null),  $shop->id);
 
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
@@ -360,29 +355,27 @@ class OrderController extends Controller
 
     /**
      * 配送订单
-     * @param Request $request
+     * @param StoreSendOrdersRequest $request
      * @return \Dingo\Api\Http\Response
      */
     public function storeSendOrders(StoreSendOrdersRequest $request)
     {
         $user = $this->mpUser();
 
-        $shopUser = $this->shopRepository
+        /** @var Shop $shop */
+        $shop = $this->shopRepository
             ->findWhere(['user_id'   =>  $user['member_id']])
             ->first();
 
-        if ($shopUser) {
-            $userId     = $shopUser['id'];
-            $sendTime   = $request->all();
-
+        if ($shop) {
            //查询今日下单和预定商城的所有配送订单
             $items = $this->orderRepository
-                ->storeSendOrders($sendTime,$userId);
-
+                ->storeSendOrders($request->input('date', null),
+                    $request->input('batch'), $shop->id);
             return $this->response()->paginator($items,new OrderStoreSendTransformer());
+        }else{
+            throw new ModelNotFoundException('您不是店铺老板无权查询此接口');
         }
-
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**

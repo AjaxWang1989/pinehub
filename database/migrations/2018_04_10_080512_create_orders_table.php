@@ -38,6 +38,7 @@ class CreateOrdersTable extends Migration
                 ->comment('订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败 ');
             $table->unsignedTinyInteger('cancellation')->default(0)
                 ->comment('取消人 0未取消 1买家取消 2 卖家取消  3系统自动取消 ');
+            $table->string('send_date', 10)->default('')->comment('配送日期');
             $table->unsignedTinyInteger('send_batch')->default(0)->comment('配送批次');
             $table->timestamp('signed_at')->nullable()->default(null)->comment('签收时间');
             $table->string('receiver_city', 16)->nullable()->default(null)->comment('收货城市');
@@ -45,8 +46,8 @@ class CreateOrdersTable extends Migration
             $table->string('receiver_name', 16)->nullable()->default(null)->comment('收货姓名');
             $table->string('receiver_address', 100)->nullable()->default(null)->comment('收货地址');
             $table->string('receiver_mobile', 11)->nullable()->default(null)->comment('收货人电话');
-            $table->timestamp('pick_up_start_time')->nullable()->default(null)->comment('配送/自提开始时间');
-            $table->timestamp('pick_up_end_time')->nullable()->default(null)->comment('配送/自提结束时间');
+//            $table->timestamp('pick_up_start_time')->nullable()->default(null)->comment('配送/自提开始时间');
+//            $table->timestamp('pick_up_end_time')->nullable()->default(null)->comment('配送/自提结束时间');
             $table->string('comment', 255)->nullable()->default(null)->comment('备注');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
             $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单');

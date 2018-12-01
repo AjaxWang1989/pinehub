@@ -15,6 +15,7 @@ use App\Entities\Order;
 class StatusOrdersTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
+        $receiverAddress = json_encode($model->receiverAddress, true);
         return [
             'id'      => $model->id,
             'code'    => $model->code,
@@ -22,9 +23,9 @@ class StatusOrdersTransformer extends TransformerAbstract
             'pick_up_method' => $model->pickUpMethod,
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
-            'receiver_address' => isset(json_decode($model->receiverAddress)->receiver_address) ?json_decode($model->receiverAddress)->receiver_address : $model->receiverAddress ,
-            'build_num'        => isset(json_decode($model->receiverAddress)->build_num) ? json_decode($model->receiverAddress)->build_num : null,
-            'room_num'         => isset(json_decode($model->receiverAddress)->room_num) ? json_decode($model->receiverAddress)->room_num : null,
+            'receiver_address' => is_array($receiverAddress) ? $receiverAddress['receiver_address'] : $model->receiverAddress,
+            'build_num'        => is_array($receiverAddress) ? $receiverAddress['build_num'] : null,
+            'room_num'         => is_array($receiverAddress) ? $receiverAddress['room_num'] : null ,
             'receiver_mobile'  => $model->receiverMobile,
             'quantity'          => $model->merchandiseNum,
             'total_amount'     => round($model->totalAmount,2),

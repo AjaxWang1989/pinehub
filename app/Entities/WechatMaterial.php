@@ -22,6 +22,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property \Illuminate\Support\Carbon $expiresAt 临时素材过期时间
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereArticles($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\WechatMaterial whereExpiresAt($value)

@@ -12,6 +12,7 @@ use App\Repositories\OrderItemRepository;
 use App\Entities\OrderItem;
 use App\Entities\Order;
 use App\Validators\OrderItemValidator;
+use Prettus\Repository\Exceptions\RepositoryException;
 
 /**
  * Class OrderItemRepositoryEloquent.
@@ -60,7 +61,10 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
      */
     public function boot()
     {
-        $this->pushCriteria(app(RequestCriteria::class));
+        try {
+            $this->pushCriteria(app(RequestCriteria::class));
+        } catch (RepositoryException $e) {
+        }
         OrderItem::creating(function (OrderItem &$orderItem) {
             //$orderItem->code = app('uid.generator')->getUid();
             return $orderItem;
@@ -68,8 +72,9 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
     }
 
     /**
-     * @param array $request
-     * @param int $userId
+     * @param int $shopId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
      * @return mixed
      */
     public function sellMerchandiseNum(int $shopId, Carbon $startAt, Carbon $endAt)
@@ -86,19 +91,21 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
 
     /**
      * 消费排名
-     * @param int $storeId
-     * @param string $limit
+     * @param int $shopId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $limit
      * @return mixed
      */
-    public function consumptionRanking(int $storeId, Carbon $startAt, Carbon $endAt, $limit = 5)
+    public function consumptionRanking(int $shopId, Carbon $startAt, Carbon $endAt, int $limit = 5)
     {
-        $this->scopeQuery(function (OrderItem $orderItem) use($storeId, $startAt, $endAt,$limit) {
+        $this->scopeQuery(function (OrderItem $orderItem) use($shopId, $startAt, $endAt,$limit) {
             return $orderItem->select([
                 DB::raw('customers.nickname as customer_nickname'),
                 DB::raw('sum( `payment_amount` ) as total_payment_amount')
             ])->join('customers', 'order_items.customer_id', '=', 'customers.id')
                 ->whereIn('status',[Order::PAID, Order::SEND, Order::COMPLETED])
-                ->where(['shop_id' => $storeId])
+                ->where(['shop_id' => $shopId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
                 ->whereIn('type', [Order::SITE_USER_ORDER, Order::SHOPPING_MALL_ORDER,
@@ -111,18 +118,20 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
     }
 
     /**
-     * @param int $storeId
-     * @param string $limit
+     * @param int $shopId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $limit
      * @return mixed
      */
-    public function merchandiseSalesRanking(int $storeId, Carbon $startAt, Carbon $endAt, $limit = 5)
+    public function merchandiseSalesRanking(int $shopId, Carbon $startAt, Carbon $endAt, int $limit = 5)
     {
-        $this->scopeQuery(function (OrderItem $orderItem) use($storeId, $startAt, $endAt, $limit) {
+        $this->scopeQuery(function (OrderItem $orderItem) use($shopId, $startAt, $endAt, $limit) {
             return $orderItem->select([
                 'merchandise_name',
                 DB::raw('sum( `payment_amount` ) as total_payment_amount')])
                 ->whereIn('status',[Order::PAID, Order::SEND, Order::COMPLETED])
-                ->where(['shop_id' => $storeId])
+                ->where(['shop_id' => $shopId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
                 ->groupby('name')

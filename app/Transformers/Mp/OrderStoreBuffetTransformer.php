@@ -17,15 +17,16 @@ use App\Entities\Order;
 class OrderStoreBuffetTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
+        $receiverAddress = json_encode($model->receiverAddress, true);
         return [
             'id'      => $model->id,
             'code'    => $model->code,
             'write_code'     => buildUrl('api.mp','/confirm/order/{id}', ['id' => $model->id]),
             'status'  => $model->status,
             'receiver_name'    => $model->receiverName,
-            'receiver_address' => isset(json_decode($model->receiverAddress)->receiver_address) ? json_decode($model->receiverAddress)->receiver_address : $model->receiverAddress,
-            'build_num'        => isset(json_decode($model->receiverAddress)->build_num) ? json_decode($model->receiverAddress)->build_num : null,
-            'room_num'         => isset(json_decode($model->receiverAddress)->room_num) ? json_decode($model->receiverAddress)->room_num : null ,
+            'receiver_address' => is_array($receiverAddress) ? $receiverAddress['receiver_address'] : $model->receiverAddress,
+            'build_num'        => is_array($receiverAddress) ? $receiverAddress['build_num'] : null,
+            'room_num'         => is_array($receiverAddress) ? $receiverAddress['room_num'] : null ,
             'receiver_mobile'  => $model->receiverMobile,
             'total_amount'     => round($model->totalAmount,2),
             'payment_amount'   => round($model->paymentAmount,2),

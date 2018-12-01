@@ -25,6 +25,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $mobile 电话
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\FeedBackMessage whereCreatedAt($value)

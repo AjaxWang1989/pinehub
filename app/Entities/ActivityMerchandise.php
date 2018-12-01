@@ -16,24 +16,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $shopId 店铺活动时显示的店铺ID
  * @property int|null $shopMerchandiseId 店铺活动时显示的店铺产品ID
  * @property int $merchandiseId 产品ID
+ * @property string $mainImage 活动产品图片
  * @property float $sellPrice 售价
  * @property int|null $productId sku单品ID
  * @property int $stockNum 参与活动的数量:-1无限制，大于0参与活动商品数量，0售罄
  * @property int $sellNum 已售出数量
  * @property array $tags 产品标签
  * @property string $describe 产品介绍
- * @property string $mainImage 活动产品图片
  * @property string|null $startAt 开售时间
  * @property string|null $endAt 结业时间
- * @property string|null $mainImage
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
- * @property-read \Illuminate\Database\Eloquent\Builder|\App\Entities\Merchandise $merchandise
+ * @property string|null $deletedAt
+ * @property-read \App\Entities\Merchandise $merchandise
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereDescribe($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereEndAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereMainImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereMerchandiseId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ActivityMerchandise whereSellNum($value)
@@ -66,10 +70,5 @@ class ActivityMerchandise extends Model implements Transformable
     public function merchandise() : BelongsTo
     {
         return $this->BelongsTo(Merchandise::class, 'merchandise_id', 'id');
-    }
-
-    public function category ()
-    {
-        return $this->hasOne();
     }
 }

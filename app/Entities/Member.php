@@ -49,6 +49,8 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property-read \App\Entities\MemberCard $memberCard
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Member whereBalance($value)

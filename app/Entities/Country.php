@@ -20,6 +20,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\County[] $counties
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Province[] $provinces
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Country whereId($value)

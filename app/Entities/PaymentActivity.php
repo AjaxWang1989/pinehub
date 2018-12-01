@@ -23,6 +23,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\Activity $activity
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereCost($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereCreatedAt($value)
@@ -30,6 +32,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereLeastAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereScore($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereTicketCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereTicketId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\PaymentActivity whereUpdatedAt($value)

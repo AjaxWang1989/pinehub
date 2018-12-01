@@ -31,6 +31,8 @@ class CreateOrderItemsTable extends Migration
             $table->float('origin_price')->default(0)->comment('原价');
             $table->float('sell_price')->default(0)->comment('售价');
             $table->float('cost_price')->default(0)->comment('成本价');
+            $table->string('send_date', 10)->default('')->comment('配送日期');
+            $table->unsignedTinyInteger('send_batch')->default(0)->comment('配送批次');
             $table->unsignedInteger('quality')->default(1)->comment('订单产品数量');
             $table->float('total_amount')->default(0)->comment('应付');
             $table->float('discount_amount')->default(0)->comment('优惠');

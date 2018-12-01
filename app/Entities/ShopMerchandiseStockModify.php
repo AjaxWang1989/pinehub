@@ -25,6 +25,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $comment 备注
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereComment($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopMerchandiseStockModify whereId($value)

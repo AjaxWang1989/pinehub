@@ -27,11 +27,15 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property float $originPrice 原价
  * @property float $sellPrice 售价
  * @property float $costPrice 成本价
+ * @property string $sendDate 配送日期
+ * @property int $sendBatch 配送批次
  * @property int $quality 订单产品数量
  * @property float $totalAmount 应付
  * @property float $discountAmount 优惠
  * @property float $paymentAmount 实付
  * @property string|null $paidAt 支付时间
+ * @property int $type 订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单
+ * @property int $pickUpMethod 取货方式：0-不需要取货 1-送货上门 2-自提
  * @property int $status 订单状态：0-订单取消 100-等待提交支付订单 200-提交支付订单 300-支付完成 400-已发货 500-订单完成 600-支付失败
  * @property \Illuminate\Support\Carbon|null $signedAt 签收时间
  * @property \Illuminate\Support\Carbon|null $consignedAt 发货时间
@@ -44,9 +48,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Order $order
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\SKUProduct|null $skuProduct
- * @property  int $type
- * @property int  $pickUpMethod 取货方式：0-不需要取货 1-送货上门 2-自提
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereActivityMerchandisesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereConsignedAt($value)
@@ -59,18 +63,22 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereMainImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereMemberId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereMerchandiseId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereMerchandiseName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereOriginPrice($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem wherePaidAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem wherePaymentAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem wherePickUpMethod($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereQuality($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereSellPrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereSendBatch($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereSendDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereShopId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereSignedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereSkuProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\OrderItem whereUpdatedAt($value)
  * @mixin \Eloquent
  */

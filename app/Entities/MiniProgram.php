@@ -46,8 +46,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array|null $miniProgramInfo 可根据这个字段判断是否为小程序类型授权
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
- * @property-read \App\Entities\App|null $app
- * @property-read \App\Entities\WechatMenu $menu
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgram newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgram query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgram whereAesKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgram whereAlias($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\MiniProgram whereAppId($value)

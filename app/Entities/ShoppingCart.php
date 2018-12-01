@@ -56,7 +56,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property int $id
  * @property string|null $appId 系统appid
  * @property int|null $shopId 店铺ID
- * @property int|null $activityMerchandisesId 新品预定商品id
+ * @property int|null $activityId 活动id
  * @property int|null $memberId 买家会员id
  * @property int|null $customerId 买家id
  * @property int|null $merchandiseId 产品id
@@ -71,7 +71,9 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property-read \App\Entities\Member|null $member
  * @property-read \App\Entities\Merchandise|null $merchandise
  * @property-read \App\Entities\Shop|null $shop
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart whereActivityMerchandisesId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart whereActivityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart whereAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart whereAppId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart whereCreatedAt($value)
