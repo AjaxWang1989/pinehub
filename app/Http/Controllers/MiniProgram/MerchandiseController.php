@@ -63,7 +63,7 @@ class MerchandiseController extends Controller
                 $request = Request::instance();
                 $merchandises = $shop->shopMerchandises()->with(['merchandise'])
                     ->whereHas('merchandise', function ($query) {
-                        return $query->where('status', Merchandise::UP);
+                        return $query->where('merchandises.status', Merchandise::UP);
                     })
                     ->whereHas('merchandise.categories', function ($query) use($categoryId){
                     if ($categoryId) {
