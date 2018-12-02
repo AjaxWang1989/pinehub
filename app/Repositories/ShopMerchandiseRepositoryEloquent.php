@@ -46,18 +46,12 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
 
     /**
      * @param int $id
-     * @param string $limit
+     * @return mixed
      */
 
     public function storeCategories(int $id){
-        $this->scopeQuery(function (ShopMerchandise $ShopCategory) use($id) {
-            return $ShopCategory->select([
-                DB::raw('category_id as id'),
-                DB::raw('categories.name as name')
-            ])
-                ->join('categories', 'shop_merchandises.category_id', '=', 'categories.id')
-                ->where(['shop_id'=>$id])
-                ->groupBy('category_id');
+        $this->scopeQuery(function (ShopMerchandise $shopMerchandise) use( $id ) {
+            return $shopMerchandise->whereShopId($id)->categories();
         });
         return $this->paginate();
     }
@@ -65,9 +59,9 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
     /**
      * @param int $id
      * @param int $categoryId
-     * @param string $limit
+     * @return mixed
      */
-    public function storeCategoryMerchandises(int $id,int $categoryId){
+    public function storeCategoryMerchandises(int $id, int $categoryId){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($id,$categoryId) {
             return $ShopMerchandise->with('merchandise')
                 ->whereHas('merchandise', function ($query) {
