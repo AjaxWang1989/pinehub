@@ -51,7 +51,7 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
 
     public function storeCategories(int $id){
         $this->scopeQuery(function (ShopMerchandise $shopMerchandise) use( $id ) {
-            return $shopMerchandise->categories()->where('shop_merchandises.shop_id', $id);
+            return $shopMerchandise->where('shop_id', $id)->categories();
         });
         return $this->paginate();
     }
