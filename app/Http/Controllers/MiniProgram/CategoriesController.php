@@ -126,7 +126,7 @@ class CategoriesController extends Controller
     public function storeCategories(int $id)
     {
         $items = $this->shopMerchandiseRepository->storeCategories($id);
-        return $this->response()->paginator($items, new StoreCategoriesTransformer);
+        return $this->response()->paginator($items, new CategoriesTransformer());
     }
 
     /**
