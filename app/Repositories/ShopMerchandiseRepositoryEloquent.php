@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\Category;
 use App\Entities\Merchandise;
 use App\Repositories\Traits\Destruct;
 use Illuminate\Support\Facades\DB;
@@ -50,10 +51,9 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      */
 
     public function storeCategories(int $id){
-        $this->scopeQuery(function (ShopMerchandise $shopMerchandise) use( $id ) {
-            return $shopMerchandise->where('shop_id', $id)->categories();
-        });
-        return $this->paginate();
+        return Category::whereHas('shopMerchandises', function ($query) use($id) {
+            return $query->where('shop_id', $id);
+        })->paginate();
     }
 
     /**
