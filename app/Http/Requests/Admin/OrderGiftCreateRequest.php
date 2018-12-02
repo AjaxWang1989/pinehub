@@ -29,7 +29,7 @@ class OrderGiftCreateRequest extends FormRequest
         return [
 //            //
             'title'     => ['required','string'],
-            'type'      => Rule::in(Activity::NEW_PRODUCT_ACTIVITY,Activity::PAYMENT_ACTIVITY),
+            'type'      => Rule::in(Activity::NEW_EVENTS_ACTIVITY,Activity::PAYMENT_ACTIVITY),
             'start_at'  => ['required','date'],
             'end_at'    =>['required','date'],
             'payment_activity.*.type'         => Rule::in(PaymentActivity::PAY_FULL,PaymentActivity::PAY_GIFT),

@@ -274,8 +274,9 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @param string $limit
      * @return mixed
      */
-    public function receivingShopAddress(int $activityId , int $customerId, $limit = 3){
-        $this->scopeQuery(function (Order $order) use($activityId , $customerId ,$limit){
+    public function activityUsuallyReceivingStores(int $activityId, int $customerId, int $limit = 3)
+    {
+        $this->scopeQuery(function (Order $order) use($activityId , $customerId){
             return $order
                 ->where('customer_id', $customerId)
                 ->where('activity_id', $activityId)
@@ -283,6 +284,4 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         });
         return $this->paginate($limit);
     }
-
-
 }

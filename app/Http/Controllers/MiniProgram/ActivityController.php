@@ -18,6 +18,7 @@ use App\Transformers\ActivityTransformer;
 use App\Transformers\Mp\ActivityMerchandiseTransformer;
 use Dingo\Api\Http\Request;
 use App\Http\Response\JsonResponse;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ActivityController extends Controller
 {
@@ -61,10 +62,14 @@ class ActivityController extends Controller
      *获取新品预定的标题和背景图片
      * @return \Dingo\Api\Http\Response
      */
-    public function newActivity()
+    public function newEventsActivity()
     {
-        $item = $this->activityRepository->newActivity();
-        return $this->response()->item($item, new ActivityTransformer());
+        $item = $this->activityRepository->newEventsActivity();
+        if($item) {
+            return $this->response()->item($item, new ActivityTransformer());
+        }else{
+            throw new ModelNotFoundException('新品活动不存在');
+        }
     }
 
     /**

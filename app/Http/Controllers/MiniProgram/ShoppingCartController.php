@@ -18,8 +18,10 @@ use App\Http\Requests\MiniProgram\ActivityShoppingCartRequest;
 use App\Http\Requests\MiniProgram\ActivityShoppingCartAddRequest;
 use App\Http\Requests\MiniProgram\StoreShoppingCartAddRequest;
 use App\Http\Requests\MiniProgram\BookingMallShoppingCartAddRequest;
+use App\Repositories\OrderRepository;
 use App\Services\AppManager;
 use App\Entities\ShoppingCart;
+use App\Transformers\Mp\UsuallyStoreAddressTransformer;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
@@ -387,5 +389,18 @@ class ShoppingCartController extends Controller
         $userId =$user['id'];
         $items  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId ,$activityId ,$userId);
         return $this->response()->paginator($items, new ShoppingCartTransformer);
+    }
+
+    /**
+     * 新品预定获取常用地址
+     * @param int $activityId
+     * @param OrderRepository $repository
+     * @return \Dingo\Api\Http\Response
+     */
+    public function activityUsuallyReceivingStores(int $activityId, OrderRepository $repository)
+    {
+        $user = $this->mpUser();
+        $receivingShopOrders = $repository->activityUsuallyReceivingStores($activityId, $user->id);
+        return $this->response()->paginator($receivingShopOrders,new UsuallyStoreAddressTransformer());
     }
 }

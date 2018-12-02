@@ -74,4 +74,7 @@ interface OrderRepository extends RepositoryInterface
      * @return array
      */
     public function buildOrderStatisticData(Collection $orders, $count, $unit);
+
+    public function activityUsuallyReceivingStores(int $activityId, int $customerId);
+
 }
