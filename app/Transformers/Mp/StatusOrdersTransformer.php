@@ -15,7 +15,7 @@ use App\Entities\Order;
 class StatusOrdersTransformer extends TransformerAbstract
 {
     public function transform(Order $model){
-        $receiverAddress = json_encode($model->receiverAddress, true);
+        $receiverAddress = json_decode($model->receiverAddress, true);
         return [
             'id'      => $model->id,
             'code'    => $model->code,
