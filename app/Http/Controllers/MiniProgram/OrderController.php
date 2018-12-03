@@ -382,15 +382,16 @@ class OrderController extends Controller
      * 所有订单信息
      * @param string $status
      *
+     * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
 
-    public function userOrders(string  $status){
+    public function userOrders(string  $status, Request $request){
         $customer   = $this->mpUser();
 
         $items = $this->orderRepository
             ->userOrders($status,   $customer->id);
-        return $this->response()
+        return $this->response($request->input('limit', PAGE_LIMIT))
             ->paginator($items, new StatusOrdersTransformer());
     }
 
