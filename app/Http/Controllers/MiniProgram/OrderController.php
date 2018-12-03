@@ -390,8 +390,8 @@ class OrderController extends Controller
         $customer   = $this->mpUser();
 
         $items = $this->orderRepository
-            ->userOrders($status,   $customer->id);
-        return $this->response($request->input('limit', PAGE_LIMIT))
+            ->userOrders($status,   $customer->id, $request->input('limit', PAGE_LIMIT));
+        return $this->response()
             ->paginator($items, new StatusOrdersTransformer());
     }
 

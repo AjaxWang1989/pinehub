@@ -40,11 +40,12 @@ interface OrderRepository extends RepositoryInterface
     public function storeSendOrders(string $date, int $batch,  int $shopId);
 
     /**
-     * @param $status
-     * @param $customerId
+     * @param string $status
+     * @param int $customerId
+     * @param int $limit
      * @return mixed
      */
-    public function userOrders(string $status, int $customerId);
+    public function userOrders(string $status, int $customerId, int $limit = 15);
 
     /**
      * @param $status
