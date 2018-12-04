@@ -94,14 +94,13 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     /**
      * 自提
      * @param string $date
-     * @param int $batch
      * @param int $shopId
      * @return mixed
      */
 
-    public function storeBuffetOrders(string $date, int $batch, int $shopId)
+    public function storeBuffetOrders(string $date, int $shopId)
     {
-        $this->scopeQuery(function (Order $order) use($shopId, $date, $batch) {
+        $this->scopeQuery(function (Order $order) use($shopId, $date) {
             return $order
                 ->where(['shop_id' => $shopId])
                 ->whereIn('status',[
@@ -109,7 +108,6 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                     Order::SEND,
                     Order::COMPLETED])
                 ->where('send_date', $date)
-                ->where('send_batch', $batch)
                 ->whereIn('type', [
                     Order::SHOPPING_MALL_ORDER,
                     Order::SITE_USER_ORDER

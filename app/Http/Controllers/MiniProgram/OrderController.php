@@ -344,8 +344,7 @@ class OrderController extends Controller
         if ($shop){
             //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
-                ->storeBuffetOrders($request->input('date', null),
-                    $request->input('batch', null),  $shop->id);
+                ->storeBuffetOrders($request->input('paid_date', null), $shop->id);
 
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
