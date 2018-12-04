@@ -34,7 +34,7 @@ class StoreOrdersSummaryRequest extends FormRequest
     {
         return [
             'paid_date' => 'required|date',
-            'type'            => Rule::in(null, Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER),
+            'type'            => Rule::in(null, Order::SEND_ORDER_TO_USER, Order::USER_SELF_PICK_UP),
             'status'          => Rule::in('all','send','completed')
         ];
     }
