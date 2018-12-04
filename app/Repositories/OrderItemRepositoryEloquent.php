@@ -108,7 +108,7 @@ class OrderItemRepositoryEloquent extends BaseRepository implements OrderItemRep
                 ->where(['shop_id' => $shopId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt)
-                ->whereIn('type', [Order::SITE_USER_ORDER, Order::SHOPPING_MALL_ORDER,
+                ->whereIn('order_items.type', [Order::SITE_USER_ORDER, Order::SHOPPING_MALL_ORDER,
                     Order::OFF_LINE_PAYMENT_ORDER])
                 ->groupby('customer_id')
                 ->orderBy('total_payment_amount','desc')
