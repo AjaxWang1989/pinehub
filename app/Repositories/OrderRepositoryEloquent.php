@@ -181,19 +181,17 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     public function storeOrdersSummary($date, $type, $status, int $shopId)
     {
         $where = [];
-        if ($status == 'all'){
-            $where = ['shop_id'=> $shopId];
-        }elseif ($status == 'send'){
-            $where = ['shop_id'=> $shopId,'status'=>Order::PAID];
-        }elseif ($status == 'completed'){
-            $where = ['shop_id'=> $shopId,'status'=>Order::COMPLETED];
-        }
         $startAt = $date.' 00:00:00';
         $endAt = $date.' 23:59:59';
-        $this->scopeQuery(function (Order $order) use($where, $startAt, $endAt, $type) {
-            $order = $order->where($where)
+        $this->scopeQuery(function (Order $order) use($where, $startAt, $endAt, $type, $shopId, $status) {
+            $order = $order->where('shop_id', $shopId)
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
+            if ($status === 'undone') {
+                $order = $order->whereIn('status', [Order::PAID, Order::SEND]);
+            } elseif ($status === 'completed') {
+                $order = $order->where('status', Order::COMPLETED);
+            }
             if($type) {
                 $order = $order->whereIn('type', [Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER]);
                 if ($type) {

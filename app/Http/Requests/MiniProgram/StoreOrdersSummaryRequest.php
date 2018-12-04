@@ -35,7 +35,7 @@ class StoreOrdersSummaryRequest extends FormRequest
         return [
             'paid_date' => 'required|date',
             'type'            => Rule::in(Order::NOT_NEED_PICK_UP_METHOD, Order::SEND_ORDER_TO_USER, Order::USER_SELF_PICK_UP),
-            'status'          => Rule::in('all','send','completed')
+            'status'          => Rule::in('all','undone','completed')
         ];
     }
 
