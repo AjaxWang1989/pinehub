@@ -20,6 +20,7 @@ use App\Transformers\Mp\StoreCodeOrderMerchandiseUpTransformer;
 use App\Repositories\ShopRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 
 
@@ -108,7 +109,7 @@ class PurchaseOrderController extends Controller
             //进货订单总金额
             //进货订单的总订单数
             $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($startAt, $endAt,$userId);
-            $storePurchaseStatisticsAmount = with($storeOrders, function (Collection $orders) {
+            $storePurchaseStatisticsAmount = with($storeOrders, function (LengthAwarePaginator $orders) {
                 return $orders->sum('payment_amount');
             });
             return $this->response()->paginator($storeOrders, new StorePurchaseOrdersTransformer)->addMeta('total_amount',
