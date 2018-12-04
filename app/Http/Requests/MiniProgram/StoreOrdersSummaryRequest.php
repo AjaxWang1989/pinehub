@@ -43,8 +43,8 @@ class StoreOrdersSummaryRequest extends FormRequest
     {
         return [
             'paid_date.required' => '支付开始时间不能为空且格式要为date',
-            'type'        => 'type不在定义的字符串中',
-            'status'      => 'status不在定义的字符串中'
+            'type.in'        => 'type不在定义的字符串中',
+            'status.in'      => 'status不在定义的字符串中'
         ];
     }
 }
