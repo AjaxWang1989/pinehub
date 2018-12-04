@@ -146,7 +146,7 @@ class Order extends Model implements Transformable
     const WECHAT_PAY = 2;
 
     // 取货方式
-    const NOT_NEED_PICK_UPMETHOD = 0;
+    const NOT_NEED_PICK_UP_METHOD = 0;
     const SEND_ORDER_TO_USER = 1;// 送货上门
     const USER_SELF_PICK_UP = 2; // 自提
 
