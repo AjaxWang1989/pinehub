@@ -178,12 +178,8 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
      * @return mixed
      */
 
-    public function storeOrdersSummary($status, $startAt, $endAt ,int $shopId, $type = null)
+    public function storeOrdersSummary($date, $type, $status, int $shopId)
     {
-        $startAt = null;
-        $endAt = null;
-
-
         $where = [];
         if ($status == 'all'){
             $where = ['shop_id'=> $shopId];
@@ -192,16 +188,20 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
         }elseif ($status == 'completed'){
             $where = ['shop_id'=> $shopId,'status'=>Order::COMPLETED];
         }
-
+        $startAt = $date.' 00:00:00';
+        $endAt = $date.' 23:59:59';
         $this->scopeQuery(function (Order $order) use($where, $startAt, $endAt, $type) {
             $order = $order->where($where)
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
-            if($type)
-                return $order->whereIn('type', [Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER])
-                    ->where('pick_up_method', $type === 'self_pick_up'? Order::USER_SELF_PICK_UP : Order::SEND_ORDER_TO_USER );
-            else
-                return $order;
+            if($type) {
+                $order = $order->whereIn('type', [Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER]);
+                if ($type) {
+                    $order = $order->where('pick_up_method', $type);
+                }
+            }
+            return $order;
+
         });
         return $this->paginate();
     }

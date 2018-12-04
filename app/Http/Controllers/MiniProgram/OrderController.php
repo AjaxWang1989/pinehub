@@ -404,22 +404,20 @@ class OrderController extends Controller
     public function storeOrdersSummary(StoreOrdersSummaryRequest $request){
         $user = $this->mpUser();
 
-        $shopUser = $this->shopRepository
+
+        /** @var Shop $shop */
+        $shop = $this->shopRepository
             ->findWhere(['user_id'  =>  $user['member_id']])
             ->first();
 
-        if ($shopUser) {
-            $userId = $shopUser['id'];
-
-            $request = $request->all();
-
+        if ($shop) {
             $items = $this->orderRepository
-                ->storeOrdersSummary($request,  $userId);
+                ->storeOrdersSummary($request->input('date'), $request->input('type'), $request->input('status'),  $shop->id);
             return $this->response()
                 ->paginator($items, new StoreOrdersSummaryTransformer());
+        } else {
+            throw new ModelNotFoundException('无权访问');
         }
-
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**
