@@ -30,14 +30,14 @@ class StoreBuffetOrdersRequest extends FormRequest
     public function rules()
     {
         return [
-            'paid_date' => 'required|date'
+            'date' => 'required|date'
         ];
     }
 
     public function messages()
     {
         return [
-            'paid_date.required' => '支付开始时间不能为空且时间格式要为date'
+            'date.required' => '支付开始时间不能为空且时间格式要为date'
         ];
     }
 }
