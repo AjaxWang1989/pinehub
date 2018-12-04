@@ -30,16 +30,16 @@ class StoreSendOrdersRequest extends FormRequest
     public function rules()
     {
         return [
-            'send_start_time' => 'required|date',
-            'send_end_time'   => 'required|date',
+            'date' => 'required|date',
+            'batch'   => 'required',
         ];
     }
 
     public function messages()
     {
         return [
-            'send_start_time.required' => '配送开始时间不能为空且时间格式要为date',
-            'send_end_time.required'   => '配送结束时间不能为空且时间格式要为date',
+            'date.required' => '配送时间',
+            'batch.required'   => '配送批次',
         ];
     }
 }

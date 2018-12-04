@@ -108,7 +108,7 @@ class PurchaseOrderController extends Controller
             }
             //进货订单总金额
             //进货订单的总订单数
-            $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($startAt, $endAt,$userId);
+            $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($startAt, $endAt, $userId);
             $storePurchaseStatisticsAmount = with($storeOrders, function (LengthAwarePaginator $orders) {
                 return $orders->sum('payment_amount');
             });
