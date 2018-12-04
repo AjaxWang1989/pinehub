@@ -148,7 +148,7 @@ class OrderController extends Controller
         return $this->order($order);
     }
 
-    protected function order($order){
+    protected function order(Order $order){
 
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
@@ -288,11 +288,12 @@ class OrderController extends Controller
         $this->setCustomerInfoForOrder($order, $user);
         $order['discount_amount'] = 0;
         $shop = null;
+
         if(isset($order['receiving_shop_id']) && $order['receiving_shop_id']) {
-            $shop = Shop::find($order['receiving_shop_id']);
+            $shop = (new Shop)->find($order['receiving_shop_id']);
         }
         if(!$shop && isset($order['store_id']) && $order['store_id']) {
-            $shop = Shop::find($order['store_id']);
+            $shop = (new Shop)->find($order['store_id']);
         }
         if (!isset($order['send_date']) || !$order['send_date']){
             $order['send_date'] = Carbon::now()->addDay(1)->format('Y-m-d');

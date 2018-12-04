@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\MiniProgram;
 use App\Entities\OrderPurchaseItems;
+use App\Entities\Shop;
 use Dingo\Api\Http\Request;
 use App\Repositories\AppRepository;
 use App\Repositories\StorePurchaseOrdersRepository;
@@ -17,7 +18,9 @@ use App\Repositories\MerchandiseCategoryRepository;
 use App\Transformers\Mp\StorePurchaseOrdersTransformer;
 use App\Transformers\Mp\StoreCodeOrderMerchandiseUpTransformer;
 use App\Repositories\ShopRepository;
-use App\Http\Response\JsonResponse;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 
 
 class PurchaseOrderController extends Controller
@@ -81,22 +84,38 @@ class PurchaseOrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function storePurchaseStatistics(Request $request)
-
     {
-        $user = $this->user();
-        $shopUser = $this->shopRepository->findWhere(['user_id'=>$user['member_id']])->first();
-        $shopUser['id'] = 1;
-        if ($shopUser){
-            $userId = $shopUser['id'];
-            $request = $request->all();
+        $user = $this->mpUser();
+
+        /** @var Shop $shop */
+        $shop = $this->shopRepository->findWhere(['user_id' => $user['member_id']])->first();
+        if ($shop) {
+            $userId = $shop->id;
+            $startAt = null;
+            $endAt = null;
+            $date = $request->input('date');
+            $now = Carbon::now();
+            if ($date == 'hour') {
+                $startAt = $now->startOfDay();
+                $endAt  = $now;
+            } else if($date == 'week') {
+                $startAt = $now->startOfWeek();
+                $endAt  = $now;
+            } else if($date == 'month') {
+                $startAt = $now->startOfMonth();
+                $endAt  = $now;
+            }
             //进货订单总金额
-            $storePurchaseStatisticsAmount = $this->storePurchaseOrdersRepository->storePurchaseStatistics($request,$userId);
             //进货订单的总订单数
-            $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($request,$userId);
-            return $this->response()->paginator($storeOrders,new StorePurchaseOrdersTransformer)->addMeta('total_amount',
-                $storePurchaseStatisticsAmount['total_amount']);
+            $storeOrders = $this->storePurchaseOrdersRepository->storeOrders($startAt, $endAt,$userId);
+            $storePurchaseStatisticsAmount = with($storeOrders, function (Collection $orders) {
+                return $orders->sum('payment_amount');
+            });
+            return $this->response()->paginator($storeOrders, new StorePurchaseOrdersTransformer)->addMeta('total_amount',
+                $storePurchaseStatisticsAmount);
+        } else {
+            throw new ModelNotFoundException('你不是店主没有权限访问此接口');
         }
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**
