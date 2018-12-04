@@ -138,7 +138,7 @@ class ShoppingCartController extends Controller
         $shopMerchandise = $this->shopMerchandiseRepository
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($storeId, $request){
-                return $merchandise->where('store_id', $storeId)
+                return $merchandise->where('shop_id', $storeId)
                     ->where('merchandise_id', $request->input('merchandise_id'));
             })->first();
         if(!$shopMerchandise || !$shopMerchandise->merchandise) {
@@ -241,7 +241,7 @@ class ShoppingCartController extends Controller
         $shopMerchandise = $this->shopMerchandiseRepository
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($storeId, $request){
-                return $merchandise->where('store_id', $storeId)
+                return $merchandise->where('shop_id', $storeId)
                     ->where('merchandise_id', $request->input('merchandise_id'));
             })->first();
         if(!$shopMerchandise || !$shopMerchandise->merchandise) {

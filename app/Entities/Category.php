@@ -72,4 +72,10 @@ class Category extends Model implements Transformable
         return $this->belongsToMany(Merchandise::class, 'merchandise_categories',
             'category_id', 'merchandise_id');
     }
+
+    public function shopMerchandises() : BelongsToMany
+    {
+        return $this->belongsToMany(ShopMerchandise::class, 'merchandise_categories',
+            'category_id', 'merchandise_id');
+    }
 }

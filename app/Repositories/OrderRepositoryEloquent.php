@@ -149,9 +149,10 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
     /**
      * @param string $status
      * @param int $customerId
+     * @param int $limit
      * @return mixed
      */
-    public function userOrders(string $status, int $customerId)
+    public function userOrders(string $status, int $customerId, int $limit = 15)
     {
         $where = [];
         if ($status == 'success'){
@@ -167,7 +168,7 @@ class OrderRepositoryEloquent extends BaseRepository implements OrderRepository
                     Order::SHOPPING_MALL_ORDER])
                 ->orderBy('id','desc');
         });
-        return $this->paginate();
+        return $this->paginate($limit);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -72,5 +73,11 @@ class ShopMerchandise extends Model implements Transformable
     public function shop():BelongsTo
     {
         return $this->belongsTo(Shop::class,'shop_id','id');
+    }
+
+    public function categories() : BelongsToMany
+    {
+        return $this->belongsToMany(Category::class, 'merchandise_categories',
+            'merchandise_id', 'category_id');
     }
 }

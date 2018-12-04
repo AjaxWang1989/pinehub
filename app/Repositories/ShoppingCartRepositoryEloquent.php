@@ -31,6 +31,7 @@ class ShoppingCartRepositoryEloquent extends BaseRepository implements ShoppingC
 
     /**
      * Boot up the repository, pushing criteria
+     * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
     public function boot()
     {
@@ -39,11 +40,12 @@ class ShoppingCartRepositoryEloquent extends BaseRepository implements ShoppingC
 
     /**
      * @param int $storeId
+     * @param int|null $activityId
      * @param int $userId
      * @return mixed
      */
 
-    public function shoppingCartMerchandises(int $storeId = null,int $activityId = null ,$userId){
+    public function shoppingCartMerchandises(int $storeId = null, int $activityId = null ,$userId){
         if (isset($storeId) && $storeId){
             $where = ['customer_id'=>$userId,'shop_id'=>$storeId];
         }elseif(isset($activityId) && $activityId){
