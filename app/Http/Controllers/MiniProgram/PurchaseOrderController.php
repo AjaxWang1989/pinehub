@@ -96,7 +96,7 @@ class PurchaseOrderController extends Controller
             $endAt = null;
             $date = $request->input('date');
             $now = Carbon::now();
-            if ($date == 'hour') {
+            if ($date == 'day') {
                 $startAt = $now->startOfDay();
                 $endAt  = $now;
             } else if($date == 'week') {
