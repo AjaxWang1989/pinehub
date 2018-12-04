@@ -412,7 +412,7 @@ class OrderController extends Controller
 
         if ($shop) {
             $items = $this->orderRepository
-                ->storeOrdersSummary($request->input('date'), $request->input('type'), $request->input('status'),  $shop->id);
+                ->storeOrdersSummary($request->input('paid_date'), $request->input('type'), $request->input('status'),  $shop->id);
             return $this->response()
                 ->paginator($items, new StoreOrdersSummaryTransformer());
         } else {
