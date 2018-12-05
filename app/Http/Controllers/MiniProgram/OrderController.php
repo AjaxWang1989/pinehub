@@ -143,7 +143,7 @@ class OrderController extends Controller
      * @return mixed
      */
 
-    public function againOrder(int $orderId){
+    public function payByOrderId(int $orderId){
         $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
         return $this->order($order);
     }
@@ -153,6 +153,7 @@ class OrderController extends Controller
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
             $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
+            Log::info('payment result', $result);
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
                 $order->save();
