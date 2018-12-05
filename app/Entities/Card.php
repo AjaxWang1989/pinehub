@@ -103,7 +103,8 @@ class Card extends Model implements Transformable
         'wechat_app_id',
         'ali_app_id',
         'begin_at',
-        'end_at'
+        'end_at',
+        'user_get_count'
     ];
 
     public function app() : BelongsTo

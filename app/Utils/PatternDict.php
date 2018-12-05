@@ -56,7 +56,7 @@ define('MEMBER_CARD_CODE_FORMAT', 'Ymd');
 
 define('TICKET_SEGMENT_MAX_LENGTH', 100);
 
-define('TICKET_CODE_FORMAT', 'Ymd');
+define('TICKET_CODE_FORMAT', 'YmdHis');
 
 define('SHOP_CODE_FORMAT', 'Ymd');
 define('SHOP_CODE_SEGMENT_MAX_LENGTH', 100);
