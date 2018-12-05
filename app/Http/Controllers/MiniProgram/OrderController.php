@@ -152,14 +152,18 @@ class OrderController extends Controller
 
         return DB::transaction(function () use(&$order){
             //跟微信打交道生成预支付订单
-            $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
-            Log::info('payment result', $result);
+            if (!$order->prepayId) {
+                $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
+                $order->prepayId = $result['prepay_id'];
+                $order->save();
+            }else{
+                $result['return_code'] = 'SUCCESS';
+            }
             if($result['return_code'] === 'SUCCESS'){
                 $order->status = Order::MAKE_SURE;
                 $order->save();
                 $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
                 $result['sdk_config'] = $sdkConfig;
-
                 return $this->response(new JsonResponse($result));
             }else{
                 throw new UnifyOrderException($result['return_msg']);
