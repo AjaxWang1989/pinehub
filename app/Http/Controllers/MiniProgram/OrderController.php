@@ -417,7 +417,12 @@ class OrderController extends Controller
 
         if ($shop) {
             $items = $this->orderRepository
-                ->storeOrdersSummary($request->input('paid_date'), $request->input('type'), $request->input('status'),  $shop->id);
+                ->storeOrdersSummary(
+                    $request->input('paid_date'),
+                    $request->input('type'),
+                    $request->input('status'),
+                    $shop->id
+                );
             return $this->response()
                 ->paginator($items, new StoreOrdersSummaryTransformer());
         } else {
@@ -431,25 +436,13 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function cancelOrder(int $id){
-        $status = ['status' => Order::CANCEL];
+        /** @var Order $order */
+        $order = $this->orderRepository->with('orderItems')->find($id);
 
-        $statusOrder = $this->orderRepository->find($id);
-
-        if ($statusOrder['status'] == '100' || $statusOrder['status'] == '200'){
-
-            $items = $this->orderItemRepository
-                ->findWhere(['order_id' => $id]);
-
-
-            foreach ($items as $v) {
-                $this->orderItemRepository
-                    ->update($status, $v['id']);
-            }
-
-            $item = $this->orderRepository
-                ->update($status, $id);
-
-            return $this->response()->item($item, new StatusOrdersTransformer());
+        if ($order->status === Order::WAIT || $order->status === Order::MAKE_SURE ){
+            $order->status = Order::CANCEL;
+            $order->save();
+            return $this->response()->item($order, new StatusOrdersTransformer());
         }else{
             $errCode = '状态提交错误';
             throw new UserCodeException($errCode);
@@ -463,24 +456,12 @@ class OrderController extends Controller
      * @return mixed
      */
     public function confirmOrder(int $id){
-        $status = ['status' => Order::COMPLETED];
-
-        $statusOrder = $this->orderRepository->find($id);
-
-        if ($statusOrder['status'] == '300' || $statusOrder['status'] == '400'){
-
-            $items = $this->orderItemRepository
-                ->findWhere(['order_id'=>$id]);
-
-            foreach ($items as $v){
-                $this->orderItemRepository
-                    ->update($status,$v['id']);
-            }
-
-            $item = $this->orderRepository
-                ->update($status, $id);
-
-            return $this->response()->item($item, new StatusOrdersTransformer());
+        /** @var Order $order */
+        $order = $this->orderRepository->find($id);
+        if ($order->status === Order::PAID || $order->status === Order::SEND){
+            $order->status = Order::COMPLETED;
+            $order->save();
+            return $this->response()->item($order, new StatusOrdersTransformer());
         }else{
             $errCode = '状态提交错误';
             throw new UserCodeException($errCode);
