@@ -102,6 +102,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
     const WECHAT_OPEN_PLATFORM = 'WECHAT_OPEN_PLATFORM';
     const WECHAT_MINI_PROGRAM = 'WECHAT_MINI_PROGRAM';
     const ALIPAY_OPEN_PLATFORM = 'ALIPAY_OPEN_PLATFORM';
+    const ALIPAY_MINI_PROGRAM = 'ALIPAY_MINI_PROGRAM';
 
     //注册：0-未知 1-微信公众号 2-微信小程序 3-h5页面 4-支付宝小程序 5- APP
 
