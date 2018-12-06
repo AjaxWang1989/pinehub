@@ -16,12 +16,15 @@ class ShoppingCartTransformer extends TransformerAbstract
     public function transform(ShoppingCart $model){
         return [
             'id'=>$model->id,
-            'merchandise_id'=>$model->merchandise_id,
+            'merchandise_id'=>$model->merchandiseId,
             'name'=>$model->merchandise->name,
             'main_image' => $model->merchandise->mainImage,
             'quality'=>$model->quality,
-            'sell_price'=>round($model->sell_price,2),
+            'sell_price'=>round($model->sellPrice,2),
             'amount' => $model->amount,
+            'batch' => $model->batch,
+            'date' => $model->date,
+            'type' => $model->type
         ];
     }
 }

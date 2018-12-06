@@ -1,16 +1,17 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: Administrator
- * Date: 2018/10/23
- * Time: 15:59
+ * User: wangzaron
+ * Date: 2018/12/6
+ * Time: 10:24 PM
  */
 
 namespace App\Http\Requests\MiniProgram;
 
+
 use Illuminate\Foundation\Http\FormRequest;
 
-class ShoppingCartRequest extends FormRequest
+class MerchantShoppingCartAddRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -32,9 +33,7 @@ class ShoppingCartRequest extends FormRequest
         return [
             //
             'merchandise_id' => 'required|integer',
-            'quality'        => 'required|integer',
-            'date'           => 'required|date',
-            'batch'          => 'required|integer'
+            'quality'        => 'required|integer'
         ];
     }
 
@@ -42,9 +41,8 @@ class ShoppingCartRequest extends FormRequest
     {
         return [
             'merchandise_id.required' => '商品id不能为空且格式要为整型',
-            'quality.required'        => '商品数量不能为空且必须为整数',
-            'date.date'               => '配送时间不是格式化时间',
-            'batch.integer'           => '配送批次必须是整数'
+            'quality.required'        => '商品数量不能为空且必须为整数'
         ];
     }
+
 }

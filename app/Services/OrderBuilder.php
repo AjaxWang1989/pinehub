@@ -196,8 +196,10 @@ class OrderBuilder implements InterfaceServiceHandler
                     $orderItem['app_id'] =  $orderModel->appId;
                     $orderItem['member_id'] =  $orderModel->memberId;
                     $orderItem['status'] =  $orderModel->status;
-                    $orderItem['send_date'] = $orderModel->sendDate;
-                    $orderItem['send_batch'] = $orderModel->sendBatch;
+                    if(!isset($orderItem['send_date']) || !$orderItem['send_date'])
+                        $orderItem['send_date'] = $orderModel->sendDate;
+                    if(!isset($orderItem['send_batch']) || !$orderItem['send_batch'])
+                        $orderItem['send_batch'] = $orderModel->sendBatch;
                     $orderItem['type'] = $orderModel->type;
                     $orderItem['pick_up_method'] = $orderModel->pickUpMethod;
                     $orderItem['code'] = app('uid.generator')->getSubUid($orderModel->code, ORDER_SEGMENT_MAX_LENGTH);

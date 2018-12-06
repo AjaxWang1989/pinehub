@@ -41,7 +41,6 @@ class OrderCreateRequest extends FormRequest
             'type' => Rule::in(Order::OFF_LINE_PAYMENT_ORDER, Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER,
                 Order::SHOP_PURCHASE_ORDER),
             'send_batch' => 'integer',
-            'send_time' => 'array',
             'card_id' => 'string',
             'store_id' => 'integer',
             'activity_id' => 'integer',

@@ -9,7 +9,10 @@ use Prettus\Repository\Traits\TransformableTrait;
 
 /**
  * Class StoreShoppingCart.
- *
+ * @property int $shopId
+ * @property int $appId
+ * @property string $name
+ * @property array $shoppingCarts
  * @package namespace App\Entities;
  */
 class StoreShoppingCart extends Model implements Transformable

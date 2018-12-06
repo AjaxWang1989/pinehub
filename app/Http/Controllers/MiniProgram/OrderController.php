@@ -253,6 +253,13 @@ class OrderController extends Controller
             $orderItem['payment_amount'] = $cart->amount;
             $orderItem['discount_amount'] = 0;
             $orderItem['status'] = Order::WAIT;
+            if($cart->date) {
+                $orderItem['send_date'] = $cart->date;
+            }
+
+            if($cart->batch) {
+                $orderItem['send_batch'] = $cart->batch;
+            }
             array_push($order['order_items'], $orderItem);
             array_push($order['shopping_cart_ids'], $cart->id);
         });
@@ -296,10 +303,14 @@ class OrderController extends Controller
         $shop = null;
 
         if(isset($order['receiving_shop_id']) && $order['receiving_shop_id']) {
-            $shop = (new Shop)->find($order['receiving_shop_id']);
+            if(!(new Shop)->find($order['receiving_shop_id'])) {
+                throw new ModelNotFoundException('站点不存在');
+            }
         }
         if(!$shop && isset($order['store_id']) && $order['store_id']) {
-            $shop = (new Shop)->find($order['store_id']);
+            if(!(new Shop)->find($order['store_id'])) {
+                throw new ModelNotFoundException('下单店铺不存在');
+            }
         }
         if (!isset($order['send_date']) || !$order['send_date']){
             $order['send_date'] = Carbon::now()->addDay(1)->format('Y-m-d');
