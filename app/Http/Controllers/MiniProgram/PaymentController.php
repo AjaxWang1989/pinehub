@@ -26,4 +26,9 @@ class PaymentController extends Controller
         Log::info('------- notify -----', [$data]);
         return $this->response($data);
     }
+
+    public function shopPaymentQRCode ()
+    {
+
+    }
 }

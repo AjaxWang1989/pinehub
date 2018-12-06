@@ -302,6 +302,11 @@ class ShopsController extends Controller
         }
     }
 
+    public function payQRCode()
+    {
+        app(AppManager::class)->openPlatform()->miniProgram()->app_code->get('/pages/user/payment/main');
+    }
+
     public function __destruct()
     {
         $this->repository = null;
