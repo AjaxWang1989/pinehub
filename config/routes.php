@@ -42,6 +42,18 @@ return [
         'router' => \App\Routes\WechatOpenPlatformRoutes::class,
         'version' => 'v1',
         'namespace' => 'Wechat'
+    ],
+    [
+        'gateway' => 'web.wxMp',
+        'router' => \App\Routes\WebRoutes::class,
+        'version' => 'v1',
+        'namespace' => ''
+    ],
+    [
+        'gateway' => 'web.aliMp',
+        'router' => \App\Routes\WebRoutes::class,
+        'version' => 'v1',
+        'namespace' => ''
     ]
 
 ];
