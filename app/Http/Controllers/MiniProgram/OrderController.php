@@ -181,30 +181,35 @@ class OrderController extends Controller
      * 获取购物车
      * @param array $order
      * @param MpUser $user
+     * @param string $type
      * @return Collection
      */
-    protected function getShoppingCarts(array $order, MpUser $user)
+    protected function getShoppingCarts(array $order, MpUser $user, string $type = ShoppingCart::USER_ORDER)
     {
         //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         if (isset($order['store_id']) && $order['store_id']){
             return $this->shoppingCartRepository
                 ->findWhere([
                     'customer_id' => $user->id,
-                    'shop_id'     =>$order['store_id']
+                    'shop_id'     => $order['store_id'],
+                    'type'        => $type
                 ]);
 
         }elseif (isset($order['activity_id']) && $order['activity_id']){
             return $this->shoppingCartRepository
                 ->findWhere([
-                    'customer_id'              => $user->id,
-                    'activity_id' => $order['activity_id']]);
+                    'customer_id' => $user->id,
+                    'activity_id' => $order['activity_id'],
+                    'type'        => $type
+                ]);
 
         }else{
             return $this->shoppingCartRepository
                 ->findWhere([
-                    'customer_id'               => $user->id,
+                    'customer_id'  => $user->id,
                     'activity_id'  => null,
-                    'shop_id'                   => null
+                    'shop_id'      => null,
+                    'type'        => $type
                 ]);
 
         }
@@ -322,7 +327,8 @@ class OrderController extends Controller
         }
 
         /** @var Collection $shoppingCarts */
-        $shoppingCarts = $this->getShoppingCarts($order, $user);
+        $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
+        $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
 
         $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
 
