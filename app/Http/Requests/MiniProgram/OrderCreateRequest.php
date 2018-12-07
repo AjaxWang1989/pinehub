@@ -36,7 +36,7 @@ class OrderCreateRequest extends FormRequest
             //
             'receiver_name' => 'required|string',
             'receiver_address' => 'required|string',
-            'receiver_mobile' => 'required|mobile',
+            'receiver_mobile' => 'mobile',
             'comment' => 'string',
             'type' => Rule::in(Order::OFF_LINE_PAYMENT_ORDER, Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER,
                 Order::SHOP_PURCHASE_ORDER),
