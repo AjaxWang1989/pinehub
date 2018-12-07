@@ -9,8 +9,10 @@
 namespace App\Http\Controllers\MiniProgram;
 
 use App\Entities\App;
+use App\Entities\Customer;
 use App\Entities\MpUser;
 use App\Http\Requests\CreateRequest;
+use App\Repositories\CustomerRepository;
 use App\Repositories\MpUserRepository;
 use App\Repositories\AppRepository;
 use App\Repositories\ShopRepository;
@@ -294,5 +296,39 @@ class AuthController extends Controller
         }else{
             throw new UserCodeException($errCode);
         }
+    }
+
+    public function aliLogin(string $code, Request $request, CustomerRepository $customerRepository)
+    {
+        $token = app('alipay')->getToken($code);
+        $appManager = app(AppManager::class);
+        $appId = $appManager->currentApp->id;
+        $aliAppId = config('ali.payment.app_id');
+
+        /** @var Customer $customer */
+        $customer = $customerRepository->updateOrCreate([
+            'app_id' => $appId,
+            'platform_app_id' => $aliAppId,
+            'type' => Customer::ALIPAY_OPEN_PLATFORM,
+            'platform_open_id' => $token['user_id'],
+            'session_key' => $token['access_token']
+        ], [
+            'app_id' => $appId,
+            'platform_app_id' => $aliAppId,
+            'type' => Customer::ALIPAY_OPEN_PLATFORM,
+            'platform_open_id' => $token['user_id']
+        ]);
+
+        $param = [
+            'platform_open_id' => $customer->platformOpenId,
+            'password' => $customer->sessionKey
+        ];
+
+        $token = Auth::attempt($param);
+
+        $customer['token'] = $token;
+
+        return $this->response()
+            ->item($customer, new MvpLoginTransformer());
     }
 }
