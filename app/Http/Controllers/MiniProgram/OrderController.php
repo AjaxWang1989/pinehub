@@ -326,17 +326,22 @@ class OrderController extends Controller
             $order['send_date'] = Carbon::now()->addDay(1)->format('Y-m-d');
         }
 
-        /** @var Collection $shoppingCarts */
-        $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
-        $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
+        if ($order['type'] !== Order::SHOP_PURCHASE_ORDER) {
+            /** @var Collection $shoppingCarts */
+            $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
+            $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
 
-        $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
+            $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
+            $order['merchandise_num'] = $shoppingCarts->sum('quality');
+            $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
+        }
+
 
         $this->useTicket($order, $user);
 
         $order['shop_id'] = isset($order['store_id']) ? $order['store_id'] : null;
 
-        $order['merchandise_num'] = $shoppingCarts->sum('quality');
+
 
         $order['payment_amount']  = round(($order['total_amount'] - $order['discount_amount']),2);
 
@@ -345,7 +350,6 @@ class OrderController extends Controller
         $order ['day']   = $now->day;
         $order['week']  = $now->dayOfWeekIso;
         $order['hour']  = $now->hour;
-        $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
