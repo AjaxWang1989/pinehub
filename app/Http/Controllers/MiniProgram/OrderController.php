@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 
+use App\Ali\Payment\AliChargeContext;
 use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MemberCard;
@@ -46,6 +47,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\MiniProgram\StoreOrdersSummaryRequest;
 use App\Http\Requests\MiniProgram\StoreSendOrdersRequest;
 use App\Http\Requests\MiniProgram\StoreBuffetOrdersRequest;
+use Payment\Charge\Ali\AliWapCharge;
 
 /**
  * @property CardRepository cardRepository
@@ -172,7 +174,11 @@ class OrderController extends Controller
                     throw new UnifyOrderException($result['return_msg']);
                 }
             } else {
-
+                /** @var AliChargeContext $charge */
+                $charge = app('mp.payment.ali.create');
+                $signed = $charge->charge($order->buildAliAggregatePaymentOrder());
+                Log::info('signed data', [$signed]);
+                return $this->response(new JsonResponse($signed));
             }
         });
     }
