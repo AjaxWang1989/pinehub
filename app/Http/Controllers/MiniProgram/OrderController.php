@@ -335,14 +335,12 @@ class OrderController extends Controller
         $order['week']  = $now->dayOfWeekIso;
         $order['hour']  = $now->hour;
         $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
-        Log::info('create order info', $order);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
             ->setInput($order)
             ->handle();
-
-        return $this->order($order);
+        return $this->response()->item($order, new OrderTransformer());
     }
 
     /**

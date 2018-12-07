@@ -9,11 +9,19 @@
 namespace App\Http\Controllers\MiniProgram;
 
 
+use App\Entities\Order;
+
 class UnionPaymentController extends Controller
 {
     public function wxPay()
     {
-
+        $mpUser = $this->mpUser();
+        $order = new Order();
+        $order->customerId = $mpUser->id;
+        $order->memberId = $mpUser->memberId;
+        $order->openId = $mpUser->platformOpenId;
+        $order->appId = $mpUser->appId;
+        $order->payType = Order::WECHAT_PAY;
     }
 
     public function aliPay()
