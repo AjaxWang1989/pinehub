@@ -34,10 +34,10 @@ class AliPayService
         if(($token = Cache::get($this->getCacheKey()))) {
             return $token;
         }
-        if ($type !== 'mp')
+        if ($type === 'mp')
             $token = app('mp.ali.oauth.token')->charge($this->getCredentials($code))->getToken();
         else
-            $token = app('web.ali.oauth.token')->charge($this->getCredentials($code))->getToken();
+            $token = app('web.ali.oauth.token')->charge($this->getCredentials())->getToken();
         Cache::put($this->getCacheKey(), $token, $token['expires_in']);
         return $token;
     }
