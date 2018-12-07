@@ -67,7 +67,7 @@ class PaymentServiceProvider extends ServiceProvider
 
         $this->app->singleton('mp.payment.ali.create', function (){
             $chargeContext = new AliChargeContext();
-            $config = config('ali.mini+_program');
+            $config = config('ali.mini_program');
             $chargeContext->initCharge(\App\Ali\Payment\Config::ALI_TRADE_CREATE, $config);
             return $chargeContext;
         });
