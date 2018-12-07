@@ -13,7 +13,7 @@ return [
         'use_sandbox'               => env('ALI_PAYMENT_SANDBOX', false),// 是否使用沙盒模式
         'app_id'                    => env('ALI_PAYMENT_APPID', '2018051860101849'),
         'sign_type'                 => env('ALI_PAYMENT_SIGN_TYPE', 'RSA2'),// RSA  RSA2
-        'aes_key'                   => env('ALI_MP_AES_KEY', '7PxqFgzPAFEenqJqiwiJaQ=='),
+        'aes_key'                   => env('ALI_PAYMENT_AES_KEY', '7PxqFgzPAFEenqJqiwiJaQ=='),
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN PUBLIC KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  当前字符串是 rsa2 的支付宝公钥(开放平台获取)
         'ali_public_key'            => storage_path(env('ALI_PAYMENT_PUBLIC_KEY_PATH', 'private/ali/sandbox/app_public_rsa.pem')),
