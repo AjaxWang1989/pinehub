@@ -46,6 +46,7 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->get('/nearest/store', ['as' => 'user.nearest.store','uses' => 'ShopsController@nearestStore']);
             $router->get('/nearby/stores', ['as' => 'user.nearby.stores','uses' => 'ShopsController@nearbyStores']);
             $router->get('/store/info', ['as' => 'user.store.statistics','uses' => 'ShopsController@storeInfo']);
+            $router->get('/store/{id}/info', ['as' => 'user.store.statistics','uses' => 'ShopsController@showShop']);
             $router->get('/store/sales/statistics', ['as' => 'user.store.sell.statistics','uses' => 'ShopsController@storeSalesStatistics']);
             $router->get('/search/shop/{shopId}/merchandises', ['as' => 'user.search.shop.merchandises','uses' => 'ShopsController@searchShopMerchandises']);
 
