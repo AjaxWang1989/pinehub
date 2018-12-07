@@ -176,8 +176,10 @@ class OrderController extends Controller
             } else {
                 /** @var AliChargeContext $charge */
                 $charge = app('mp.payment.ali.create');
-                $signed = $charge->charge($order->buildAliAggregatePaymentOrder());
-                Log::info('signed data', [$signed]);
+                $data = $order->buildAliAggregatePaymentOrder();
+                Log::info('signed data', $data);
+                $signed = $charge->charge($data);
+                Log::info('signed data', [$signed, $data]);
                 return $this->response(new JsonResponse($signed));
             }
         });
