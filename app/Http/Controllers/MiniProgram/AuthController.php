@@ -86,11 +86,10 @@ class AuthController extends Controller
      * \Laravel\Lumen\Application|mixed
      */
 
-    public function registerUser(CreateRequest $request)
+    public function wxRegisterUser(CreateRequest $request)
     {
         $session = $this->session();
 
-        Log::info('############### wechat session ################', [$session]);
         //获取小程序app_id
         $currentApp = app(AppManager::class)->currentApp;
 
@@ -100,32 +99,29 @@ class AuthController extends Controller
 
         if ($errCode == 0) {
 
+            /** @var MpUser $mpUser */
             $mpUser = $this->mpUserRepository
                 ->findByField('platform_open_id', $data['openId'])
                 ->first();
 
             if ($mpUser){
-
-                $errCode = '用户已注册,不用重复操作';
-                throw new UserCodeException($errCode);
+                $mpUser->update($data);
             }else{
-                Log::info('================ register mp user =================');
                 $mpUser = $this->mpUserRepository->create($data);
-
-                $param = [
-                    'platform_open_id' => $mpUser['platform_open_id'],
-                    'password' => $mpUser['session_key']
-                ];
-
-                $token = Auth::attempt($param);
-
-                $mpUser['token'] = $token;
-
-                Cache::put($token.'_session', $session, 60);
-
-                return $this->response()
-                    ->item($mpUser, new MpUserTransformer());
             }
+            $param = [
+                'platform_open_id' => $mpUser['platform_open_id'],
+                'password' => $mpUser['session_key']
+            ];
+
+            $token = Auth::attempt($param);
+
+            $mpUser['token'] = $token;
+
+            Cache::put($token.'_session', $session, 60);
+
+            return $this->response()
+                ->item($mpUser, new MpUserTransformer());
         } else {
             throw new UserCodeException($errCode);
         }
@@ -157,8 +153,7 @@ class AuthController extends Controller
 
     /**
      * 判断是否为当前的小程序
-     * @param string $appid
-     * @param string $appSecret
+     * @param Request $request
      * @return \Dingo\Api\Http\Response
      */
 
@@ -180,7 +175,6 @@ class AuthController extends Controller
             app(AppManager::class)->setCurrentApp($item)
                 ->setAccessToken($accessToken);
 
-            Log::info('@@@@@@@@@@@@@ access token '.$accessToken.' app id '.Cache::get($accessToken));
             $item['access_token'] = $accessToken;
 
             return $this->response()
@@ -200,7 +194,7 @@ class AuthController extends Controller
      * @throws \Exception
      */
 
-    public function login(string $code, Request $request)
+    public function wxLogin(string $code, Request $request)
     {
         $accessToken = $request->input('access_token', null);
 
@@ -209,18 +203,20 @@ class AuthController extends Controller
             ->session($code);
 
         cache([$accessToken.'_session'=> $session], 60);
-        Log::info('################## session ################', [$accessToken.'_session'=> $session]);
 
         $mpUser = $this->mpUserRepository
             ->findByField('platform_open_id', $session['openid'])
             ->first();
+
+        if(!$mpUser)
+            $mpUser = new MpUser();
 
         $mpSession = [
             'open_id' => $session['openid'],
             'session_key' => $session['session_key']
         ];
 
-        if($session && $mpUser) {
+        if($session) {
             $shopUser = $this->shopRepository
                 ->findWhere(['user_id'  =>  $mpUser['member_id']])
                 ->first();
