@@ -139,35 +139,40 @@ class OrderController extends Controller
 
     /**
      * 重新支付订单
+     * @param string $type
      * @param int $orderId
      * @return mixed
      */
 
-    public function payByOrderId(int $orderId){
+    public function payByOrderId(string $type = 'wx', int $orderId){
         $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
-        return $this->order($order);
+        return $this->order($order, $type);
     }
 
-    protected function order(Order $order){
+    protected function order(Order $order, string $type){
 
-        return DB::transaction(function () use(&$order){
+        return DB::transaction(function () use(&$order, $type){
             //跟微信打交道生成预支付订单
-            if (!$order->prepayId) {
-                $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
-                $order->prepayId = $result['prepay_id'];
-                $order->save();
-            }else{
-                $result['return_code'] = 'SUCCESS';
-                $result['prepay_id'] = $order->prepayId;
-            }
-            if($result['return_code'] === 'SUCCESS'){
-                $order->status = Order::MAKE_SURE;
-                $order->save();
-                $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
-                $result['sdk_config'] = $sdkConfig;
-                return $this->response(new JsonResponse($result));
-            }else{
-                throw new UnifyOrderException($result['return_msg']);
+            if ($type === 'wx') {
+                if (!$order->prepayId) {
+                    $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
+                    $order->prepayId = $result['prepay_id'];
+                    $order->save();
+                }else{
+                    $result['return_code'] = 'SUCCESS';
+                    $result['prepay_id'] = $order->prepayId;
+                }
+                if($result['return_code'] === 'SUCCESS'){
+                    $order->status = Order::MAKE_SURE;
+                    $order->save();
+                    $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
+                    $result['sdk_config'] = $sdkConfig;
+                    return $this->response(new JsonResponse($result));
+                }else{
+                    throw new UnifyOrderException($result['return_msg']);
+                }
+            } else {
+
             }
         });
     }
