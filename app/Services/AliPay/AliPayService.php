@@ -41,7 +41,6 @@ class AliPayService
     {
         if(!$code) {
             $code = Request::input('auth_code');
-            session(['ali_auth_code' => $code]);
         }
 
         return [
