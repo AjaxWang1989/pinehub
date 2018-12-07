@@ -42,7 +42,7 @@ return [
     'mini_program' => [
         'use_sandbox'               => env('ALI_PAYMENT_SANDBOX', false),// 是否使用沙盒模式
         'aes_key'                   => env('ALI_MP_AES_KEY', 'FPzyBatgXp8IvEPUzVVD5A=='),
-        'app_id'                    => env('ALI_MINI_PROGRAM_APPID', '2018051860101849'),
+        'app_id'                    => env('ALI_MINI_PROGRAM_APPID', '2018103061934293'),
         'sign_type'                 => env('ALI_PAYMENT_SIGN_TYPE', 'RSA2'),// RSA  RSA2
         'md5_key'                   => env('ALI_PAYMENT_MD5_KEY', 'zismisutln32vdlavqdg7brqmya9z3ts'),
 
