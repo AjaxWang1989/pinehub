@@ -15,7 +15,7 @@ return [
         'app_id'                    => env('ALI_PAYMENT_APPID', '2018051860101849'),
         'sign_type'                 => env('ALI_PAYMENT_SIGN_TYPE', 'RSA2'),// RSA  RSA2
         'md5_key'                   => env('ALI_PAYMENT_MD5_KEY', 'zismisutln32vdlavqdg7brqmya9z3ts'),
-
+        'aes_key'                   => env('ALI_MP_AES_KEY', '7PxqFgzPAFEenqJqiwiJaQ=='),
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN PUBLIC KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  当前字符串是 rsa2 的支付宝公钥(开放平台获取)
         'ali_public_key'            => storage_path(env('ALI_PAYMENT_PUBLIC_KEY_PATH', 'private/ali/sandbox/public.key')),
@@ -41,18 +41,18 @@ return [
     ],
     'mini_program' => [
         'use_sandbox'               => env('ALI_PAYMENT_SANDBOX', false),// 是否使用沙盒模式
-        'aes_key'                   => env('ALI_MP_AES_KEY', 'FPzyBatgXp8IvEPUzVVD5A=='),
-        'app_id'                    => env('ALI_MINI_PROGRAM_APPID', '2018103061934293'),
+        'aes_key'                   => env('ALI_MP_AES_KEY', '7PxqFgzPAFEenqJqiwiJaQ=='),
+        'app_id'                    => env('ALI_MINI_PROGRAM_APPID', '2016091400508249'),
         'sign_type'                 => env('ALI_PAYMENT_SIGN_TYPE', 'RSA2'),// RSA  RSA2
         'md5_key'                   => env('ALI_PAYMENT_MD5_KEY', 'zismisutln32vdlavqdg7brqmya9z3ts'),
 
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN PUBLIC KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  当前字符串是 rsa2 的支付宝公钥(开放平台获取)
-        'ali_public_key'            => storage_path(env('ALI_MP_PUBLIC_KEY_PATH', 'private/ali/mp/rsa_public_key.pem')),
+        'ali_public_key'            => storage_path(env('ALI_MP_PUBLIC_KEY_PATH', 'private/ali/sandbox/public.pem')),
 
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN RSA PRIVATE KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  我的沙箱模式，rsa与rsa2的私钥相同，为了方便测试
-        'rsa_private_key'           => storage_path(env('ALI_MP_PRIVATE_KEY_PATH', 'private/ali/mp/rsa_private_key.pem')),
+        'rsa_private_key'           => storage_path(env('ALI_MP_PRIVATE_KEY_PATH', 'private/ali/sandbox/private.pem')),
         'limit_pay'                 => [
             //'balance',// 余额
             //'moneyFund',// 余额宝
