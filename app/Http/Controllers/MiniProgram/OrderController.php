@@ -358,6 +358,7 @@ class OrderController extends Controller
         $order ['day']   = $now->day;
         $order['week']  = $now->dayOfWeekIso;
         $order['hour']  = $now->hour;
+        Log::info('order info', $order);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
