@@ -298,7 +298,7 @@ class AuthController extends Controller
         }
     }
 
-    public function aliLogin(string $code, CustomerRepository $customerRepository)
+    public function aliLogin(string $code, MpUserRepository $customerRepository)
     {
         $token = app('alipay')->getToken($code);
         $appManager = app(AppManager::class);
