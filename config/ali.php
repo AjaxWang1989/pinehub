@@ -18,11 +18,11 @@ return [
         'aes_key'                   => env('ALI_MP_AES_KEY', '7PxqFgzPAFEenqJqiwiJaQ=='),
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN PUBLIC KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  当前字符串是 rsa2 的支付宝公钥(开放平台获取)
-        'ali_public_key'            => storage_path(env('ALI_PAYMENT_PUBLIC_KEY_PATH', 'private/ali/sandbox/public.key')),
+        'ali_public_key'            => storage_path(env('ALI_PAYMENT_PUBLIC_KEY_PATH', 'private/ali/sandbox/app_public_rsa.pem')),
 
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN RSA PRIVATE KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  我的沙箱模式，rsa与rsa2的私钥相同，为了方便测试
-        'rsa_private_key'           => storage_path(env('ALI_PAYMENT_PRIVATE_KEY_PATH', 'private/ali/sandbox/private.key')),
+        'rsa_private_key'           => storage_path(env('ALI_PAYMENT_PRIVATE_KEY_PATH', 'private/ali/sandbox/app_private_rsa.pem')),
         'limit_pay'                 => [
             //'balance',// 余额
             //'moneyFund',// 余额宝
@@ -48,11 +48,11 @@ return [
 
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN PUBLIC KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  当前字符串是 rsa2 的支付宝公钥(开放平台获取)
-        'ali_public_key'            => storage_path(env('ALI_MP_PUBLIC_KEY_PATH', 'private/ali/sandbox/public.pem')),
+        'ali_public_key'            => storage_path(env('ALI_MP_PUBLIC_KEY_PATH', 'private/ali/sandbox/app_public_rsa.pem')),
 
         // ！！！注意：如果是文件方式，文件中只保留字符串，不要留下 -----BEGIN RSA PRIVATE KEY----- 这种标记
         // 可以填写文件路径，或者密钥字符串  我的沙箱模式，rsa与rsa2的私钥相同，为了方便测试
-        'rsa_private_key'           => storage_path(env('ALI_MP_PRIVATE_KEY_PATH', 'private/ali/sandbox/private.pem')),
+        'rsa_private_key'           => storage_path(env('ALI_MP_PRIVATE_KEY_PATH', 'private/ali/sandbox/app_private_rsa.pem')),
         'limit_pay'                 => [
             //'balance',// 余额
             //'moneyFund',// 余额宝
