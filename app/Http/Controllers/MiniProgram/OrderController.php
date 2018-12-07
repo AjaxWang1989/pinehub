@@ -334,7 +334,7 @@ class OrderController extends Controller
             $order['send_date'] = Carbon::now()->addDay(1)->format('Y-m-d');
         }
 
-        if ($order['type'] !== Order::OFF_LINE_PAYMENT_ORDER) {
+        if ((int)$order['type'] !== Order::OFF_LINE_PAYMENT_ORDER) {
             /** @var Collection $shoppingCarts */
             $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
             $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
