@@ -56,10 +56,10 @@ return [
         'namespace' => ''
     ],
     [
-        'gateway' => 'web.payment',
-        'router' => \App\Routes\PaymentRoutes::class,
+        'gateway' => 'web.mpPayment',
+        'router' => \App\Routes\WebRoutes::class,
         'version' => 'v1',
-        'namespace' => 'H5\Payment'
+        'namespace' => ''
     ]
 
 ];
