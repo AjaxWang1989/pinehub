@@ -181,6 +181,11 @@ class PaymentController extends Controller
         }else if (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
             redirect(buildUrl('web.aliMp', '/pay/{storeId}',['storeId' => $storeId]));
         }
+        Log::info('match', [
+           $userAgent,
+           preg_match(WECHAT_PAY_USER_AGENT, $userAgent),
+           preg_match(ALI_PAY_USER_AGENT, $userAgent)
+        ]);
         return $this->response(new JsonResponse([ 'user_agent' => $userAgent]));
     }
 
