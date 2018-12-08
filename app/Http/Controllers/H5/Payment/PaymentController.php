@@ -177,9 +177,9 @@ class PaymentController extends Controller
     {
         $userAgent = $request->userAgent();
         if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
-            redirect(buildUrl('web.wxMp', '/pay/{storeId}',['storeId' => $storeId]));
+            return redirect(buildUrl('web.wxMp', '/pay/{storeId}',['storeId' => $storeId]));
         }else if (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
-            redirect(buildUrl('web.aliMp', '/pay/{storeId}',['storeId' => $storeId]));
+            return redirect(buildUrl('web.aliMp', '/pay/{storeId}',['storeId' => $storeId]));
         }
         Log::info('match', [
            $userAgent,
