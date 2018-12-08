@@ -35,6 +35,8 @@ class MiniProgramApiRoutes extends ApiRoutes
         $router->group($attributes, function ($router) {
 
             /** @var DingoRouter $router */
+            $router->get('tickets', ['as' => 'tickets', 'uses' => 'TicketController@tickets']);
+            $router->get('user/receive/ticket/{cardId}', ['as' => 'tickets', 'uses' => 'TicketController@userReceiveTicket']);
             $router->get('/user/info', ['as' => 'user.info','uses' => 'AuthController@userInfo']);
 
             $router->post('/save/mobile', ['as' => 'user.save.mobile','uses' => 'AuthController@saveMobile']);
@@ -84,20 +86,30 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->post('/shop/{storeId}/shoppingcart/merchandise', ['as' => 'user.add.shop.shoppingcart.merchandise','uses' => 'ShoppingCartController@storeShoppingCartAddMerchandise']);
             $router->post('/new/events/{activityId}/shoppingcart/merchandise', ['as' => 'user.add.activity.shoppingcart.merchandise','uses' => 'ShoppingCartController@activityShoppingCartAddMerchandise']);
             $router->post('/shoppingcart/merchandise', ['as' => 'user.add.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartAddMerchandise']);
+            $router->post('merchant/shoppingcart/merchandise', ['as' => 'user.add.merchant.shoppingcart.merchandise','uses' => 'ShoppingCartController@addMerchantShoppingCart']);
+
+
 
             $router->put('/shop/{storeId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shop.shoppingcart.merchandise','uses' => 'ShoppingCartController@storeShoppingCartMerchandiseNumChange']);
             $router->put('/new/events/{activityId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.activity.shoppingcart.merchandise','uses' => 'ShoppingCartController@activityShoppingCartMerchandiseNumChange']);
             $router->put('/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
+            $router->put('/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
+            $router->put('/merchant/{storeId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.merchant.shoppingcart.merchandise','uses' => 'ShoppingCartController@merchantShoppingCartMerchandiseNumChange']);
+
 
             $router->delete('/shoppingcart/{shoppingCartId}', ['as' => 'user.delete.shoppingcart','uses' => 'ShoppingCartController@shoppingCartDelete']);
 
             $router->get('/clear/shop/{storeId}/shoppingcart', ['as' => 'user.clear.shop.merchandise','uses' => 'ShoppingCartController@clearStoreShoppingCart']);
             $router->get('/clear/new/events/{activityId}/shoppingcart', ['as' => 'user.clear.activity.merchandise','uses' => 'ShoppingCartController@clearActivityShoppingCart']);
             $router->get('/clear/shoppingcart', ['as' => 'user.clear.merchandise','uses' => 'ShoppingCartController@clearBookingMallShoppingCart']);
+            $router->get('/clear/merchant/shoppingcart', ['as' => 'user.clear.merchant.merchandise','uses' => 'ShoppingCartController@clearMerchantShoppingCart']);
+
 
             $router->get('/shop/{storeId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.shop.merchandises','uses' => 'ShoppingCartController@storeShoppingCartMerchandises']);
             $router->get('/new/events/{activityId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.activity.merchandises','uses' => 'ShoppingCartController@activityShoppingCartMerchandises']);
             $router->get('/shoppingcart/merchandises', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandises']);
+            $router->get('/merchant/shoppingcart/merchandises', ['as' => 'user.merchant.shoppingcart.merchandises','uses' => 'ShoppingCartController@merchatShoppingCartMerchandises']);
+
         });
 
         $router->addRoute(['GET', 'POST'], '/payment/notify/{token?}', ['middleware' => 'setPaymentConfig', 'as' => 'payment.notify', 'uses' => 'PaymentController@notify']);

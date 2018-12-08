@@ -111,7 +111,8 @@ class ShoppingCartController extends Controller
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($activityId, $request){
                 return $merchandise->where('activity_id', $activityId)
-                    ->where('merchandise_id', $request->input('merchandise_id'));
+                    ->where('merchandise_id', $request->input('merchandise_id'))
+                    ->where('type', ShoppingCart::USER_ORDER);
             })->first();
         if(!$activityMerchandise || !$activityMerchandise->merchandise) {
             throw new ModelNotFoundException('产品不存在');
@@ -144,7 +145,41 @@ class ShoppingCartController extends Controller
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($storeId, $request){
                 return $merchandise->where('shop_id', $storeId)
-                    ->where('merchandise_id', $request->input('merchandise_id'));
+                    ->where('merchandise_id', $request->input('merchandise_id'))
+                    ->where('type', ShoppingCart::USER_ORDER);
+            })->first();
+        if(!$shopMerchandise || !$shopMerchandise->merchandise) {
+            throw new ModelNotFoundException('产品不存在');
+        }
+
+        if ($shopMerchandise['stock_num'] <= $request->input('quality')){
+            throw new StoreResourceFailedException('商品库存不足');
+        }
+        $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($storeId,$request){
+            return $shoppingCart->where('shop_id', $storeId)->where('merchandise_id',$request->input('merchandise_id'));
+        })->find($shoppingCartId);
+
+        $quality = $request->input('quality');
+        $message = '店铺';
+
+        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+    }
+
+    /**
+     * 赠加和修改店铺购物车
+     * @param int $storeId
+     * @param int $shoppingCartId
+     * @param StoreShoppingCartRequest $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function merchantShoppingCartMerchandiseNumChange(int $storeId, int $shoppingCartId, StoreShoppingCartRequest $request)
+    {
+        $shopMerchandise = $this->shopMerchandiseRepository
+            ->with(['merchandise'])
+            ->scopeQuery(function ($merchandise) use($storeId, $request){
+                return $merchandise->where('shop_id', $storeId)
+                    ->where('merchandise_id', $request->input('merchandise_id'))
+                    ->where('type', ShoppingCart::MERCHANT_ORDER);
             })->first();
         if(!$shopMerchandise || !$shopMerchandise->merchandise) {
             throw new ModelNotFoundException('产品不存在');
@@ -173,7 +208,8 @@ class ShoppingCartController extends Controller
     {
         $merchandise = $this->merchandiseRepository
             ->scopeQuery(function (Merchandise $merchandise) use ($request){
-                return $merchandise->where('id', $request->input('merchandise_id'));
+                return $merchandise->where('id', $request->input('merchandise_id'))
+                    ->where('type', ShoppingCart::USER_ORDER);
             })
             ->first();
         if (!$merchandise) {
