@@ -146,7 +146,7 @@ class StorePurchaseOrders extends Model implements Transformable
         $request = app('request');
         $clientIp = $request->getClientIp();
         return [
-            'body'    => 'ali qr pay',
+            'body'    => 'ali qr payment',
             'subject'    => '支付宝扫码支付',
             'order_no'    => $this->code,
             'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
@@ -165,7 +165,7 @@ class StorePurchaseOrders extends Model implements Transformable
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
         $clientIp = app('request')->getClientIp();
         return [
-            'body'    => 'PineHub offline scan qrcode pay',
+            'body'    => 'PineHub offline scan qrcode payment',
             //'subject'    => '微信扫码支付',
             'order_no'    => $this->code,
             'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
@@ -184,7 +184,7 @@ class StorePurchaseOrders extends Model implements Transformable
         $request = app('request');
         $clientIp = $request->getClientIp();
         return [
-            'body'    => 'PineHub offline scan qrcode pay',
+            'body'    => 'PineHub offline scan qrcode payment',
             'subject'    => '线下扫码支付',
             'order_no'    => $this->code,
             'timeout_express' => $expire->timestamp,// 表示必须 600s 内付款
