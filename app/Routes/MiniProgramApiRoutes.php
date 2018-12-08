@@ -93,7 +93,7 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->put('/shop/{storeId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shop.shoppingcart.merchandise','uses' => 'ShoppingCartController@storeShoppingCartMerchandiseNumChange']);
             $router->put('/new/events/{activityId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.activity.shoppingcart.merchandise','uses' => 'ShoppingCartController@activityShoppingCartMerchandiseNumChange']);
             $router->put('/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
-            $router->put('/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
+           // $router->put('/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.shoppingcart.merchandise','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandiseNumChange']);
             $router->put('/merchant/{storeId}/shoppingcart/{shoppingCartId}/merchandise', ['as' => 'user.change.merchant.shoppingcart.merchandise','uses' => 'ShoppingCartController@merchantShoppingCartMerchandiseNumChange']);
 
 
