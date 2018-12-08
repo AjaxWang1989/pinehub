@@ -302,9 +302,11 @@ class ShopsController extends Controller
         }
     }
 
-    public function payQRCode()
+    public function payQRCode(int $storeId)
     {
-        app(AppManager::class)->openPlatform()->miniProgram()->app_code->get('/pages/user/payment/main');
+        $url = buildUrl('web.payment', 'store/{storeId}/mp/aggregate', ['storeId' => $storeId]);
+        $code = app('qrcode')->format('png')->generate($url);
+        return $this->response()->created()->setContent($code)->header('Content-Type', 'image/png');
     }
 
     public function __destruct()
