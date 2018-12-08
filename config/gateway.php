@@ -20,6 +20,7 @@ return [
         'wxopen' => env('WECHAT_OPEN_PLATFORM_WEB_GATEWAY', 'wxopen'),
         'h5' => env('H5_WEB_GATEWAY', 'h5'),
         'wxMp' => env('WX_MP_WEB_GATEWAY', 'wx.mp'),
-        'aliMp' => env('ALI_MP_WEB_GATEWAY', 'ali.mp')
+        'aliMp' => env('ALI_MP_WEB_GATEWAY', 'ali.mp'),
+        'payment' => env('PAYMENT_WEB_GATEWAY', 'payment')
     ]
 ];

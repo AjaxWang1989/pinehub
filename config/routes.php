@@ -54,6 +54,12 @@ return [
         'router' => \App\Routes\WebRoutes::class,
         'version' => 'v1',
         'namespace' => ''
+    ],
+    [
+        'gateway' => 'web.payment',
+        'router' => \App\Routes\PaymentRoutes::class,
+        'version' => 'v1',
+        'namespace' => 'H5\Payment'
     ]
 
 ];
