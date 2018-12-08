@@ -12,6 +12,7 @@ namespace App\Http\Controllers\H5\Payment;
 
 use App\Entities\Order;
 use App\Http\Controllers\Controller;
+use App\Http\Response\JsonResponse;
 use App\Http\Response\UpdateResponse;
 use App\Repositories\OrderRepositoryEloquent;
 use App\Repositories\ShopRepositoryEloquent;
@@ -180,7 +181,7 @@ class PaymentController extends Controller
         }else if (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
             redirect(buildUrl('web.aliMp', '/pay/{storeId}',['storeId' => $storeId]));
         }
-        return $this->response([$userAgent]);
+        return $this->response(new JsonResponse([ 'user_agent' => $userAgent]));
     }
 
     public function __destruct()
