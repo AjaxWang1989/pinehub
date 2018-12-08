@@ -180,6 +180,7 @@ class PaymentController extends Controller
         }else if (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
             redirect(buildUrl('web.aliMp', '/pay/{storeId}',['storeId' => $storeId]));
         }
+        return $this->response($userAgent);
     }
 
     public function __destruct()
