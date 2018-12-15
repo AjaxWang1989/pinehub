@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 use App\Repositories\Traits\Destruct;
+use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\ShoppingCart;
@@ -56,9 +57,11 @@ class ShoppingCartRepositoryEloquent extends BaseRepository implements ShoppingC
             $where = ['customer_id'=>$userId,'shop_id'=>null,'activity_id'=>null];
         }
         $where['type'] = $type;
+        $count = $this->model->where($where)->count();
         $this->scopeQuery(function (ShoppingCart $shoppingCart) use($where) {
             return $shoppingCart->with('merchandise')->where($where);
         });
-        return $this->paginate();
+
+        return $this->paginate(Request::input('limit', $count > 0 ? $count : PAGE_LIMIT));
     }
 }
