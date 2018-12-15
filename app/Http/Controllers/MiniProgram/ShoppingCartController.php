@@ -178,8 +178,7 @@ class ShoppingCartController extends Controller
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($storeId, $request){
                 return $merchandise->where('shop_id', $storeId)
-                    ->where('merchandise_id', $request->input('merchandise_id'))
-                    ->where('type', ShoppingCart::MERCHANT_ORDER);
+                    ->where('merchandise_id', $request->input('merchandise_id'));
             })->first();
         if(!$shopMerchandise || !$shopMerchandise->merchandise) {
             throw new ModelNotFoundException('产品不存在');
@@ -189,7 +188,9 @@ class ShoppingCartController extends Controller
             throw new StoreResourceFailedException('商品库存不足');
         }
         $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($storeId,$request){
-            return $shoppingCart->where('shop_id', $storeId)->where('merchandise_id',$request->input('merchandise_id'));
+            return $shoppingCart->where('shop_id', $storeId)
+                ->where('type', ShoppingCart::MERCHANT_ORDER)
+                ->where('merchandise_id',$request->input('merchandise_id'));
         })->find($shoppingCartId);
 
         $quality = $request->input('quality');
