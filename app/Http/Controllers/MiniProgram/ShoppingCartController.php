@@ -550,8 +550,9 @@ class ShoppingCartController extends Controller
                 try {
                     $shoppingCarts->map(function (ShoppingCart $cart) use ($name) {
                         $storeShoppingCart = new StoreShoppingCart();
-                        $storeShoppingCart->shoppingCarts = $cart->toArray();
-                        unset($storeShoppingCart->shoppingCarts['id']);
+                        $tmp = $cart->toArray();
+                        unset($tmp['id']);
+                        $storeShoppingCart->shoppingCarts = $tmp;
                         $storeShoppingCart->appId = $cart->appId;
                         $storeShoppingCart->name = $name;
                         $storeShoppingCart->shopId = $cart->shopId;
