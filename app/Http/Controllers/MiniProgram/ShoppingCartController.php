@@ -560,7 +560,7 @@ class ShoppingCartController extends Controller
                         'message' => '保存成功'
                     ]));
                 }catch (\Exception $exception) {
-                    throw new ModelNotFoundException('保存失败');
+                    throw new ModelNotFoundException('保存失败'.$exception->getMessage());
                 }
 
             }
