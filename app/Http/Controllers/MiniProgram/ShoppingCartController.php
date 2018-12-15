@@ -578,8 +578,9 @@ class ShoppingCartController extends Controller
         if (!$shop) {
             throw new ModelNotFoundException('不是店主无法请求此接口');
         }
+        $count =StoreShoppingCart::where('shop_id', $shop->id)->count();
         $shoppingCarts = StoreShoppingCart::where('shop_id', $shop->id)
-            ->paginate($request->input('limit'));
+            ->paginate($request->input('limit', $count));
         return $this->response()->paginator($shoppingCarts, new ShoppingCart());
     }
 
