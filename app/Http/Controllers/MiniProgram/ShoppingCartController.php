@@ -40,6 +40,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use App\Repositories\ShopMerchandiseRepository;
+use Illuminate\Support\Facades\Log;
 
 class ShoppingCartController extends Controller
 {
@@ -560,7 +561,8 @@ class ShoppingCartController extends Controller
                         'message' => '保存成功'
                     ]));
                 }catch (\Exception $exception) {
-                    throw new ModelNotFoundException('保存失败'.$exception->getMessage());
+                    Log::info('error', $exception->getTrace());
+                    throw new ModelNotFoundException('保存失败');
                 }
 
             }
