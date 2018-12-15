@@ -112,6 +112,8 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->get('/merchant/shoppingcart/merchandises', ['as' => 'user.merchant.shoppingcart.merchandises','uses' => 'ShoppingCartController@merchantShoppingCartMerchandises']);
             $router->get('/merchant/saved/shoppingcarts', ['as' => 'user.merchant.shoppingcarts','uses' => 'ShoppingCartController@merchantSavedShoppingCarts']);
 
+            $router->get('/merchant/saved/shoppingcart/{id}/use', ['as' => 'user.merchant.shoppingcart.use','uses' => 'ShoppingCartController@useMerchantSavedShoppingCart']);
+
         });
 
         $router->addRoute(['GET', 'POST'], '/payment/notify/{token?}', ['middleware' => 'setPaymentConfig', 'as' => 'payment.notify', 'uses' => 'PaymentController@notify']);
