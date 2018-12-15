@@ -9,6 +9,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 
 /**
  * Class StoreShoppingCart.
+ * @property int $id
  * @property int $shopId
  * @property int $appId
  * @property string $name
@@ -28,6 +29,7 @@ class StoreShoppingCart extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
+        'id',
         'shop_id',
         'app_id',
         'name',
