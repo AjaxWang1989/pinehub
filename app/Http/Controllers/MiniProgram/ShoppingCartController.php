@@ -35,6 +35,7 @@ use App\Repositories\ActivityMerchandiseRepository;
 use App\Transformers\Mp\ShoppingCartTransformer;
 use App\Http\Response\JsonResponse;
 use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -518,6 +519,19 @@ class ShoppingCartController extends Controller
         $ids = $request->input('shopping_cart_ids', null);
         $name = $request->input('name', null);
 
+        $user = $this->mpUser();
+        $shop = Shop::whereUserId($user->memberId)->first();
+        if (!$shop) {
+            throw new ModelNotFoundException('没有店铺无法访问');
+        }
+
+        if (!$ids) {
+            $carts = $this->shoppingCartRepository
+                ->findWhere(['customer_id' => $user->id, 'shop_id'=> $shop->id, 'type' => ShoppingCart::MERCHANT_ORDER], ['id']);
+            $ids = with($carts, function (Collection $collection) {
+                return $collection->flatten()->all();
+            });
+        }
         if (!$ids || !is_array($ids) || !$name) {
             throw new HttpValidationException('参数错误');
         } else {
