@@ -10,6 +10,7 @@ namespace App\Transformers\Mp;
 
 
 use App\Entities\StoreShoppingCart;
+use League\Fractal\TransformerAbstract;
 
 class StoreShoppingCartTransformer extends TransformerAbstract
 {
