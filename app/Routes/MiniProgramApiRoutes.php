@@ -110,6 +110,7 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->get('/new/events/{activityId}/shoppingcart/merchandises', ['as' => 'user.shoppingcart.activity.merchandises','uses' => 'ShoppingCartController@activityShoppingCartMerchandises']);
             $router->get('/shoppingcart/merchandises', ['as' => 'user.shoppingcart.merchandises','uses' => 'ShoppingCartController@bookingMallShoppingCartMerchandises']);
             $router->get('/merchant/shoppingcart/merchandises', ['as' => 'user.merchant.shoppingcart.merchandises','uses' => 'ShoppingCartController@merchantShoppingCartMerchandises']);
+            $router->get('/merchant/saved/shoppingcarts', ['as' => 'user.merchant.shoppingcarts','uses' => 'ShoppingCartController@merchantSavedShoppingCarts']);
 
         });
 
