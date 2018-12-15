@@ -549,16 +549,17 @@ class ShoppingCartController extends Controller
                 throw new ModelNotFoundException('购物车不存在');
             }else{
                 try {
-                    $shoppingCarts->map(function (ShoppingCart $cart) use ($name) {
-                        $storeShoppingCart = new StoreShoppingCart();
-                        $tmp = $cart->toArray();
-                        unset($tmp['id']);
-                        $storeShoppingCart->shoppingCarts = $tmp;
-                        $storeShoppingCart->appId = $cart->appId;
-                        $storeShoppingCart->name = $name;
-                        $storeShoppingCart->shopId = $cart->shopId;
-                        $storeShoppingCart->save();
+                    $storeShoppingCart = new StoreShoppingCart();
+
+                    $storeShoppingCart->appId = $shop->appId;
+                    $storeShoppingCart->name = $name;
+                    $storeShoppingCart->shopId = $shop->id;
+
+                    $storeShoppingCart->shoppingCarts = $shoppingCarts->map(function (ShoppingCart $cart) {
+                        return $cart->only(['app_id','shop_id','member_id','customer_id','merchandise_id','sku_product_id','quality','sell_price','amount'
+                            ,'activity_id', 'type', 'batch', 'date']);
                     });
+                    $storeShoppingCart->save();
                     return $this->response(new JsonResponse([
                         'message' => '保存成功'
                     ]));
