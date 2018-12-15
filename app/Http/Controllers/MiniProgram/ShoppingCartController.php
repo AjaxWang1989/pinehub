@@ -194,7 +194,7 @@ class ShoppingCartController extends Controller
         $quality = $request->input('quality');
         $message = '店铺';
 
-        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+        return $this->shoppingCartMerchandiseNumChange($shoppingCart, $quality, $message);
     }
 
     /**
