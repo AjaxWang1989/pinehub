@@ -588,6 +588,9 @@ class ShoppingCartController extends Controller
         $shoppingCart = StoreShoppingCart::find($id);
         if ($shoppingCart) {
             try {
+                $user = $this->shopManager();
+                $shop = Shop::whereUserId($user->id)->first();
+                ShoppingCart::where('shop_id', $shop->id)->where('type',ShoppingCart::MERCHANT_ORDER)->delete();
                 collect($shoppingCart->shoppingCarts)->map(function ($item) {
                     $cart = new ShoppingCart($item);
                     $cart->save();
