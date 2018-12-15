@@ -562,6 +562,7 @@ class ShoppingCartController extends Controller
                         'message' => '保存成功'
                     ]));
                 }catch (\Exception $exception) {
+                    Log::info('error massage '.$exception->getMessage());
                     Log::info('error', $exception->getTrace());
                     throw new ModelNotFoundException('保存失败');
                 }
