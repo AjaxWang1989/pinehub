@@ -175,9 +175,8 @@ class ShoppingCartController extends Controller
     public function merchantShoppingCartMerchandiseNumChange(int $storeId, int $shoppingCartId, StoreShoppingCartRequest $request)
     {
         $shopMerchandise = $this->merchandiseRepository
-            ->scopeQuery(function ($merchandise) use($storeId, $request){
-                return $merchandise->where('shop_id', $storeId)
-                    ->where('merchandise_id', $request->input('merchandise_id'));
+            ->scopeQuery(function ($merchandise) use($request){
+                return $merchandise->where('merchandise_id', $request->input('merchandise_id'));
             })->first();
         if(!$shopMerchandise) {
             throw new ModelNotFoundException('产品不存在');
