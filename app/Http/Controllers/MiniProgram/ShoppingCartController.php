@@ -529,7 +529,7 @@ class ShoppingCartController extends Controller
             $carts = $this->shoppingCartRepository
                 ->findWhere(['customer_id' => $user->id, 'shop_id'=> $shop->id, 'type' => ShoppingCart::MERCHANT_ORDER], ['id']);
             $ids = with($carts, function (Collection $collection) {
-                return $collection->flatMap(function ($item) {
+                return $collection->map(function ($item) {
                     return $item['id'];
                 })->all();
             });
