@@ -176,7 +176,7 @@ class ShoppingCartController extends Controller
     {
         $shopMerchandise = $this->merchandiseRepository
             ->scopeQuery(function ($merchandise) use($request){
-                return $merchandise->where('merchandise_id', $request->input('merchandise_id'));
+                return $merchandise->where('id', $request->input('merchandise_id'));
             })->first();
         if(!$shopMerchandise) {
             throw new ModelNotFoundException('产品不存在');
