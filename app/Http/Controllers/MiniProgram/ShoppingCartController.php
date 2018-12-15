@@ -25,6 +25,7 @@ use App\Http\Requests\MiniProgram\BookingMallShoppingCartAddRequest;
 use App\Repositories\OrderRepository;
 use App\Services\AppManager;
 use App\Entities\ShoppingCart;
+use App\Transformers\Mp\StoreShoppingCartTransformer;
 use App\Transformers\Mp\UsuallyStoreAddressTransformer;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
@@ -581,7 +582,7 @@ class ShoppingCartController extends Controller
         $count =StoreShoppingCart::where('shop_id', $shop->id)->count();
         $shoppingCarts = StoreShoppingCart::where('shop_id', $shop->id)
             ->paginate($request->input('limit', $count));
-        return $this->response()->paginator($shoppingCarts, new ShoppingCart());
+        return $this->response()->paginator($shoppingCarts, new StoreShoppingCartTransformer());
     }
 
     public function useMerchantSavedShoppingCart(int $id)
