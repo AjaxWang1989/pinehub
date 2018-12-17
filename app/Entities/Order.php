@@ -56,6 +56,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @property string|null $ip 支付终端ip地址
  * @property string|null $tradeStatus 交易状态:TRADE_WAIT 等待交易 TRADE_FAILED 交易失败 TRADE_SUCCESS 交易成功 
  *                 TRADE_FINISHED 交易结束禁止退款操作 TRADE_CANCEL 交易关闭禁止继续支付
+ * @property string $prepayId
  * @property int|null $year 年
  * @property int|null $month 月
  * @property int|null $day 日
@@ -146,7 +147,7 @@ class Order extends Model implements Transformable
     const WECHAT_PAY = 2;
 
     // 取货方式
-    const NOT_NEED_PICK_UPMETHOD = 0;
+    const NOT_NEED_PICK_UP_METHOD = 0;
     const SEND_ORDER_TO_USER = 1;// 送货上门
     const USER_SELF_PICK_UP = 2; // 自提
 
@@ -198,7 +199,7 @@ class Order extends Model implements Transformable
         'comment', 'type', 'app_id', 'open_id', 'wechat_app_id', 'ali_app_id',
         'score_settle', 'ip', 'open_id', 'transaction_id', 'shop_id', 'member_id', 'trade_status',
         'year', 'month', 'week', 'hour', 'activity_id', 'receiving_shop_id', 'send_batch', 'day',
-        'pick_up_method', 'pick_up_start_time', 'pick_up_end_time'
+        'pick_up_method', 'pick_up_start_time', 'pick_up_end_time', 'prepay_id'
     ];
 
     public static function boot()

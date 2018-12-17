@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 
+use App\Ali\Payment\AliChargeContext;
 use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MemberCard;
@@ -46,6 +47,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Http\Requests\MiniProgram\StoreOrdersSummaryRequest;
 use App\Http\Requests\MiniProgram\StoreSendOrdersRequest;
 use App\Http\Requests\MiniProgram\StoreBuffetOrdersRequest;
+use Payment\Charge\Ali\AliWapCharge;
 
 /**
  * @property CardRepository cardRepository
@@ -139,29 +141,46 @@ class OrderController extends Controller
 
     /**
      * 重新支付订单
+     * @param string $type
      * @param int $orderId
      * @return mixed
      */
 
-    public function againOrder(int $orderId){
+    public function payByOrderId(string $type = 'wx', int $orderId){
         $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
-        return $this->order($order);
+        return $this->order($order, $type);
     }
 
-    protected function order($order){
+    protected function order(Order $order, string $type){
 
-        return DB::transaction(function () use(&$order){
+        return DB::transaction(function () use(&$order, $type){
             //跟微信打交道生成预支付订单
-            $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
-            if($result['return_code'] === 'SUCCESS'){
-                $order->status = Order::MAKE_SURE;
-                $order->save();
-                $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
-                $result['sdk_config'] = $sdkConfig;
-
-                return $this->response(new JsonResponse($result));
-            }else{
-                throw new UnifyOrderException($result['return_msg']);
+            if ($type === 'wx') {
+                if (!$order->prepayId) {
+                    $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
+                    $order->prepayId = $result['prepay_id'];
+                    $order->save();
+                }else{
+                    $result['return_code'] = 'SUCCESS';
+                    $result['prepay_id'] = $order->prepayId;
+                }
+                if($result['return_code'] === 'SUCCESS'){
+                    $order->status = Order::MAKE_SURE;
+                    $order->save();
+                    $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
+                    $result['sdk_config'] = $sdkConfig;
+                    return $this->response(new JsonResponse($result));
+                }else{
+                    throw new UnifyOrderException($result['return_msg']);
+                }
+            } else {
+                /** @var AliChargeContext $charge */
+                $charge = app('mp.payment.ali.create');
+                $data = $order->buildAliAggregatePaymentOrder();
+                Log::info('signed data', $data);
+                $signed = $charge->charge($data);
+                Log::info('signed data', [$signed, $data]);
+                return $this->response(new JsonResponse($signed));
             }
         });
     }
@@ -170,17 +189,17 @@ class OrderController extends Controller
      * 获取购物车
      * @param array $order
      * @param MpUser $user
+     * @param string $type
      * @return Collection
      */
-    protected function getShoppingCarts(array $order, MpUser $user)
+    protected function getShoppingCarts(array $order, MpUser $user, string $type = ShoppingCart::USER_ORDER)
     {
         //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
-        return $this->shoppingCartRepository
-            ->findWhere([
+        return $this->shoppingCartRepository->findWhere([
                 'customer_id'               => $user->id,
                 'activity_id'  => isset($order['activity_id']) ? $order['activity_id'] : null,
                 'shop_id'                   => isset($order['store_id']) ? $order['store_id'] : null,
-                'type' => $order['type']
+                'type' => $type
             ]);
     }
 
@@ -232,6 +251,13 @@ class OrderController extends Controller
             $orderItem['payment_amount'] = $cart->amount;
             $orderItem['discount_amount'] = 0;
             $orderItem['status'] = Order::WAIT;
+            if($cart->date) {
+                $orderItem['send_date'] = $cart->date;
+            }
+
+            if($cart->batch) {
+                $orderItem['send_batch'] = $cart->batch;
+            }
             array_push($order['order_items'], $orderItem);
             array_push($order['shopping_cart_ids'], $cart->id);
         });
@@ -273,26 +299,37 @@ class OrderController extends Controller
         $this->setCustomerInfoForOrder($order, $user);
         $order['discount_amount'] = 0;
         $shop = null;
+
         if(isset($order['receiving_shop_id']) && $order['receiving_shop_id']) {
-            $shop = Shop::find($order['receiving_shop_id']);
+            if(!(new Shop)->find($order['receiving_shop_id'])) {
+                throw new ModelNotFoundException('站点不存在');
+            }
         }
         if(!$shop && isset($order['store_id']) && $order['store_id']) {
-            $shop = Shop::find($order['store_id']);
+            if(!(new Shop)->find($order['store_id'])) {
+                throw new ModelNotFoundException('下单店铺不存在');
+            }
         }
         if (!isset($order['send_date']) || !$order['send_date']){
             $order['send_date'] = Carbon::now()->addDay(1)->format('Y-m-d');
         }
 
-        /** @var Collection $shoppingCarts */
-        $shoppingCarts = $this->getShoppingCarts($order, $user);
+        if ((int)$order['type'] !== Order::OFF_LINE_PAYMENT_ORDER) {
+            /** @var Collection $shoppingCarts */
+            $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
+            $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
 
-        $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
+            $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
+            $order['merchandise_num'] = $shoppingCarts->sum('quality');
+            $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
+        }
+
 
         $this->useTicket($order, $user);
 
         $order['shop_id'] = isset($order['store_id']) ? $order['store_id'] : null;
 
-        $order['merchandise_num'] = $shoppingCarts->sum('quality');
+
 
         $order['payment_amount']  = round(($order['total_amount'] - $order['discount_amount']),2);
 
@@ -301,15 +338,13 @@ class OrderController extends Controller
         $order ['day']   = $now->day;
         $order['week']  = $now->dayOfWeekIso;
         $order['hour']  = $now->hour;
-        $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
-        Log::info('create order info', $order);
+        Log::info('order info', [$order, $request->all()]);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
             ->setInput($order)
             ->handle();
-
-        return $this->order($order);
+        return $this->response()->item($order, new OrderTransformer());
     }
 
     /**
@@ -328,8 +363,7 @@ class OrderController extends Controller
         if ($shop){
             //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
-                ->storeBuffetOrders($request->input('date', null),
-                    $request->input('batch', null),  $shop->id);
+                ->storeBuffetOrders($request->input('date', null), $shop->id);
 
             return $this->response()
                 ->paginator($items,new OrderStoreBuffetTransformer());
@@ -388,22 +422,25 @@ class OrderController extends Controller
     public function storeOrdersSummary(StoreOrdersSummaryRequest $request){
         $user = $this->mpUser();
 
-        $shopUser = $this->shopRepository
+
+        /** @var Shop $shop */
+        $shop = $this->shopRepository
             ->findWhere(['user_id'  =>  $user['member_id']])
             ->first();
 
-        if ($shopUser) {
-            $userId = $shopUser['id'];
-
-            $request = $request->all();
-
+        if ($shop) {
             $items = $this->orderRepository
-                ->storeOrdersSummary($request,  $userId);
+                ->storeOrdersSummary(
+                    $request->input('paid_date'),
+                    $request->input('type'),
+                    $request->input('status'),
+                    $shop->id
+                );
             return $this->response()
                 ->paginator($items, new StoreOrdersSummaryTransformer());
+        } else {
+            throw new ModelNotFoundException('无权访问');
         }
-
-        return $this->response(new JsonResponse(['shop_id' => $shopUser]));
     }
 
     /**
@@ -412,25 +449,13 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function cancelOrder(int $id){
-        $status = ['status' => Order::CANCEL];
+        /** @var Order $order */
+        $order = $this->orderRepository->with('orderItems')->find($id);
 
-        $statusOrder = $this->orderRepository->find($id);
-
-        if ($statusOrder['status'] == '100' || $statusOrder['status'] == '200'){
-
-            $items = $this->orderItemRepository
-                ->findWhere(['order_id' => $id]);
-
-
-            foreach ($items as $v) {
-                $this->orderItemRepository
-                    ->update($status, $v['id']);
-            }
-
-            $item = $this->orderRepository
-                ->update($status, $id);
-
-            return $this->response()->item($item, new StatusOrdersTransformer());
+        if ($order->status === Order::WAIT || $order->status === Order::MAKE_SURE ){
+            $order->status = Order::CANCEL;
+            $order->save();
+            return $this->response()->item($order, new StatusOrdersTransformer());
         }else{
             $errCode = '状态提交错误';
             throw new UserCodeException($errCode);
@@ -444,24 +469,12 @@ class OrderController extends Controller
      * @return mixed
      */
     public function confirmOrder(int $id){
-        $status = ['status' => Order::COMPLETED];
-
-        $statusOrder = $this->orderRepository->find($id);
-
-        if ($statusOrder['status'] == '300' || $statusOrder['status'] == '400'){
-
-            $items = $this->orderItemRepository
-                ->findWhere(['order_id'=>$id]);
-
-            foreach ($items as $v){
-                $this->orderItemRepository
-                    ->update($status,$v['id']);
-            }
-
-            $item = $this->orderRepository
-                ->update($status, $id);
-
-            return $this->response()->item($item, new StatusOrdersTransformer());
+        /** @var Order $order */
+        $order = $this->orderRepository->find($id);
+        if ($order->status === Order::PAID || $order->status === Order::SEND){
+            $order->status = Order::COMPLETED;
+            $order->save();
+            return $this->response()->item($order, new StatusOrdersTransformer());
         }else{
             $errCode = '状态提交错误';
             throw new UserCodeException($errCode);

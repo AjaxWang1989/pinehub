@@ -8,6 +8,7 @@
 
 namespace App\Http\Requests\MiniProgram;
 
+use App\Entities\Order;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -32,20 +33,18 @@ class StoreOrdersSummaryRequest extends FormRequest
     public function rules()
     {
         return [
-            'paid_start_time' => 'required|date',
-            'paid_end_time'   => 'required|date',
-            'type'            => Rule::in('reserve','self_lift'),
-            'status'          => Rule::in('all','send','completed')
+            'paid_date' => 'required|date',
+            'type'            => Rule::in(Order::NOT_NEED_PICK_UP_METHOD, Order::SEND_ORDER_TO_USER, Order::USER_SELF_PICK_UP),
+            'status'          => Rule::in('all','undone','completed')
         ];
     }
 
     public function messages()
     {
         return [
-            'paid_start_time.required' => '支付开始时间不能为空且格式要为date',
-            'paid_end_time.required'   => '支付结束时间不能为空且格式要为date',
-            'type'        => 'type不在定义的字符串中',
-            'status'      => 'status不在定义的字符串中'
+            'paid_date.required' => '支付开始时间不能为空且格式要为date',
+            'type.in'        => 'type不在定义的字符串中',
+            'status.in'      => 'status不在定义的字符串中'
         ];
     }
 }

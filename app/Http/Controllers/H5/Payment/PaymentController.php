@@ -12,6 +12,7 @@ namespace App\Http\Controllers\H5\Payment;
 
 use App\Entities\Order;
 use App\Http\Controllers\Controller;
+use App\Http\Response\JsonResponse;
 use App\Http\Response\UpdateResponse;
 use App\Repositories\OrderRepositoryEloquent;
 use App\Repositories\ShopRepositoryEloquent;
@@ -169,6 +170,23 @@ class PaymentController extends Controller
         }else{
             return view('payment.quit')->with('order', $order);
         }
+    }
+
+
+    public function mpAggregate(int $storeId, LumenRequest $request)
+    {
+        $userAgent = $request->userAgent();
+        if (preg_match(WECHAT_PAY_USER_AGENT, $userAgent)) {
+            return redirect(buildUrl('web.wxMp', '/pay/{storeId}',['storeId' => $storeId]));
+        }else if (preg_match(ALI_PAY_USER_AGENT, $userAgent)) {
+            return redirect(buildUrl('web.aliMp', '/pay/{storeId}',['storeId' => $storeId]));
+        }
+        Log::info('match', [
+           $userAgent,
+           preg_match(WECHAT_PAY_USER_AGENT, $userAgent),
+           preg_match(ALI_PAY_USER_AGENT, $userAgent)
+        ]);
+        return $this->response(new JsonResponse([ 'user_agent' => $userAgent]));
     }
 
     public function __destruct()

@@ -8,6 +8,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\ShoppingCart;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -21,8 +22,10 @@ interface ShoppingCartRepository extends RepositoryInterface
      * @param int $storeId
      * @param int|null $activityMerchandiseId
      * @param int $userId
+     * @param string $type
      * @return mixed
      */
-    public function shoppingCartMerchandises(int $storeId = null,int $activityMerchandiseId = null,$userId);
+    public function shoppingCartMerchandises(int $storeId = null,int $activityMerchandiseId = null,
+                                             int $userId = null, string $type = ShoppingCart::USER_ORDER);
 
 }

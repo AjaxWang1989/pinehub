@@ -125,7 +125,9 @@ if(!function_exists('buildUrl')) {
         if($path){
             $path = trim($path, '/');
             $host = trim(gateway($gateway), '/');
-            return $proto.$host.'/'.$path .'?'. http_build_query($query);
+            $query = http_build_query($query);
+            $query = $query ? '?'.$query : '';
+            return $proto.$host.'/'.$path .$query;
         }else{
             return null;
         }

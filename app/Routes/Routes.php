@@ -44,7 +44,7 @@ class Routes
     {
         $this->app = $app;
         $this->auth = $auth;
-        if($namespace[0] !== '\\') {
+        if($namespace && $namespace[0] !== '\\') {
             $namespace = '\\'.$namespace;
         }
         $this->subNamespace = $namespace;

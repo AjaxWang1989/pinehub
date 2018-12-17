@@ -302,6 +302,13 @@ class ShopsController extends Controller
         }
     }
 
+    public function payQRCode(int $storeId, Request $request)
+    {
+        $url = buildUrl('web.mpPayment', '/pay/{storeId}', ['storeId' => $storeId]);
+        $code = app('qrcode')->format('png')->margin(2)->size($request->input('size', 128))->generate($url);
+        return $this->response()->created()->setContent($code)->header('Content-Type', 'image/png');
+    }
+
     public function __destruct()
     {
         $this->repository = null;

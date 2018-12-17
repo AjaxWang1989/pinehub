@@ -205,6 +205,16 @@ class ShopsController extends Controller
         }
     }
 
+    public function showShop(int $id)
+    {
+        $shop = $this->shopRepository->find($id);
+        if (!$shop) {
+            throw new ModelNotFoundException('无法查找到相应店铺');
+        }else{
+            return $this->response()->item($shop, new ShopPositionTransformer());
+        }
+    }
+
     /**
      * 今日下单搜索
      * @param int $shopId

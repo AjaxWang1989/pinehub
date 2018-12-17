@@ -9,6 +9,7 @@
 namespace App\Repositories;
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Repositories\Traits\Destruct;
+use Carbon\Carbon;
 use Illuminate\Container\Container as Application;
 use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -73,31 +74,17 @@ class StorePurchaseOrdersRepositoryEloquent extends BaseRepository implements St
     }
 
     /**
-     * @param array $request
-     * @param int $userId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $storeId
      * @return mixed
      */
 
-    public function storePurchaseStatistics(array $request,int $userId)
+    public function storePurchaseStatistics(Carbon $startAt, Carbon $endAt, int $storeId)
     {
-        $startAt = null;
-        $endAt = null;
-        if ($request['date'] == 'hour')
-        {
-            $startAt = $this->hourStartAt;
-            $endAt  = $this->hourEndAt;
-        }else if($request['date'] == 'week')
-        {
-            $startAt = $this->weekStartAt;
-            $endAt  = $this->weekEndAt;
-        }else if($request['date'] == 'month')
-        {
-            $startAt = $this->montStartAt;
-            $endAt  = $this->monthEndAt;
-        }
-        $this->scopeQuery(function (StorePurchaseOrders $storePurchaseOrders) use($userId,$request, $startAt, $endAt){
+        $this->scopeQuery(function (StorePurchaseOrders $storePurchaseOrders) use($storeId, $startAt, $endAt){
             return $storePurchaseOrders->select([DB::raw('sum(`payment_amount`) as total_amount')])
-                ->where(['shop_id'=>$userId])
+                ->where(['shop_id'=> $storeId])
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });
@@ -105,31 +92,16 @@ class StorePurchaseOrdersRepositoryEloquent extends BaseRepository implements St
     }
 
     /**
-     * @param array $request
-     * @param int $userId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $storeId
      * @return mixed
      */
-    public function storeOrders(array $request,int $userId)
+    public function storeOrders(Carbon $startAt, Carbon $endAt, int $storeId)
     {
-        $startAt = null;
-        $endAt = null;
-        if ($request['date'] == 'hour')
-        {
-            $startAt = $this->hourStartAt;
-            $endAt  = $this->hourEndAt;
-        }else if($request['date'] == 'week')
-        {
-            $startAt = $this->weekStartAt;
-            $endAt  = $this->weekEndAt;
-        }else if($request['date'] == 'month')
-        {
-            $startAt = $this->montStartAt;
-            $endAt  = $this->monthEndAt;
-        }
-
-        $this->scopeQuery(function (StorePurchaseOrders $storePurchaseOrders) use($userId,$request, $startAt, $endAt){
+        $this->scopeQuery(function (StorePurchaseOrders $storePurchaseOrders) use($storeId, $startAt, $endAt){
             return $storePurchaseOrders
-                ->where('shop_id', $userId)
+                ->where('shop_id', $storeId)
                 ->where('paid_at', '>=', $startAt)
                 ->where('paid_at', '<', $endAt);
         });

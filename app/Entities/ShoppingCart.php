@@ -64,6 +64,9 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property int $quality 订单产品数量
  * @property float $sellPrice 售价
  * @property float $amount 总价
+ * @property string $type
+ * @property int $batch
+ * @property string $date
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property-read \App\Entities\App|null $app
@@ -94,9 +97,11 @@ class ShoppingCart extends Model implements AuthenticatableContract, Authorizabl
 
     protected $table = "shopping_cart";
 
+    const USER_ORDER = 'USER_ORDER';
+    const MERCHANT_ORDER = 'MERCHANT_ORDER';
     protected $fillable =[
         'app_id','shop_id','member_id','customer_id','merchandise_id','sku_product_id','quality','sell_price','amount'
-        ,'activity_id'
+        ,'activity_id', 'type', 'batch', 'date'
     ];
 
     public function shop():BelongsTo

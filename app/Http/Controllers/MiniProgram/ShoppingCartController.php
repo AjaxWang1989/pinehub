@@ -10,8 +10,12 @@ namespace App\Http\Controllers\MiniProgram;
 
 use App\Entities\ActivityMerchandise;
 use App\Entities\Merchandise;
+use App\Entities\Shop;
 use App\Entities\ShopMerchandise;
+use App\Entities\StoreShoppingCart;
+use App\Exceptions\HttpValidationException;
 use App\Http\Requests\MiniProgram\BookingMallShoppingCartRequest;
+use App\Http\Requests\MiniProgram\MerchantShoppingCartAddRequest;
 use App\Http\Requests\MiniProgram\StoreShoppingCartRequest;
 use App\Http\Requests\MiniProgram\ActivityShoppingCartRequest;
 
@@ -21,6 +25,7 @@ use App\Http\Requests\MiniProgram\BookingMallShoppingCartAddRequest;
 use App\Repositories\OrderRepository;
 use App\Services\AppManager;
 use App\Entities\ShoppingCart;
+use App\Transformers\Mp\StoreShoppingCartTransformer;
 use App\Transformers\Mp\UsuallyStoreAddressTransformer;
 use Dingo\Api\Exception\StoreResourceFailedException;
 use Dingo\Api\Http\Request;
@@ -31,9 +36,12 @@ use App\Repositories\ActivityMerchandiseRepository;
 use App\Transformers\Mp\ShoppingCartTransformer;
 use App\Http\Response\JsonResponse;
 use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use App\Repositories\ShopMerchandiseRepository;
+use Illuminate\Support\Facades\Log;
 
 class ShoppingCartController extends Controller
 {
@@ -106,7 +114,8 @@ class ShoppingCartController extends Controller
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($activityId, $request){
                 return $merchandise->where('activity_id', $activityId)
-                    ->where('merchandise_id', $request->input('merchandise_id'));
+                    ->where('merchandise_id', $request->input('merchandise_id'))
+                    ->where('type', ShoppingCart::USER_ORDER);
             })->first();
         if(!$activityMerchandise || !$activityMerchandise->merchandise) {
             throw new ModelNotFoundException('产品不存在');
@@ -139,7 +148,8 @@ class ShoppingCartController extends Controller
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($storeId, $request){
                 return $merchandise->where('shop_id', $storeId)
-                    ->where('merchandise_id', $request->input('merchandise_id'));
+                    ->where('merchandise_id', $request->input('merchandise_id'))
+                    ->where('type', ShoppingCart::USER_ORDER);
             })->first();
         if(!$shopMerchandise || !$shopMerchandise->merchandise) {
             throw new ModelNotFoundException('产品不存在');
@@ -159,6 +169,38 @@ class ShoppingCartController extends Controller
     }
 
     /**
+     * 赠加和修改店铺购物车
+     * @param int $storeId
+     * @param int $shoppingCartId
+     * @param StoreShoppingCartRequest $request
+     * @return \Dingo\Api\Http\Response
+     */
+    public function merchantShoppingCartMerchandiseNumChange(int $storeId, int $shoppingCartId, StoreShoppingCartRequest $request)
+    {
+        $shopMerchandise = $this->merchandiseRepository
+            ->scopeQuery(function ($merchandise) use($request){
+                return $merchandise->where('id', $request->input('merchandise_id'));
+            })->first();
+        if(!$shopMerchandise) {
+            throw new ModelNotFoundException('产品不存在');
+        }
+
+        if ($shopMerchandise['stock_num'] <= $request->input('quality')){
+            throw new StoreResourceFailedException('商品库存不足');
+        }
+        $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($storeId,$request){
+            return $shoppingCart->where('shop_id', $storeId)
+                ->where('type', ShoppingCart::MERCHANT_ORDER)
+                ->where('merchandise_id',$request->input('merchandise_id'));
+        })->find($shoppingCartId);
+
+        $quality = $request->input('quality');
+        $message = '店铺';
+
+        return $this->shoppingCartMerchandiseNumChange($shoppingCart, $quality, $message);
+    }
+
+    /**
      * 增加和修改预定商城购物车
      * @param int $shoppingCartId
      * @param BookingMallShoppingCartRequest $request
@@ -168,7 +210,8 @@ class ShoppingCartController extends Controller
     {
         $merchandise = $this->merchandiseRepository
             ->scopeQuery(function (Merchandise $merchandise) use ($request){
-                return $merchandise->where('id', $request->input('merchandise_id'));
+                return $merchandise->where('id', $request->input('merchandise_id'))
+                    ->where('type', ShoppingCart::USER_ORDER);
             })
             ->first();
         if (!$merchandise) {
@@ -196,7 +239,6 @@ class ShoppingCartController extends Controller
         $shoppingCart['sell_price'] = round($merchandise['sell_price'],2);
         $shoppingCart['app_id'] = $user->appId;
         $shoppingCart['amount'] = round($merchandise['sell_price'],2) * $shoppingCart['quality'];
-
         $item = $this->shoppingCartRepository->create($shoppingCart);
         return $this->response()->item($item, new ShoppingCartTransformer);
     }
@@ -226,7 +268,7 @@ class ShoppingCartController extends Controller
         $shoppingCart['activity_id'] = $activityId;
         $shoppingCart['quality'] = $request->input('quality');
         $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
-
+        $shoppingCart['type'] = ShoppingCart::USER_ORDER;
         return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
     }
 
@@ -256,6 +298,7 @@ class ShoppingCartController extends Controller
         $shoppingCart['shop_id'] = $storeId;
         $shoppingCart['quality'] = $request->input('quality');
         $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
+        $shoppingCart['type'] = ShoppingCart::USER_ORDER;
 
         return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
     }
@@ -281,6 +324,8 @@ class ShoppingCartController extends Controller
 
         $shoppingCart['quality'] = $request->input('quality');
         $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
+        $shoppingCart['type'] = ShoppingCart::USER_ORDER;
+
         return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
     }
 
@@ -298,19 +343,29 @@ class ShoppingCartController extends Controller
      * 清空购物车
      * @param int $storeId
      * @param int|null $activityId
+     * @param string $type
      * @return \Dingo\Api\Http\Response
      */
-    public function clearShoppingCart(int $storeId = null, int $activityId = null){
+    public function clearShoppingCart(int $storeId = null, int $activityId = null, string $type = ShoppingCart::USER_ORDER){
         $user = $this->mpUser();
         if (isset($storeId) && $storeId){
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['shop_id'=>$storeId,'customer_id'=>$user['id']]);
+            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
+                'shop_id' => $storeId,
+                'customer_id' => $user['id'],
+                'type' => $type
+            ]);
         }elseif(isset($activityId) && $activityId){
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere(['activity_id'=>$activityId,'customer_id'=>$user['id']]);
+            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
+                'activity_id' => $activityId,
+                'customer_id' => $user['id'],
+                'type' => $type
+            ]);
         }else{
             $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
                 'customer_id'=>$user['id'],
                 'shop_id' => null,
                 'activity_id' => null,
+                'type' => $type
             ]);
         }
         $deleteIds = [];
@@ -381,14 +436,28 @@ class ShoppingCartController extends Controller
      * 获取购物车商品信息
      * @param int $storeId
      * @param int|null $activityId
+     * @param string $type
      * @return \Dingo\Api\Http\Response
      */
 
-    public function shoppingCartMerchandises(int $storeId = null,int $activityId = null){
+    public function shoppingCartMerchandises(int $storeId = null,int $activityId = null, string $type = ShoppingCart::USER_ORDER){
         $user = $this->mpUser();
-        $userId =$user['id'];
-        $items  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId ,$activityId ,$userId);
+        $userId = $user->id;
+        $items  = $this->shoppingCartRepository->shoppingCartMerchandises($storeId ,$activityId ,$userId, $type);
         return $this->response()->paginator($items, new ShoppingCartTransformer);
+    }
+
+    /**
+     * 预定商城购物车
+     * @return \Dingo\Api\Http\Response
+     */
+    public function merchantShoppingCartMerchandises(){
+        $user = $this->mpUser();
+        $shop = Shop::whereUserId($user->memberId)->first();
+        if (!$shop) {
+            throw new ModelNotFoundException('不是店主无法请求此接口');
+        }
+        return $this->shoppingCartMerchandises($shop->id, null, ShoppingCart::MERCHANT_ORDER);
     }
 
     /**
@@ -402,5 +471,143 @@ class ShoppingCartController extends Controller
         $user = $this->mpUser();
         $receivingShopOrders = $repository->activityUsuallyReceivingStores($activityId, $user->id);
         return $this->response()->paginator($receivingShopOrders,new UsuallyStoreAddressTransformer());
+    }
+
+
+    public function addMerchantShoppingCart(MerchantShoppingCartAddRequest $request)
+    {
+        $merchandise = $this->merchandiseRepository->findWhere([
+            'id'=>$request->input('merchandise_id')
+        ])->first();
+
+        if(!$merchandise) {
+            throw new ModelNotFoundException('产品不存在');
+        }
+
+        if ($merchandise['stock_num'] <= $request->input('quality')){
+            throw new StoreResourceFailedException('商品库存不足');
+        }
+        $user = $this->shopManager();
+        $shop = Shop::whereUserId($user->id)->first();
+        if (!$shop) {
+            throw new ModelNotFoundException('不是店主无法请求此接口');
+        }
+        $shoppingCart['quality'] = $request->input('quality');
+        $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
+        $shoppingCart['type'] = ShoppingCart::MERCHANT_ORDER;
+        $shoppingCart['shop_id'] = $shop->id;
+        $shoppingCart['batch'] = $request->input('batch', 0);
+        $shoppingCart['date'] = $request->input('date', Carbon::now()->format('Y-m-d'));
+
+        return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
+    }
+
+    /**
+     * 清空店铺购物车
+     * @return \Dingo\Api\Http\Response
+     */
+    public function clearMerchantShoppingCart(){
+        $user = $this->shopManager();
+        $shop = Shop::whereUserId($user->id)->first();
+        if (!$shop) {
+            throw new ModelNotFoundException('不是店主无法请求此接口');
+        }
+        return $this->clearShoppingCart($shop->id, null, ShoppingCart::MERCHANT_ORDER);
+    }
+
+
+    public function saveMerchantShoppingCart(Request $request)
+    {
+        $ids = $request->input('shopping_cart_ids', null);
+        $name = $request->input('name', null);
+
+        $user = $this->mpUser();
+        $shop = Shop::whereUserId($user->memberId)->first();
+        if (!$shop) {
+            throw new ModelNotFoundException('没有店铺无法访问');
+        }
+
+        if (!$ids) {
+            $carts = $this->shoppingCartRepository
+                ->findWhere(['customer_id' => $user->id, 'shop_id'=> $shop->id, 'type' => ShoppingCart::MERCHANT_ORDER], ['id']);
+            $ids = with($carts, function (Collection $collection) {
+                return $collection->map(function ($item) {
+                    return $item['id'];
+                })->all();
+            });
+        }
+        if (!$ids || !is_array($ids) || !$name) {
+            throw new HttpValidationException('参数错误');
+        } else {
+            $user = $this->shopManager();
+            $shop = Shop::whereUserId($user->id)->first();
+            if (!$shop) {
+                throw new ModelNotFoundException('不是店主无法请求此接口');
+            }
+            $shoppingCarts = ShoppingCart::whereIn('id', $ids)->where('shop_id', $shop->id)->get();
+            if (!$shoppingCarts || $shoppingCarts->count() === 0) {
+                throw new ModelNotFoundException('购物车不存在');
+            }else{
+                try {
+                    $storeShoppingCart = new StoreShoppingCart();
+
+                    $storeShoppingCart->appId = $shop->appId;
+                    $storeShoppingCart->name = $name;
+                    $storeShoppingCart->shopId = $shop->id;
+
+                    $storeShoppingCart->shoppingCarts = $shoppingCarts->map(function (ShoppingCart $cart) {
+                        return $cart->only(['app_id','shop_id','member_id','customer_id','merchandise_id','sku_product_id','quality','sell_price','amount'
+                            ,'activity_id', 'type', 'batch', 'date']);
+                    });
+                    $storeShoppingCart->save();
+                    return $this->response(new JsonResponse([
+                        'message' => '保存成功'
+                    ]));
+                }catch (\Exception $exception) {
+                    Log::info('error massage '.$exception->getMessage());
+                    Log::info('error', $exception->getTrace());
+                    throw new ModelNotFoundException('保存失败');
+                }
+
+            }
+        }
+    }
+
+    public function merchantSavedShoppingCarts(Request $request)
+    {
+        $user = $this->shopManager();
+        $shop = Shop::whereUserId($user->id)->first();
+        if (!$shop) {
+            throw new ModelNotFoundException('不是店主无法请求此接口');
+        }
+        $count =StoreShoppingCart::where('shop_id', $shop->id)->count();
+        $shoppingCarts = StoreShoppingCart::where('shop_id', $shop->id)
+            ->paginate($request->input('limit', $count));
+        return $this->response()->paginator($shoppingCarts, new StoreShoppingCartTransformer());
+    }
+
+    public function useMerchantSavedShoppingCart(int $id)
+    {
+        $shoppingCart = StoreShoppingCart::find($id);
+        if ($shoppingCart) {
+            try {
+                $user = $this->shopManager();
+                $shop = Shop::whereUserId($user->id)->first();
+                ShoppingCart::where('shop_id', $shop->id)->where('type',ShoppingCart::MERCHANT_ORDER)->delete();
+                collect($shoppingCart->shoppingCarts)->map(function ($item) {
+                    $cart = new ShoppingCart($item);
+                    $cart->save();
+                });
+                return $this->response(new JsonResponse([
+                    'message' => '成功'
+                ]));
+            }catch (\Exception $exception) {
+                throw new ModelNotFoundException('恢复错误');
+            }
+
+
+        } else {
+            throw new ModelNotFoundException('购物车记录不存在');
+        }
     }
 }

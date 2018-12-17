@@ -7,23 +7,26 @@
  */
 
 namespace App\Repositories;
+use Carbon\Carbon;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 
 interface StorePurchaseOrdersRepository extends RepositoryInterface
 {
     /**
-     * @param array $request
-     * @param int $userId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $toreId
      * @return mixed
      */
-    public function storePurchaseStatistics(array $request,int $userId);
+    public function storePurchaseStatistics(Carbon $startAt, Carbon $endAt,int $toreId);
 
     /**
-     * @param array $request
-     * @param int $userId
+     * @param Carbon $startAt
+     * @param Carbon $endAt
+     * @param int $storeId
      * @return mixed
      */
-    public function storeOrders(array $request,int $userId);
+    public function storeOrders(Carbon $startAt, Carbon $endAt,int $storeId);
 
 }

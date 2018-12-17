@@ -48,6 +48,7 @@ class CreateOrdersTable extends Migration
             $table->string('receiver_mobile', 11)->nullable()->default(null)->comment('收货人电话');
 //            $table->timestamp('pick_up_start_time')->nullable()->default(null)->comment('配送/自提开始时间');
 //            $table->timestamp('pick_up_end_time')->nullable()->default(null)->comment('配送/自提结束时间');
+            $table->string('prepay_id', 64)->default('')->comment('预支付订单');
             $table->string('comment', 255)->nullable()->default(null)->comment('备注');
             $table->timestamp('consigned_at')->nullable()->default(null)->comment('发货时间');
             $table->unsignedTinyInteger('type')->default(0)->comment('订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单');

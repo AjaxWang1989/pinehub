@@ -25,24 +25,27 @@ class AliPayService
     }
 
     /**
-     * @throws
-     * */
-    public function getToken()
+     * @param null $code
+     * @param string $type
+     * @return mixed|null
+     */
+    public function getToken($code = null, string $type = 'mp')
     {
         if(($token = Cache::get($this->getCacheKey()))) {
             return $token;
         }
-        $token = app('ali.oauth.token')->charge($this->getCredentials())->getToken();
+        if ($type === 'mp')
+            $token = app('mp.ali.oauth.token')->charge($this->getCredentials($code))->getToken();
+        else
+            $token = app('web.ali.oauth.token')->charge($this->getCredentials())->getToken();
         Cache::put($this->getCacheKey(), $token, $token['expires_in']);
         return $token;
     }
 
-    protected function getCredentials() : array
+    protected function getCredentials($code = null) : array
     {
-        $code = session('ali_auth_code', null);
         if(!$code) {
             $code = Request::input('auth_code');
-            session(['ali_auth_code' => $code]);
         }
 
         return [
