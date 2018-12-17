@@ -194,11 +194,13 @@ class OrderController extends Controller
      */
     protected function getShoppingCarts(array $order, MpUser $user, string $type = ShoppingCart::USER_ORDER)
     {
+        $storeId = $type === ShoppingCart::MERCHANT_ORDER ? $order['receiving_shop_id'] :
+            (isset($order['store_id']) ? $order['store_id'] : null);
         //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         return $this->shoppingCartRepository->findWhere([
                 'customer_id'               => $user->id,
                 'activity_id'  => isset($order['activity_id']) ? $order['activity_id'] : null,
-                'shop_id'                   => isset($order['store_id']) ? $order['store_id'] : null,
+                'shop_id'                   => $storeId,
                 'type' => $type
             ]);
     }
