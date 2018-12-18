@@ -28,7 +28,7 @@ class TicketController extends Controller
     {
         $tickets = $this->cardRepository->scopeQuery(function (Card $card) {
             return $card->whereHas('records', function ($query) {
-                $query->select(DB::raw('count(*) as count'))
+                $query->select(DB::raw('IFNULL(COUNT(*),0)  as count'))
                     ->where('customer_id', $this->mpUser()->id)
                     ->havingRaw('count>=0');
             },'=', 0)->whereAppId(app(AppManager::class)->getAppId())
