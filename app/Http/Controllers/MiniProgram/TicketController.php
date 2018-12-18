@@ -10,6 +10,7 @@ use App\Services\AppManager;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\TicketTransformer;
 use Dingo\Api\Http\Request;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
@@ -27,10 +28,10 @@ class TicketController extends Controller
     public function tickets (Request $request)
     {
         $tickets = $this->cardRepository->scopeQuery(function (Card $card) {
-            return $card->whereHas('records', function ($query) {
-                $query->select(DB::raw('IFNULL(COUNT(*),0)  as count'))
-                    ->where('customer_id', $this->mpUser()->id)
-                    ->havingRaw('count>=0');
+            return $card->whereNotIn('id', function (Builder $query) {
+                $query->select(DB::raw('cards.id  as id'))
+                    ->crossJoin('customer_ticket_cards', 'customer_ticket_cards.card_id', '=', 'cards.id')
+                ->where('customer_ticket_cards.customer_id', $this->mpUser()->id);
             },'<', 1)->whereAppId(app(AppManager::class)->getAppId())
                 ->where(DB::raw('(issue_count - user_get_count) > 0'));
         })->paginate($request->input('limit', PAGE_LIMIT));
