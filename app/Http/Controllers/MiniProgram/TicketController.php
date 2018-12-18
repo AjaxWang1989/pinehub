@@ -29,7 +29,7 @@ class TicketController extends Controller
     {
         $tickets = $this->cardRepository->scopeQuery(function (Card $card) {
             return $card->whereNotIn('id', function (Builder $query) {
-                $query->select(DB::raw('cards.id  as id'))
+                $query->from('cards')->select(DB::raw('cards.id  as id'))
                     ->join('customer_ticket_cards', 'cards.id', '=', 'customer_ticket_cards.card_id');
             })->where('customer_ticket_cards.customer_id', $this->mpUser()->id)
                 ->whereAppId(app(AppManager::class)->getAppId())
