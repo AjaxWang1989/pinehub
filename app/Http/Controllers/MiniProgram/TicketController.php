@@ -33,7 +33,7 @@ class TicketController extends Controller
                     ->crossJoin('customer_ticket_cards', 'customer_ticket_cards.card_id', '=', 'cards.id')
                 ->where('customer_ticket_cards.customer_id', $this->mpUser()->id);
             })->whereAppId(app(AppManager::class)->getAppId())
-                ->where(DB::raw('(issue_count - user_get_count) > 0'));
+                ->where(DB::raw('(issue_count - user_get_count)'), '>', 0);
         })->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($tickets, new TicketTransformer());
     }
