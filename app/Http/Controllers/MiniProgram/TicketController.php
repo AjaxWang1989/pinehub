@@ -30,7 +30,7 @@ class TicketController extends Controller
             return $card->whereHas('records', function ($query) {
                 $query->select(DB::raw('count(*) as count'))
                     ->where('customer_ticket_cards.customer_id', $this->mpUser()->id)
-                    ->havingRaw('customer_ticket_cards.count', 0);
+                    ->havingRaw('customer_ticket_cards.count=0');
             })->whereAppId(app(AppManager::class)->getAppId())
                 ->where(DB::raw('(issue_count - user_get_count) > 0'));
         })->paginate($request->input('limit', PAGE_LIMIT));
