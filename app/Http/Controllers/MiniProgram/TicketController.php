@@ -30,8 +30,8 @@ class TicketController extends Controller
             return $card->whereHas('records', function ($query) {
                 $query->select(DB::raw('count(*) as count'))
                     ->where('customer_id', $this->mpUser()->id)
-                    ->havingRaw('count=0');
-            })->whereAppId(app(AppManager::class)->getAppId())
+                    ->havingRaw('count>=0');
+            },'=', 0)->whereAppId(app(AppManager::class)->getAppId())
                 ->where(DB::raw('(issue_count - user_get_count) > 0'));
         })->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($tickets, new TicketTransformer());
