@@ -27,8 +27,9 @@ class TicketController extends Controller
     public function tickets (Request $request)
     {
         $tickets = $this->cardRepository->scopeQuery(function (Card $card) {
-            return $card->has('records', '=', 0)
-                ->whereAppId(app(AppManager::class)->getAppId())
+            return $card->whereHas('records', function ($query) {
+                $query->select(DB::raw('count(*) as count'))->where('count', 0);
+            })->whereAppId(app(AppManager::class)->getAppId())
                 ->where(DB::raw('(issue_count - user_get_count) > 0'));
         })->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($tickets, new TicketTransformer());
