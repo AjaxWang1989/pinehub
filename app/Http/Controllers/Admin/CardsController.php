@@ -81,6 +81,7 @@ class CardsController extends Controller
         $appManager = app(AppManager::class);
         $data['card_info'] = $request->input('card_info');
         $data['app_id'] = $appManager->currentApp->id;
+        //$data['card_id'] = str_random(32);
         $data['wechat_app_id'] = $appManager->currentApp->wechatAppId;
         $data['begin_at'] = $request->input('begin_at', null);
         $data['end_at'] = $request->input('end_at', null);
