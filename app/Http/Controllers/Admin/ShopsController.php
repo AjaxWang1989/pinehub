@@ -237,7 +237,8 @@ class ShopsController extends Controller
      */
     public function update(ShopUpdateRequest $request, $id)
     {
-        $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'description', 'status', 'user_id']);
+        $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id',
+            'address', 'description', 'status', 'user_id', 'start_at', 'end_at']);
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
         if(isset($data['user_id']) && $data['user_id'] && $request->input('manager_mobile', null) && $request->input('manager_name', null))
