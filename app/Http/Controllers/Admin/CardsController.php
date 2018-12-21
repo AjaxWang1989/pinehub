@@ -130,18 +130,14 @@ class CardsController extends Controller
      */
     public function updateCard($request, $id)
     {
-       $data['card_type'] = $request->input('card_type');
-       $data['card_info'] = $request->input('card_info');
-       $data['begin_at'] = $request->input('begin_at', null);
-       $data['end_at'] = $request->input('end_at', null);
-       $data['issue_count'] = $request->input('issue_count', 0);
+        $data = $request->all();
+
        $card = $this->repository->find($id);
        tap($card, function (Card $card) use($data){
-          $card->cardInfo = multi_array_merge($card->cardInfo, $data['card_info']);
-          $card->cardType = $data['card_type'];
-          $card->beginAt  = $data['begin_at'];
-          $card->endAt    = $data['end_at'];
-          $card->save();
+           if (isset($data['card_info'])) {
+               $data['card_info'] = multi_array_merge($card->cardInfo, $data['card_info']);
+           }
+          $card->update($data);
        });
        return $card;
     }
