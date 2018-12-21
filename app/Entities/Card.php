@@ -64,11 +64,13 @@ class Card extends Model implements Transformable
     const CARD_CHECKING = CARD_CHECKING;
     const CARD_PASS_CHECK = CARD_PASS_CHECK;
     const CARD_NOT_PASS_CHECK = CARD_NOT_PASS_CHECK;
+    const CARD_INVALID = CARD_INVALID;
 
     const STATUS = [
         'CARD_CHECKING' => CARD_CHECKING,
         'CARD_PASS_CHECK' => CARD_PASS_CHECK,
-        'CARD_NOT_PASS_CHECK' => CARD_NOT_PASS_CHECK
+        'CARD_NOT_PASS_CHECK' => CARD_NOT_PASS_CHECK,
+        'CARD_INVALID' => CARD_INVALID
     ];
     //'member_card','coupon_card','discount','groupon','gift'
     const MEMBER_CARD = MEMBER_CARD;

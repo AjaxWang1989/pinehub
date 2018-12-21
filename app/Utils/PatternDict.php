@@ -188,6 +188,7 @@ define('DATE_TYPE_FIX_TERM', 'DATE_TYPE_FIX_TERM');
 define('CARD_CHECKING', 0);
 define('CARD_PASS_CHECK', 1);
 define('CARD_NOT_PASS_CHECK', 2);
+define('CARD_INVALID', 3);
 
 define('EVENT_CARD_PASS_CHECK', 'card_pass_check');
 
