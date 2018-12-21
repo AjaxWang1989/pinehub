@@ -134,7 +134,7 @@ class CardsController extends Controller
 
        $card = $this->repository->find($id);
        tap($card, function (Card $card) use($data){
-           if (isset($data['card_info'])) {
+           if (isset($data['card_info']) && !$data['card_info']) {
                $data['card_info'] = multi_array_merge($card->cardInfo, $data['card_info']);
            }
           $card->update($data);
