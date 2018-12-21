@@ -50,7 +50,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Ticket whereWechatAppId($value)
  * @mixin \Eloquent
  */
-class icket extends Card
+class Ticket extends Card
 {
     protected $table = 'cards';
 
