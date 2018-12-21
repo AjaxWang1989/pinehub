@@ -94,7 +94,7 @@ class NewMerchandiseActivityController extends Controller
         }
     }
 
-    public function updateStock(int $activityId, int $id, NewActivityMerchandiseStockRequest $request)
+    public function updateStock(NewActivityMerchandiseStockRequest $request, int $activityId, int $id)
     {
         $this->activityRepository->pushCriteria(NewMerchandiseActivityCriteria::class);
         $activity = $this->activityRepository->find($activityId);
@@ -104,8 +104,7 @@ class NewMerchandiseActivityController extends Controller
             });
 
             if($merchandise) {
-                $merchandise->stockNum = $request->input('stock_num');
-                $merchandise->save();
+                $merchandise->update($request->all());
                 return $this->response()->item($merchandise, new ActivityMerchandiseTransformer());
             }else{
                 throw new ModelNotFoundException('找不到相应的活动产品');
