@@ -136,6 +136,8 @@ class CardsController extends Controller
        tap($card, function (Card $card) use($data){
            if (isset($data['card_info']) && $data['card_info']) {
                $data['card_info'] = multi_array_merge($card->cardInfo, $data['card_info']);
+           }else{
+               unset($data['card_info']);
            }
           $card->update($data);
        });
