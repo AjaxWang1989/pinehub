@@ -54,6 +54,8 @@ class ShopTransformer extends TransformerAbstract
             'total_order_write_off_num' => $model->totalOrderWriteOffNum,
             'today_order_write_off_num' => $model->todayOrderWriteOffNum,
             'status' => $model->status,
+            'start_at' => $model->startAt,
+            'end_at' => $model->endAt,
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];
