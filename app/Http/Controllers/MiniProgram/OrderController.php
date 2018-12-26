@@ -452,10 +452,11 @@ class OrderController extends Controller
             $shop = $user->shops()->find($storeId);
             if($shop) {
                 $orders = $this->orderRepository->scopeQuery(function (Order $order) use($shop, $request){
-                   $order = $order->with(['orderItems'])->where('shop_id', $shop->id);
+                   $order = $order->with(['customer'])->where('shop_id', $shop->id);
                    if (($type = $request->input('type', null))) {
                        $order = $order->where('type', $type);
                    }
+                   $order = $order->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                    return $order;
                 })->paginate($request->input('limit', PAGE_LIMIT));
                 return $this->response()->paginator($orders, new OrderTransformer());
