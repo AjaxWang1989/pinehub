@@ -445,6 +445,28 @@ class OrderController extends Controller
         }
     }
 
+    public function storeOrders(int $storeId, Request $request) {
+
+        $user = $this->shopManager();
+        if($user) {
+            $shop = $user->shops()->find($storeId);
+            if($shop) {
+                $orders = $this->orderRepository->scopeQuery(function (Order $order) use($shop, $request){
+                   $order = $order->with(['orderItems'])->where('shop_id', $shop->id);
+                   if (($type = $request->input('type', null))) {
+                       $order = $order->where('type', $type);
+                   }
+                   return $order;
+                })->paginate($request->input('limit', PAGE_LIMIT));
+                return $this->response()->paginator($orders, new OrderTransformer());
+            }else{
+                throw new ModelNotFoundException('你不是店铺管理员无权访问');
+            }
+        }else{
+            throw new ModelNotFoundException('未登录');
+        }
+    }
+
     /**
      * 取消订单
      * @param int $id

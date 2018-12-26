@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -75,4 +76,9 @@ use Prettus\Repository\Traits\TransformableTrait;
 class ShopManager extends User
 {
     protected $table = 'users';
+
+    public function shops():HasMany
+    {
+        return $this->hasMany(Shop::class, 'user_id', 'id');
+    }
 }

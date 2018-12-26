@@ -20,8 +20,10 @@ class OrderTransformer extends TransformerAbstract
             'receiver_address'=>$model->receiverAddress,
             'receiver_mobile'=>$model->receiverMobile,
             'type' => $model->type,
-            'send_start_time' => $model->sendStartTime,
-            'send_end_time'   => $model->sendEndTime,
+            'pay_type' => $model->payType,
+            'customer' => $model->customer->only(['nickname', 'avatar', 'mobile', 'platform_open_id']),
+            'payment_amount' => $model->paymentAmount,
+            'total_amount' => $model->totalAmount
         ];
     }
 }

@@ -76,6 +76,9 @@ class Controller extends BaseController
         return $this->user();
     }
 
+    /**
+     * @return ShopManager
+     * */
     public function shopManager()
     {
         return ShopManager::find($this->mpUser()->memberId);
