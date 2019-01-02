@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Cache;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
@@ -388,6 +389,7 @@ class Order extends Model implements Transformable
         $clientIp = $request->getClientIp();
         $token = $request->input('token');
         $mdToken = md5($token);
+
         Cache::put($mdToken, $token, 15);
         $params = ['token' => $mdToken];
         $notifyUrl = buildUrl('api.mp', config('ali.payment.notify_url'), $params);
