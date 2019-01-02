@@ -468,6 +468,10 @@ class OrderController extends Controller
                     $order = $order->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end);
                 }
+
+                if (($payType = $request->input('pay_type', null))) {
+                    $order = $order->where('pay_type', $payType);
+                }
                 $order = $order->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                 $orders = $order->paginate($request->input('limit', PAGE_LIMIT));
                 $totalAmount = $order->sum('total_amount');
