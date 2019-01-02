@@ -23,6 +23,7 @@ class SetPaymentConfig
     {
         $notifyUrl = $request->url();
         config(['wechat.other_sdk_payment.notify_url' => $notifyUrl]);
+        $request->merge(['pay_type' => $type]);
         return $next($request);
     }
 }

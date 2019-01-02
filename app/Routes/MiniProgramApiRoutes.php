@@ -119,6 +119,14 @@ class MiniProgramApiRoutes extends ApiRoutes
 
         });
 
-        $router->addRoute(['GET', 'POST'], '/payment/notify/{token?}', ['middleware' => 'setPaymentConfig', 'as' => 'payment.notify', 'uses' => 'PaymentController@notify']);
+        $router->addRoute(['GET', 'POST'], '/wechat/payment/notify/{token?}', [
+            'middleware' => 'setPaymentConfig:wechat',
+            'as' => 'wechat.payment.notify',
+            'uses' => 'PaymentController@notify']);
+
+        $router->addRoute(['GET', 'POST'], '/ali/payment/notify/{token?}', [
+            'middleware' => 'setPaymentConfig:ali',
+            'as' => 'wechat.payment.notify',
+            'uses' => 'PaymentController@notify']);
     }
 }
