@@ -42,8 +42,7 @@ class WapPayment extends AliBaseStrategy
         $reqData = parent::retData($data);
         // 发起网络请求
         try {
-            Log::debug('alipayment data', $data);
-            $this->config->notifyUrl = $data['notify_url'];
+            $this->config->notifyUrl = $this->reqData->getData()['notify_url'];
             $data = $this->sendReq($reqData);
         } catch (PayException $e) {
             throw $e;
