@@ -23,7 +23,8 @@ class OrderTransformer extends TransformerAbstract
             'pay_type' => $model->payType,
             'customer' => $model->customer->only(['nickname', 'avatar', 'mobile', 'platform_open_id']),
             'payment_amount' => $model->paymentAmount,
-            'total_amount' => $model->totalAmount
+            'total_amount' => $model->totalAmount,
+            'paid_time' => $model->paidAt ? $model->paidAt->format('Y-m-d') : null
         ];
     }
 }
