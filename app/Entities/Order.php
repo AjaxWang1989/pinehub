@@ -404,7 +404,8 @@ class Order extends Model implements Transformable
             'store_id' => '',
             'operator_id' => '',
             'terminal_id' => '',// 终端设备号(门店号或收银设备ID) 默认值 web
-            'buyer_id' => $this->openId
+            'buyer_id' => $this->openId,
+            'notify_url' => $notifyUrl
         ];
     }
 
