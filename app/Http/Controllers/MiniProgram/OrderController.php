@@ -458,7 +458,7 @@ class OrderController extends Controller
                    }
                    if (($date = $request->input('paid_date', date('Y-m-d')))) {
                        $start = Carbon::createFromFormat('Y-m-d H:i:s', $date.' 00:00:00');
-                       $end = $start->endOfDay();
+                       $end = $start->copy()->endOfDay();
                        $order = $order->where('paid_at', '>=', $start)
                            ->where('paid_at', '<', $end);
                    }
