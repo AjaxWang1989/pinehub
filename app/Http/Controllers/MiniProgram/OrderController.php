@@ -451,21 +451,24 @@ class OrderController extends Controller
         if($user) {
             $shop = $user->shops()->find($storeId);
             if($shop) {
-                $orders = $this->orderRepository->scopeQuery(function (Order $order) use($shop, $request){
-                   $order = $order->with(['customer'])->where('shop_id', $shop->id);
-                   if (($type = $request->input('type', null))) {
-                       $order = $order->where('type', $type);
-                   }
-                   if (($date = $request->input('paid_date', date('Y-m-d')))) {
-                       $start = Carbon::createFromFormat('Y-m-d H:i:s', $date.' 00:00:00');
-                       $end = $start->copy()->endOfDay();
-                       $order = $order->where('paid_at', '>=', $start)
-                           ->where('paid_at', '<', $end);
-                   }
-                   $order = $order->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
-                   return $order;
-                })->paginate($request->input('limit', PAGE_LIMIT));
-                return $this->response()->paginator($orders, new OrderTransformer());
+                $order = new Order();
+                $order = $order->with(['customer'])->where('shop_id', $shop->id);
+                if (($type = $request->input('type', null))) {
+                    $order = $order->where('type', $type);
+                }
+                if (($date = $request->input('paid_date', date('Y-m-d')))) {
+                    $start = Carbon::createFromFormat('Y-m-d H:i:s', $date.' 00:00:00');
+                    $end = $start->copy()->endOfDay();
+                    $order = $order->where('paid_at', '>=', $start)
+                        ->where('paid_at', '<', $end);
+                }
+                $order = $order->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
+                $orders = $order->paginate($request->input('limit', PAGE_LIMIT));
+                $totalAmount = $order->sum('total_amount');
+                $paymentAmount = $order->sum('payment_amount');
+                return $this->response()->paginator($orders, new OrderTransformer())
+                    ->addMeta('total_amount', $totalAmount)
+                    ->addMeta('payment_amount', $paymentAmount);
             }else{
                 throw new ModelNotFoundException('你不是店铺管理员无权访问');
             }
