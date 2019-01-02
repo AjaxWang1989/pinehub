@@ -128,7 +128,7 @@ use App\Entities\Traits\ModelAttributesAccess;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereYear($value)
  * @mixin \Eloquent
  */
-class Order extends Model implements Transformable
+class Ofalserder extends Model implements Transformable
 {
     use TransformableTrait, ModelAttributesAccess;
     const CANCEL = 0;// 关闭
