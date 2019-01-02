@@ -13,7 +13,9 @@ use App\Ali\Payment\AliChargeContext;
 use App\Ali\Payment\WapPayment;
 use App\Repositories\OrderRepositoryEloquent;
 use App\Services\PaymentNotify;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Lumen\Application;
 use Payment\ChargeContext;
@@ -61,6 +63,13 @@ class PaymentServiceProvider extends ServiceProvider
         $this->app->singleton('payment.ali.create', function (){
             $chargeContext = new AliChargeContext();
             $config = config('ali.payment');
+            $token = Request::input('token');
+            $mdToken = md5($token);
+
+            Cache::put($mdToken, $token, 15);
+            $params = ['token' => $mdToken];
+            $notifyUrl = buildUrl('api.mp', config('ali.payment.notify_url'), $params);
+            $config['notify_url'] = $notifyUrl;
             $chargeContext->initCharge(\App\Ali\Payment\Config::ALI_TRADE_CREATE, $config);
             return $chargeContext;
         });
@@ -68,6 +77,13 @@ class PaymentServiceProvider extends ServiceProvider
         $this->app->singleton('mp.payment.ali.create', function (){
             $chargeContext = new AliChargeContext();
             $config = config('ali.mini_program');
+            $token = Request::input('token');
+            $mdToken = md5($token);
+
+            Cache::put($mdToken, $token, 15);
+            $params = ['token' => $mdToken];
+            $notifyUrl = buildUrl('api.mp', config('ali.payment.notify_url'), $params);
+            $config['notify_url'] = $notifyUrl;
             $chargeContext->initCharge(\App\Ali\Payment\Config::ALI_TRADE_CREATE, $config);
             return $chargeContext;
         });

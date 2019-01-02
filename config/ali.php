@@ -60,7 +60,7 @@ return [
         ],// 用户不可用指定渠道支付当有多个渠道时用“,”分隔
 
         // 与业务相关参数
-        'notify_url'                => '',
+        'notify_url'                => env('ALI_PAYMENT_NOTIFY_URL', '/ali/payment/notify/{token?}'),
         'return_url'                => '',
         'redirect_url'              => '',// 如果是h5支付，可以设置该值，返回到指定页面
         'return_raw'                => env('ALI_MP_RETURN_RAW', false),// 在处理回调时，是否直接返回原始数据，默认为 true
