@@ -82,6 +82,7 @@ class PaymentServiceProvider extends ServiceProvider
             $mdToken = md5($token);
 
             Cache::put($mdToken, $token, 15);
+            Log::info('ali payment token '.Cache::get($mdToken));
             $params = ['token' => $mdToken];
             $notifyUrl = buildUrl('api.mp', config('ali.payment.notify_url'), $params);
             $config['notify_url'] = $notifyUrl;
