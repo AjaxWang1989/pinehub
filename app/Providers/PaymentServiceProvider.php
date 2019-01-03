@@ -146,6 +146,12 @@ class PaymentServiceProvider extends ServiceProvider
             $chargeContext->initNotify(Config::ALI_CHARGE, $config);
             return $chargeContext;
         });
+        $this->app->singleton('mp.payment.ali.notify', function (){
+            $chargeContext = new NotifyContext();
+            $config = config('ali.mini_program');
+            $chargeContext->initNotify(Config::ALI_CHARGE, $config);
+            return $chargeContext;
+        });
 
         $this->app->singleton('payment.notify', function (Application $app){
             return new PaymentNotify($app->make(OrderRepositoryEloquent::class));
