@@ -59,8 +59,9 @@ class PaymentNotify implements PayNotifyInterface
                     $order->orderItems()->update($orderData);
                 }
             });
+            return true;
         }catch (\Exception $exception) {
-            throw $exception;
+            return false;
         }
 
     }
