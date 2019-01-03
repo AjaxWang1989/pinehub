@@ -473,13 +473,13 @@ class OrderController extends Controller
                 if (($payType = $request->input('pay_type', null))) {
                     $order = $order->where('pay_type', $payType);
                 }
-                $order = $order->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
+                $order = $order->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED])->orderByDesc('paid_at');
                 $orders = $order->paginate($request->input('limit', PAGE_LIMIT));
                 $totalAmount = $order->sum('total_amount');
                 $paymentAmount = $order->sum('payment_amount');
                 return $this->response()->paginator($orders, new OrderTransformer())
-                    ->addMeta('total_amount', $totalAmount)
-                    ->addMeta('payment_amount', $paymentAmount);
+                    ->addMeta('total_amount', number_format($totalAmount, 2))
+                    ->addMeta('payment_amount', number_format($paymentAmount, 2));
             }else{
                 throw new ModelNotFoundException('你不是店铺管理员无权访问');
             }
