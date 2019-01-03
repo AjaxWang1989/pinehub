@@ -16,6 +16,7 @@ class OrderTransformer extends TransformerAbstract
     public function transform(Order $model){
         return [
             'id'=>$model->id,
+            'code' => $model->code,
             'receiver_name'=>$model->receiverName,
             'receiver_address'=>$model->receiverAddress,
             'receiver_mobile'=>$model->receiverMobile,
