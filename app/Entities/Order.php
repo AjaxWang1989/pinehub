@@ -387,12 +387,6 @@ class Order extends Model implements Transformable
         $expire = $now->addSeconds(self::EXPIRES_SECOND);
         $request = app('request');
         $clientIp = $request->getClientIp();
-        $token = $request->input('token');
-        $mdToken = md5($token);
-
-        Cache::put($mdToken, $token, 15);
-        $params = ['token' => $mdToken];
-        $notifyUrl = buildUrl('api.mp', config('ali.payment.notify_url'), $params);
         return [
             'body'    => 'ali qr pay',
             'subject'    => '支付宝扫码支付',
@@ -404,8 +398,7 @@ class Order extends Model implements Transformable
             'store_id' => '',
             'operator_id' => '',
             'terminal_id' => '',// 终端设备号(门店号或收银设备ID) 默认值 web
-            'buyer_id' => $this->openId,
-            'notify_url' => $notifyUrl
+            'buyer_id' => $this->openId
         ];
     }
 

@@ -177,7 +177,6 @@ class OrderController extends Controller
                 /** @var AliChargeContext $charge */
                 $charge = app('mp.payment.ali.create');
                 $data = $order->buildAliAggregatePaymentOrder();
-                Log::info('ali payment notify_url '.$data['notify_url']);
                 $signed = $charge->charge($data);
                 return $this->response(new JsonResponse($signed));
             }
