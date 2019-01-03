@@ -17,12 +17,9 @@ class PaymentController extends Controller
             [$_POST, $request->all(), @file_get_contents('php://input')]);
         $data = null;
         if($token) {
-            $token = Cache::get($token);
-            if(app('tymon.jwt.auth')->authenticate($token)) {
-                $notify = $request->input('pay_type', 'wechat') === 'wechat' ?
-                    app('payment.wechat.notify') : app('mp.payment.ali.notify');
-                $data = $notify->notify(app('payment.notify'));
-            }
+            $notify = $request->input('pay_type', 'wechat') === 'wechat' ?
+                app('payment.wechat.notify') : app('mp.payment.ali.notify');
+            $data = $notify->notify(app('payment.notify'));
         }
         Log::info('------- notify -----', [$data]);
         return $this->response($data);
