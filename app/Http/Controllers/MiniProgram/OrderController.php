@@ -159,6 +159,7 @@ class OrderController extends Controller
                 if (!$order->prepayId) {
                     $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
                     $order->prepayId = $result['prepay_id'];
+                    $order->payType = Order::WECHAT_PAY;
                     $order->save();
                 }else{
                     $result['return_code'] = 'SUCCESS';
@@ -176,6 +177,8 @@ class OrderController extends Controller
             } else {
                 /** @var AliChargeContext $charge */
                 $charge = app('mp.payment.ali.create');
+                $order->payType = Order::ALI_PAY; 
+                $order->save();
                 $data = $order->buildAliAggregatePaymentOrder();
                 $signed = $charge->charge($data);
                 return $this->response(new JsonResponse($signed));
