@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Entities\Card;
 use App\Repositories\Traits\Destruct;
+use App\Services\AppManager;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\CustomerTicketCard;
@@ -66,6 +67,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
                     }else{
                         $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
                     }
+                    $query->where('app_id', app(AppManager::class)->getAppId());
                 })->where('card_id','!=', '')
                 ->groupBy('card_id');
         });
