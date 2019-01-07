@@ -10,6 +10,7 @@ namespace App\Http\Controllers\MiniProgram;
 
 use App\Entities\App;
 use App\Entities\Customer;
+use App\Entities\CustomerTicketCard;
 use App\Entities\MpUser;
 use App\Http\Requests\CreateRequest;
 use App\Repositories\CustomerRepository;
@@ -138,7 +139,10 @@ class AuthController extends Controller
         $user = $this->mpUser();
 
         $customerTickets = $this->customerTicketCardRepository
-            ->findWhere(['customer_id' => $user['id']]);
+            ->findWhere([
+                'customer_id' => $user['id'],
+                'status' => CustomerTicketCard::ACTIVE_ON
+            ]);
 
         $user['ticket_num'] = count($customerTickets);
 
