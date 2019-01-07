@@ -161,7 +161,7 @@ class OrderController extends Controller
                     $order->prepayId = $result['prepay_id'];
                     $order->payType = Order::WECHAT_PAY;
                     $order->save();
-                    Cache::put('pay_'.$order->prepayId, $result);
+                    Cache::put('pay_'.$order->prepayId, $result, 15);
                 }else{
                     $result = Cache::get('pay_'.$order->prepayId);
                 }
