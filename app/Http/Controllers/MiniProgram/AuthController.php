@@ -14,7 +14,6 @@ use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MpUser;
 use App\Http\Requests\CreateRequest;
-use App\Repositories\CustomerRepository;
 use App\Repositories\MpUserRepository;
 use App\Repositories\AppRepository;
 use App\Repositories\ShopRepository;
@@ -27,14 +26,13 @@ use App\Transformers\Mp\AppAccessTransformer;
 use App\Transformers\Mp\MvpLoginTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Response\JsonResponse;
 use App\Exceptions\UserCodeException;
-use Illuminate\Support\Facades\Log;
 
 
 class AuthController extends Controller
