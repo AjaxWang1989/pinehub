@@ -148,7 +148,6 @@ class AuthController extends Controller
                 $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
                 $query->where('app_id', app(AppManager::class)->getAppId());
             })->where('card_id','!=', '')
-            ->groupBy('card_id')
             ->count();
     }
     /**
