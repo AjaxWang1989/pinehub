@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 use App\Entities\App;
+use App\Entities\Card;
 use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MpUser;
@@ -55,6 +56,7 @@ class AuthController extends Controller
      * @var CustomerTicketCardRepository|null
      */
     protected  $customerTicketCardRepository = null;
+
 
     /**
      * AuthController constructor.
@@ -130,6 +132,17 @@ class AuthController extends Controller
         }
     }
 
+    public function ticketsCount(MpUser $user) {
+       return (new Card)->whereNotIn('id', function (Builder $query) use($user){
+            $query->from('cards')->select(DB::raw('cards.id  as id'))
+                ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
+                ->where('customer_ticket_cards.status', CustomerTicketCard::STATUS_ON)
+                ->where('customer_ticket_cards.customer_id', $user->id);
+       })->whereAppId(app(AppManager::class)
+           ->getAppId())
+           ->where('card_id','!=', '')
+           ->count();
+    }
     /**
      * 获取用户信息
      * @return \Dingo\Api\Http\Response
@@ -138,13 +151,7 @@ class AuthController extends Controller
     {
         $user = $this->mpUser();
 
-        $customerTickets = $this->customerTicketCardRepository
-            ->findWhere([
-                'customer_id' => $user['id'],
-                'status' => CustomerTicketCard::ACTIVE_ON
-            ]);
-
-        $user['ticket_num'] = count($customerTickets);
+        $user['ticket_num'] = $this->ticketsCount($user);
 
         $shopUser = $this->shopRepository
             ->findWhere(['user_id' => $user['member_id']])
