@@ -66,8 +66,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
                     }else{
                         $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
                     }
-
-                })
+                })->where('card_id','!=', '')
                 ->groupBy('card_id');
         });
         return $this->paginate();
