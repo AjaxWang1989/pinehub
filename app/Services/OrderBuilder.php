@@ -350,11 +350,6 @@ class OrderBuilder implements InterfaceServiceHandler
                 'payment_amount' => '订单实际支付金额有误无法提交'
             ]);
         }
-//        elseif ($orderItems->sum('discount_amount') != $order->get('discount_amount', 0)) {
-//            $errors = new MessageBag([
-//                'discount_amount' => '订单优惠金额有误无法提交'
-//            ]);
-//        }
         if($errors) {
             \Log::debug('errors', $errors->toArray());
             throw new ValidationHttpException($errors);
@@ -394,13 +389,13 @@ class OrderBuilder implements InterfaceServiceHandler
     protected function buildOrderItem($model, int $quality, $customerId = null)
     {
         if($model->stockNum < $quality) {
+            Log::info('库存不足 (1)', [$model->stockNum, $quality]);
             throw new ValidationHttpException(new MessageBag([
                 'quality' => 'SKU库存不足'
             ]));
         }
         Log::info('order item SKUProduct/Merchandise', [$model]);
-//        $this->merchandise($model, $quality);
-        $sellPrice = 0;
+
         if ($model instanceof ShopMerchandise || $model instanceof ShopProduct || $model instanceof ActivityMerchandise) {
             $sellPrice = $model->merchandise->sellPrice;
         }else {
@@ -424,6 +419,7 @@ class OrderBuilder implements InterfaceServiceHandler
     protected function buildOrderItemProduct ($model, int $quality)
     {
         if($model->stockNum < $quality) {
+            Log::info('库存不足 (2)', [$model->stockNum, $quality]);
             throw new ValidationHttpException(new MessageBag([
                 'quality' => 'SKU库存不足'
             ]));
