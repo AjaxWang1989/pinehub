@@ -174,8 +174,6 @@ class OrderController extends Controller
                         }
                     }else{
                         if (Merchandise::whereId($item->merchandiseId)
-                            ->where('activity_id', '!=', 0)
-                            ->where('shop_id', '!=', 0)
                             ->where('stock_num', '<', $item->quality)->count() > 0) {
                             throw new ModelNotFoundException('SKU库存不足');
                         }
