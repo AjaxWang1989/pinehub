@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Entities\Category;
 use App\Entities\Merchandise;
 use App\Repositories\Traits\Destruct;
+use App\Services\AppManager;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -64,7 +65,9 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
                         ->from('merchandises')
                         ->where('status', Merchandise::UP);
                 })->where('shop_id', $id);
-        })->paginate();
+        })
+            ->where('app_id', app(AppManager::class)->getAppId())
+            ->paginate();
     }
 
     /**
@@ -78,7 +81,9 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
                 ->whereHas('merchandise', function (Builder $query)use ($categoryId) {
                     return $query->whereHas('categories', function (Builder $query) use ($categoryId) {
                         return $query->where('categories.id', $categoryId);
-                    })->where('status', Merchandise::UP);
+                    })
+                        ->where('status', Merchandise::UP)
+                        ->where('app_id', app(AppManager::class)->getAppId());
                 })
                 ->where(['shop_id' => $id]);
         });
@@ -108,10 +113,11 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
     public function shopMerchandises(int $shopId,array $merchandisesIds){
         $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($shopId,$merchandisesIds) {
             return $ShopMerchandise->where('shop_id',$shopId)
-                ->whereHas('merchandise', function ($query) {
-                    return $query->where('status', Merchandise::UP);
+                ->whereHas('merchandise', function (Builder $query) {
+                    return $query->where('status', Merchandise::UP)
+                        ->where('app_id', app(AppManager::class)->getAppId());
                 })
-                ->whereIn('id',$merchandisesIds);
+                ->whereIn('id', $merchandisesIds);
         });
         return $this->paginate();
     }

@@ -16,10 +16,12 @@ use App\Entities\Shop;
 use App\Repositories\ActivityRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\ShopRepository;
+use App\Services\AppManager;
 use App\Transformers\Mp\ActivityMerchandiseTransformer;
 use App\Transformers\Mp\BookingMallMerchandiseItemTransformer;
 use App\Transformers\Mp\StoreMerchandiseTransformer;
 use Dingo\Api\Http\Response;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Request;
 
@@ -38,7 +40,9 @@ class MerchandiseController extends Controller
         if ($category) {
             return with($category, function (Category $category) {
                 $request = Request::instance();
-                $merchandises = $category->merchandises()->where('status', Merchandise::UP)
+                $merchandises = $category->merchandises()
+                    ->where('app_id', app(AppManager::class)->getAppId())
+                    ->where('status', Merchandise::UP)
                     ->paginate($request->input('limit', PAGE_LIMIT));
                 return $this->response()->paginator($merchandises, new BookingMallMerchandiseItemTransformer());
             });
@@ -62,15 +66,16 @@ class MerchandiseController extends Controller
             return with($shop, function (Shop $shop) use($categoryId){
                 $request = Request::instance();
                 $merchandises = $shop->shopMerchandises()->with(['merchandise'])
-                    ->whereHas('merchandise', function ($query) {
+                    ->whereHas('merchandise', function (Builder $query) {
                         return $query->where('merchandises.status', Merchandise::UP);
                     })
-                    ->whereHas('merchandise.categories', function ($query) use($categoryId){
-                    if ($categoryId) {
-                        return $query->where('id', $categoryId);
-                    } else {
-                        return $query;
-                    }})
+                    ->whereHas('merchandise.categories', function (Builder $query) use($categoryId){
+                        if ($categoryId) {
+                            return $query->where('id', $categoryId);
+                        } else {
+                            return $query;
+                        }
+                    })
                     ->paginate($request->input('limit'), PAGE_LIMIT);
                 return $this->response()->paginator($merchandises, new StoreMerchandiseTransformer());
             });
