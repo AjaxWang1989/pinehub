@@ -54,13 +54,24 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      */
 
     public function storeCategories(int $id){
-        return app(Category::class)->whereHas('shopMerchandises', function (Builder $query) use($id) {
-            return $query->whereIn('shop_merchandises.merchandise_id', function (\Illuminate\Database\Query\Builder $builder){
-                return $builder->select(['id'])
-                    ->from('merchandises')
-                    ->where('status', Merchandise::UP);
-            })->where('shop_id', $id);
+        return app(Category::class)->whereIn('id', function (\Illuminate\Database\Query\Builder $builder) use($id) {
+            return $builder->select(['category_id'])
+                ->from('merchandise_categories')
+                ->join('shop_merchandises', 'merchandise_categories.merchandise_id',
+                    '=', 'shop_merchandises.merchandise_id')
+                ->whereIn('shop_merchandises.merchandise_id', function (\Illuminate\Database\Query\Builder $builder){
+                    return $builder->select(['id'])
+                        ->from('merchandises')
+                        ->where('status', Merchandise::UP);
+                })->where('shop_id', $id);
         })->paginate();
+//        return app(Category::class)->whereHas('shopMerchandises', function (Builder $query) use($id) {
+//            return $query->whereIn('shop_merchandises.merchandise_id', function (\Illuminate\Database\Query\Builder $builder){
+//                return $builder->select(['id'])
+//                    ->from('merchandises')
+//                    ->where('status', Merchandise::UP);
+//            })->where('shop_id', $id);
+//        })->paginate();
     }
 
     /**
@@ -69,7 +80,7 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      * @return mixed
      */
     public function storeCategoryMerchandises(int $id, int $categoryId){
-        $this->scopeQuery(function (ShopMerchandise $shopMerchandise) use($id,$categoryId) {
+        $this->scopeQuery(function (ShopMerchandise $shopMerchandise) use($id, $categoryId) {
             return $shopMerchandise->with('merchandise')
                 ->whereHas('merchandise', function (Builder $query)use ($categoryId) {
                     return $query->whereHas('categories', function (Builder $query) use ($categoryId) {
