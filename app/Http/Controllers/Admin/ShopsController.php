@@ -294,7 +294,7 @@ class ShopsController extends Controller
     {
         $shop = $this->repository->find($shopId);
         if($shop) {
-            $merchandise = with($shop, function (Shop $shop) use($request){
+            $merchandise = with($shop, function (Shop $shop) use($request) {
                 return $shop->shopMerchandises()->save(new ShopMerchandise($request->all()));
             });
             return $this->response()->item($merchandise, new ShopMerchandiseTransformer());

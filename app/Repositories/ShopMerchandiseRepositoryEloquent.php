@@ -26,6 +26,7 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
         'sell_price' => '*',
         'merchandise.status' => '='
     ];
+
     /**
      * Specify Model class name
      *
@@ -54,7 +55,6 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
 
     public function storeCategories(int $id){
         return app(Category::class)->whereHas('shopMerchandises', function (Builder $query) use($id) {
-            Log::info('---- query -----', [get_class($query)]);
             return $query->whereHas('merchandise', function (Builder $query) {
                 return $query->where('status', Merchandise::UP);
             })->where('shop_id', $id);
@@ -67,12 +67,14 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      * @return mixed
      */
     public function storeCategoryMerchandises(int $id, int $categoryId){
-        $this->scopeQuery(function (ShopMerchandise $ShopMerchandise) use($id,$categoryId) {
-            return $ShopMerchandise->with('merchandise')
-                ->whereHas('merchandise', function ($query) {
-                    return $query->where('status', Merchandise::UP);
+        $this->scopeQuery(function (ShopMerchandise $shopMerchandise) use($id,$categoryId) {
+            return $shopMerchandise->with('merchandise')
+                ->whereHas('merchandise', function (Builder $query)use ($categoryId) {
+                    return $query->whereHas('categories', function (Builder $query) use ($categoryId) {
+                        return $query->where('id', $categoryId);
+                    })->where('status', Merchandise::UP);
                 })
-                ->where(['shop_id'=>$id,'category_id'=>$categoryId]);
+                ->where(['shop_id' => $id]);
         });
         return $this->paginate();
     }
