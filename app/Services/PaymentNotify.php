@@ -35,6 +35,7 @@ class PaymentNotify implements PayNotifyInterface
         Log::info('============wechat payment notify ============', $data);
         /** @var TYPE_NAME $exception */
         try{
+            /** @var Order $order */
             $order = $this->order->findWhere(['code' => $data['order_no']])->first();
             $this->offLinePayOrder($order);
             $order->transactionId = $data['transaction_id'];
@@ -42,6 +43,9 @@ class PaymentNotify implements PayNotifyInterface
                 $order->tradeStatus = Order::TRADE_SUCCESS;
                 $order->status = Order::PAID;
                 $order->paidAt = Carbon::now();
+                if ($order->type === Order::OFF_LINE_PAYMENT_ORDER) {
+                    $order->status = Order::COMPLETED;
+                }
             } else {
                 $order->status = Order::PAY_FAILED;
                 $order->tradeStatus = Order::TRADE_FAILED;
