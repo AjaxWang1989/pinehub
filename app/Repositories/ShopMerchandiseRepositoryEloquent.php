@@ -53,9 +53,11 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      */
 
     public function storeCategories(int $id){
-        return app(Category::class)->whereHas('shopMerchandises', function ($query) use($id) {
+        return app(Category::class)->whereHas('shopMerchandises', function (Builder $query) use($id) {
             Log::info('---- query -----', [get_class($query)]);
-            return $query->where('shop_id', $id);
+            return $query->whereHas('merchandise', function (Builder $query) {
+                return $query->where('status', Merchandise::UP);
+            })->where('shop_id', $id);
         })->paginate();
     }
 
