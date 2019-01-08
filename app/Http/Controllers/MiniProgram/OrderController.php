@@ -10,12 +10,16 @@ namespace App\Http\Controllers\MiniProgram;
 
 
 use App\Ali\Payment\AliChargeContext;
+use App\Entities\ActivityMerchandise;
 use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MemberCard;
+use App\Entities\Merchandise;
 use App\Entities\MpUser;
 use App\Entities\Order;
+use App\Entities\OrderItem;
 use App\Entities\Shop;
+use App\Entities\ShopMerchandise;
 use App\Entities\ShoppingCart;
 use App\Exceptions\UnifyOrderException;
 use Carbon\Carbon;
@@ -152,7 +156,34 @@ class OrderController extends Controller
     }
 
     protected function order(Order $order, string $type){
+        $order->orderItems->map(function (OrderItem $item) use($order){
+            switch ($order->type) {
+                case Order::SITE_USER_ORDER: {
+                    if(ShopMerchandise::whereMerchandiseId($item->merchandiseId)
+                        ->whereShopId($item->shopId)
+                        ->where('stock_num', '<', $item->quality)->count() > 0) {
+                        throw new ModelNotFoundException('SKU库存不足');
+                    }
+                }
+                case Order::SHOPPING_MALL_ORDER: {
+                    if ($item->activityId) {
+                        if(ActivityMerchandise::whereMerchandiseId($item->merchandiseId)
+                            ->whereActivityId($item->activityId)
+                            ->where('stock_num', '<', $item->quality)->count() > 0) {
+                            throw new ModelNotFoundException('SKU库存不足');
+                        }
+                    }else{
+                        if (Merchandise::whereId($item->merchandiseId)
+                            ->where('activity_id', '!=', 0)
+                            ->where('shop_id', '!=', 0)
+                            ->where('stock_num', '<', $item->quality)->count() > 0) {
+                            throw new ModelNotFoundException('SKU库存不足');
+                        }
+                    }
+                }
+            }
 
+        });
         return DB::transaction(function () use(&$order, $type){
             //跟微信打交道生成预支付订单
             if ($type === 'wx') {
