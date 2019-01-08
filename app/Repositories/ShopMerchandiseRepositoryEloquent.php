@@ -5,7 +5,9 @@ namespace App\Repositories;
 use App\Entities\Category;
 use App\Entities\Merchandise;
 use App\Repositories\Traits\Destruct;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\ShopMerchandise;
@@ -51,7 +53,8 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
      */
 
     public function storeCategories(int $id){
-        return Category::whereHas('shopMerchandises', function ($query) use($id) {
+        return app(Category::class)->whereHas('shopMerchandises', function ($query) use($id) {
+            Log::info('---- query -----', get_class($query));
             return $query->where('shop_id', $id);
         })->paginate();
     }
