@@ -388,7 +388,7 @@ class OrderBuilder implements InterfaceServiceHandler
      * */
     protected function buildOrderItem($model, int $quality, $customerId = null)
     {
-        if($model->stockNum < 1) {
+        if($model->stockNum < 0) {
             Log::info('库存不足 (1)', [$model->stockNum, $quality, $model]);
             throw new ValidationHttpException(new MessageBag([
                 'quality' => 'SKU库存不足'
