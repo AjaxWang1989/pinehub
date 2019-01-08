@@ -55,12 +55,12 @@ class ShopMerchandiseRepositoryEloquent extends BaseRepository implements ShopMe
 
     public function storeCategories(int $id){
         return app(Category::class)->whereIn('id', function (\Illuminate\Database\Query\Builder $builder) use($id) {
-            return $builder->select(['category_id'])
+            return $builder->select(['merchandise_categories.category_id'])
                 ->from('merchandise_categories')
                 ->join('shop_merchandises', 'merchandise_categories.merchandise_id',
                     '=', 'shop_merchandises.merchandise_id')
                 ->whereIn('shop_merchandises.merchandise_id', function (\Illuminate\Database\Query\Builder $builder){
-                    return $builder->select(['id'])
+                    return $builder->select(['merchandises.id'])
                         ->from('merchandises')
                         ->where('status', Merchandise::UP);
                 })->where('shop_id', $id);
