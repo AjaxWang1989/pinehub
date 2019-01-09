@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $status 0-不可用，1-可用，2-已使用，3-过期
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property \Illuminate\Support\Carbon|null $beginAt
+ * @property \Illuminate\Support\Carbon|null $endAt
  * @property-read \App\Entities\Card $tickets
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket query()
@@ -28,6 +30,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereBeginAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereEndAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserTicket whereUserId($value)
  * @mixin \Eloquent
  */
@@ -36,7 +40,9 @@ class UserTicket extends Model implements Transformable
     use TransformableTrait, ModelAttributesAccess;
 
     protected $casts = [
-        'card_info' => 'json'
+        'card_info' => 'json',
+        'begin_at' => 'date',
+        'end_at' => 'date'
     ];
 
     /**
@@ -45,7 +51,7 @@ class UserTicket extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'card_id','card_code','user_id','status'
+        'card_id', 'card_code', 'user_id', 'status', 'begin_at', 'end_at'
     ];
 
     public function tickets():BelongsTo

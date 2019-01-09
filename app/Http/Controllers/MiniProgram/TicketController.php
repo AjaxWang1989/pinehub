@@ -11,6 +11,7 @@ use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\TicketTransformer;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class TicketController extends Controller
@@ -48,14 +49,36 @@ class TicketController extends Controller
         $customer = $this->mpUser();
         $record = new CustomerTicketCard();
         $record->cardId = $ticket->cardId;
-        $record->status = CustomerTicketCard::STATUS_ON;
         $record->customerId = $customer->id;
         $record->appId = $appId;
         $record->openId = $customer->platformOpenId;
         $record->unionId = $customer->unionId;
-        $record->active = CustomerTicketCard::ACTIVE_ON;
-        $record->beginAt = $ticket->beginAt;
-        $record->endAt = $ticket->endAt;
+        if ($ticket->cardInfo) {
+            if($ticket->cardInfo['base_info'] && $ticket->cardInfo['base_info']['date_info']) {
+                $dateInfo = $ticket->cardInfo['base_info']['date_info'];
+                if($dateInfo['type'] === DATE_TYPE_FIX_TERM) {
+                    $record->beginAt = Carbon::now()->addDay($dateInfo['fixed_begin_term']);
+                    $record->endAt = $record->beginAt->copy()->addDay($dateInfo['fixed_term']);
+                }elseif ($dateInfo['type'] === DATE_TYPE_FIX_TIME_RANGE) {
+                    $record->beginAt = Carbon::createFromTimestamp($dateInfo['begin_timestamp']);
+                    $record->endAt = Carbon::createFromTimestamp($dateInfo['end_timestamp']);
+                }else {
+                    $record->beginAt = $ticket->beginAt;
+                    $record->endAt = $ticket->endAt;
+                }
+            }else{
+                $record->beginAt = $ticket->beginAt;
+                $record->endAt = $ticket->endAt;
+            }
+        }else{
+            $record->beginAt = $ticket->beginAt;
+            $record->endAt = $ticket->endAt;
+        }
+        if ($record->beginAt->diffInRealSeconds(Carbon::now()) > 1) {
+            $record->status = CustomerTicketCard::STATUS_OFF;
+        }else{
+            $record->status = CustomerTicketCard::STATUS_ON;
+        }
         $record->save();
         return $this->response()->item($record, new CustomerTicketCardTransformer());
     }

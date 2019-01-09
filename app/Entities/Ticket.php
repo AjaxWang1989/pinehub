@@ -2,8 +2,11 @@
 
 namespace App\Entities;
 
+use App\Jobs\UserTicketOverDate;
+use App\Repositories\TicketRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -76,7 +79,25 @@ class Ticket extends Card
                 $ticket->code = 'GR'.app('uid.generator')->getUid(TICKET_CODE_FORMAT,
                         TICKET_SEGMENT_MAX_LENGTH);
             }
+        });
 
+        self::saved(function (Ticket $ticket) {
+            $repository = app(TicketRepository::class);
+            if($ticket->beginAt && $ticket->beginAt->diffInRealSeconds(Carbon::now()) > 1
+                && $ticket->beginAt !== $ticket->oldest('begin_at')
+                && $ticket->status === Ticket::STATUS_OFF) {
+                $beginJob = (new UserTicketOverDate($repository, $ticket->id, Ticket::STATUS_ON))
+                    ->delay($ticket->beginAt);
+                dispatch($beginJob);
+            }
+
+            if($ticket->endAt && $ticket->endAt->diffInRealSeconds($ticket->beginAt)  > 1
+                && $ticket->beginAt !== $ticket->oldest('begin_at')
+                && $ticket->status === Ticket::STATUS_ON) {
+                $beginJob = (new UserTicketOverDate($repository, $ticket->id, Ticket::STATUS_EXPIRE))
+                    ->delay($ticket->endAt);
+                dispatch($beginJob);
+            }
         });
     }
 

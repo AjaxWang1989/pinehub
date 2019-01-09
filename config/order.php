@@ -7,4 +7,5 @@
  */
 return [
     'trade_finished_time' => 7,//七天自动关闭交易不可退款或者继续支付
+    'auto_cancel_time' => 20,// 20分钟
 ];

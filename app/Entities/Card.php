@@ -22,7 +22,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $cardInfo 卡券信息
  * @property int $issueCount 发行数量
  * @property int $userGetCount 领取数量
- * @property int $status 0-审核中 1-审核通过 2-审核未通过
+ * @property int $syncStatus 0-审核中 1-审核通过 2-审核未通过
  * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
  * @property \Illuminate\Support\Carbon|null $beginAt 开始日期
  * @property \Illuminate\Support\Carbon|null $endAt 结束时间
@@ -45,6 +45,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereEndAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereIssueCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereSyncStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereSync($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereUpdatedAt($value)
@@ -61,12 +62,16 @@ class Card extends Model implements Transformable
     const SYNC_ING = 1;
     const SYNC_SUCCESS = 2;
 
+    const STATUS_OFF = 0;
+    const STATUS_ON = 1;
+    const STATUS_EXPIRE = 2;
+
     const CARD_CHECKING = CARD_CHECKING;
     const CARD_PASS_CHECK = CARD_PASS_CHECK;
     const CARD_NOT_PASS_CHECK = CARD_NOT_PASS_CHECK;
     const CARD_INVALID = CARD_INVALID;
 
-    const STATUS = [
+    const SYNC_STATUS = [
         'CARD_CHECKING' => CARD_CHECKING,
         'CARD_PASS_CHECK' => CARD_PASS_CHECK,
         'CARD_NOT_PASS_CHECK' => CARD_NOT_PASS_CHECK,
@@ -99,6 +104,7 @@ class Card extends Model implements Transformable
         'card_type',
         'card_info',
         'status',
+        'sync_status',
         'sync',
         'app_id',
         'issue_count',
@@ -108,6 +114,8 @@ class Card extends Model implements Transformable
         'end_at',
         'user_get_count'
     ];
+
+
 
     public function app() : BelongsTo
     {

@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\CardsController as Controller;
 use App\Transformers\TicketItemTransformer;
 use App\Transformers\TicketTransformer;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 
@@ -43,7 +44,12 @@ class TicketController extends Controller
         if($request->input('ticket_type', Ticket::CASH) === Ticket::DISCOUNT) {
             $ticket['least_cost'] = null;
         }
-        $request->merge(['card_info' => $ticket, 'card_type' => $request->input('ticket_type', Ticket::CASH)]);
+        $request->merge([
+            'card_info' => $ticket,
+            'card_type' => $request->input('ticket_type', Ticket::CASH),
+            'begin_at' => Carbon::createFromTimeString($request->input('begin_at', Carbon::now()->format('Y-m-d H:i:s'))),
+            'end_at' => $request->input('end_at', null) ? Carbon::createFromTimeString($request->input('end_at')) : null
+        ]);
         $ticket = parent::storeCard($request);
 
         if ($request->input('sync', false)) {
