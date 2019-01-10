@@ -2,7 +2,7 @@
 
 namespace App\Entities;
 
-use App\Jobs\OrderCancel;
+use App\Jobs\OrderUpdateStatus;
 use App\Repositories\OrderRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -224,9 +224,20 @@ class Order extends Model implements Transformable
                     $order->useTicket();
                 }
 
-                if (Order::WAIT === $order->status || Order::PAY_FAILED === $order->status) {
-                    $job = (new OrderCancel(app(OrderRepository::class), $order->id))
-                        ->delay(config('order.auto_cancel_time'));
+                if (Order::WAIT === $order->status
+                    || Order::PAY_FAILED === $order->status
+                    || Order::MAKE_SURE === $order->status) {
+                    $date = Carbon::now()->addMinute(config('order.auto_cancel_time'));
+                    $job = (new OrderUpdateStatus(app(OrderRepository::class), $order->id, Order::CANCEL))
+                        ->delay($date);
+                    dispatch($job);
+                }
+
+                if (Order::PAID === $order->status
+                    || Order::SEND === $order->status) {
+                    $date = Carbon::now()->addDay(config('order.trade_finished_time'));
+                    $job = (new OrderUpdateStatus(app(OrderRepository::class), $order->id, Order::COMPLETED))
+                        ->delay($date);
                     dispatch($job);
                 }
             }

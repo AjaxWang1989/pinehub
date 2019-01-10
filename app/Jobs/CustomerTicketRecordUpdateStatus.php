@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Entities\CustomerTicketCard;
 use App\Repositories\CustomerTicketCardRepository;
 
-class UserTicketRecordOverDate extends Job
+class CustomerTicketRecordUpdateStatus extends Job
 {
 
     /**

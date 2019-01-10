@@ -7,23 +7,27 @@ use App\Repositories\OrderRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
 
-class OrderCancel extends Job implements ShouldQueue
+class OrderUpdateStatus extends Job implements ShouldQueue
 {
     use SerializesModels;
     /**
      * @var Order
      * */
     protected $order = null;
+
+    protected $status = null;
     /**
      * Create a new job instance.
      * @param OrderRepository $repository
      * @param int $id
+     * @param int $status
      * @return void
      */
-    public function __construct(OrderRepository $repository, int $id)
+    public function __construct(OrderRepository $repository, int $id, int $status)
     {
         //
         $this->order = $repository->find($id);
+        $this->status = $status;
     }
 
     /**
@@ -34,8 +38,8 @@ class OrderCancel extends Job implements ShouldQueue
     public function handle()
     {
         //
-        if($this->order->status === Order::WECHAT_PAY || $this->order->status === Order::PAY_FAILED) {
-            $this->order->status = Order::CANCEL;
+        if($this->order->status === Order::WAIT || $this->order->status === Order::PAY_FAILED) {
+            $this->order->status = $this->status;
             $this->order->save();
         }
     }

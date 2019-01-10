@@ -3,8 +3,8 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
-use App\Jobs\UserTicketOverDate;
-use App\Jobs\UserTicketRecordOverDate;
+use App\Jobs\TicketUpdateStatus;
+use App\Jobs\CustomerTicketRecordUpdateStatus;
 use App\Repositories\CustomerTicketCardRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -105,14 +105,14 @@ class CustomerTicketCard extends Model implements Transformable
             $repository = app(CustomerTicketCardRepository::class);
             if($customerTicketCard->beginAt->diffInRealSeconds(Carbon::now()) > 1
                 && $customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
-                $beginJob = (new UserTicketRecordOverDate($repository, $customerTicketCard->id,
+                $beginJob = (new CustomerTicketRecordUpdateStatus($repository, $customerTicketCard->id,
                     CustomerTicketCard::STATUS_ON))
                     ->delay($customerTicketCard->beginAt);
                 dispatch($beginJob);
             }
             if($customerTicketCard->endAt->diffInRealSeconds($customerTicketCard->beginAt) > 1
                 && $customerTicketCard->status === CustomerTicketCard::STATUS_ON) {
-                $overDateJob = (new UserTicketRecordOverDate($repository, $customerTicketCard->id,
+                $overDateJob = (new CustomerTicketRecordUpdateStatus($repository, $customerTicketCard->id,
                     CustomerTicketCard::STATUS_EXPIRE))
                     ->delay($customerTicketCard->endAt);
                 dispatch($overDateJob);

@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Entities\Ticket;
 use App\Repositories\TicketRepository;
 
-class UserTicketOverDate extends Job
+class TicketUpdateStatus extends Job
 {
 
     /**

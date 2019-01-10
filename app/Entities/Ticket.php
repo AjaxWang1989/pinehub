@@ -2,7 +2,7 @@
 
 namespace App\Entities;
 
-use App\Jobs\UserTicketOverDate;
+use App\Jobs\TicketUpdateStatus;
 use App\Repositories\TicketRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -86,7 +86,7 @@ class Ticket extends Card
             if($ticket->beginAt && $ticket->beginAt->diffInRealSeconds(Carbon::now()) > 1
                 && $ticket->beginAt !== $ticket->oldest('begin_at')
                 && $ticket->status === Ticket::STATUS_OFF) {
-                $beginJob = (new UserTicketOverDate($repository, $ticket->id, Ticket::STATUS_ON))
+                $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_ON))
                     ->delay($ticket->beginAt);
                 dispatch($beginJob);
             }
@@ -94,7 +94,7 @@ class Ticket extends Card
             if($ticket->endAt && $ticket->endAt->diffInRealSeconds($ticket->beginAt)  > 1
                 && $ticket->beginAt !== $ticket->oldest('begin_at')
                 && $ticket->status === Ticket::STATUS_ON) {
-                $beginJob = (new UserTicketOverDate($repository, $ticket->id, Ticket::STATUS_EXPIRE))
+                $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_EXPIRE))
                     ->delay($ticket->endAt);
                 dispatch($beginJob);
             }
