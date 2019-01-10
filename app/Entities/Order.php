@@ -213,7 +213,7 @@ class Order extends Model implements Transformable
             return $order;
         });
 
-        Order::updated(function (Order &$order) {
+        Order::saved(function (Order &$order) {
             if($order->getOriginal('status') !== $order->status) {
                 $order->updateOrderItemStatus();
                 if (Order::CANCEL === $order->status) {
