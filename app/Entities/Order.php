@@ -224,7 +224,7 @@ class Order extends Model implements Transformable
                     $order->useTicket();
                 }
 
-                if (Order::WECHAT_PAY === $order->status || Order::PAY_FAILED === $order->status) {
+                if (Order::WAIT === $order->status || Order::PAY_FAILED === $order->status) {
                     $job = (new OrderCancel(app(OrderRepository::class), $order->id))
                         ->delay(config('order.auto_cancel_time'));
                     dispatch($job);
