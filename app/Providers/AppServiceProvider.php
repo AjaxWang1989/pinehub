@@ -81,7 +81,6 @@ class AppServiceProvider extends ServiceProvider
 
             return $user->roles->whereIn('slug', $roles)->count() > 0;
         });
-
         app(QueueManager::class)->before(function (JobProcessing $jobProcessing) {
             Log::info('job queue processing', $jobProcessing->job->payload());
         });
@@ -130,5 +129,9 @@ class AppServiceProvider extends ServiceProvider
             return new AppManager($app);
         });
         $this->app->register(LaravelSServiceProvider::class);
+//        $this->app->register(QueueServiceProvider::class);
+        $this->app->singleton(QueueManager::class, function (Application $app) {
+            return new QueueManager($app);
+        });
     }
 }
