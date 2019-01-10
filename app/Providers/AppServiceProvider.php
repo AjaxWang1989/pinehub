@@ -15,6 +15,13 @@ use Hhxsv5\LaravelS\Illuminate\LaravelSServiceProvider;
 use Illuminate\Contracts\Filesystem\Factory;
 use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Filesystem\FilesystemServiceProvider;
+use Illuminate\Queue\Events\JobExceptionOccurred;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Queue\Events\Looping;
+use Illuminate\Queue\QueueManager;
+use Illuminate\Queue\QueueServiceProvider;
 use Illuminate\Support\Facades\{
     DB, Log, Validator
 };
@@ -74,6 +81,25 @@ class AppServiceProvider extends ServiceProvider
 
             return $user->roles->whereIn('slug', $roles)->count() > 0;
         });
+
+        app(QueueManager::class)->before(function (JobProcessing $jobProcessing) {
+            Log::info('job queue processing', $jobProcessing->job->payload());
+        });
+
+        app(QueueManager::class)->after(function (JobProcessed $jobProcessed) {
+            Log::info('job queue processed', $jobProcessed->job->payload());
+        });
+
+        app(QueueManager::class)->looping(function (Looping $looping) {
+            Log::info('job queue looping '.$looping->queue);
+        });
+
+        app(QueueManager::class)->exceptionOccurred(function (JobExceptionOccurred $exceptionOccurred) {
+            Log::info('job queue exception Occurred', $exceptionOccurred->job->payload());
+        });
+        app(QueueManager::class)->failing(function (JobFailed $jobFailed) {
+            Log::info('job failed', $jobFailed->job->payload());
+        });
     }
     /**
      * Register any application services.
@@ -87,7 +113,6 @@ class AppServiceProvider extends ServiceProvider
             return Request::capture();
         });
         laravelToLumen($this->app)->middleware(Cross::class);
-        //$this->app->register(RedisServiceProvider::class);
         $this->app->register(WechatLumenServiceProvider::class);
         $this->app->register(AliOauthServiceProvider::class);
         $this->app->register(FilesystemServiceProvider::class);
@@ -104,7 +129,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(AppManager::class, function (Application $app) {
             return new AppManager($app);
         });
-       // $this->app->register(LaravooleServiceProvider::class);
         $this->app->register(LaravelSServiceProvider::class);
     }
 }

@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Response\JsonResponse;
 use App\Exceptions\UserCodeException;
+use Illuminate\Support\Facades\Log;
 
 
 class AuthController extends Controller
@@ -322,6 +323,7 @@ class AuthController extends Controller
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;
         $aliAppId = config('ali.payment.app_id');
+        Log::info('ali customer info', $token);
 
         /** @var Customer $customer */
         $customer = $customerRepository->updateOrCreate([
