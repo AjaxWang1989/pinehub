@@ -21,7 +21,6 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\Looping;
 use Illuminate\Queue\QueueManager;
-use Illuminate\Queue\QueueServiceProvider;
 use Illuminate\Support\Facades\{
     DB, Log, Validator
 };
@@ -81,23 +80,28 @@ class AppServiceProvider extends ServiceProvider
 
             return $user->roles->whereIn('slug', $roles)->count() > 0;
         });
-        app(QueueManager::class)->before(function (JobProcessing $jobProcessing) {
+        app('queue')->before(function (JobProcessing $jobProcessing) {
             Log::info('job queue processing', $jobProcessing->job->payload());
         });
 
-        app(QueueManager::class)->after(function (JobProcessed $jobProcessed) {
+        app('queue')->after(function (JobProcessed $jobProcessed) {
             Log::info('job queue processed', $jobProcessed->job->payload());
         });
 
-        app(QueueManager::class)->looping(function (Looping $looping) {
+        app('queue')->looping(function (Looping $looping) {
             Log::info('job queue looping '.$looping->queue);
         });
 
-        app(QueueManager::class)->exceptionOccurred(function (JobExceptionOccurred $exceptionOccurred) {
+        app('queue')->exceptionOccurred(function (JobExceptionOccurred $exceptionOccurred) {
             Log::info('job queue exception Occurred', $exceptionOccurred->job->payload());
         });
-        app(QueueManager::class)->failing(function (JobFailed $jobFailed) {
+
+        app('queue')->failing(function (JobFailed $jobFailed) {
             Log::info('job failed', $jobFailed->job->payload());
+        });
+
+        app('queue')->stopping(function () {
+            Log::info('queue stopping');
         });
     }
     /**
@@ -129,9 +133,6 @@ class AppServiceProvider extends ServiceProvider
             return new AppManager($app);
         });
         $this->app->register(LaravelSServiceProvider::class);
-//        $this->app->register(QueueServiceProvider::class);
-        $this->app->singleton(QueueManager::class, function (Application $app) {
-            return new QueueManager($app);
-        });
+        $this->app->register(QueueServiceProvider::class);
     }
 }
