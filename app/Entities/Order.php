@@ -299,7 +299,7 @@ class Order extends Model implements Transformable
 
         //修改查询到的商品的库存
         $merchandises->each(function (ActivityMerchandise $merchandise) use(&$orderItems) {
-            $orderItem = $orderItems->where('merchandise_id', $merchandise->id)
+            $orderItem = $orderItems->where('merchandise_id', $merchandise->merchandiseId)
                 ->first();
             $merchandise->stockNum += $orderItem->quality;
             $merchandise->sellNum -= $orderItem->quality;
@@ -326,7 +326,7 @@ class Order extends Model implements Transformable
 
         //修改查询到的商品的库存
         $merchandises->each(function (ShopMerchandise $merchandise) use(&$orderItems) {
-            $orderItem = $orderItems->where('merchandise_id', $merchandise->id)
+            $orderItem = $orderItems->where('merchandise_id', $merchandise->merchandiseId)
                 ->first();
             $merchandise->stockNum += $orderItem->quality;
             $merchandise->sellNum -= $orderItem->quality;
