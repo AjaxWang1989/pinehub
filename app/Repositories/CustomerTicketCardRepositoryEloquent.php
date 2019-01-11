@@ -64,7 +64,11 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
                 ->whereHas('card', function (Builder $query) use($shoppingCartAmount){
                     if($shoppingCartAmount) {
                         $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH])
-                            ->whereRaw(DB::raw('cast(`card_info`->`$."least_cost"`  as DECIMAL(12, 2)) <= ?'), (float)$shoppingCartAmount)
+                            ->fromSub(function (\Illuminate\Database\Query\Builder $query) {
+                                return $query->select([DB::raw('CAST(card_info->least_cost as DECIMAL(12, 2)) as least_cost')])
+                                    ->where('sub_cards.id = cards.id');
+                            }, 'sub_cards')
+                            ->whereRaw(DB::raw('sub_cards.least_cost <= ?'), (float)$shoppingCartAmount)
                             ->orWhereNull('card_info->least_cost');
                     }else{
                         $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
