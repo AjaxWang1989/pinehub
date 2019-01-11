@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Entities\Card;
 use App\Repositories\Traits\Destruct;
 use App\Services\AppManager;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\CustomerTicketCard;
@@ -59,10 +61,10 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
         $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($status, $userId, $shoppingCartAmount) {
             return $customerTicketCard
                 ->where(['customer_id' => $userId, 'status' => $status])
-                ->whereHas('card', function ($query) use($shoppingCartAmount){
+                ->whereHas('card', function (Builder $query) use($shoppingCartAmount){
                     if($shoppingCartAmount) {
                         $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH])
-                            ->where('card_info->least_cost', '<=', (float)$shoppingCartAmount)
+                            ->whereRaw(DB::raw('cast(card_info->least_cost  as DECIMAL) <= ?'), (float)$shoppingCartAmount)
                             ->orWhereNull('card_info->least_cost');
                     }else{
                         $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
