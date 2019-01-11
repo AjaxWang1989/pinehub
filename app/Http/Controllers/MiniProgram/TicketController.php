@@ -34,10 +34,10 @@ class TicketController extends Controller
                     ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
                     ->where('customer_ticket_cards.customer_id', $this->mpUser()->id);
             })->whereAppId(app(AppManager::class)->getAppId())->where('card_id','!=', '')
-                ->where(DB::raw('(issue_count - user_get_count)'), '>', 0);
-        })->orderBy('created_at', 'desc')
-            ->orderBy('updated_at', 'desc')
-            ->paginate($request->input('limit', PAGE_LIMIT));
+                ->where(DB::raw('(issue_count - user_get_count)'), '>', 0)
+                ->orderBy('created_at', 'desc')
+                ->orderBy('updated_at', 'desc');
+        })->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($tickets, new TicketTransformer());
     }
 
