@@ -23,6 +23,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $issueCount 发行数量
  * @property int $userGetCount 领取数量
  * @property string $platform
+ * @property int $status
  * @property int $syncStatus 0-审核中 1-审核通过 2-审核未通过
  * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
  * @property \Illuminate\Support\Carbon|null $beginAt 开始日期

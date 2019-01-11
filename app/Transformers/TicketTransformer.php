@@ -32,6 +32,9 @@ class TicketTransformer extends TransformerAbstract
             'ali_app_id'  => $model->aliAppId,
             'sync'        => $model->sync,
             'status'      => $model->status,
+            'sync_status' => $model->syncStatus,
+            'begin_at' => $model->beginAt->format('Y-m-d'),
+            'end_at'   => $model->endAt->format('Y-m-d'),
             'issue_count'  => $model->issueCount,
             'created_at'  => $model->createdAt,
             'updated_at'  => $model->updatedAt

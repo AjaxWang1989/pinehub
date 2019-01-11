@@ -56,9 +56,10 @@ class TicketItemTransformer extends TransformerAbstract
             'wechat_app_id' => $model->wechatAppId,
             'ali_app_id' => $model->aliAppId,
             'status' => $model->status,
+            'sync_status' => $model->syncStatus,
             'sync' => $model->sync,
-            'begin_at' => $model->beginAt,
-            'end_at' => $model->endAt,
+            'begin_at' => $model->beginAt->format('Y-m-d'),
+            'end_at'   => $model->endAt->format('Y-m-d'),
             'active_time' => $activeTime,
             'least_cost' => isset($model->cardInfo['least_cost']) ? $model->cardInfo['least_cost'] : (isset($model->cardInfo['advanced_info']) &&
                 isset($model->cardInfo['advanced_info']['use_condition']) && isset($model->cardInfo['advanced_info']['use_condition']['least_cost'])
