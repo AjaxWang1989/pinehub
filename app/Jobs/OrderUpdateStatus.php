@@ -41,6 +41,8 @@ class OrderUpdateStatus extends Job implements ShouldQueue
         //
         Log::info('handle order update', $this->order->toArray());
         if($this->order->status === Order::WAIT
+            || $this->order->status === Order::PAY_FAILED
+            || $this->order->status === Order::MAKE_SURE
             || $this->order->status === Order::SEND
             || $this->order->status === Order::PAID) {
             Log::info('update order status');
