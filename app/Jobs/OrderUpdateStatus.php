@@ -6,6 +6,7 @@ use App\Entities\Order;
 use App\Repositories\OrderRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class OrderUpdateStatus extends Job implements ShouldQueue
 {
@@ -38,7 +39,11 @@ class OrderUpdateStatus extends Job implements ShouldQueue
     public function handle()
     {
         //
-        if($this->order->status === Order::WAIT || $this->order->status === Order::PAY_FAILED) {
+        Log::info('handle order update', $this->order->toArray());
+        if($this->order->status === Order::WAIT
+            || $this->order->status === Order::SEND
+            || $this->order->status === Order::PAID) {
+            Log::info('update order status');
             $this->order->status = $this->status;
             $this->order->save();
         }
