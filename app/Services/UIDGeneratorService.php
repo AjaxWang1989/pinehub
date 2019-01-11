@@ -162,7 +162,7 @@ class UIDGeneratorService implements InterfaceServiceHandler
      */
     protected function segmentRandKey()
     {
-        return random_int(0, $this->segmentMaxLength);
+        return random_int($this->segmentMaxLength / 4, $this->segmentMaxLength * 3 / 4);
     }
 
     /**
