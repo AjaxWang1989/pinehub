@@ -70,7 +70,9 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
                     $query->where('app_id', app(AppManager::class)->getAppId());
                 })->where('card_id','!=', '');
         });
-        return $this->paginate();
+        return $this->orderBy('updated_at', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->paginate();
     }
 
     /**
