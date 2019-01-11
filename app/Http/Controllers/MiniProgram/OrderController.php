@@ -156,32 +156,6 @@ class OrderController extends Controller
     }
 
     protected function order(Order $order, string $type){
-        $order->orderItems->map(function (OrderItem $item) use($order){
-            switch ($order->type) {
-                case Order::SITE_USER_ORDER: {
-                    if(ShopMerchandise::whereMerchandiseId($item->merchandiseId)
-                        ->whereShopId($item->shopId)
-                        ->where('stock_num', '<', $item->quality)->count() > 0) {
-                        throw new ModelNotFoundException('SKU库存不足');
-                    }
-                }
-                case Order::SHOPPING_MALL_ORDER: {
-                    if ($item->activityId) {
-                        if(ActivityMerchandise::whereMerchandiseId($item->merchandiseId)
-                            ->whereActivityId($item->activityId)
-                            ->where('stock_num', '<', $item->quality)->count() > 0) {
-                            throw new ModelNotFoundException('SKU库存不足');
-                        }
-                    }else{
-                        if (Merchandise::whereId($item->merchandiseId)
-                            ->where('stock_num', '<', $item->quality)->count() > 0) {
-                            throw new ModelNotFoundException('SKU库存不足');
-                        }
-                    }
-                }
-            }
-
-        });
         return DB::transaction(function () use(&$order, $type){
             //跟微信打交道生成预支付订单
             if ($type === 'wx') {
