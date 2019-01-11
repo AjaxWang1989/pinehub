@@ -321,7 +321,7 @@ class Order extends Model implements Transformable
 
         //通过店铺中的产品关系查询符合符合条件的产品
         $merchandises = $shop->shopMerchandises()
-            ->whereIn('merchanidse_id', $merchandiseIds)
+            ->whereIn('merchandise_id', $merchandiseIds)
             ->get();
 
         //修改查询到的商品的库存
