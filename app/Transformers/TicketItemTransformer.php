@@ -58,8 +58,8 @@ class TicketItemTransformer extends TransformerAbstract
             'status' => $model->status,
             'sync_status' => $model->syncStatus,
             'sync' => $model->sync,
-            'begin_at' => $model->beginAt->format('Y-m-d'),
-            'end_at'   => $model->endAt->format('Y-m-d'),
+            'begin_at' => $model->beginAt ? $model->beginAt->format('Y-m-d') : null,
+            'end_at'   => $model->endAt ? $model->endAt->format('Y-m-d') : null,
             'active_time' => $activeTime,
             'least_cost' => isset($model->cardInfo['least_cost']) ? $model->cardInfo['least_cost'] : (isset($model->cardInfo['advanced_info']) &&
                 isset($model->cardInfo['advanced_info']['use_condition']) && isset($model->cardInfo['advanced_info']['use_condition']['least_cost'])

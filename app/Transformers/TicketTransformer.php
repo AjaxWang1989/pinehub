@@ -33,8 +33,8 @@ class TicketTransformer extends TransformerAbstract
             'sync'        => $model->sync,
             'status'      => $model->status,
             'sync_status' => $model->syncStatus,
-            'begin_at' => $model->beginAt->format('Y-m-d'),
-            'end_at'   => $model->endAt->format('Y-m-d'),
+            'begin_at' => $model->beginAt ? $model->beginAt->format('Y-m-d') : null,
+            'end_at'   => $model->endAt ? $model->endAt->format('Y-m-d') : null,
             'issue_count'  => $model->issueCount,
             'created_at'  => $model->createdAt,
             'updated_at'  => $model->updatedAt
