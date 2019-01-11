@@ -44,6 +44,18 @@ class TicketController extends Controller
         if($request->input('ticket_type', Ticket::CASH) === Ticket::DISCOUNT) {
             $ticket['least_cost'] = null;
         }
+        if(isset($ticket['least_cost']) && $ticket['least_cost'] !== null) {
+            $ticket['least_cost'] = (float)$ticket['least_cost'];
+        }
+
+        if(isset($ticket['reduce_cost']) && $ticket['reduce_cost'] !== null) {
+            $ticket['reduce_cost'] = (float)$ticket['reduce_cost'];
+        }
+
+        if(isset($ticket['discount']) && $ticket['discount'] !== null) {
+            $ticket['discount'] = (float)$ticket['discount'];
+        }
+
         $request->merge([
             'card_info' => $ticket,
             'platform' => $request->input('platform', OWNER_TICKET),

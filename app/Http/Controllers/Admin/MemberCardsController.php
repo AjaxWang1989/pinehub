@@ -65,8 +65,12 @@ class MemberCardsController extends Controller
      */
     public function store(MemberCardCreateRequest $request)
     {
+        $cardInfo = $request->input('member_card_info');
+        if(isset($cardInfo['discount']) && $cardInfo['discount'] !== null) {
+            $cardInfo['discount'] = (float)$cardInfo['discount'];
+        }
         $request->merge([
-            'card_info' => $request->input('member_card_info'),
+            'card_info' => $cardInfo,
             'card_type' => $request->input('member_card_type'),
             'platform' => $request->input('platform', WX_TICKET)
         ]);
