@@ -63,8 +63,7 @@ class CardsController extends Controller
     public function index()
     {
         $this->repository->pushCriteria(SearchRequestCriteria::class);
-        $cards = $this->repository
-            ->paginate();
+        $cards = $this->repository->orderBy('created_at', 'desc')->paginate();
         return $cards;
     }
 
