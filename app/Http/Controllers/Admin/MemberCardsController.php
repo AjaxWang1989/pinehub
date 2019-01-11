@@ -65,7 +65,11 @@ class MemberCardsController extends Controller
      */
     public function store(MemberCardCreateRequest $request)
     {
-        $request->merge(['card_info' => $request->input('member_card_info'), 'card_type' => $request->input('member_card_type')]);
+        $request->merge([
+            'card_info' => $request->input('member_card_info'),
+            'card_type' => $request->input('member_card_type'),
+            'platform' => $request->input('platform', WX_TICKET)
+        ]);
         $memberCard = parent::storeCard($request);
         $cardInfo = $memberCard->cardInfo;
         if(isset($cardInfo['background_material_id'])) {

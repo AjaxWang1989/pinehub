@@ -22,6 +22,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property array $cardInfo 卡券信息
  * @property int $issueCount 发行数量
  * @property int $userGetCount 领取数量
+ * @property string $platform
  * @property int $syncStatus 0-审核中 1-审核通过 2-审核未通过
  * @property int $sync -1 不需要同步 0 - 同步失败 1-同步中 2-同步成功
  * @property \Illuminate\Support\Carbon|null $beginAt 开始日期
@@ -40,6 +41,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardInfo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card wherePlatform($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereEndAt($value)
@@ -99,10 +101,12 @@ class Card extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
+        'id',
         'code',
         'card_id',
         'card_type',
         'card_info',
+        'platform',
         'status',
         'sync_status',
         'sync',

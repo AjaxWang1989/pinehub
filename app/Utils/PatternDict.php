@@ -71,6 +71,10 @@ define('USER_AUTH_INFO', 'user_info');
 
 define('MEMBER_CARD', 'member_card');
 
+define('OWNER_TICKET', 'OWNER_TICKET');
+define('WX_TICKET', 'WX_TICKET');
+define('ALI_TICKET', 'ALI_TICKET');
+
 define('COUPON_CARD', 'coupon');
 define('GROUPON_CARD', 'groupon');
 define('DISCOUNT_CARD', 'discount');

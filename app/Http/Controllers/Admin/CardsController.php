@@ -88,6 +88,9 @@ class CardsController extends Controller
         $data['card_type'] = $request->input('card_type');
         $data['sync']   = $request->input('sync');
         $data['issue_count'] = $request->input('issue_count', 0);
+        $data['platform'] = $request->input('platform');
+        $data['begin_at'] = $request->input('begin_at', null);
+        $data['end_at'] = $request->input('end_at', null);
         return $this->repository->create($data);
     }
 

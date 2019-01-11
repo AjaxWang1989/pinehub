@@ -17,6 +17,7 @@ class CreateCards extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code', 20)->comment('卡卷编号');
+            $table->string('platform', 16)->default(WX_TICKET)->comment('卡券平台类型');
             $table->string('card_id', 32)->default('')->comment('卡券id');
             $table->string('wechat_app_id', 32)->nullable()->default(null)->comment('微信app id');
             $table->string('ali_app_id', 32)->nullable()->default(null)->comment('支付宝app id');

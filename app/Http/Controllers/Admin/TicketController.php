@@ -46,6 +46,7 @@ class TicketController extends Controller
         }
         $request->merge([
             'card_info' => $ticket,
+            'platform' => $request->input('platform', OWNER_TICKET),
             'card_type' => $request->input('ticket_type', Ticket::CASH),
             'begin_at' => Carbon::createFromTimeString($request->input('begin_at', Carbon::now()->format('Y-m-d H:i:s'))),
             'end_at' => $request->input('end_at', null) ? Carbon::createFromTimeString($request->input('end_at')) : null
