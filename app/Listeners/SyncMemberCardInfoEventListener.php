@@ -39,6 +39,9 @@ class SyncMemberCardInfoEventListener
             sleep(10);
         }
         $memberInfo = $event->memberInfo;
+        unset($memberInfo['platform']);
+        unset($memberInfo['begin_at']);
+        unset($memberInfo['end_at']);
         $memberInfo['discount'] *= 10;
         $memberInfo['auto_activate'] = (boolean)$memberInfo['auto_activate'];
         $memberInfo['base_info']['can_share'] = (boolean)$memberInfo['base_info']['can_share'];
