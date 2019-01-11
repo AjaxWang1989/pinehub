@@ -30,6 +30,7 @@ class TicketTransformer extends TransformerAbstract
             'app_id'      => $model->appId,
             'wechat_app_id' => $model->wechatAppId,
             'ali_app_id'  => $model->aliAppId,
+            'platform' => $model->platform,
             'sync'        => $model->sync,
             'status'      => $model->status,
             'sync_status' => $model->syncStatus,

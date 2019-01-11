@@ -58,6 +58,7 @@ class TicketItemTransformer extends TransformerAbstract
             'status' => $model->status,
             'sync_status' => $model->syncStatus,
             'sync' => $model->sync,
+            'platform' => $model->platform,
             'begin_at' => $model->beginAt ? $model->beginAt->format('Y-m-d') : null,
             'end_at'   => $model->endAt ? $model->endAt->format('Y-m-d') : null,
             'active_time' => $activeTime,
