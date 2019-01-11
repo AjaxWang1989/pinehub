@@ -63,7 +63,7 @@ class ActivityMerchandise extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['activity_id','shop_id','shop_merchandise_id','merchandise_id','product_id','stock_num','sell_num',
+    protected $fillable = ['id', 'activity_id','shop_id','shop_merchandise_id','merchandise_id','product_id','stock_num','sell_num',
         'start_at','end_at','tags','describe','sell_price', 'main_image'
     ];
 

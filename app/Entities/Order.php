@@ -339,7 +339,7 @@ class Order extends Model implements Transformable
 
     public function activityMerchandises() :hasMany
     {
-        return $this->hasMany(ActivityMerchandise::class,'activity_merchandises_id','id');
+        return $this->activity->merchandises();
     }
 
     public function activity() : BelongsTo
