@@ -230,7 +230,7 @@ class OrderController extends Controller
                         Log::info('discount count '.$order['discount_amount'].' (0)');
                     }else if($card->cardType === Card::CASH){
                         $order['discount_amount'] = $card && $card->cardInfo ? (float)$card->cardInfo['reduce_cost'] : 0;
-                        Log::info('discount count '.$order['discount_amount'].' (1); card info ', $card->cardInfo);
+                        Log::info('discount count '.$order['discount_amount'].' (1);');
                     }
                 });
                 $order['card_id'] = $card['card_id'];
@@ -239,6 +239,8 @@ class OrderController extends Controller
                 throw new ModelNotFoundException('使用的优惠券不存在');
             }
         }
+        Log::info("-------------------- order info ---------------------(0)\n", $order);
+        return $order;
     }
 
     /**
@@ -345,7 +347,7 @@ class OrderController extends Controller
         $order ['day']   = $now->day;
         $order['week']  = $now->dayOfWeekIso;
         $order['hour']  = $now->hour;
-        Log::info('order info', $order);
+        Log::info("-------------------- order info ---------------------\n", $order);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
