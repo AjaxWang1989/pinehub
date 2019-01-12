@@ -93,7 +93,11 @@ class AppServiceProvider extends ServiceProvider
         });
 
         app('queue')->exceptionOccurred(function (JobExceptionOccurred $exceptionOccurred) {
-            Log::info('job queue exception Occurred', $exceptionOccurred->job->payload());
+            Log::info('job queue exception Occurred',
+                $exceptionOccurred->job->payload());
+            Log::info("------------------- exception -----------------\n {$exceptionOccurred->exception->getMessage()}");
+            Log::info("------------------- exception -----------------\n",
+                $exceptionOccurred->exception->getTrace());
         });
 
         app('queue')->failing(function (JobFailed $jobFailed) {
