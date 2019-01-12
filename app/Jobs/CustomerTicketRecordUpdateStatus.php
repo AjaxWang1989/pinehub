@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Entities\CustomerTicketCard;
 use App\Repositories\CustomerTicketCardRepository;
+use Illuminate\Support\Facades\Log;
 
 class CustomerTicketRecordUpdateStatus extends Job
 {
@@ -36,6 +37,8 @@ class CustomerTicketRecordUpdateStatus extends Job
     public function handle()
     {
         //
+        Log::info('customer ticket card', $this->customerTicketCard);
+        Log::info('------ status ------ '.$this->status);
         switch ($this->status) {
             case CustomerTicketCard::STATUS_ON : {
                 if($this->customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
