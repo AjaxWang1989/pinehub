@@ -81,23 +81,19 @@ class AppServiceProvider extends ServiceProvider
             return $user->roles->whereIn('slug', $roles)->count() > 0;
         });
         app('queue')->before(function (JobProcessing $jobProcessing) {
-            Log::info('job queue processing', $jobProcessing->job->payload());
+//            Log::info('job queue processing', $jobProcessing->job->payload());
         });
 
         app('queue')->after(function (JobProcessed $jobProcessed) {
-            Log::info('job queue processed', $jobProcessed->job->payload());
+            Log::info('job queue processed!');
         });
 
         app('queue')->looping(function (Looping $looping) {
-            Log::info('job queue looping '.$looping->queue);
+//            Log::info('job queue looping '.$looping->queue);
         });
 
         app('queue')->exceptionOccurred(function (JobExceptionOccurred $exceptionOccurred) {
-            Log::info('job queue exception Occurred',
-                $exceptionOccurred->job->payload());
-            Log::info("------------------- exception -----------------\n {$exceptionOccurred->exception->getMessage()}");
-            Log::info("------------------- exception -----------------\n",
-                $exceptionOccurred->exception->getTrace());
+            Log::info('job queue exception Occurred', $exceptionOccurred->job->payload());
         });
 
         app('queue')->failing(function (JobFailed $jobFailed) {
