@@ -157,10 +157,15 @@ class OrderController extends Controller
 
     protected function order(Order $order, string $type){
         return DB::transaction(function () use(&$order, $type){
+            if($order->paymentAmount === 0) {
+                $order->status = Order::PAID;
+                $order->save();
+                return $this->response()->item($order, new OrderTransformer());
+            }
             //跟微信打交道生成预支付订单
             if ($type === 'wx') {
                 $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
-                Log::info('unify result', $result);
+                Log::info("------- unify result ------\n", $result);
                 $order->prepayId = $result['prepay_id'];
                 $order->payType = Order::WECHAT_PAY;
                 $order->save();

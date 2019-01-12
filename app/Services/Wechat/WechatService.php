@@ -377,7 +377,7 @@ class WechatService
             $order['notify_url'] = $notifyUrl;
             $unifyData = $order;
         }
-        Log::info('-------------------------- payment order data ---------------------------', $unifyData);
+        Log::info("-------------------------- payment order data ---------------------------\n", $unifyData);
         return $payment->order->unify($unifyData);
     }
 
