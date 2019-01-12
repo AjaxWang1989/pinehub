@@ -185,7 +185,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $this->checkOrder($orderItems, $order);
         }
         $shoppingCartIds = $this->shoppingCartIds;
-
+        Log::info('====== order model =======', $order->toArray());
         return DB::transaction(function () use($order, $orderItems ,$shoppingCartIds){
             /**
              *@var Order $orderModel
