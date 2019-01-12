@@ -211,7 +211,7 @@ class OrderController extends Controller
             $condition = [
                 'card_id' => $order['card_id'],
                 'status'  => CustomerTicketCard::STATUS_ON,
-                'active'  => CustomerTicketCard::ACTIVE_ON,
+//                'active'  => CustomerTicketCard::ACTIVE_ON,
             ];
             if (isset($order['card_code']) && $order['card_code']) {
                 $condition['card_code'] = $order['card_code'];
