@@ -226,11 +226,11 @@ class OrderController extends Controller
                 $card = $customerTicketRecord['card'];
                 with($card, function (Card $card) use(&$order){
                     if ($card->cardType === Card::DISCOUNT) {
-                        $order['discount_amount'] = $card->cardInfo['discount'] * $order['total_amount'];
+                        $order['discount_amount'] = $card->cardInfo['discount']/10 * $order['total_amount'];
                         Log::info('discount amount '.$order['discount_amount'].' (0)');
                     }else if($card->cardType === Card::CASH){
                         $order['discount_amount'] = $card && $card->cardInfo ? (float)$card->cardInfo['reduce_cost'] : 0;
-                        Log::info('discount amount '.$order['discount_amount']."\n", $order);
+                        Log::info('discount amount '.$order['discount_amount']."\n");
                     }
                 });
                 $order['card_id'] = $card['card_id'];
@@ -239,7 +239,6 @@ class OrderController extends Controller
                 throw new ModelNotFoundException('使用的优惠券不存在');
             }
         }
-        Log::info("-------------------- order info ---------------------(0)\n", $order);
         return $order;
     }
 
