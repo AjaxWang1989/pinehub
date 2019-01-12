@@ -41,6 +41,7 @@ class CustomerTicketRecordUpdateStatus extends Job
                 if($this->customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
                     $this->customerTicketCard->status = CustomerTicketCard::STATUS_ON;
                     $this->customerTicketCard->active = CustomerTicketCard::ACTIVE_ON;
+                    $this->customerTicketCard->save();
                 }
                 break;
             }
@@ -48,10 +49,10 @@ class CustomerTicketRecordUpdateStatus extends Job
                 if ($this->customerTicketCard->status === CustomerTicketCard::STATUS_ON
                     || $this->customerTicketCard->status === CustomerTicketCard::STATUS_EXPIRE) {
                     $this->customerTicketCard->status = CustomerTicketCard::STATUS_EXPIRE;
+                    $this->customerTicketCard->save();
                 }
                 break;
             }
         }
-        $this->customerTicketCard->save();
     }
 }
