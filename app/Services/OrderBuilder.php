@@ -191,6 +191,7 @@ class OrderBuilder implements InterfaceServiceHandler
              *@var Order $orderModel
              * */
             $orderModel = $this->order->create($order->toArray());
+            Log::info('order model', $orderModel->toArray());
             if($orderModel && $orderItems) {
                 $orderItems = $orderItems->map(function (Collection $orderItem) use($orderModel) {
                     $orderItem['activity_id'] =  $orderModel->activityId;

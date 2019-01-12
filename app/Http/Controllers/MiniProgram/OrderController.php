@@ -216,6 +216,8 @@ class OrderController extends Controller
             if (isset($order['card_code']) && $order['card_code']) {
                 $condition['card_code'] = $order['card_code'];
             }
+
+            /** @var CustomerTicketCard $customerTicketRecord */
             $customerTicketRecord = $user->ticketRecords()->with('card')
                 ->where($condition)
                 ->orderByDesc('created_at')
@@ -232,7 +234,7 @@ class OrderController extends Controller
                     }
                 });
                 $order['card_id'] = $card['card_id'];
-                $order['card_code'] = $customerTicketRecord->code;
+                $order['card_code'] = $customerTicketRecord->cardCode;
             }else{
                 throw new ModelNotFoundException('使用的优惠券不存在');
             }
