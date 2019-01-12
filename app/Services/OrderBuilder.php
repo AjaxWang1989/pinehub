@@ -127,6 +127,7 @@ class OrderBuilder implements InterfaceServiceHandler
             'send_batch',
             'pick_up_method',
             'card_id',
+            'card_code',
             'shop_id',
             'activity_id',
             'merchandise_num',
