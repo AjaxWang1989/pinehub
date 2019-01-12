@@ -52,9 +52,9 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
             $status = CustomerTicketCard::STATUS_OFF;
         }elseif ($status == 'available'){
             $status = CustomerTicketCard::STATUS_ON;
-        }elseif ($status == 'already_used'){
+        }elseif ($status == 'used'){
             $status = CustomerTicketCard::STATUS_USE;
-        }elseif ($status == 'be_overdue'){
+        }elseif ($status == 'over'){
             $status = CustomerTicketCard::STATUS_EXPIRE;
         }
 
