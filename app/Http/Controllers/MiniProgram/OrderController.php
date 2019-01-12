@@ -229,7 +229,7 @@ class OrderController extends Controller
                         $order['discount_amount'] = $card->cardInfo['discount'] * $order['total_amount'];
                         Log::info('discount count '.$order['discount_amount'].' (0)');
                     }else if($card->cardType === Card::CASH){
-                        $order['discount_amount'] = $card ? $card['card_info']['reduce_cost'] : 0;
+                        $order['discount_amount'] = $card && $card->cardInfo ? (float)$card->cardInfo['reduce_cost'] : 0;
                         Log::info('discount count '.$order['discount_amount'].' (1); card info ', $card->cardInfo);
                     }
                 });
