@@ -225,11 +225,14 @@ class OrderController extends Controller
                 with($card, function (Card $card) use($order){
                     if ($card->cardType === Card::DISCOUNT) {
                         $order['discount_amount'] = $card->cardInfo['discount'] * $order['total_amount'];
+                        Log::info('discount count '.$order['discount_amount'].' (0)');
                     }else if($card->cardType === Card::CASH){
                         $order['discount_amount'] = $card ? $card['card_info']['reduce_cost'] : 0;
+                        Log::info('discount count '.$order['discount_amount'].' (1)');
                     }
                 });
                 $order['card_id'] = $card['card_id'];
+                $order['card_code'] = $customerTicketRecord->code;
             }else{
                 throw new ModelNotFoundException('使用的优惠券不存在');
             }
