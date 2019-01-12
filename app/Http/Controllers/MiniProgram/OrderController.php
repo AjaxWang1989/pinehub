@@ -224,7 +224,7 @@ class OrderController extends Controller
                 ->first();
             if ($customerTicketRecord){
                 $card = $customerTicketRecord['card'];
-                with($card, function (Card $card) use($order){
+                with($card, function (Card $card) use(&$order){
                     if ($card->cardType === Card::DISCOUNT) {
                         $order['discount_amount'] = $card->cardInfo['discount'] * $order['total_amount'];
                         Log::info('discount amount '.$order['discount_amount'].' (0)');
