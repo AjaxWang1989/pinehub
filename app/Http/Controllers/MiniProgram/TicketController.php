@@ -10,6 +10,7 @@ use App\Services\AppManager;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\TicketTransformer;
 use Dingo\Api\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -49,6 +50,11 @@ class TicketController extends Controller
             return $card->whereAppId($appId);
         })->find($cardId);
         $customer = $this->mpUser();
+        $count = $customer->ticketRecords()->where('card_id', $ticket->cardId)->count();
+        if(isset($ticket->cardInfo['base_info']['get_limit']) && $ticket->cardInfo['base_info']['get_limit'] > 0
+            && $ticket->cardInfo['base_info']['get_limit'] <= $count) {
+            throw new ModelNotFoundException('此优惠券不可以重复领取');
+        }
         $record = new CustomerTicketCard();
         $record->cardId = $ticket->cardId;
         $record->customerId = $customer->id;
