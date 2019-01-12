@@ -230,7 +230,7 @@ class OrderController extends Controller
                         Log::info('discount count '.$order['discount_amount'].' (0)');
                     }else if($card->cardType === Card::CASH){
                         $order['discount_amount'] = $card ? $card['card_info']['reduce_cost'] : 0;
-                        Log::info('discount count '.$order['discount_amount'].' (1)');
+                        Log::info('discount count '.$order['discount_amount'].' (1); card info ', $card->cardInfo);
                     }
                 });
                 $order['card_id'] = $card['card_id'];
@@ -345,7 +345,7 @@ class OrderController extends Controller
         $order ['day']   = $now->day;
         $order['week']  = $now->dayOfWeekIso;
         $order['hour']  = $now->hour;
-        Log::info('order info', [$order, $request->all()]);
+        Log::info('order info', $order);
         //生成提交中的订单
         $order = $this->app
             ->make('order.builder')
