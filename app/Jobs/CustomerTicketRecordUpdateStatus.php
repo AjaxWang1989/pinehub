@@ -40,6 +40,7 @@ class CustomerTicketRecordUpdateStatus extends Job
             case CustomerTicketCard::STATUS_ON : {
                 if($this->customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
                     $this->customerTicketCard->status = CustomerTicketCard::STATUS_ON;
+                    $this->customerTicketCard->active = CustomerTicketCard::ACTIVE_ON;
                 }
                 break;
             }

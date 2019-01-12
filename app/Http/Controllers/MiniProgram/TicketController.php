@@ -80,6 +80,7 @@ class TicketController extends Controller
             $record->status = CustomerTicketCard::STATUS_OFF;
         }else{
             $record->status = CustomerTicketCard::STATUS_ON;
+            $record->active = CustomerTicketCard::ACTIVE_ON;
         }
         $record->save();
         return $this->response()->item($record, new CustomerTicketCardTransformer());
