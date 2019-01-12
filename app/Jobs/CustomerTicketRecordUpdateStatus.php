@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Entities\CustomerTicketCard;
 use App\Repositories\CustomerTicketCardRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
 class CustomerTicketRecordUpdateStatus extends Job
@@ -25,7 +26,13 @@ class CustomerTicketRecordUpdateStatus extends Job
     public function __construct(CustomerTicketCardRepository $repository, int $id, int $status)
     {
         //
-        $this->customerTicketCard = $repository->find($id);
+        try{
+            $this->customerTicketCard = $repository->find($id);
+        }catch (\Exception $exception) {
+            if($exception instanceof ModelNotFoundException) {
+                Log::error('customer ticket card not found!');
+            }
+        }
         $this->status = $status;
     }
 
@@ -37,22 +44,24 @@ class CustomerTicketRecordUpdateStatus extends Job
     public function handle()
     {
         //
-        switch ($this->status) {
-            case CustomerTicketCard::STATUS_ON : {
-                if($this->customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
-                    $this->customerTicketCard->status = CustomerTicketCard::STATUS_ON;
-                    $this->customerTicketCard->active = CustomerTicketCard::ACTIVE_ON;
-                    $this->customerTicketCard->save();
+        if ($this->customerTicketCard) {
+            switch ($this->status) {
+                case CustomerTicketCard::STATUS_ON : {
+                    if($this->customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
+                        $this->customerTicketCard->status = CustomerTicketCard::STATUS_ON;
+                        $this->customerTicketCard->active = CustomerTicketCard::ACTIVE_ON;
+                        $this->customerTicketCard->save();
+                    }
+                    break;
                 }
-                break;
-            }
-            case CustomerTicketCard::STATUS_EXPIRE : {
-                if ($this->customerTicketCard->status === CustomerTicketCard::STATUS_ON
-                    || $this->customerTicketCard->status === CustomerTicketCard::STATUS_EXPIRE) {
-                    $this->customerTicketCard->status = CustomerTicketCard::STATUS_EXPIRE;
-                    $this->customerTicketCard->save();
+                case CustomerTicketCard::STATUS_EXPIRE : {
+                    if ($this->customerTicketCard->status === CustomerTicketCard::STATUS_ON
+                        || $this->customerTicketCard->status === CustomerTicketCard::STATUS_EXPIRE) {
+                        $this->customerTicketCard->status = CustomerTicketCard::STATUS_EXPIRE;
+                        $this->customerTicketCard->save();
+                    }
+                    break;
                 }
-                break;
             }
         }
     }

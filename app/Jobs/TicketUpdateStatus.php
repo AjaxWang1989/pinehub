@@ -4,6 +4,8 @@ namespace App\Jobs;
 
 use App\Entities\Ticket;
 use App\Repositories\TicketRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Facades\Log;
 
 class TicketUpdateStatus extends Job
 {
@@ -24,7 +26,13 @@ class TicketUpdateStatus extends Job
     public function __construct(TicketRepository $repository, int $id, int $status)
     {
         //
-        $this->ticket = $repository->find($id);
+        try {
+            $this->ticket = $repository->find($id);
+        }catch (\Exception $exception) {
+            if ($exception instanceof ModelNotFoundException) {
+                Log::error('ticket model not found!');
+            }
+        }
         $this->status = $status;
     }
 
@@ -36,20 +44,23 @@ class TicketUpdateStatus extends Job
     public function handle()
     {
         //
-        switch ($this->status) {
-            case Ticket::STATUS_ON : {
-                if ($this->ticket->status === Ticket::STATUS_OFF) {
-                    $this->ticket->status = Ticket::STATUS_ON;
+        if ($this->ticket) {
+            switch ($this->status) {
+                case Ticket::STATUS_ON : {
+                    if ($this->ticket->status === Ticket::STATUS_OFF) {
+                        $this->ticket->status = Ticket::STATUS_ON;
+                    }
+                    break;
                 }
-                break;
-            }
-            case Ticket::STATUS_EXPIRE: {
-                if ($this->ticket->status === Ticket::STATUS_ON) {
-                    $this->ticket->status = Ticket::STATUS_OFF;
+                case Ticket::STATUS_EXPIRE: {
+                    if ($this->ticket->status === Ticket::STATUS_ON) {
+                        $this->ticket->status = Ticket::STATUS_OFF;
+                    }
+                    break;
                 }
-                break;
             }
+            $this->ticket->save();
         }
-        $this->ticket->save();
+
     }
 }
