@@ -234,4 +234,14 @@ class ShopsController extends Controller
             throw new ValidationHttpException('搜索的商品名字不能为空');
         }
     }
+
+    public function stores(Request $request) {
+        $stores = $request->input('stores', null);
+        if ($stores) {
+            $shops = $this->shopRepository->findWhereIn('id', $stores);
+            return $this->response($shops);
+        }else{
+            throw new ValidationHttpException('stores参数为空');
+        }
+    }
 }
