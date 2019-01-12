@@ -227,10 +227,10 @@ class OrderController extends Controller
                 with($card, function (Card $card) use($order){
                     if ($card->cardType === Card::DISCOUNT) {
                         $order['discount_amount'] = $card->cardInfo['discount'] * $order['total_amount'];
-                        Log::info('discount count '.$order['discount_amount'].' (0)');
+                        Log::info('discount amount '.$order['discount_amount'].' (0)');
                     }else if($card->cardType === Card::CASH){
                         $order['discount_amount'] = $card && $card->cardInfo ? (float)$card->cardInfo['reduce_cost'] : 0;
-                        Log::info('discount count '.$order['discount_amount'].' (1);');
+                        Log::info('discount amount '.$order['discount_amount']."\n", $order);
                     }
                 });
                 $order['card_id'] = $card['card_id'];
