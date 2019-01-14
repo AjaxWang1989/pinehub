@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -33,6 +34,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\User|null $owner
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Shop[] $shops
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\User[] $users
+ * @property  string|Carbon $ttl
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\App whereContactName($value)
