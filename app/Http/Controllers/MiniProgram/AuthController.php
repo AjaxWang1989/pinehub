@@ -121,10 +121,12 @@ class AuthController extends Controller
                 $mpUser->city = $data['city'];
                 $mpUser->province = $data['province'];
                 $mpUser->sessionKey = $data['session_key'];
-                $mpUser->appId = $data['app_id'];
+                $mpUser->platformAppId = $data['app_id'];
+                $mpUser->appId = $currentApp->id;
                 $mpUser->save();
             }else{
                 $mpUser = new MpUser();
+                $mpUser->platformAppId = $data['app_id'];
                 $mpUser->platformOpenId = $data['openId'];
                 $mpUser->nickname = $data['nickName'];
                 $mpUser->sex = $data['gender'] === 1 ? MALE : ($data['gender'] === 2 ? FEMALE : UNKNOWN);
@@ -135,7 +137,7 @@ class AuthController extends Controller
                 $mpUser->city = $data['city'];
                 $mpUser->province = $data['province'];
                 $mpUser->sessionKey = $data['session_key'];
-                $mpUser->appId = $data['app_id'];
+                $mpUser->appId = $currentApp->id;
                 $mpUser = $this->mpUserRepository->create($mpUser->toArray());
             }
             $param = [
