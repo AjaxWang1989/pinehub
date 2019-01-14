@@ -119,7 +119,7 @@ class ShoppingCartController extends Controller
         if(!$activityMerchandise || !$activityMerchandise->merchandise) {
             throw new ModelNotFoundException('产品不存在');
         }
-
+        Log::info('activity merchandise', [$activityMerchandise['stock_num'], $request->input('quality')]);
         if ($activityMerchandise['stock_num'] < $request->input('quality')){
             throw new StoreResourceFailedException('商品库存不足');
         }
