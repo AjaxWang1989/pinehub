@@ -111,9 +111,32 @@ class AuthController extends Controller
                 ->first();
 
             if ($mpUser){
-                $mpUser->update($data);
+                $mpUser->platformOpenId = $data['openId'];
+                $mpUser->nickname = $data['nickName'];
+                $mpUser->sex = $data['gender'] === 1 ? MALE : ($data['gender'] === 2 ? FEMALE : UNKNOWN);
+                $mpUser->type = WECHAT_MINI_PROGRAM;
+                $mpUser->unionId = $data['unionId'];
+                $mpUser->avatar = $data['avatarUrl'];
+                $mpUser->country = $data['country'];
+                $mpUser->city = $data['city'];
+                $mpUser->province = $data['province'];
+                $mpUser->sessionKey = $data['session_key'];
+                $mpUser->appId = $data['app_id'];
+                $mpUser->save();
             }else{
-                $mpUser = $this->mpUserRepository->create($data);
+                $mpUser = new MpUser();
+                $mpUser->platformOpenId = $data['openId'];
+                $mpUser->nickname = $data['nickName'];
+                $mpUser->sex = $data['gender'] === 1 ? MALE : ($data['gender'] === 2 ? FEMALE : UNKNOWN);
+                $mpUser->type = WECHAT_MINI_PROGRAM;
+                $mpUser->unionId = $data['unionId'];
+                $mpUser->avatar = $data['avatarUrl'];
+                $mpUser->country = $data['country'];
+                $mpUser->city = $data['city'];
+                $mpUser->province = $data['province'];
+                $mpUser->sessionKey = $data['session_key'];
+                $mpUser->appId = $data['app_id'];
+                $mpUser = $this->mpUserRepository->create($mpUser->toArray());
             }
             $param = [
                 'platform_open_id' => $mpUser['platform_open_id'],
@@ -213,7 +236,7 @@ class AuthController extends Controller
             ->auth
             ->session($code);
 
-        cache([$accessToken.'_session'=> $session], 60);
+        cache([$accessToken.'_session'=> $session], 5);
         Log::info("==== wx session access token =======\n", cache("{$accessToken}_session"));
         $mpUser = $this->mpUserRepository
             ->findByField('platform_open_id', $session['openid'])
@@ -221,10 +244,11 @@ class AuthController extends Controller
 
         if(!$mpUser)
             $mpUser = new MpUser();
-
+        $now = Carbon::now();
         $mpSession = [
             'open_id' => $session['openid'],
-            'session_key' => $session['session_key']
+            'session_key' => $session['session_key'],
+            'over_date' => $now->copy()->addMinute(5)->format('Y-m-d H:i:s')
         ];
 
         if($session) {
@@ -254,7 +278,7 @@ class AuthController extends Controller
             ];
 
             $token = Auth::attempt($param);
-            Cache::put($token.'_session', $session, 60);
+            Cache::put($token.'_session', $session, 5);
 
             $mpUser['token'] = $token;
 
