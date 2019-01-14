@@ -342,18 +342,11 @@ class OrderBuilder implements InterfaceServiceHandler
 
     protected function checkOrder(Collection $orderItems, $order) {
         $errors = null;
-        \Log::debug('order items total amount sum :'.$orderItems->sum('total_amount').' order total amount '.$order['total_amount']);
         if ($orderItems->sum('total_amount') != $order->get('total_amount', 0)) {
             $errors = new MessageBag([
                 'total_amount' => '订单总金额有误无法提交'
             ]);
-        } elseif ( $orderItems->sum('payment_amount') - $order->get('discount_amount', 0)  != $order->get('payment_amount', 0) ) {
-            Log::info("==================================\n", [
-                'order_items_payment' => $orderItems->sum('payment_amount'),
-                'discount_amount' => $order->get('discount_amount', 0),
-                'payment_amount' => $order->get('payment_amount', 0),
-                'eq' => $orderItems->sum('payment_amount') - $order->get('discount_amount', 0)
-            ]);
+        } elseif (($orderItems->sum('payment_amount') * 100 - $order->get('discount_amount', 0) * 100 )  != $order->get('payment_amount', 0) * 100) {
             $errors = new MessageBag([
                 'payment_amount' => '订单实际支付金额有误无法提交'
             ]);
