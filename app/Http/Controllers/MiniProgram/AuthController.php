@@ -210,6 +210,7 @@ class AuthController extends Controller
                 ->setAccessToken($accessToken);
 
             $item['access_token'] = $accessToken;
+            $item['ttl'] = Carbon::now()->addMinute(app(AppManager::class)->ttl)->format('Y-m-d H:i:s');
 
             return $this->response()
                 ->item($item, new AppAccessTransformer());
