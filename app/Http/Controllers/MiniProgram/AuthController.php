@@ -102,7 +102,7 @@ class AuthController extends Controller
         //根据小程序id和登陆接口返回的解析后的用户信息
         list($errCode, $data) = app()->makeWith('bizDataCrypt', [$currentApp, $session['session_key']])
             ->decryptData(urldecode($request->input('encrypted_data')), urldecode($request->input('iv')));
-
+        Log::info("========= wx user data =========\n", [$data]);
         if ($errCode == 0) {
 
             /** @var MpUser $mpUser */
