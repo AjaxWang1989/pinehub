@@ -155,6 +155,7 @@ class ShoppingCartController extends Controller
             throw new ModelNotFoundException('产品不存在');
         }
 
+        Log::info('shop merchandise', [$shopMerchandise['stock_num'], $request->input('quality')]);
         if ($shopMerchandise['stock_num'] <= $request->input('quality')){
             throw new StoreResourceFailedException('商品库存不足');
         }
@@ -187,6 +188,7 @@ class ShoppingCartController extends Controller
             throw new ModelNotFoundException('产品不存在');
         }
 
+        Log::info('shop merchandise', [$shopMerchandise['stock_num'], $request->input('quality')]);
         if ($shopMerchandise['stock_num'] <= $request->input('quality')){
             throw new StoreResourceFailedException('商品库存不足');
         }
@@ -218,6 +220,8 @@ class ShoppingCartController extends Controller
         if (!$merchandise) {
             throw new ModelNotFoundException('产品不存在');
         }
+
+        Log::info('shop merchandise', [$merchandise['stock_num'], $request->input('quality')]);
         if ($merchandise['stock_num'] < $request->input('quality')){
             throw new StoreResourceFailedException('商品库存不足');
         }
