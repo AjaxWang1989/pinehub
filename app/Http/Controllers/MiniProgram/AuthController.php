@@ -237,7 +237,7 @@ class AuthController extends Controller
             ->auth
             ->session($code);
 
-        cache([$accessToken.'_session'=> $session], 5);
+        cache([$accessToken.'_session'=> $session], config('jwt.ttl'));
         Log::info("==== wx session access token =======\n", cache("{$accessToken}_session"));
         $mpUser = $this->mpUserRepository
             ->findByField('platform_open_id', $session['openid'])
@@ -249,7 +249,7 @@ class AuthController extends Controller
         $mpSession = [
             'open_id' => $session['openid'],
             'session_key' => $session['session_key'],
-            'over_date' => $now->copy()->addMinute(5)->format('Y-m-d H:i:s')
+            'over_date' => $now->copy()->addMinute( config('jwt.ttl'))->format('Y-m-d H:i:s')
         ];
 
         if($session) {
@@ -279,7 +279,7 @@ class AuthController extends Controller
             ];
 
             $token = Auth::attempt($param);
-            Cache::put($token.'_session', $session, 5);
+            Cache::put($token.'_session', $session,  config('jwt.ttl'));
 
             $mpUser['token'] = $token;
 

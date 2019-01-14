@@ -64,6 +64,7 @@ class AppManager
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->ttl =  config('jwt.ttl');
         $this->uid = md5(microtime(true));
         $this->reset();
     }
