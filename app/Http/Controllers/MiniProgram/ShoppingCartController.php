@@ -297,6 +297,7 @@ class ShoppingCartController extends Controller
         }
         $merchandise = $shopMerchandise->merchandise;
 
+        Log::info('shop merchandise', [$shopMerchandise['stock_num'], $request->input('quality')]);
         if ($shopMerchandise['stock_num'] <= $request->input('quality')){
             throw new StoreResourceFailedException('商品库存不足');
         }
