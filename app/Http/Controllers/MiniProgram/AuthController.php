@@ -134,16 +134,6 @@ class AuthController extends Controller
     }
 
     public function ticketsCount(MpUser $user) {
-//       return (new Card)->whereNotIn('id', function (Builder $query) use($user){
-//            $query->from('cards')->select(DB::raw('cards.id  as id'))
-//                ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
-//                ->where('customer_ticket_cards.status', CustomerTicketCard::STATUS_ON)
-//                ->where('customer_ticket_cards.customer_id', $user->id);
-//       })->whereAppId(app(AppManager::class)
-//           ->getAppId())
-//           ->where('card_id','!=', '')
-//           ->count();
-
         return (new CustomerTicketCard)->where(['customer_id' => $user->id, 'status' => CustomerTicketCard::STATUS_ON])
             ->whereHas('card', function ($query){
                 $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
@@ -224,7 +214,7 @@ class AuthController extends Controller
             ->session($code);
 
         cache([$accessToken.'_session'=> $session], 60);
-
+        Log::info("==== wx session access token =======\n", cache("{$accessToken}_session"));
         $mpUser = $this->mpUserRepository
             ->findByField('platform_open_id', $session['openid'])
             ->first();

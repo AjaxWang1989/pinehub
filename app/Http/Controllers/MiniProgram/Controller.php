@@ -65,7 +65,7 @@ class Controller extends BaseController
             }
 
         }
-        Log::info('session =====', [$session]);
+        Log::info("======= {$accessToken}_session =======\n", [$session]);
         return $session;
     }
 
