@@ -7,6 +7,7 @@ use App\Console\Commands\CustomerTicketRefreshStatusCommand;
 use App\Console\Commands\HashEncrypt;
 use App\Console\Commands\JWTGenerateCommand;
 use App\Console\Commands\ModelsCommand;
+use App\Console\Commands\OrderUpdateStatusCommand;
 use App\Console\Commands\TicketRefreshStatusCommand;
 use App\Console\Commands\WechatAccessTokenRefreshCommand;
 use Illuminate\Auth\Console\AuthMakeCommand;
@@ -74,7 +75,8 @@ class Kernel extends ConsoleKernel
         TestMakeCommand::class,
         WechatAccessTokenRefreshCommand::class,
         TicketRefreshStatusCommand::class,
-        CustomerTicketRefreshStatusCommand::class
+        CustomerTicketRefreshStatusCommand::class,
+        OrderUpdateStatusCommand::class
     ];
 
     /**

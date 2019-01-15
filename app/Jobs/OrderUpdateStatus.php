@@ -9,15 +9,20 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @property  $id
+ */
 class OrderUpdateStatus extends Job implements ShouldQueue
 {
     use SerializesModels;
     /**
-     * @var Order
+     * @var OrderRepository
      * */
-    protected $order = null;
+    protected $repository = null;
 
     protected $status = null;
+
+    protected $id = null;
     /**
      * Create a new job instance.
      * @param OrderRepository $repository
@@ -29,7 +34,8 @@ class OrderUpdateStatus extends Job implements ShouldQueue
     {
         //
         try {
-            $this->order = $repository->find($id);
+            $this->repository = $repository;
+            $this->id = $id;
         }catch (\Exception $exception) {
             if ($exception instanceof ModelNotFoundException) {
                 Log::error('order model not found!');
@@ -46,14 +52,28 @@ class OrderUpdateStatus extends Job implements ShouldQueue
     public function handle()
     {
         //
-        if($this->order && ($this->order->status === Order::WAIT
-            || $this->order->status === Order::PAY_FAILED
-            || $this->order->status === Order::MAKE_SURE
-            || $this->order->status === Order::SEND
-            || $this->order->status === Order::PAID)) {
-            Log::info('update order status');
-            $this->order->status = $this->status;
-            $this->order->save();
+        /** @var Order $order */
+        $order = $this->repository->find($this->id);
+        if($order) {
+            switch ($this->status) {
+                case Order::CANCEL: {
+                    if ($order->status === Order::WAIT
+                        || $order->status === Order::PAY_FAILED
+                        || $order->status === Order::MAKE_SURE) {
+                        $order->status = Order::CANCEL;
+                        $order->save();
+                    }
+                    break;
+                }
+                case Order::COMPLETED: {
+                    if ($order->status === Order::SEND
+                        || $order->status === Order::PAID) {
+                        $order->status = Order::COMPLETED;
+                        $order->save();
+                    }
+                    break;
+                }
+            }
         }
     }
 }
