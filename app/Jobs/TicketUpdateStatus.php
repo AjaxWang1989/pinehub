@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Entities\Ticket;
 use App\Repositories\TicketRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class TicketUpdateStatus extends Job
@@ -45,15 +46,19 @@ class TicketUpdateStatus extends Job
     {
         //
         if ($this->ticket) {
+            $nowDate = Carbon::now();
             switch ($this->status) {
                 case Ticket::STATUS_ON : {
-                    if ($this->ticket->status === Ticket::STATUS_OFF) {
+                    if ($this->ticket->status === Ticket::STATUS_OFF
+                        && $this->ticket->beginAt->diffInRealSeconds($nowDate, false) < 1
+                        && $this->ticket->endAt->diffInRealSeconds($nowDate, false) > 1) {
                         $this->ticket->status = Ticket::STATUS_ON;
                     }
                     break;
                 }
                 case Ticket::STATUS_EXPIRE: {
-                    if ($this->ticket->status === Ticket::STATUS_ON) {
+                    if ($this->ticket->status === Ticket::STATUS_ON
+                        && $this->ticket->endAt->diffInRealSeconds($nowDate, false) < 1) {
                         $this->ticket->status = Ticket::STATUS_OFF;
                     }
                     break;
