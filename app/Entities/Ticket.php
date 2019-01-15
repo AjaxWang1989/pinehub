@@ -102,7 +102,6 @@ class Ticket extends Card
             }
             $endAfterSeconds = $ticket->endAt->diffInRealSeconds($ticket->beginAt);
             if($ticket->endAt && $endAfterSeconds  >= 1
-                && $ticket->beginAt !== $ticket->oldest('begin_at')
                 && $ticket->status === Ticket::STATUS_ON) {
                 $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_EXPIRE))
                     ->delay($ticket->endAt);
