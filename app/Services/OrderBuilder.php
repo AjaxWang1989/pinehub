@@ -350,7 +350,8 @@ class OrderBuilder implements InterfaceServiceHandler
             Log::info('payment amount', [
                 'order_items' => $orderItems->sum('payment_amount'),
                 'discount' => $order->get('discount_amount', 0),
-                'order_payment' => $order->get('payment_amount', 0)
+                'order_payment' => $order->get('payment_amount', 0),
+                'di' => ($orderItems->sum('payment_amount') * 100 - $order->get('discount_amount', 0) * 100 )
             ]);
             $errors = new MessageBag([
                 'payment_amount' => '订单实际支付金额有误无法提交'
