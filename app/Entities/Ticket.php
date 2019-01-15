@@ -84,16 +84,22 @@ class Ticket extends Card
         });
 
         self::saved(function (Ticket $ticket) {
-            Log::info("----------- ticket saved -------------\n");
             $repository = app(TicketRepository::class);
-            if($ticket->beginAt && $ticket->beginAt->diffInRealSeconds(Carbon::now()) > 1
+            $nowDate = Carbon::now();
+            Log::info("----------- ticket saved -------------\n", [
+                'begin_at' => $ticket->beginAt,
+                'diff_second' => $ticket->beginAt->diffInRealSeconds($nowDate),
+                'old_begin_at' => $ticket->oldest('begin_at'),
+                'status' => $ticket->status
+            ]);
+            if($ticket->beginAt && $ticket->beginAt->diffInRealSeconds($nowDate) > 1
                 && $ticket->beginAt !== $ticket->oldest('begin_at')
                 && $ticket->status === Ticket::STATUS_OFF) {
                 $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_ON))
                     ->delay($ticket->beginAt);
                 dispatch($beginJob);
                 Log::info("----------- ticket begin job -------------\n");
-            }elseif(!$ticket->beginAt || $ticket->beginAt && $ticket->beginAt->diffInRealSeconds(Carbon::now()) < 1){
+            }elseif(!$ticket->beginAt || $ticket->beginAt && $ticket->beginAt->diffInRealSeconds($nowDate) < 1){
                 $ticket->status = Ticket::STATUS_ON;
                 $ticket->save();
                 Log::info("----------- ticket update status begin -------------\n");
