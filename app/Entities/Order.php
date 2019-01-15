@@ -226,7 +226,7 @@ class Order extends Model implements Transformable
 
                 if (Order::WAIT === $order->status) {
                     $date = Carbon::now()->addMinute(config('order.auto_cancel_time'));
-                    $job = (new OrderUpdateStatus(app(OrderRepository::class), $order->id, Order::CANCEL))
+                    $job = (new OrderUpdateStatus($order->id, Order::CANCEL))
                         ->delay($date);
                     dispatch($job);
                 }
@@ -234,7 +234,7 @@ class Order extends Model implements Transformable
                 if ((Order::PAID === $order->status && $order->type === Order::SITE_USER_ORDER)
                     || (Order::SEND === $order->status && $order->type === Order::SHOPPING_MALL_ORDER)) {
                     $date = Carbon::now()->addDay(config('order.trade_finished_time'));
-                    $job = (new OrderUpdateStatus(app(OrderRepository::class), $order->id, Order::COMPLETED))
+                    $job = (new OrderUpdateStatus($order->id, Order::COMPLETED))
                         ->delay($date);
                     dispatch($job);
                 }

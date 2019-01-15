@@ -15,26 +15,20 @@ use Illuminate\Support\Facades\Log;
 class OrderUpdateStatus extends Job implements ShouldQueue
 {
     use SerializesModels;
-    /**
-     * @var OrderRepository
-     * */
-    protected $repository = null;
 
     protected $status = null;
 
     protected $id = null;
     /**
      * Create a new job instance.
-     * @param OrderRepository $repository
      * @param int $id
      * @param int $status
      * @return void
      */
-    public function __construct(OrderRepository $repository, int $id, int $status)
+    public function __construct(int $id, int $status)
     {
         //
         try {
-            $this->repository = $repository;
             $this->id = $id;
         }catch (\Exception $exception) {
             if ($exception instanceof ModelNotFoundException) {
@@ -53,7 +47,7 @@ class OrderUpdateStatus extends Job implements ShouldQueue
     {
         //
         /** @var Order $order */
-        $order = $this->repository->find($this->id);
+        $order = app(OrderRepository::class)->find($this->id);
         if($order) {
             switch ($this->status) {
                 case Order::CANCEL: {
