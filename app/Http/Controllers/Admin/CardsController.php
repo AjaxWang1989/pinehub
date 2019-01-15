@@ -90,6 +90,7 @@ class CardsController extends Controller
         $data['platform'] = $request->input('platform');
         $data['begin_at'] = $request->input('begin_at', null);
         $data['end_at'] = $request->input('end_at', null);
+        $data['status'] = Card::STATUS_OFF;
         return $this->repository->create($data);
     }
 
