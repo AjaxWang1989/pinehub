@@ -32,7 +32,7 @@ class CardCheckEventListener
         if($event->getCardId() && $event->getEvent()) {
             $card = Card::whereCardId($event->getCardId())->first();
             $status = strtoupper($event->getEvent());
-            $card->status = Card::STATUS[$status];
+            $card->syncStatus = Card::SYNC_STATUS[$status];
             $card->save();
         }
     }
