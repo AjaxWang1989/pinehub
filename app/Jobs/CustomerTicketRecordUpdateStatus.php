@@ -50,7 +50,8 @@ class CustomerTicketRecordUpdateStatus extends Job
             switch ($this->status) {
                 case CustomerTicketCard::STATUS_ON : {
                     if($this->customerTicketCard->status === CustomerTicketCard::STATUS_OFF
-                        && $this->customerTicketCard->beginAt->diffInRealSeconds($nowDate, false) < 1) {
+                        && $this->customerTicketCard->beginAt
+                        && $nowDate->diffInRealSeconds($this->customerTicketCard->beginAt, false) < 1) {
                         $this->customerTicketCard->status = CustomerTicketCard::STATUS_ON;
                         $this->customerTicketCard->active = CustomerTicketCard::ACTIVE_ON;
                         $this->customerTicketCard->save();
@@ -60,7 +61,7 @@ class CustomerTicketRecordUpdateStatus extends Job
                 case CustomerTicketCard::STATUS_EXPIRE : {
                     if ($this->customerTicketCard->status === CustomerTicketCard::STATUS_ON
                         && $this->customerTicketCard->endAt
-                        && $this->customerTicketCard->endAt->diffInRealSeconds($nowDate, false) < 1) {
+                        && $nowDate->diffInRealSeconds($this->customerTicketCard->endAt, false) < 1) {
                         $this->customerTicketCard->status = CustomerTicketCard::STATUS_EXPIRE;
                         $this->customerTicketCard->save();
                     }

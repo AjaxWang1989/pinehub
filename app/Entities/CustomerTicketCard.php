@@ -104,12 +104,13 @@ class CustomerTicketCard extends Model implements Transformable
             }
         });
         self::saved(function (CustomerTicketCard $customerTicketCard) {
+            $nowDate = Carbon::now();
             if(!$customerTicketCard->beginAt
-                || $customerTicketCard->beginAt->diffInRealSeconds(Carbon::now(), false) < 1){
+                || $nowDate->diffInRealSeconds($customerTicketCard->beginAt, false) < 1){
                 $customerTicketCard->status = CustomerTicketCard::STATUS_ON;
                 $customerTicketCard->save();
             }
-            if ($customerTicketCard->endAt && $customerTicketCard->endAt->diffInRealSeconds(Carbon::now(), false) < 1) {
+            if ($customerTicketCard->endAt && $nowDate->diffInRealSeconds($customerTicketCard->endAt, false) < 1) {
                 $customerTicketCard->status = CustomerTicketCard::STATUS_EXPIRE;
                 $customerTicketCard->save();
             }
