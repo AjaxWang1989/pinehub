@@ -94,7 +94,7 @@ class Ticket extends Card
                 $ticket->save();
             }
             $endAfterSeconds = $ticket->endAt ? $ticket->beginAt->diffInRealSeconds($ticket->endAt, false) : 0;
-            if ($ticket->endAt && $endAfterSeconds < 1) {
+            if ($ticket->endAt && $endAfterSeconds < 1 && $ticket->status !==  Ticket::STATUS_EXPIRE) {
                 $ticket->status = Ticket::STATUS_EXPIRE;
                 $ticket->save();
             }
