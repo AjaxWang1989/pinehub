@@ -86,17 +86,14 @@ class Ticket extends Card
         self::saved(function (Ticket $ticket) {
             $nowDate = Carbon::now();
             $beginAfterSeconds = $ticket->beginAt ? $nowDate->diffInRealSeconds($ticket->beginAt, false) : 0;
-            Log::info("------ ticket ------\n", [$beginAfterSeconds, $ticket->status]);
             if($beginAfterSeconds < 1 && $ticket->status === Ticket::STATUS_OFF){
                 $ticket->status = Ticket::STATUS_ON;
                 $ticket->save();
-                Log::info("----------- ticket update status begin -------------\n");
             }
             $endAfterSeconds = $ticket->endAt ? $ticket->beginAt->diffInRealSeconds($ticket->endAt, false) : 0;
             if ($ticket->endAt && $endAfterSeconds < 1) {
                 $ticket->status = Ticket::STATUS_EXPIRE;
                 $ticket->save();
-                Log::info("----------- ticket end status -------------\n");
             }
         });
     }

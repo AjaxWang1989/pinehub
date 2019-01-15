@@ -36,7 +36,6 @@ class TicketController extends Controller
                     ->where('customer_ticket_cards.customer_id', $this->mpUser()->id);
             })->whereAppId(app(AppManager::class)->getAppId())
                 ->whereStatus(Card::STATUS_ON)
-                ->where('card_id','!=', '')
                 ->where(DB::raw('(issue_count - user_get_count)'), '>', 0)
                 ->orderBy('created_at', 'desc')
                 ->orderBy('updated_at', 'desc');
