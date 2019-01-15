@@ -89,6 +89,9 @@ class Ticket extends Card
                 $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_ON))
                     ->delay($ticket->beginAt);
                 dispatch($beginJob);
+            }elseif(!$ticket->beginAt || $ticket->beginAt && $ticket->beginAt->diffInRealSeconds(Carbon::now()) < 1){
+                $ticket->status = Ticket::STATUS_ON;
+                $ticket->save();
             }
 
             if($ticket->endAt && $ticket->endAt->diffInRealSeconds($ticket->beginAt)  > 1
@@ -97,6 +100,9 @@ class Ticket extends Card
                 $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_EXPIRE))
                     ->delay($ticket->endAt);
                 dispatch($beginJob);
+            }elseif ($ticket->endAt && $ticket->endAt->diffInRealSeconds($ticket->beginAt)  < 1) {
+                $ticket->status = Ticket::STATUS_EXPIRE;
+                $ticket->save();
             }
         });
     }
