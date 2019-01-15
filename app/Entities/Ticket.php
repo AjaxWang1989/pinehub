@@ -88,6 +88,7 @@ class Ticket extends Card
             $nowDate = Carbon::now();
             $beginAfterSeconds = $ticket->beginAt->diffInRealSeconds($nowDate, false);
             if($ticket->beginAt && $beginAfterSeconds >= 1
+                && $ticket->beginAt !== $ticket->getOriginal('begin_at')
                 && $ticket->status === Ticket::STATUS_OFF) {
                 $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_ON))
                     ->delay($ticket->beginAt);
@@ -102,6 +103,7 @@ class Ticket extends Card
             }
             $endAfterSeconds = $ticket->endAt->diffInRealSeconds($ticket->beginAt);
             if($ticket->endAt && $endAfterSeconds  >= 1
+                && $ticket->endAt !== $ticket->getOriginal('end_at')
                 && $ticket->status === Ticket::STATUS_ON) {
                 $beginJob = (new TicketUpdateStatus($repository, $ticket->id, Ticket::STATUS_EXPIRE))
                     ->delay($ticket->endAt);

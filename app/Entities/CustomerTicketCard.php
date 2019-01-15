@@ -106,6 +106,7 @@ class CustomerTicketCard extends Model implements Transformable
         self::saved(function (CustomerTicketCard $customerTicketCard) {
             $repository = app(CustomerTicketCardRepository::class);
             if($customerTicketCard->beginAt && $customerTicketCard->beginAt->diffInRealSeconds(Carbon::now(), false) >= 1
+                && $customerTicketCard->beginAt !== $customerTicketCard->getOriginal('begin_at')
                 && $customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
                 $beginJob = (new CustomerTicketRecordUpdateStatus($repository, $customerTicketCard->id,
                     CustomerTicketCard::STATUS_ON))
@@ -117,6 +118,7 @@ class CustomerTicketCard extends Model implements Transformable
                 $customerTicketCard->save();
             }
             if($customerTicketCard->endAt && $customerTicketCard->endAt->diffInRealSeconds($customerTicketCard->beginAt, false) >= 1
+                && $customerTicketCard->endAt !== $customerTicketCard->getOriginal('endAt')
                 && $customerTicketCard->status === CustomerTicketCard::STATUS_ON) {
                 $overDateJob = (new CustomerTicketRecordUpdateStatus($repository, $customerTicketCard->id,
                     CustomerTicketCard::STATUS_EXPIRE))
