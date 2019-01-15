@@ -69,6 +69,10 @@ class Card extends Model implements Transformable
     const STATUS_ON = 1;
     const STATUS_EXPIRE = 2;
 
+    const OWNER_TICKET  = 'OWNER_TICKET';
+    const ALI_TICKET = 'ALI_TICKET';
+    const WX_TICKET = 'WX_TICKET';
+
     const CARD_CHECKING = CARD_CHECKING;
     const CARD_PASS_CHECK = CARD_PASS_CHECK;
     const CARD_NOT_PASS_CHECK = CARD_NOT_PASS_CHECK;
