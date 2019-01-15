@@ -34,8 +34,8 @@ class MerchandiseCreateRequest extends FormRequest
             'preview' => ['required', 'max:256'],
             'origin_price' => ['required', 'numeric'],
             'sell_price' => ['required', 'numeric'],
-            'cost_price' => ['numeric'],
-            'factory_price' => ['numeric'],
+            'cost_price' => ['nullable', 'numeric'],
+            'factory_price' => ['nullable', 'numeric'],
             'stock_num' => ['required', 'integer'],
             'status' => ['required', Rule::in([Merchandise::UP, Merchandise::DOWN])]
         ];
