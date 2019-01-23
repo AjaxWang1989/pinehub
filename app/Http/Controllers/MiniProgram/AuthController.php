@@ -343,19 +343,25 @@ class AuthController extends Controller
         Log::info('ali customer info', $token);
 
         /** @var Customer $customer */
-        $customer = $customerRepository->updateOrCreate([
+        $customer = $customerRepository->findWhere([
             'app_id' => $appId,
             'platform_app_id' => $aliAppId,
             'type' => Customer::ALIPAY_MINI_PROGRAM,
             'platform_open_id' => $token['user_id']
-        ], [
-            'app_id' => $appId,
-            'platform_app_id' => $aliAppId,
-            'type' => Customer::ALIPAY_MINI_PROGRAM,
-            'platform_open_id' => $token['user_id'],
-            'session_key' => $token['access_token']
-        ]);
-
+        ])->first();
+        if($customer) {
+            $customer = $customerRepository->create([
+                'app_id' => $appId,
+                'platform_app_id' => $aliAppId,
+                'type' => Customer::ALIPAY_MINI_PROGRAM,
+                'platform_open_id' => $token['user_id'],
+                'session_key' => $token['access_token']
+            ]);
+        }else {
+            $customer->update([
+                'session_key' => $token['access_token']
+            ]);
+        }
         $param = [
             'platform_open_id' => $customer->platformOpenId,
             'password' => $customer->sessionKey
