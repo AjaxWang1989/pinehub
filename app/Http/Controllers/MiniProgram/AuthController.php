@@ -349,7 +349,7 @@ class AuthController extends Controller
             'type' => Customer::ALIPAY_MINI_PROGRAM,
             'platform_open_id' => $token['user_id']
         ])->first();
-        if($customer) {
+        if(!$customer) {
             $customer = $customerRepository->create([
                 'app_id' => $appId,
                 'platform_app_id' => $aliAppId,
