@@ -346,13 +346,13 @@ class AuthController extends Controller
         $customer = $customerRepository->updateOrCreate([
             'app_id' => $appId,
             'platform_app_id' => $aliAppId,
-            'type' => Customer::ALIPAY_OPEN_PLATFORM,
+            'type' => Customer::ALIPAY_MINI_PROGRAM,
             'platform_open_id' => $token['user_id'],
             'session_key' => $token['access_token']
         ], [
             'app_id' => $appId,
             'platform_app_id' => $aliAppId,
-            'type' => Customer::ALIPAY_OPEN_PLATFORM,
+            'type' => Customer::ALIPAY_MINI_PROGRAM,
             'platform_open_id' => $token['user_id']
         ]);
 
