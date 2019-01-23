@@ -343,7 +343,7 @@ class AuthController extends Controller
         Log::info('ali customer info', $token);
 
         /** @var Customer $customer */
-        $customer = $customerRepository->findWhere([
+        $customer = (new MpUser())->where([
             'app_id' => $appId,
             'platform_app_id' => $aliAppId,
             'type' => Customer::ALIPAY_MINI_PROGRAM,
