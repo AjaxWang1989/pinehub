@@ -11,6 +11,7 @@ namespace App\Services;
 
 
 use App\Entities\Order;
+use App\Events\OrderPaidNoticeEvent;
 use App\Repositories\OrderRepositoryEloquent;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -27,6 +28,7 @@ class PaymentNotify implements PayNotifyInterface
 
     /**
      * @param array $data
+     * @return boolean
      * @throws \Exception
      */
     public function notifyProcess( array $data)
@@ -45,6 +47,7 @@ class PaymentNotify implements PayNotifyInterface
                 $order->paidAt = Carbon::now();
                 if ($order->type === Order::OFF_LINE_PAYMENT_ORDER) {
                     $order->status = Order::COMPLETED;
+                    event(new OrderPaidNoticeEvent($order->shopId, $order));
                 }
             } else {
                 $order->status = Order::PAY_FAILED;

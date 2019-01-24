@@ -66,6 +66,10 @@ class AppServiceProvider extends ServiceProvider
             return preg_match(MOBILE_PATTERN, $value);
         });
 
+        Validator::extend('verify_code', function ($attribute, $value, $parameters) {
+            return preg_match('/^\d{6}$/', $value);
+        });
+
         Validator::extend('roles', function ($attribute, $value, $parameters) {
             $user = User::with('roles')->where($attribute, $value)->first();
             $roles = [];
@@ -122,6 +126,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(AliOssServiceProvider::class);
         $this->app->register(RepositoryServiceProvider::class);
         $this->app->register(QrCodeServiceProvider::class);
+        $this->app->register(\Curder\LaravelAliyunSms\ServiceProvider::class);
         $this->app->singleton('uid.generator', function () {
             return new UIDGeneratorService();
         });

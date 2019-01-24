@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\ShopManager;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -12,4 +13,9 @@ use Prettus\Repository\Contracts\RepositoryInterface;
 interface ShopManagerRepository extends RepositoryInterface
 {
     //
+    /**
+     * @param string $mobile
+     * @return ShopManager
+     * */
+    public function  whereMobile(string  $mobile);
 }

@@ -59,4 +59,10 @@ interface ShopRepository extends RepositoryInterface
      * @return $this
      * */
     public function withMerchandiseCount();
+
+    /**
+     *@param int $id
+     *@return Shop
+     * */
+    public function todayOrderInfo(int $id);
 }

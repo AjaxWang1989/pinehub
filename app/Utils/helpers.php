@@ -97,6 +97,18 @@ if(!function_exists('mobileCompany')){
     }
 }
 
+if(!function_exists('isMobile')){
+    function isMobile(string $mobile)
+    {
+        if(preg_grep(MOBILE_PATTERN, [$mobile])){
+            return true;
+        }else{
+            return false;
+        }
+    }
+}
+
+
 if(!function_exists('password')){
     function password(string  $before, bool $handle = false){
         return \Illuminate\Support\Facades\Hash::make($handle ? $before : md5($before.config('app.public_key')), [

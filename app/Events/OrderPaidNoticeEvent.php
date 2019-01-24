@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use App\Entities\Order;
+use App\Repositories\ShopRepository;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -13,22 +14,23 @@ class OrderPaidNoticeEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected $userId = null;
     protected $shopId = null;
     protected $shopOrderInfo = null;
     protected $voiceText = null;
     /**
      * Create a new event instance.
-     * @param int $userId
      * @param int $shopId
      * @param Order $order
      * @return void
      */
-    public function __construct(int $userId, int $shopId, Order $order)
+    public function __construct(int $shopId, Order $order)
     {
         //
-        $this->userId = $userId;
         $this->shopId = $shopId;
+        $this->voiceText = $order->payType === Order::ALI_PAY ? "支付宝收款{$order->paymentAmount}元"
+            : "微信收款{$order->paymentAmount}元";
+
+        $this->shopOrderInfo = app(ShopRepository::class)->todayOrderInfo($shopId);
     }
 
     /**
@@ -38,6 +40,6 @@ class OrderPaidNoticeEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel("shop-{$this->shopId}-user-{$this->userId}");
+        return new PrivateChannel("shop-{$this->shopId}");
     }
 }

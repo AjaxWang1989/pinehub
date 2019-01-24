@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -42,6 +43,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\MemberCard $memberCard
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @property-read   Shop $shop
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShopManager whereAppId($value)
@@ -80,5 +82,10 @@ class ShopManager extends User
     public function shops():HasMany
     {
         return $this->hasMany(Shop::class, 'user_id', 'id');
+    }
+
+    public function shop(): HasOne
+    {
+        return $this->hasOne(Shop::class, 'user_id', 'id');
     }
 }

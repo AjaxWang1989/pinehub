@@ -37,7 +37,8 @@ return [
     'guards' => [
         'api' => ['driver' => 'jwt-auth', 'provider' => 'users'],
         'mp'  => ['driver' => 'jwt-auth', 'provider' => 'mp'],
-        'backend' => ['driver' => 'jwt-auth', 'provider' => 'administrator']
+        'backend' => ['driver' => 'jwt-auth', 'provider' => 'administrator'],
+        'merchant' => ['driver' => 'jwt-auth', 'provider' => 'merchant']
     ],
 
     /*
@@ -70,6 +71,10 @@ return [
         'administrator' => [
             'driver' => 'eloquent',
             'model' => \App\Entities\Administrator::class
+        ],
+        'merchant' => [
+            'driver' => 'eloquent',
+            'model' => \App\Entities\ShopManager::class
         ]
     ],
 

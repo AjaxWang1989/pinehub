@@ -11,6 +11,7 @@ return [
     'api' => [
         'h5' => env('H5_API_GATEWAY', 'h5'),
         'mp' => env('MP_API_GATEWAY', 'mp'),
+        'merchant' => env('MERCHANT_API_GATEWAY', 'merchant'),
         'auth' => env('AUTH_API_GATEWAY', 'auth'),
         'backend' => env('BACKEND_API_GATEWAY', 'backend')
     ],

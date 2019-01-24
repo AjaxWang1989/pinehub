@@ -60,6 +60,13 @@ return [
         'router' => \App\Routes\WebRoutes::class,
         'version' => 'v1',
         'namespace' => ''
-    ]
+    ],
+    [
+        'gateway' => 'api.merchant',
+        'router' => \App\Routes\MerchantApiRoutes::class,
+        'version' => 'v1',
+        'namespace' => 'Merchant',
+        'auth' => 'merchant'
+    ],
 
 ];
