@@ -57,8 +57,8 @@ class AuthController extends Controller
         if(!isMobile($mobile)) {
             throw new HttpValidationException(['手机格式错误'], HTTP_REQUEST_VALIDATE_ERROR);
         }
-        gmp_random_seed(microtime(true));
-        $code = random_int(100000, 1000000);
+        \gmp_random_seed(microtime(true));
+        $code = \random_int(100000, 1000000);
         cache()->put($this->getSmsCodeKey($mobile), $code, 5);
         $tmpId = 'SMS_157075027';
         $params = [
