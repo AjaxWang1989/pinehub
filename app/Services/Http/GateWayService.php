@@ -9,6 +9,8 @@
 namespace App\Services\Http;
 
 
+use Illuminate\Support\Facades\Log;
+
 class GateWayService
 {
     protected $domain = null;
