@@ -15,6 +15,7 @@ class GateWayService
     protected $gateways = null;
     public function __construct(string  $domain, array  $gateways)
     {
+        Log::info('api gateways ', $gateways);
         $this->domain = $domain;
         $this->gateways = collect($gateways)->map(function ($value) use ($domain) {
             return $value;

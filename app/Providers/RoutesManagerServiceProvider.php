@@ -9,6 +9,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Session\SessionManager;
 use Illuminate\Session\SessionServiceProvider;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\ServiceProvider;
 use Dingo\Api\Provider\LumenServiceProvider;
 use Maatwebsite\Excel\ExcelServiceProvider;
@@ -64,6 +65,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $this->gateway = $gateway;
 
 
+        Log::info('api gateway ', [$this->gateway]);
         if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway) && !$this->app->runningInConsole()) {
             throw new GatewayNotAllowed('网关错误');
         }
