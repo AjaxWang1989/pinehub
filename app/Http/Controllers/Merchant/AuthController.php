@@ -67,7 +67,7 @@ class AuthController extends Controller
         ];
         $result = app(AliyunSms::class)->send(strval($mobile), $tmpId, $params);
         if($result) {
-            return $this->response(new JsonResponse(['message' => 'send SMS is OK']));
+            return $this->response(new JsonResponse(['message' => 'send SMS is OK', 'code' => $code]));
         }else{
             throw new HttpException(HTTP_STATUS_INTERNAL_SERVER_ERROR, '短信发送失败');
         }
