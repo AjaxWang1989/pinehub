@@ -160,7 +160,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
         return $this->scopeQuery(function (Shop $shop) {
             $start = Carbon::now()->startOfDay();
             $end = Carbon::now();
-            $shop->withCount([
+            return $shop->withCount([
                 'orders as order_num' => function(Builder $query) use($start, $end){
                     return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
