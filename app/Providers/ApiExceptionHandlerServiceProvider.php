@@ -27,39 +27,39 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
     public function boot()
     {
         //
-//        if($this->app->has('api.exception')){
-//            $this->app->make('api.exception')->register(function (\Exception $exception) {
-//                $responseSender = new Response();
-//                $responseSender->header('Access-Control-Allow-Origin', '*')
-//                    ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept')
-//                    ->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
-//                    ->header('Access-Control-Allow-Credentials', 'true');
-//                if(Request::method() === HTTP_METHOD_OPTIONS) {
-//                    return $responseSender->send();
-//                }
-//
-//                if($exception instanceof TokenExpiredException) {
-//                    $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
-//                }elseif ($exception instanceof ValidationHttpException || $exception instanceof ValidationException) {
-//                    Log::info('exception', [$exception]);
-//                    if($exception instanceof ValidationHttpException) {
-//                        Log::error('ValidationHttpException');
-//                        Log::info('errors '. $exception->getMessage(), $exception->getErrors()->toArray());
-//                        $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
-//                    } else {
-//                        Log::error('!ValidationHttpException');
-//                        Log::info('errors', $exception->errors());
-//                        $exception = new HttpValidationException($exception->errors(), HTTP_REQUEST_VALIDATE_ERROR);
-//                    }
-//                }elseif($exception instanceof UnauthorizedHttpException || $exception instanceof UnauthorizedException) {
-//                    if($exception instanceof UnauthorizedHttpException && $exception->getPrevious() instanceof TokenExpiredException ||
-//                        $exception instanceof UnauthorizedException && $exception->getPrevious() instanceof TokenExpiredException) {
-//                        $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
-//                    }
-//                }
-//                return $this->app->make('api.http.handler')->handle($exception);
-//            });
-//        }
+        if($this->app->has('api.exception')){
+            $this->app->make('api.exception')->register(function (\Exception $exception) {
+                $responseSender = new Response();
+                $responseSender->header('Access-Control-Allow-Origin', '*')
+                    ->header('Access-Control-Allow-Headers', 'Origin, Content-Type, Cookie, Accept')
+                    ->header('Access-Control-Allow-Methods', 'GET, POST, PATCH, PUT, DELETE, OPTIONS')
+                    ->header('Access-Control-Allow-Credentials', 'true');
+                if(Request::method() === HTTP_METHOD_OPTIONS) {
+                    return $responseSender->send();
+                }
+
+                if($exception instanceof TokenExpiredException) {
+                    $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
+                }elseif ($exception instanceof ValidationHttpException || $exception instanceof ValidationException) {
+                    Log::info('exception', [dump($exception)]);
+                    if($exception instanceof ValidationHttpException) {
+                        Log::error('ValidationHttpException');
+                        Log::info('errors '. $exception->getMessage(), $exception->getErrors()->toArray());
+                        $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
+                    } else {
+                        Log::error('!ValidationHttpException');
+                        Log::info('errors', $exception->errors());
+                        $exception = new HttpValidationException($exception->errors(), HTTP_REQUEST_VALIDATE_ERROR);
+                    }
+                }elseif($exception instanceof UnauthorizedHttpException || $exception instanceof UnauthorizedException) {
+                    if($exception instanceof UnauthorizedHttpException && $exception->getPrevious() instanceof TokenExpiredException ||
+                        $exception instanceof UnauthorizedException && $exception->getPrevious() instanceof TokenExpiredException) {
+                        $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
+                    }
+                }
+                return $this->app->make('api.http.handler')->handle($exception);
+            });
+        }
     }
 
     /**
