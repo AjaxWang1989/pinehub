@@ -166,6 +166,13 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
                         ->where('paid_at', '<', $end)
                         ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
                 },
+                'orders as buyer_num' => function(Builder $query) use($start, $end){
+                    return $query->select(DB::raw('count(*) as buyer_num'))
+                        ->where('paid_at', '>=', $start)
+                        ->where('paid_at', '<', $end)
+                        ->groupBy('customer_id')
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                },
                 'orders as payment_amount' => function (Builder $query) use($start, $end){
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
                         ->where('paid_at', '>=', $start)
