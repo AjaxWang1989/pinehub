@@ -104,6 +104,7 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\App\Providers\PaymentServiceProvider::class);
  $app->register(\App\Providers\OrderServiceProvider::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
+$app->register(\Illuminate\Broadcasting\BroadcastServiceProvider::class);
 
 
 $app->configure('filesystems');
