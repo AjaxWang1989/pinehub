@@ -44,7 +44,7 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                     Log::info('exception', [$exception]);
                     if($exception instanceof ValidationHttpException) {
                         Log::error('ValidationHttpException');
-                        Log::info('errors', $exception->getErrors()->toArray());
+                        Log::info('errors '. $exception->getMessage(), $exception->getErrors()->toArray());
                         $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
                     } else {
                         Log::error('!ValidationHttpException');
