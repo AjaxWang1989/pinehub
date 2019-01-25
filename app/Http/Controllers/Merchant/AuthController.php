@@ -136,7 +136,7 @@ class AuthController extends Controller
         }
         $shop = app(ShopRepository::class)->todayOrderInfo($manager->shop->id);
 
-        $token = Auth::attempt($manager->only(['mobile', 'id', 'password']));
+        $token = Auth::loginUsingId($manager->id);
         $tokenMeta = [
             'value' => $token,
             'ttl' => Carbon::now(config('app.timezone'))->addMinute(config('jwt.ttl')),
