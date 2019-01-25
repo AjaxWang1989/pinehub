@@ -10,6 +10,8 @@ namespace App\Routes;
 
 
 use Dingo\Api\Routing\Router as DingoRouter;
+use Illuminate\Broadcasting\BroadcastController;
+use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Router as LumenRouter;
 
 class MerchantApiRoutes extends ApiRoutes
@@ -23,6 +25,8 @@ class MerchantApiRoutes extends ApiRoutes
         $router->get('/login', ['as' => 'merchant.login','uses' => 'AuthController@login']);
         $router->get('/app/access', ['as' => 'merchant.app.access','uses' => 'AuthController@appAccess']);
         $router->get('/verify/code/sms/{mobile}', ['as' => 'merchant.verify.code','uses' => 'AuthController@verifyCode']);
-        $router->addRoute(['GET', 'POST'],  'broadcasting/auth',  \Illuminate\Broadcasting\BroadcastController::class.'@authenticate');
+        $router->addRoute(['GET', 'POST'],  'broadcasting/auth',  function (BroadcastController $controller, Request $request) {
+            return $controller->authenticate($request);
+        });
     }
 }
