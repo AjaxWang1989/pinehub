@@ -21,7 +21,7 @@ redis.subscribe('channel', function(err, count){
  */
 redis.on('message', function(channel, message){
     message = JSON.parse(message);
-
+    console.log('========= message ========', message);
     io.emit(channel+':'+message.event, message.payload);
 });
 
