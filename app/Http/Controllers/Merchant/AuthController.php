@@ -31,6 +31,7 @@ use App\Transformers\Mp\AppAccessTransformer;
 use App\Transformers\Mp\MvpLoginTransformer;
 use Carbon\Carbon;
 use Curder\LaravelAliyunSms\AliyunSms;
+use Dingo\Api\Exception\ValidationHttpException;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -55,7 +56,7 @@ class AuthController extends Controller
     public function verifyCode(string  $mobile)
     {
         if(!isMobile($mobile)) {
-            throw new HttpValidationException(['手机格式错误'], HTTP_REQUEST_VALIDATE_ERROR);
+            throw new ValidationHttpException(['手机格式错误'], null, [],HTTP_REQUEST_VALIDATE_ERROR);
         }
         mt_srand((int)(microtime(true) * 1000));
         $code = mt_rand(100000, 1000000);
@@ -125,13 +126,13 @@ class AuthController extends Controller
             }
         }catch (\Exception $exception) {
             Log::error('code error');
-            throw new HttpValidationException(['验证码不存在或者不匹配'], AUTH_LOGOUT_FAIL);
+            throw new ValidationHttpException(['验证码不存在或者不匹配'], null, [], AUTH_LOGOUT_FAIL);
         }
 
         $manager = $this->shopManagerRepository->whereMobile($mobile);
         if($manager->shop) {
             Log::error('shop error');
-            throw new HttpValidationException(['不是店主无法登陆'], AUTH_LOGOUT_FAIL);
+            throw new ValidationHttpException(['不是店主无法登陆'], null, [], AUTH_LOGOUT_FAIL);
         }
         $shop = app(ShopRepository::class)->todayOrderInfo($manager->shop->id);
         $token = Auth::attempt($manager->toArray());
