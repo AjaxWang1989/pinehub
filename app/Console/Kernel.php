@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\BroadcastEventCommand;
 use App\Console\Commands\Console\TestMakeCommand;
 use App\Console\Commands\CustomerTicketRefreshStatusCommand;
 use App\Console\Commands\HashEncrypt;
@@ -76,7 +77,8 @@ class Kernel extends ConsoleKernel
         WechatAccessTokenRefreshCommand::class,
         TicketRefreshStatusCommand::class,
         CustomerTicketRefreshStatusCommand::class,
-        OrderUpdateStatusCommand::class
+        OrderUpdateStatusCommand::class,
+        BroadcastEventCommand::class
     ];
 
     /**

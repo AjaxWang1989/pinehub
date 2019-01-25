@@ -105,11 +105,10 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\App\Providers\OrderServiceProvider::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
  $app->register(\Illuminate\Broadcasting\BroadcastServiceProvider::class);
- $app->register(\App\Providers\BroadcastServiceProvider::class);
+ $app->register('Vluzrmos\Socketio\SocketioServiceProvider');
 
-
-$app->configure('filesystems');
-$app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
+ $app->configure('filesystems');
+ $app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------
@@ -128,4 +127,4 @@ $app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 //    require __DIR__.'/../routes/mp.php';
 //});
 
-return $app;
+ return $app;

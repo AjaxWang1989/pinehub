@@ -23,14 +23,14 @@ class OrderPaidNoticeEvent extends Event implements ShouldBroadcast
      * @param Order $order
      * @return void
      */
-    public function __construct(int $shopId, Order $order)
+    public function __construct(int $shopId, Order $order = null)
     {
         //
         $this->shopId = $shopId;
-        $this->voiceText = $order->payType === Order::ALI_PAY ? "支付宝收款{$order->paymentAmount}元"
-            : "微信收款{$order->paymentAmount}元";
-
-        $this->shopOrderInfo = app(ShopRepository::class)->todayOrderInfo($shopId);
+//        $this->voiceText = $order->payType === Order::ALI_PAY ? "支付宝收款{$order->paymentAmount}元"
+//            : "微信收款{$order->paymentAmount}元";
+//
+//        $this->shopOrderInfo = app(ShopRepository::class)->todayOrderInfo($shopId);
     }
 
     /**
