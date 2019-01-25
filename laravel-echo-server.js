@@ -7,7 +7,7 @@ const Redis = require('ioredis');
  * Your Redis connection
  * @see https://www.npmjs.com/package/ioredis for more details
  */
-const redis = new Redis('redis://127.0.0.1:6379/0');
+const redis = new Redis('redis://47.100.255.104:6379/0');
 
 /**
  * Your broadcasting channel
