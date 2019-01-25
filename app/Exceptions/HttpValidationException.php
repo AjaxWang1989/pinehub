@@ -11,7 +11,7 @@ class HttpValidationException extends Exception
     {
         parent::__construct(null, $previous, $headers, $code);
         foreach ($errors as $key => $error)  {
-            $this->message = $error[0];
+            $this->message = is_string($error) ? $error : $error[0];
         }
     }
 }
