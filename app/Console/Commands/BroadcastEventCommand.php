@@ -40,6 +40,7 @@ class BroadcastEventCommand extends Command
     {
         //
 //        broadcast(new OrderPaidNoticeEvent(1));
-        publish('test', 'event1', 'test message');
+//        publish('test', 'event1', 'test message');
+        app('redis')->publish('test-channel', 'test message');
     }
 }
