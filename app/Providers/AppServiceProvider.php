@@ -22,7 +22,7 @@ use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\Looping;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\Facades\{
-    DB, Log, Validator
+    Broadcast, DB, Log, Validator
 };
 use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
@@ -89,7 +89,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         app('queue')->after(function (JobProcessed $jobProcessed) {
-            Log::info('job queue processed!');
+            Log::info('job queue processed!', $jobProcessed->job->payload());
         });
 
         app('queue')->looping(function (Looping $looping) {

@@ -19,7 +19,6 @@ class ConfigServiceProvider extends ServiceProvider
             'ide-helper',
             'repository',
             'ali',
-
             'filesystems',
             'session',
             'database',
