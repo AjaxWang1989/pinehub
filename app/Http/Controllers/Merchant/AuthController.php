@@ -124,12 +124,12 @@ class AuthController extends Controller
                 throw new \Exception();
             }
         }catch (\Exception $exception) {
-            throw new HttpValidationException(AUTH_LOGOUT_FAIL, '验证码不存在或者不匹配');
+            throw new HttpValidationException(['验证码不存在或者不匹配'], AUTH_LOGOUT_FAIL);
         }
 
         $manager = $this->shopManagerRepository->whereMobile($mobile);
         if($manager->shop) {
-            throw new HttpValidationException(AUTH_LOGOUT_FAIL, '不是店主无法登陆');
+            throw new HttpValidationException(['不是店主无法登陆'], AUTH_LOGOUT_FAIL);
         }
         $shop = app(ShopRepository::class)->todayOrderInfo($manager->shop->id);
         $token = Auth::attempt($manager->toArray());
