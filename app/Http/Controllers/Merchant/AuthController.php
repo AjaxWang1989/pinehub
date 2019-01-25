@@ -130,7 +130,7 @@ class AuthController extends Controller
         }
 
         $manager = $this->shopManagerRepository->whereMobile($mobile);
-        Log::info('shop manager', $manager->toArray());
+        Log::info('shop manager', [$manager->shop]);
         if($manager->shop) {
             Log::error('shop error');
             throw new ValidationHttpException(['不是店主无法登陆'], null, [], AUTH_LOGOUT_FAIL);
