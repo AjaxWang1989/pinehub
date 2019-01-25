@@ -18,7 +18,7 @@ class BroadcastServiceProvider extends ServiceProvider
     {
 //        Broadcast::routes();
         $this->app->make('api.router')->any('/broadcasting/auth', [
-            'as' => 'broadcasting.auth', 'uses' => BroadcastController::class.'@authenticate']);
+            'as' => 'broadcasting.auth', 'version' => 'v1', 'uses' => BroadcastController::class.'@authenticate']);
         Broadcast::channel('shop-{shopId}', function ($user, $shopId) {
             $shop = Shop::find($shopId);
             return $user->id === $shop->userId;
