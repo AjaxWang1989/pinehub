@@ -26,7 +26,7 @@ class ShopManagerRepositoryEloquent extends BaseRepository implements ShopManage
         return ShopManager::class;
     }
 
-    
+
 
     /**
      * Boot up the repository, pushing criteria
@@ -44,8 +44,10 @@ class ShopManagerRepositoryEloquent extends BaseRepository implements ShopManage
     public function whereMobile(string $mobile)
     {
         // TODO: Implement whereMobile() method.
-        return $this->scopeQuery(function (ShopManager $manager)use ($mobile) {
+        $managers = $this->scopeQuery(function (ShopManager $manager)use ($mobile) {
             return $manager->with(['shop'])->whereMobile($mobile)->limit(1);
         })->get();
+
+        return $managers->first();
     }
 }
