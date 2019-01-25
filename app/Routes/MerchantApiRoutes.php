@@ -10,7 +10,7 @@ namespace App\Routes;
 
 
 use Dingo\Api\Routing\Router as DingoRouter;
-use Illuminate\Broadcasting\BroadcastController;
+use \Illuminate\Broadcasting\BroadcastController;
 use Laravel\Lumen\Routing\Router as LumenRouter;
 
 class MerchantApiRoutes extends ApiRoutes
