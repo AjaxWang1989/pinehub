@@ -42,10 +42,15 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                     $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
                 }elseif ($exception instanceof ValidationHttpException || $exception instanceof ValidationException) {
                     Log::info('exception', [$exception->getTraceAsString()]);
-                    if($exception instanceof ValidationHttpException)
+                    if($exception instanceof ValidationHttpException) {
+                        Log::error('ValidationHttpException');
+                        Log::ino('errors', $exception->getErrors()->toArray());
                         $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
-                    else
+                    } else {
+                        Log::error('!ValidationHttpException');
+                        Log::ino('errors', $exception->errors());
                         $exception = new HttpValidationException($exception->errors(), HTTP_REQUEST_VALIDATE_ERROR);
+                    }
                 }elseif($exception instanceof UnauthorizedHttpException || $exception instanceof UnauthorizedException) {
                     if($exception instanceof UnauthorizedHttpException && $exception->getPrevious() instanceof TokenExpiredException ||
                         $exception instanceof UnauthorizedException && $exception->getPrevious() instanceof TokenExpiredException) {
