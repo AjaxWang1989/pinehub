@@ -42,15 +42,15 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                     $exception = new TokenOverDateException('token已过期，请刷新token或者重新登陆', AUTH_TOKEN_EXPIRES);
                 }elseif ($exception instanceof ValidationHttpException || $exception instanceof ValidationException) {
                     Log::info('exception', [$exception]);
-                    if($exception instanceof ValidationHttpException) {
-                        Log::error('ValidationHttpException');
-                        Log::info('errors '. $exception->getMessage(), $exception->getErrors()->toArray());
-                        $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
-                    } else {
-                        Log::error('!ValidationHttpException');
-                        Log::info('errors', $exception->errors());
-                        $exception = new HttpValidationException($exception->errors(), HTTP_REQUEST_VALIDATE_ERROR);
-                    }
+//                    if($exception instanceof ValidationHttpException) {
+//                        Log::error('ValidationHttpException');
+//                        Log::info('errors '. $exception->getMessage(), $exception->getErrors()->toArray());
+//                        $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
+//                    } else {
+//                        Log::error('!ValidationHttpException');
+//                        Log::info('errors', $exception->errors());
+//                        $exception = new HttpValidationException($exception->errors(), HTTP_REQUEST_VALIDATE_ERROR);
+//                    }
                 }elseif($exception instanceof UnauthorizedHttpException || $exception instanceof UnauthorizedException) {
                     if($exception instanceof UnauthorizedHttpException && $exception->getPrevious() instanceof TokenExpiredException ||
                         $exception instanceof UnauthorizedException && $exception->getPrevious() instanceof TokenExpiredException) {
