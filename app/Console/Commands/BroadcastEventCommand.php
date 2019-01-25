@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Events\OrderPaidNoticeEvent;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class BroadcastEventCommand extends Command
 {
@@ -41,6 +42,7 @@ class BroadcastEventCommand extends Command
         //
 //        broadcast(new OrderPaidNoticeEvent(1));
 //        publish('test', 'event1', 'test message');
-        app('redis')->publish('test-channel', 'test message');
+        $result = app('redis')->publish('test-channel', 'test message');
+        Log::info('channel result ', [$result]);
     }
 }
