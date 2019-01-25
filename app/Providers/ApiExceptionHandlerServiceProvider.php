@@ -44,11 +44,11 @@ class ApiExceptionHandlerServiceProvider extends ServiceProvider
                     Log::info('exception', [$exception->getTraceAsString()]);
                     if($exception instanceof ValidationHttpException) {
                         Log::error('ValidationHttpException');
-                        Log::ino('errors', $exception->getErrors()->toArray());
+                        Log::info('errors', $exception->getErrors()->toArray());
                         $exception = new HttpValidationException($exception->getErrors()->toArray(), HTTP_REQUEST_VALIDATE_ERROR);
                     } else {
                         Log::error('!ValidationHttpException');
-                        Log::ino('errors', $exception->errors());
+                        Log::info('errors', $exception->errors());
                         $exception = new HttpValidationException($exception->errors(), HTTP_REQUEST_VALIDATE_ERROR);
                     }
                 }elseif($exception instanceof UnauthorizedHttpException || $exception instanceof UnauthorizedException) {
