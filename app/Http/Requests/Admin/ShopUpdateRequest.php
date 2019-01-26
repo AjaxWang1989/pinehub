@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 use App\Entities\Shop;
 use Illuminate\Validation\Rule;
 

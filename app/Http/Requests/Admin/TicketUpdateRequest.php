@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Entities\Card;
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class TicketUpdateRequest extends FormRequest

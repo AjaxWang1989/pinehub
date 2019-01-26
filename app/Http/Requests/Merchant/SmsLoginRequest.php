@@ -9,7 +9,7 @@
 namespace App\Http\Requests\Merchant;
 
 
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 
 class SmsLoginRequest extends FormRequest
 {

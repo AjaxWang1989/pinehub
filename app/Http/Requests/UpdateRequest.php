@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 
 class UpdateRequest extends FormRequest
 {

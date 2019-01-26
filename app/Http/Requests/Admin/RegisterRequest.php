@@ -9,7 +9,7 @@
 namespace App\Http\Requests\Admin;
 
 
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {

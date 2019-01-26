@@ -9,7 +9,7 @@
 namespace App\Http\Requests\MiniProgram;
 
 use App\Entities\Order;
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 

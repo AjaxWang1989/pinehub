@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Entities\Shop;
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class ShopCreateRequest extends FormRequest

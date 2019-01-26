@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Entities\Activity;
 use App\Entities\PaymentActivity;
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class OrderGiftUpdateRequest extends FormRequest

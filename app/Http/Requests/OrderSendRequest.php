@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Urameshibr\Requests\FormRequest;
+use Dingo\Api\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class OrderSendRequest extends FormRequest
