@@ -42,7 +42,7 @@ class BroadcastEventCommand extends Command
     public function handle()
     {
         //
-//        broadcast(new OrderPaidNoticeEvent(1));
+        broadcast(new OrderPaidNoticeEvent(1));
 //        publish('test', 'event1', 'test message');
 //        app(BroadcastManager::class)->event(new OrderPaidNoticeEvent(1));
 
