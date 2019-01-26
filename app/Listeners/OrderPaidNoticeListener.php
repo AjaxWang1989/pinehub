@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\OrderPaidNoticeEvent;
+use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -23,10 +24,12 @@ class OrderPaidNoticeListener
      *
      * @param  OrderPaidNoticeEvent  $event
      * @return void
+     * @throws
      */
     public function handle(OrderPaidNoticeEvent $event)
     {
-        //
-        publish($event->broadcastOn(), 'OrderPaidNoticeEvent', $event->broadcastWith());
+        $messages = $event->broadcastWith();
+        $cacheMessages = cache($event->broadcastOn(), []);
+        cache([$event->broadcastOn() => array_merge($cacheMessages, $messages)], Carbon::now()->addMinute(10));
     }
 }

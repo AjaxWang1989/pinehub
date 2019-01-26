@@ -4,18 +4,16 @@ namespace App\Events;
 
 use App\Entities\Order;
 use App\Repositories\ShopRepository;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class OrderPaidNoticeEvent extends Event implements ShouldBroadcast
+class OrderPaidNoticeEvent extends Event implements ShouldQueue
 {
     use Dispatchable, InteractsWithSockets;
 
     protected $shopId = null;
-    protected $shopOrderInfo = null;
     protected $voiceText = null;
     /**
      * Create a new event instance.
@@ -29,25 +27,20 @@ class OrderPaidNoticeEvent extends Event implements ShouldBroadcast
         $this->shopId = $shopId;
         $this->voiceText = $order->payType === Order::ALI_PAY ? "支付宝收款{$order->paymentAmount}元"
             : "微信收款{$order->paymentAmount}元";
-
-        $this->shopOrderInfo = app(ShopRepository::class)->todayOrderInfo($shopId);
     }
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return string
      */
     public function broadcastOn()
     {
-        return new PrivateChannel("shop-{$this->shopId}");
+        return "shop.{$this->shopId}.order.paid";
     }
 
     public function broadcastWith()
     {
-        return [
-            'shop_info' => $this->shopOrderInfo,
-            'voice' => $this->voiceText
-        ];
+        return [$this->voiceText];
     }
 }

@@ -130,9 +130,11 @@ class AuthController extends Controller
         }
 
         $manager = $this->shopManagerRepository->whereMobile($mobile);
+
         if(!$manager) {
             throw new ValidationHttpException(['没有此用户'], null, [], AUTH_LOGOUT_FAIL);
         }
+
         if(!$manager->shop) {
             throw new ValidationHttpException(['不是店主无法登陆'], null, [], AUTH_LOGOUT_FAIL);
         }
@@ -144,6 +146,8 @@ class AuthController extends Controller
             'ttl' => Carbon::now(config('app.timezone'))->addMinute(config('jwt.ttl')),
             'refresh_ttl' => Carbon::now(config('app.timezone'))->addMinute(config('jwt.refresh_ttl'))
         ];
-        return $this->response->item($manager, new ShopManagerTransformer($shop->toArray()))->addMeta('token', $tokenMeta);
+        cache([$token => $tokenMeta['ttl']], $tokenMeta['ttl']);
+        return $this->response->item($manager, new ShopManagerTransformer($shop->toArray()))
+            ->addMeta('token', $tokenMeta);
     }
 }
