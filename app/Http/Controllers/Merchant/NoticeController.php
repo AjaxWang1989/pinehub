@@ -13,7 +13,8 @@ use App\Transformers\Merchant\ShopTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Storage;
+use Jormin\BaiduSpeech\BaiduSpeech;
 
 
 class NoticeController extends Controller
@@ -42,11 +43,20 @@ class NoticeController extends Controller
         }
         $key = "shop.{$id}.order.paid";
         $messages = cache($key);
+        $voices = null;
         if($messages) {
             cache()->delete($key);
+            $voices = [];
+            foreach ($messages as $message) {
+                $result = BaiduSpeech::combine($message);
+                if($result['success']) {
+                    $file = $result['filename'];
+                    array_push($voices, Storage::get($file));
+                }
+            }
         }
         return $this->response->item($shop, new ShopTransformer())
             ->addMeta('token', $tokenMeta)
-            ->addMeta('voice_messages', $messages);
+            ->addMeta('voices', $voices);
     }
 }
