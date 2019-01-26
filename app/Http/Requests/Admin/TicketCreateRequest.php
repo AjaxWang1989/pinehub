@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Entities\Card;
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 use Illuminate\Validation\Rule;
 
 class TicketCreateRequest extends FormRequest

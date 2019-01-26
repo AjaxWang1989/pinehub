@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Entities\Activity;
 use App\Entities\PaymentActivity;
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 use Illuminate\Validation\Rule;
 
 class OrderGiftCreateRequest extends FormRequest

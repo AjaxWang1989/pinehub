@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Admin;
 
 use App\Entities\ScoreRule;
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 use Illuminate\Validation\Rule;
 
 class ScoreRuleUpdateRequest extends FormRequest

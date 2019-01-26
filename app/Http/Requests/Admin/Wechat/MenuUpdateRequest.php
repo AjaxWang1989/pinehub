@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Admin\Wechat;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 use Illuminate\Validation\Rule;
 
 class MenuUpdateRequest extends FormRequest

@@ -8,7 +8,7 @@
 
 namespace App\Http\Requests\MiniProgram;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 
 class FeedBackMessageRequest extends FormRequest
 {

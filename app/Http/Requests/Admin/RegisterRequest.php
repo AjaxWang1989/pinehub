@@ -9,7 +9,7 @@
 namespace App\Http\Requests\Admin;
 
 
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 
 class RegisterRequest extends FormRequest
 {

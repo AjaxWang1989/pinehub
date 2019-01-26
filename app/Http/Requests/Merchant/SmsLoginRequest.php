@@ -9,7 +9,7 @@
 namespace App\Http\Requests\Merchant;
 
 
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 
 class SmsLoginRequest extends FormRequest
 {

@@ -9,7 +9,7 @@
 namespace App\Http\Requests\MiniProgram;
 
 use App\Entities\Order;
-use Illuminate\Foundation\Http\FormRequest;
+use Urameshibr\Requests\FormRequest;
 use Illuminate\Validation\Rule;
 
 
