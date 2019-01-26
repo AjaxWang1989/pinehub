@@ -47,7 +47,7 @@ class PaymentNotify implements PayNotifyInterface
                 $order->paidAt = Carbon::now();
                 if ($order->type === Order::OFF_LINE_PAYMENT_ORDER) {
                     $order->status = Order::COMPLETED;
-                    broadcast(new OrderPaidNoticeEvent($order->shopId, $order));
+                    event(new OrderPaidNoticeEvent($order->shopId, $order));
                 }
             } else {
                 $order->status = Order::PAY_FAILED;
