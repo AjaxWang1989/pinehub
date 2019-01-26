@@ -7,6 +7,7 @@
     "require": {
         "php": ">=7.1.3",
         "albertcht/lumen-form-request": "^2.3",
+        "armandgarot/laravel-workerman": "dev-master",
         "dingo/api": "2.*",
         "fxm5547/laravel-aliyun-sms": "^1.0",
         "grimzy/laravel-mysql-spatial": "^2.0",

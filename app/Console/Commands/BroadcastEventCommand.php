@@ -7,6 +7,7 @@ use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Console\Command;
 use Illuminate\Queue\Connectors\BeanstalkdConnector;
 use Illuminate\Support\Facades\Log;
+use Workerman\Protocols\Websocket;
 
 class BroadcastEventCommand extends Command
 {
@@ -48,6 +49,5 @@ class BroadcastEventCommand extends Command
 
         $result = app('redis')->publish('test-channel', 'test message');
         Log::info('channel result ', [$result, app('redis')->keys('*')]);
-//        app('redis')->set('channel', '1');
     }
 }

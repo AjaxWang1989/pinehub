@@ -8,6 +8,7 @@ use App\Events\CardCheckEvent;
 use App\Events\CardPayOrderEvent;
 use App\Events\CardSKURemindEvent;
 use App\Events\MemberCardActiveEvent;
+use App\Events\OrderPaidNoticeEvent;
 use App\Events\OrderScoreEvent;
 use App\Events\SyncMemberCardInfoEvent;
 use App\Events\SyncTicketCardInfoEvent;
@@ -27,6 +28,7 @@ use App\Listeners\CardSKURemindEventListener;
 use App\Listeners\MemberCardActiveEventListener;
 use App\Listeners\OpenPlatformAuthorized;
 use App\Listeners\OpenPlatformUnauthorized;
+use App\Listeners\OrderPaidNoticeListener;
 use App\Listeners\OrderScoreListener;
 use App\Listeners\SyncMemberCardInfoEventListener;
 use App\Listeners\SyncTicketCardInfoEventListener;
@@ -127,6 +129,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         UpdateMemberCardEvent::class => [
             UpdateMemberCardListener::class
+        ],
+        OrderPaidNoticeEvent::class => [
+            OrderPaidNoticeListener::class
         ]
     ];
 }
