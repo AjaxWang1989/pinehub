@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\OrderPaidNoticeEvent;
+use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -40,8 +41,9 @@ class BroadcastEventCommand extends Command
     public function handle()
     {
         //
-        broadcast(new OrderPaidNoticeEvent(1));
+//        broadcast(new OrderPaidNoticeEvent(1));
 //        publish('test', 'event1', 'test message');
+        app(BroadcastManager::class)->event(new OrderPaidNoticeEvent(1));
 
         $result = app('redis')->publish('test-channel', 'test message');
         Log::info('channel result ', [$result, app('redis')->keys('*')]);
