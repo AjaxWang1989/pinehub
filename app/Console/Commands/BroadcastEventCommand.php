@@ -46,8 +46,8 @@ class BroadcastEventCommand extends Command
 //        publish('test', 'event1', 'test message');
 //        app(BroadcastManager::class)->event(new OrderPaidNoticeEvent(1));
 
-        $result = app('redis')->publish('test-channel', 'test message');
-        Log::info('channel result ', [$result, app('redis')->keys('*')]);
-        app('redis')->set('channel', '1');
+//        $result = app('redis')->publish('test-channel', 'test message');
+//        Log::info('channel result ', [$result, app('redis')->keys('*')]);
+//        app('redis')->set('channel', '1');
     }
 }
