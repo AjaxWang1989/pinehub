@@ -173,26 +173,26 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
                         ->groupBy('customer_id')
                         ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
                 },
-                'orders as payment_amount' => function (Builder $query) use($start, $end){
-                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->where('paid_at', '>=', $start)
-                        ->where('paid_at', '<', $end)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
-                },
-                'orders as ali_payment_amount' => function (Builder $query) use($start, $end){
-                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->where('paid_at', '>=', $start)
-                        ->where('paid_at', '<', $end)
-                        ->where('pay_type', Order::ALI_PAY)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
-                },
-                'orders as wechat_payment_amount' => function (Builder $query) use($start, $end) {
-                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
-                        ->where('paid_at', '>=', $start)
-                        ->where('paid_at', '<', $end)
-                        ->where('pay_type', Order::WECHAT_PAY)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
-                },
+//                'orders as payment_amount' => function (Builder $query) use($start, $end){
+//                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
+//                        ->where('paid_at', '>=', $start)
+//                        ->where('paid_at', '<', $end)
+//                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+//                },
+//                'orders as ali_payment_amount' => function (Builder $query) use($start, $end){
+//                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
+//                        ->where('paid_at', '>=', $start)
+//                        ->where('paid_at', '<', $end)
+//                        ->where('pay_type', Order::ALI_PAY)
+//                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+//                },
+//                'orders as wechat_payment_amount' => function (Builder $query) use($start, $end) {
+//                    return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
+//                        ->where('paid_at', '>=', $start)
+//                        ->where('paid_at', '<', $end)
+//                        ->where('pay_type', Order::WECHAT_PAY)
+//                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+//                },
 //                'orders as self_pick_order_num' => function (Builder $query) use($start, $end) {
 //                    return $query->select(DB::raw('count(*) as count'))
 //                        ->where('paid_at', '>=', $start)
