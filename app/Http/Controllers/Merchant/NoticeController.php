@@ -48,7 +48,6 @@ class NoticeController extends Controller
         $messages = cache($key);
         $voices = null;
         if($messages) {
-            cache()->delete($key);
             $voices = [];
             foreach ($messages as $message) {
                 $result = BaiduSpeech::combine($message);
@@ -57,6 +56,7 @@ class NoticeController extends Controller
                     array_push($voices, Storage::get($file));
                 }
             }
+            cache()->delete($key);
         }
         return $this->response->item($shop, new ShopTransformer(!!$voices))
             ->addMeta('token', $tokenMeta)
