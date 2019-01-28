@@ -22,7 +22,10 @@ class ShopManagerTransformer extends TransformerAbstract
 
     public function transform(ShopManager $shopManager) {
         $data = $shopManager->toArray();
-        if($this->shop) {
+        if(!$this->shop) {
+            $data['shop_id'] = $data['shop']['id'];
+            unset($data['shop']);
+        }else{
             $data['shop'] = $this->shop;
         }
         return $data;

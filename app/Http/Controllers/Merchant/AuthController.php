@@ -138,7 +138,7 @@ class AuthController extends Controller
         if(!$manager->shop) {
             throw new ValidationHttpException(['不是店主无法登陆'], null, [], AUTH_LOGOUT_FAIL);
         }
-        $shop = app(ShopRepository::class)->todayOrderInfo($manager->shop->id);
+//        $shop = app(ShopRepository::class)->todayOrderInfo($manager->shop->id);
 
         $token = Auth::login($manager);
         $tokenMeta = [
@@ -147,7 +147,7 @@ class AuthController extends Controller
             'refresh_ttl' => Carbon::now(config('app.timezone'))->addMinute(config('jwt.refresh_ttl'))
         ];
         cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
-        return $this->response->item($manager, new ShopManagerTransformer($shop->toArray()))
+        return $this->response->item($manager, new ShopManagerTransformer())
             ->addMeta('token', $tokenMeta);
     }
 }
