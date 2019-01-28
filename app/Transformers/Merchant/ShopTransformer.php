@@ -26,7 +26,7 @@ class ShopTransformer extends TransformerAbstract
         $shop['wechat_payment_amount'] = number_format($shop['wechat_payment_amount'], 2);
         return $this->refreshed ? $shop->only([
             'buyer_num', 'order_num', 'need_send_order_num', 'self_pick_order_num',
-            'payment_amount', 'ali_payment_amount', 'wechat_payment_amount'
+            'payment_amount', 'ali_payment_amount', 'wechat_payment_amount', 'id'
         ]) : [];
     }
 }
