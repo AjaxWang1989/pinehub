@@ -12,6 +12,7 @@ use App\Repositories\ShopRepository;
 use App\Transformers\Merchant\ShopTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
+use function GuzzleHttp\Psr7\str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -34,7 +35,7 @@ class NoticeController extends Controller
         Log::info('======== token =======', [$token]);
         $manager = Auth::user();
         $tokenMeta = null;
-        if(cache($token) - time() < 10) {
+        if(cache((string)$token) - time() < 10) {
             $token = Auth::login($manager);
             $tokenMeta = [
                 'value' => $token,
