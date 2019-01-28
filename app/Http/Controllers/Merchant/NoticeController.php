@@ -52,13 +52,13 @@ class NoticeController extends Controller
             foreach ($messages as $message) {
                 $result = BaiduSpeech::combine($message);
                 if($result['success']) {
-                    Log::info('=== result ===', $result);
                     $file = $result['data'];
                     array_push($voices, Storage::get($file));
                 }
             }
             cache()->delete($key);
         }
+        Log::info('voices', $voices);
         return $this->response->item($shop, new ShopTransformer(!!$voices))
             ->addMeta('token', $tokenMeta)
             ->addMeta('voices', $voices);
