@@ -157,21 +157,18 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
      * */
     public function todayOrderInfo(int $id)
     {
-        return $this->scopeQuery(function (Shop $shop) {
-            $start = Carbon::now()->startOfDay();
-            $end = Carbon::now();
+        $start = Carbon::now()->startOfDay();
+        $end = Carbon::now();
+        /** @var Shop $shop */
+        $shop = $this->scopeQuery(function (Shop $shop) use ($start, $end) {
+
             return $shop->withCount([
                 'orders as order_num' => function(Builder $query) use($start, $end){
                     return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
                         ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
                 },
-                'orders as buyer_num' => function(Builder $query) use($start, $end){
-                    return $query->where('paid_at', '>=', $start)
-                        ->where('paid_at', '<', $end)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ])
-                        ->groupBy('customer_id');
-                },
+
                 'orders as payment_amount' => function (Builder $query) use($start, $end){
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
                         ->where('paid_at', '>=', $start)
@@ -206,6 +203,11 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
                 }
             ]);
         })->find($id);
+
+        $shop['buyer_num'] = $shop->orders()->where('paid_at', '>=', $start)
+            ->where('paid_at', '<', $end)
+            ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ])
+            ->groupBy('customer_id')->count();
     }
 
 }
