@@ -151,4 +151,9 @@ class AuthController extends Controller
         return $this->response->item($manager, new ShopManagerTransformer($shop->toArray()))
             ->addMeta('token', $tokenMeta);
     }
+
+    public function shop()
+    {
+        app(ShopRepository::class)->todayOrderInfo(1);
+    }
 }

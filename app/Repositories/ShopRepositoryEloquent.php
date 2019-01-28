@@ -167,11 +167,10 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
                         ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
                 },
                 'orders as buyer_num' => function(Builder $query) use($start, $end){
-                    return $query->select(DB::raw('count(*) as count'))
-                        ->where('paid_at', '>=', $start)
+                    return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
-                        ->groupBy('customer_id')
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ])
+                        ->groupBy('customer_id');
                 },
                 'orders as payment_amount' => function (Builder $query) use($start, $end){
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
@@ -194,15 +193,13 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
                         ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
                 },
                 'orders as self_pick_order_num' => function (Builder $query) use($start, $end) {
-                    return $query->select(DB::raw('count(*) as count'))
-                        ->where('paid_at', '>=', $start)
+                    return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
                         ->where('pick_up_method', Order::USER_SELF_PICK_UP)
                         ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
                 },
                 'orders as need_send_order_num' => function (Builder $query) use($start, $end) {
-                    return $query->select(DB::raw('count(*) as count'))
-                        ->where('paid_at', '>=', $start)
+                    return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
                         ->where('pick_up_method', Order::SEND_ORDER_TO_USER)
                         ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
