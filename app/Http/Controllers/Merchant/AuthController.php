@@ -67,7 +67,7 @@ class AuthController extends Controller
         ];
         $result = app(AliyunSms::class)->send(strval($mobile), $tmpId, $params);
         if($result) {
-            return $this->response(new JsonResponse(['message' => 'send SMS is OK', 'code' => $code]));
+            return $this->response(new JsonResponse(['message' => 'send SMS is OK', 'code' => $code, 'result' => $result]));
         }else{
             throw new HttpException(HTTP_STATUS_INTERNAL_SERVER_ERROR, '短信发送失败');
         }
@@ -148,8 +148,10 @@ class AuthController extends Controller
             'refresh_ttl' => Carbon::now(config('app.timezone'))->addMinute(config('jwt.refresh_ttl'))
         ];
         cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
-        return $this->response->item($manager, new ShopManagerTransformer($shop->toArray()))
-            ->addMeta('token', $tokenMeta);
+        return $this->response->item($manager, new ShopManagerTransformer($shop->only([
+            'buyer_num', 'order_num', 'need_send_order_num', 'self_pick_order_num',
+            'payment_amount', 'ali_payment_amount', 'wechat_payment_amount'
+        ])))->addMeta('token', $tokenMeta);
     }
 
     public function shop()

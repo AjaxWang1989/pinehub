@@ -21,6 +21,9 @@ class ShopTransformer extends TransformerAbstract
     }
 
     public function transform(Shop $shop) {
-        return $this->refreshed ? $shop->toArray() : [];
+        return $this->refreshed ? $shop->only([
+            'buyer_num', 'order_num', 'need_send_order_num', 'self_pick_order_num',
+            'payment_amount', 'ali_payment_amount', 'wechat_payment_amount'
+        ]) : [];
     }
 }
