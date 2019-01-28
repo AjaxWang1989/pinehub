@@ -13,6 +13,7 @@ use App\Transformers\Merchant\ShopTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Jormin\BaiduSpeech\BaiduSpeech;
 
@@ -30,6 +31,7 @@ class NoticeController extends Controller
     public function notice(int $id, Request $request) {
         $shop = app(ShopRepository::class)->todayOrderInfo($id);
         $token = Auth::getToken();
+        Log::info('======== token =======', [$token]);
         $manager = Auth::user();
         $tokenMeta = null;
         if(cache($token) - time() < 10) {
