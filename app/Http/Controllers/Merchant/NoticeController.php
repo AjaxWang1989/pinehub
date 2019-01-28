@@ -52,9 +52,9 @@ class NoticeController extends Controller
             foreach ($messages as $message) {
                 $result = BaiduSpeech::combine($message);
                 if($result['success']) {
-                    $file = $result['data'];
-                    Log::info('result', $result);
-                    array_push($voices, Storage::get($file));
+                    $file = Storage::get($result['data']);
+                    Log::info('result', [$result, $file]);
+                    array_push($voices, $file);
                     Log::info('voices----', [$voices]);
                 }
             }
