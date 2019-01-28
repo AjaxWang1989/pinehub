@@ -208,6 +208,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
             ->where('paid_at', '<', $end)
             ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ])
             ->groupBy('customer_id')->count();
+        return $shop;
     }
 
 }
