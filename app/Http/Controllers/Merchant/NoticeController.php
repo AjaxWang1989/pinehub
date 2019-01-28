@@ -58,7 +58,7 @@ class NoticeController extends Controller
             }
             cache()->delete($key);
         }
-        Log::info('voices', $voices);
+        Log::info('voices', [$voices]);
         return $this->response->item($shop, new ShopTransformer(!!$voices))
             ->addMeta('token', $tokenMeta)
             ->addMeta('voices', $voices);
