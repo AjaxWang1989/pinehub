@@ -29,7 +29,7 @@ class NoticeController extends Controller
      */
     public function notice(int $id, Request $request) {
         $shop = app(ShopRepository::class)->todayOrderInfo($id);
-        $token = $request->bearerToken() ?: $request->input('token');
+        $token = Auth::getToken();
         $manager = Auth::user();
         $tokenMeta = null;
         if(cache($token) - time() < 10) {
