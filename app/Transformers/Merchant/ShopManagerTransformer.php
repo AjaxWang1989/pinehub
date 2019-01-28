@@ -26,6 +26,9 @@ class ShopManagerTransformer extends TransformerAbstract
             $data['shop_id'] = $data['shop']['id'];
             unset($data['shop']);
         }else{
+            $this->shop['payment_amount'] = number_format($this->shop['payment_amount'], 2);
+            $this->shop['ali_payment_amount'] = number_format($this->shop['ali_payment_amount'], 2);
+            $this->shop['wechat_payment_amount'] = number_format($this->shop['wechat_payment_amount'], 2);
             $data['shop'] = $this->shop;
         }
         return $data;
