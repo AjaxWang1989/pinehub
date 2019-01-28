@@ -53,7 +53,7 @@ class NoticeController extends Controller
                 $result = BaiduSpeech::combine($message);
                 if($result['success']) {
                     Log::info('=== result ===', $result);
-                    $file = $result['filename'];
+                    $file = $result['data'];
                     array_push($voices, Storage::get($file));
                 }
             }
