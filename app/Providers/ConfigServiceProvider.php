@@ -30,7 +30,8 @@ class ConfigServiceProvider extends ServiceProvider
             'view',
             'gateway',
             'wechat',
-            'routes'
+            'routes',
+            'laravel-baidu-speech'
                  ] as $name){
             laravelToLumen($this->app)->configure($name);
         }

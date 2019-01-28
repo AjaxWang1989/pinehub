@@ -14,7 +14,13 @@ use League\Fractal\TransformerAbstract;
 
 class ShopTransformer extends TransformerAbstract
 {
+    protected $refreshed = true;
+    public function __construct($refreshed = true)
+    {
+        $this->refreshed = $refreshed;
+    }
+
     public function transform(Shop $shop) {
-        return $shop->toArray();
+        return $this->refreshed ? $shop->toArray() : [];
     }
 }
