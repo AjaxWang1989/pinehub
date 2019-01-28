@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Jobs\RemoveOrderPaidVoice;
 use App\Repositories\ShopRepository;
 use App\Transformers\Merchant\ShopTransformer;
 use Carbon\Carbon;
@@ -56,6 +57,7 @@ class NoticeController extends Controller
                     Log::info('result', [$result, $file]);
                     array_push($voices, $file);
                     Log::info('voices----', [$voices]);
+                    dispatch((new RemoveOrderPaidVoice($file))->delay(5));
                 }
             }
             cache()->delete($key);
