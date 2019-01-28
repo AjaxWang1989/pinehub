@@ -146,7 +146,7 @@ class AuthController extends Controller
             'ttl' => Carbon::now(config('app.timezone'))->addMinute(config('jwt.ttl')),
             'refresh_ttl' => Carbon::now(config('app.timezone'))->addMinute(config('jwt.refresh_ttl'))
         ];
-        cache([$token => $tokenMeta['ttl']], $tokenMeta['ttl']);
+        cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
         return $this->response->item($manager, new ShopManagerTransformer($shop->toArray()))
             ->addMeta('token', $tokenMeta);
     }
