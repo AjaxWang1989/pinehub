@@ -47,11 +47,12 @@ class NoticeController extends Controller
         }
         $key = "shop.{$id}.order.paid";
         $messages = cache($key);
-        if($messages && empty($messages)) {
+        $hasNotice = !!$messages && !empty($messages);
+        if($hasNotice) {
             Log::info('-------- order paid voice play -------');
             cache()->delete($key);
         }
-        return $this->response->item($shop, new ShopTransformer(!!$messages && !empty($messages)))
+        return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
             ->addMeta('voices', $messages);
     }
