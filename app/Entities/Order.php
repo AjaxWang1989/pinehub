@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Events\OrderPaidNoticeEvent;
 use App\Jobs\OrderUpdateStatus;
 use App\Repositories\OrderRepository;
 use Carbon\Carbon;
@@ -237,6 +238,10 @@ class Order extends Model implements Transformable
                     $job = (new OrderUpdateStatus($order->id, Order::COMPLETED))
                         ->delay($date);
                     dispatch($job);
+                }
+
+                if(Order::PAID === $order->status && $order->type === Order::OFF_LINE_PAYMENT_ORDER) {
+                    dispatch(new OrderPaidNoticeEvent($order->shopId, $order));
                 }
             }
         });
