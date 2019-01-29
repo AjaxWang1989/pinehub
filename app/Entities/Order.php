@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 use App\Entities\Traits\ModelAttributesAccess;
@@ -241,6 +242,7 @@ class Order extends Model implements Transformable
                 }
 
                 if(Order::PAID === $order->status && $order->type === Order::OFF_LINE_PAYMENT_ORDER) {
+                    Log::info('------- order off line paid ----------');
                     dispatch(new OrderPaidNoticeEvent($order->shopId, $order));
                 }
             }

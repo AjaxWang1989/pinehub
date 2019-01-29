@@ -47,24 +47,11 @@ class NoticeController extends Controller
         }
         $key = "shop.{$id}.order.paid";
         $messages = cache($key);
-        $voices = null;
-        if($messages) {
-            $voices = [];
-            foreach ($messages as $message) {
-                $result = BaiduSpeech::combine($message);
-                if($result['success']) {
-                    $file = Storage::url($result['data']);
-                    Log::info('result', [$result, $file]);
-                    array_push($voices, $file);
-                    Log::info('voices----', [$voices]);
-                    dispatch((new RemoveOrderPaidVoice($file))->delay(5));
-                }
-            }
+        if($messages && empty($messages)) {
             cache()->delete($key);
         }
-        Log::info('voices', [$voices]);
-        return $this->response->item($shop, new ShopTransformer(!!$voices))
+        return $this->response->item($shop, new ShopTransformer(!!$messages && !empty($messages)))
             ->addMeta('token', $tokenMeta)
-            ->addMeta('voices', $voices);
+            ->addMeta('voices', $messages);
     }
 }

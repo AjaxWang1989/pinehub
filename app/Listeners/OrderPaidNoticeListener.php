@@ -3,9 +3,12 @@
 namespace App\Listeners;
 
 use App\Events\OrderPaidNoticeEvent;
+use App\Jobs\RemoveOrderPaidVoice;
 use Carbon\Carbon;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Jormin\BaiduSpeech\BaiduSpeech;
+use Toplan\Sms\Storage;
 
 class OrderPaidNoticeListener
 {
@@ -29,7 +32,16 @@ class OrderPaidNoticeListener
     public function handle(OrderPaidNoticeEvent $event)
     {
         $messages = $event->broadcastWith();
-        $cacheMessages = cache($event->broadcastOn(), []);
-        cache([$event->broadcastOn() => array_merge($cacheMessages, $messages)], Carbon::now()->addMinute(10));
+        $voices = [];
+        foreach ($messages as $message) {
+            $result = BaiduSpeech::combine($message);
+            if($result['success']) {
+                $file = Storage::url($result['data']);
+                array_push($voices, $file);
+                dispatch((new RemoveOrderPaidVoice($file))->delay(5));
+            }
+        }
+        $cacheVoices = cache($event->broadcastOn(), []);
+        cache([$event->broadcastOn() => array_merge($cacheVoices, $voices)], Carbon::now()->addMinute(10));
     }
 }
