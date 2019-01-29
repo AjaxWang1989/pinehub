@@ -48,6 +48,7 @@ class NoticeController extends Controller
         $key = "shop.{$id}.order.paid";
         $messages = cache($key);
         if($messages && empty($messages)) {
+            Log::info('-------- voice -------------');
             cache()->delete($key);
         }
         return $this->response->item($shop, new ShopTransformer(!!$messages && !empty($messages)))
