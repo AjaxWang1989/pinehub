@@ -243,7 +243,7 @@ class Order extends Model implements Transformable
 
                 if(Order::COMPLETED === $order->status && $order->type === Order::OFF_LINE_PAYMENT_ORDER) {
                     Log::info('------- order off line paid ----------');
-                    dispatch(new OrderPaidNoticeEvent($order->shopId, $order));
+                    event(new OrderPaidNoticeEvent($order->shopId, $order));
                 }
             }
         });
