@@ -5,11 +5,9 @@ namespace App\Listeners;
 use App\Events\OrderPaidNoticeEvent;
 use App\Jobs\RemoveOrderPaidVoice;
 use Carbon\Carbon;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Log;
 use Jormin\BaiduSpeech\BaiduSpeech;
-use Toplan\Sms\Storage;
+use Illuminate\Support\Facades\Storage;
 
 class OrderPaidNoticeListener
 {
