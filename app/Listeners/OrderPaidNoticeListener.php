@@ -47,5 +47,9 @@ class OrderPaidNoticeListener
                 }
             }
         }
+
+//        Log::info('----- order paid notice voice -------', $voices);
+//        $cacheVoices = cache($event->broadcastOn(), []);
+//        cache([$event->broadcastOn() => array_merge($cacheVoices, $voices)], Carbon::now()->addMinute(10));
     }
 }
