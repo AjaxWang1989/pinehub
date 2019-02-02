@@ -70,6 +70,7 @@ return [
         'Storage' => 'Illuminate\Support\Facades\Storage',
         'JWTAuth' => '\Tymon\JWTAuth\Facades\JWTAuth',
         'EasyWeChat' => '\Overtrue\LaravelWeChat\Facade',
+        'Getui' => Echobool\Getui\Facades\Getui::class,
         //'Validator' => 'Illuminate\Support\Facades\Validator',
 //        'auth.meta' => '\App\Http\Middleware\ResponseMetaAddToken',
         'QRCode'    => '\SimpleSoftwareIO\QrCode\Facades\QrCode',

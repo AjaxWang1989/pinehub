@@ -32,7 +32,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return string|null
+     * @return array|null
      * @throws \Exception
      */
     public function broadcastOn()

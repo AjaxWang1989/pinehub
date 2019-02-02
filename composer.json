@@ -9,6 +9,7 @@
         "albertcht/lumen-form-request": "^2.3",
         "armandgarot/laravel-workerman": "dev-master",
         "dingo/api": "2.*",
+        "echobool/getui-laravel5": "^1.5",
         "fxm5547/laravel-aliyun-sms": "^1.0",
         "grimzy/laravel-mysql-spatial": "^2.0",
         "hhxsv5/laravel-s": "~2.0",
