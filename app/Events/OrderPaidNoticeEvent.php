@@ -32,11 +32,12 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return string
+     * @return string|null
+     * @throws \Exception
      */
     public function broadcastOn()
     {
-        return "shop.{$this->shopId}.order.paid";
+        return cache("shop-{$this->shopId}-registerId", null);
     }
 
     public function broadcastWith()
