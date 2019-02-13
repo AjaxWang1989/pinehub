@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Http\Response\JsonResponse;
 use App\Jobs\RemoveOrderPaidVoice;
 use App\Repositories\ShopRepository;
 use App\Transformers\Merchant\ShopTransformer;
@@ -55,5 +56,20 @@ class NoticeController extends Controller
         return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
             ->addMeta('voices', $messages);
+    }
+
+    /**
+     * @param Request $request
+     * @return NoticeController|\Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|\Laravel\Lumen\Application|mixed
+     * @throws \Exception
+     */
+    public function  registerGetTuiClientId(Request $request)
+    {
+        $clientId = $request->input('client_id', null);
+        $shopId = $request->input('shop_id', null);
+        cache(["shop-{$shopId}-registerId" => [
+            'igt' => $clientId
+        ]], Carbon::now(config('app.timezone'))->addMinute(config('jwt.ttl')));
+        return $this->response(new JsonResponse(['message' => '推送ID注册成功']));
     }
 }

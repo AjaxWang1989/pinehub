@@ -41,14 +41,21 @@ class OrderPaidNoticeListener
                 array_push($voices, $file);
                 dispatch((new RemoveOrderPaidVoice($file))->delay(5));
                 if(($registerIds = $event->broadcastOn())) {
+                    $messageId = str_random();
+                    $content = [
+                        'voice' => $file,
+                        'message_id' => $messageId,
+                        'type' => 'PAYMENT_NOTICE'
+                    ];
                     JPush::push()->setPlatform(['android', 'ios'])
                         ->addRegistrationId($registerIds['jpush'])
-                        ->setMessage($message, '', 'text', ['voice_url' => $file])
+                        ->setMessage($message, '平台收款', 'text',  $content)
                         ->send();
 
                     Getui::pushMessageToSingle($registerIds['igt'], [
-                        'content'=> json_encode(['voice_url' => $file]),
-                        'text' => $message,
+                        'content'=> json_encode($content),
+                        'payload' => json_encode($content),
+                        'body' => $message,
                         'title'=>'平台收款'
                     ]);
                 }
