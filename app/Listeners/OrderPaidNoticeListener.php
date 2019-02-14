@@ -37,6 +37,7 @@ class OrderPaidNoticeListener
         $voices = [];
         foreach ($messages as $message) {
             $result = BaiduSpeech::combine($message);
+            Log::info('========= 语音 ==========', [$result]);
             if($result['success']) {
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
