@@ -70,6 +70,8 @@ class NoticeController extends Controller
         cache(["shop-{$shopId}-registerId" => [
             'igt' => $clientId
         ]], Carbon::now(config('app.timezone'))->addMinute(config('jwt.ttl')));
-        return $this->response(new JsonResponse(['message' => '推送ID注册成功']));
+        Log::info("shop-{$shopId}-registerId", cache("shop-{$shopId}-registerId", []));
+        return $this->response(new JsonResponse(['message' => '推送ID注册成功',
+            'register' => cache("shop-{$shopId}-registerId", null)]));
     }
 }
