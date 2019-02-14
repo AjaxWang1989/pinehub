@@ -37,7 +37,7 @@ class OrderPaidNoticeListener
         $voices = [];
         foreach ($messages as $message) {
             $result = BaiduSpeech::combine($message);
-            Log::info('========= 语音 ==========', [$result]);
+            Log::info('========= 语音 ==========', [$result, $event->broadcastOn()]);
             if($result['success']) {
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
@@ -49,18 +49,23 @@ class OrderPaidNoticeListener
                         'message_id' => $messageId,
                         'type' => 'PAYMENT_NOTICE'
                     ];
-                    JPush::push()->setPlatform(['android', 'ios'])
-                        ->addRegistrationId($registerIds['jpush'])
-                        ->setMessage($message, '平台收款', 'text',  $content)
-                        ->send();
+                    if(isset($registerIds['jpush'])) {
+                        JPush::push()->setPlatform(['android', 'ios'])
+                            ->addRegistrationId($registerIds['jpush'])
+                            ->setMessage($message, '平台收款', 'text',  $content)
+                            ->send();
+                    }
 
-                    $result = Getui::pushMessageToSingle($registerIds['igt'], [
-                        'content'=> json_encode($content),
-                        'payload' => json_encode($content),
-                        'body' => $message,
-                        'title'=>'平台收款'
-                    ]);
-                    Log::info('========= 推送 ==========', [$result]);
+                    if(isset($registerIds['igt'])) {
+                        $result = Getui::pushMessageToSingle($registerIds['igt'], [
+                            'content'=> json_encode($content),
+                            'payload' => json_encode($content),
+                            'body' => $message,
+                            'title'=>'平台收款'
+                        ]);
+                        Log::info('========= 推送 ==========', [$result]);
+                    }
+
                 }
             }
         }
