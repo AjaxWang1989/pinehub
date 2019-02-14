@@ -53,12 +53,13 @@ class OrderPaidNoticeListener
                         ->setMessage($message, '平台收款', 'text',  $content)
                         ->send();
 
-                    Getui::pushMessageToSingle($registerIds['igt'], [
+                    $result = Getui::pushMessageToSingle($registerIds['igt'], [
                         'content'=> json_encode($content),
                         'payload' => json_encode($content),
                         'body' => $message,
                         'title'=>'平台收款'
                     ]);
+                    Log::info('========= 推送 ==========', [$result]);
                 }
             }
         }
