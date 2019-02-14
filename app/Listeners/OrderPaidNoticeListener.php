@@ -39,10 +39,12 @@ class OrderPaidNoticeListener
             $result = BaiduSpeech::combine($message);
             Log::info('========= 语音 ==========', [$result, $event->broadcastOn()]);
             if($result['success']) {
+                Log::info("========= result success ==========");
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
                 dispatch((new RemoveOrderPaidVoice($file))->delay(5));
                 if(($registerIds = $event->broadcastOn())) {
+                    Log::info("========= result success ==========", [$registerIds]);
                     $messageId = str_random();
                     $content = [
                         'voice' => $file,
