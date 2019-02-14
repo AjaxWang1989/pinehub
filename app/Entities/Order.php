@@ -241,6 +241,7 @@ class Order extends Model implements Transformable
                     dispatch($job);
                 }
 
+                Log::info('======== order ========', [$order->status, $order->type]);
                 if(Order::COMPLETED === $order->status && $order->type === Order::OFF_LINE_PAYMENT_ORDER) {
                     Log::info('------- order off line paid ----------');
                     event(new OrderPaidNoticeEvent($order->shopId, $order));
