@@ -8,6 +8,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Support\Facades\Log;
 
 class OrderPaidNoticeEvent extends Event implements ShouldQueue
 {
@@ -37,6 +38,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
      */
     public function broadcastOn()
     {
+        Log::info("shop-{$this->shopId}-registerId");
         return cache("shop-{$this->shopId}-registerId", null);
     }
 
