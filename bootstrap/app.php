@@ -105,7 +105,7 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\App\Providers\OrderServiceProvider::class);
  $app->register(\App\Providers\RoutesManagerServiceProvider::class);
  $app->register(\App\Providers\JPushServiceProvider::class);
- $app->register(Echobool\Getui\GetuiServiceProvider::class);
+ $app->register(\Echobool\Getui\GetuiServiceProvider::class);
  $app->configure('filesystems');
  $app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
 

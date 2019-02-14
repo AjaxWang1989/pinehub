@@ -61,7 +61,8 @@ class OrderPaidNoticeListener
                     if(isset($registerIds['igt'])) {
                         try{
                             Log::info('=========+ 推送 +==========');
-                            $result = Getui::pushMessageToSingle($registerIds['igt'], [
+
+                            $result = app('Getui')->pushMessageToSingle($registerIds['igt'], [
                                 'content'=> json_encode($content),
                                 'payload' => json_encode($content),
                                 'body' => $message,
