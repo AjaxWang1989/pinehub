@@ -33,6 +33,7 @@ class OrderPaidNoticeListener
     public function handle(OrderPaidNoticeEvent $event)
     {
         $messages = $event->broadcastWith();
+        Log::info('++++++++++++ messages ++++++++++++', $messages);
         $voices = [];
         foreach ($messages as $message) {
             $result = BaiduSpeech::combine($message);
