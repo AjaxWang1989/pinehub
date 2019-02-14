@@ -59,13 +59,17 @@ class OrderPaidNoticeListener
                     }
 
                     if(isset($registerIds['igt'])) {
-                        $result = Getui::pushMessageToSingle($registerIds['igt'], [
-                            'content'=> json_encode($content),
-                            'payload' => json_encode($content),
-                            'body' => $message,
-                            'title'=>'平台收款'
-                        ]);
-                        Log::info('========= 推送 ==========', [$result]);
+                        try{
+                            $result = Getui::pushMessageToSingle($registerIds['igt'], [
+                                'content'=> json_encode($content),
+                                'payload' => json_encode($content),
+                                'body' => $message,
+                                'title'=>'平台收款'
+                            ]);
+                            Log::info('========= 推送 ==========', [$result]);
+                        }catch (\Exception $exception) {
+                            Log::info('---------- error -----------'. $exception->getMessage(), $exception->getTrace());
+                        }
                     }
 
                 }
