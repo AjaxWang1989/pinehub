@@ -143,7 +143,7 @@ class MerchandisesController extends Controller
         return $this->response(new JsonResponse(['delete_count' => $deleted]));
     }
 
-    public function uploadMerchandiseImage(MerchandiseImageRequest $request, string $driver="default")
+    public function uploadMerchandiseImage(MerchandiseImageRequest $request, string $driver= "default")
     {
         $appManager = app(AppManager::class);
         $appId = $appManager->currentApp->id;

@@ -6,6 +6,7 @@ use App\Criteria\Admin\OrderCriteria;
 use App\Criteria\Admin\OrderSearchCriteria;
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Order;
+use App\Exceptions\HttpValidationException;
 use App\Http\Requests\OrderSendRequest;
 use App\Http\Response\JsonResponse;
 
@@ -17,8 +18,12 @@ use App\Transformers\OrderTransformer;
 use App\Transformers\OrderItemTransformer;
 use App\Repositories\OrderRepository;
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
+use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
 
 class OrdersController extends Controller
@@ -57,7 +62,53 @@ class OrdersController extends Controller
             ->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($orders, new OrderItemTransformer());
     }
+    /**
+     * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadExcel(Request $request)
+    {
+        $this->repository->pushCriteria(OrderCriteria::class);
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
+        $orders = $this->repository
+            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity'])
+            ->all();
+        $headers = $request->input('headers', null);
+        if(!$headers || empty($headers)) {
+            throw new HttpValidationException(['缺少头部信息错误']);
+        }
 
+        $data = with($orders, function (Collection $orders) use($headers){
+            $excelOrders = [];
+            $header = [];
+            $orders->map(function (Order $order) use ($headers, &$excelOrders) {
+                if(count($excelOrders) === 0)
+                    $header = [];
+                foreach($headers as $key => $value) {
+                    $data[] = $order[$key];
+                    if(count($excelOrders) === 0)
+                        $header[] = $value;
+                }
+                if(count($excelOrders) === 0)
+                    $excelOrders[] = $header;
+                $excelOrders[] = $data;
+            });
+        });
+
+        Excel::create('Filename', function(LaravelExcelWriter $excel) use ($data) {
+
+            $excel->sheet('Sheetname', function(LaravelExcelWorksheet $sheet) use ($data) {
+
+                // Sheet manipulation
+                $sheet->fromArray($data);
+
+            });
+
+        })->export('xls');
+#
+    }
     /**
      * Store a newly created resource in storage.
      *

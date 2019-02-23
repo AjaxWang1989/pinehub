@@ -70,6 +70,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('/orders', ['as' => 'orders', 'uses' => 'OrdersController@index']);
                 $router->put('/order/{id}/sent', ['as' =>'order.sent', 'uses' => 'OrdersController@orderSent']);
                 $router->get('/order/{id}', ['as' => 'order.show', 'uses' => 'OrdersController@show']);
+                $router->get('/download/orders/xls', ['as' => 'orders.xls', 'uses' => 'OrdersController@downloadExcel']);
 
                 $router->post('/app/logo/{driver?}', ['as' => 'app.logo.upload', 'uses' => 'AppController@uploadLogo']);
                 $router->get('/apps', ['as' => 'app.list', 'uses' => 'AppController@index']);
