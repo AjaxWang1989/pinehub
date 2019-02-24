@@ -147,7 +147,7 @@ if(!function_exists('buildUrl')) {
 }
 
 if(!function_exists('apiUrlGenerator')) {
-    function apiUrlGenerator(string $gateway, string $name, array $params = [], array $query = [], string $version = 'v1') {
+    function apiUrlGenerator(string $gateway, string $name, array $params = [], array $query = [], string $version = null) {
         $router = app('api.router');
         /** @var \Dingo\Api\Routing\RouteCollection $routes */
         $routes = $router->getRoutes($version);
