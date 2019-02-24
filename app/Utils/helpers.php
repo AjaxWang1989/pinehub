@@ -151,7 +151,7 @@ if(!function_exists('apiUrlGenerator')) {
         $router = app('api.router');
         /** @var \Dingo\Api\Routing\RouteCollection $routes */
         $routes = $router->getRoutes($version);
-        \Illuminate\Support\Facades\Log::debug('---------- routes ----------', $routes->getRoutes());
+        \Illuminate\Support\Facades\Log::debug('---------- routes ----------', $router);
         $search = [];
         $replace = [];
         $url = null;

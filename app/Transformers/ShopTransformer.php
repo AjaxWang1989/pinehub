@@ -53,7 +53,7 @@ class ShopTransformer extends TransformerAbstract
             'today_ordering_num' => $model->todayOrderingNum,
             'total_order_write_off_num' => $model->totalOrderWriteOffNum,
             'today_order_write_off_num' => $model->todayOrderWriteOffNum,
-            'payment_url' => apiUrlGenerator('api.backend', 'store.payment.code', ['storeId' => $model->id], [], 'v1'),
+            'payment_url' => buildUrl('api.backend', '/store/{storeId}/payment/code', ['storeId' => $model->id]),
             'status' => $model->status,
             'start_at' => $model->startAt,
             'end_at' => $model->endAt,
