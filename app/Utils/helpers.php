@@ -150,6 +150,7 @@ if(!function_exists('apiUrlGenerator')) {
     function apiUrlGenerator(string $gateway, string $name, array $params = [], array $query = [], string $version = 'v1') {
         $router = app('api.router');
         $routes = $router->getRoutes($version);
+        \Illuminate\Support\Facades\Log::debug('---------- routes ----------', $routes);
         $search = [];
         $replace = [];
         $url = null;
