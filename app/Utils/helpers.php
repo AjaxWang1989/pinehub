@@ -147,7 +147,7 @@ if(!function_exists('buildUrl')) {
 }
 
 if(!function_exists('apiUrlGenerator')) {
-    function apiUrlGenerator(string $gateway, string $name, array $params = [], array $query = [], string $version = null) {
+    function apiUrlGenerator(string $gateway, string $name, array $params = [], array $query = [], string $version = 'v1') {
         $router = app('api.router');
         $routes = $router->getRoutes($version);
         $search = [];
