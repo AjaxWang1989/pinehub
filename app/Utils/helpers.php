@@ -133,7 +133,7 @@ if(!function_exists('buildUrl')) {
         if(isset($search) && isset($replace)) {
 
             $path = preg_replace($search, $replace, $path);
-            \Illuminate\Support\Facades\Log::debug('--------', ['search' => $search, 'replace' => $replace, 'path' => $path]);
+            //\Illuminate\Support\Facades\Log::debug('--------', ['search' => $search, 'replace' => $replace, 'path' => $path]);
         }
 
         if($path){
