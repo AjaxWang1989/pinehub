@@ -45,7 +45,7 @@ class ShopItemTransformer extends TransformerAbstract
             'this_month_amount' => $model->thisMonthAmount ? $model->thisMonthAmount : 0,
             'last_month_amount' => $model->lastMonthAmount ? $model->lastMonthAmount : 0,
             'balance' => $model->balance ? $model->balance : 0,
-            'payment_url' => buildUrl('api.backend', '/store/{storeId}/payment/code',['sotreId' => $model->id]),
+            'payment_url' => buildUrl('api.backend', '/store/{storeId}/payment/code',['storeId' => $model->id]),
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];
