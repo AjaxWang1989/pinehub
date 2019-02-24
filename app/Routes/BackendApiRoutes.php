@@ -56,8 +56,8 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('/user/{id}',['as' => 'user.detail', 'uses' => 'UsersController@getUserDetail']);
 
                 //登录用户信息路由
-                $router->get('/self/info', ['as' => 'self.info', 'uses' => 'MySelfController@selfInfo']);
-                $router->put('/change/password', ['as' => 'change.password', 'uses' => 'MySelfController@changePassword']);
+//                $router->get('/self/info', ['as' => 'self.info', 'uses' => 'MySelfController@selfInfo']);
+//                $router->put('/change/password', ['as' => 'change.password', 'uses' => 'MySelfController@changePassword']);
 
                 $router->post('/shop', ['as' => 'shop.create', 'uses' => 'ShopsController@store']);
                 $router->get('/shops', ['as' => 'shop.list', 'uses' => 'ShopsController@index']);
