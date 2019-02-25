@@ -60,6 +60,7 @@ class OrderItemTransformer extends TransformerAbstract
             'type' => $model->type,
 
             'trade_status' => $model->tradeStatus,
+            'receiving_shop' => $model->receivingShopAddress,
 
             /* place your other model properties here */
 
