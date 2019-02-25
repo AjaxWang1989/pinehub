@@ -269,6 +269,8 @@ class AuthController extends Controller
 
                 $mpUser->platformOpenId = $session['openid'];
                 $mpUser->sessionKey = $session['session_key'];
+                $mpUser->platformAppId = app(AppManager::class)->getAppId();
+                $mpUser->type = WECHAT_MINI_PROGRAM;
                 $mpUser->save();
 
             });
