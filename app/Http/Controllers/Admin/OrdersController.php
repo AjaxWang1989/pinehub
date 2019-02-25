@@ -59,6 +59,7 @@ class OrdersController extends Controller
         $this->repository->pushCriteria(SearchRequestCriteria::class);
         $orders = $this->repository
             ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity'])
+            ->orderBy('paid_at', 'desc')
             ->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($orders, new OrderItemTransformer());
     }
