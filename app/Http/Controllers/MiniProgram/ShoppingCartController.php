@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use App\Repositories\ShopMerchandiseRepository;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ShoppingCartController extends Controller
@@ -110,6 +111,7 @@ class ShoppingCartController extends Controller
      */
     public function activityShoppingCartMerchandiseNumChange(int $activityId, int $shoppingCartId, ActivityShoppingCartRequest $request)
     {
+        /** @var ActivityMerchandise $activityMerchandise */
         $activityMerchandise = $this->activityMerchandiseRepository
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($activityId, $request){
@@ -132,8 +134,13 @@ class ShoppingCartController extends Controller
 
         $quality = $request->input('quality');
         $message = '活动';
+        return DB::transaction(function () use ($activityMerchandise, $quality, $shoppingCart, $message){
+            $activityMerchandise->stockNum -= $quality;
+            $activityMerchandise->sellNum += $quality;
+            $activityMerchandise->save();
+            return $this->shoppingCartMerchandiseNumChange($shoppingCart, $quality, $message);
+        });
 
-        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
     }
 
     /**
@@ -145,6 +152,7 @@ class ShoppingCartController extends Controller
      */
     public function storeShoppingCartMerchandiseNumChange(int $storeId, int $shoppingCartId, StoreShoppingCartRequest $request)
     {
+        /** @var ShopMerchandise $shopMerchandise */
         $shopMerchandise = $this->shopMerchandiseRepository
             ->with(['merchandise'])
             ->scopeQuery(function ($merchandise) use($storeId, $request){
@@ -168,7 +176,15 @@ class ShoppingCartController extends Controller
         $quality = $request->input('quality');
         $message = '店铺';
 
-        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+        return DB::transaction(function () use($shopMerchandise, $shoppingCart, $quality, $message) {
+
+            $shopMerchandise->stockNum -= $quality;
+            $shopMerchandise->sellNum += $quality;
+            $shopMerchandise->save();
+            return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+        });
+
+
     }
 
     /**
@@ -180,6 +196,7 @@ class ShoppingCartController extends Controller
      */
     public function merchantShoppingCartMerchandiseNumChange(int $storeId, int $shoppingCartId, StoreShoppingCartRequest $request)
     {
+        /** @var ShopMerchandise $shopMerchandise */
         $shopMerchandise = $this->merchandiseRepository
             ->scopeQuery(function ($merchandise) use($request){
                 return $merchandise->where('id', $request->input('merchandise_id'));

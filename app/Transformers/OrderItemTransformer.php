@@ -25,7 +25,7 @@ class OrderItemTransformer extends TransformerAbstract
     {
         $orderItems = $model->orderItems->map(function (OrderItem $orderItem) {
             $data  = $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'status', 'sell_price',
-                'origin_price', 'merchandise_id', 'name', 'main_image', 'quality']);
+                'origin_price', 'merchandise_id', 'name', 'main_image', 'quality', 'merchandise_name']);
 
             $data['shop'] =$orderItem->shop ? $orderItem->shop->only(array('id', 'name')) : null;
 
