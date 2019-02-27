@@ -74,6 +74,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @property-read \App\Entities\Member|null $member
  * @property-read \App\Entities\Merchandise|null $merchandise
  * @property-read \App\Entities\Shop|null $shop
+ * @property-read Activity $activity
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\ShoppingCart whereActivityId($value)
@@ -112,6 +113,11 @@ class ShoppingCart extends Model implements AuthenticatableContract, Authorizabl
     public function shop():BelongsTo
     {
         return $this->belongsTo(Shop::class,'shop_id','id');
+    }
+
+    public function activity()
+    {
+        return $this->belongsTo(Activity::class, 'activity_id', 'id');
     }
 
     public function app()

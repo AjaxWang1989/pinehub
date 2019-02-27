@@ -126,6 +126,7 @@ class ShoppingCartController extends Controller
             throw new StoreResourceFailedException('商品库存不足');
         }
 
+        /** @var ShoppingCart $shoppingCart */
         $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($activityId,$request){
             return $shoppingCart->where('activity_id', $activityId)
                 ->where('merchandise_id',$request->input('merchandise_id'))
@@ -135,8 +136,9 @@ class ShoppingCartController extends Controller
         $quality = $request->input('quality');
         $message = '活动';
         return DB::transaction(function () use ($activityMerchandise, $quality, $shoppingCart, $message){
-            $activityMerchandise->stockNum -= $quality;
-            $activityMerchandise->sellNum += $quality;
+            $num = $quality - $shoppingCart->quality;
+            $activityMerchandise->stockNum -= $num;
+            $activityMerchandise->sellNum += $num;
             $activityMerchandise->save();
             return $this->shoppingCartMerchandiseNumChange($shoppingCart, $quality, $message);
         });
@@ -167,6 +169,7 @@ class ShoppingCartController extends Controller
         if ($shopMerchandise['stock_num'] <= $request->input('quality')){
             throw new StoreResourceFailedException('商品库存不足');
         }
+        /** @var ShoppingCart $shoppingCart */
         $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($storeId,$request){
             return $shoppingCart->where('shop_id', $storeId)
             ->where('merchandise_id',$request->input('merchandise_id'))
@@ -177,9 +180,9 @@ class ShoppingCartController extends Controller
         $message = '店铺';
 
         return DB::transaction(function () use($shopMerchandise, $shoppingCart, $quality, $message) {
-
-            $shopMerchandise->stockNum -= $quality;
-            $shopMerchandise->sellNum += $quality;
+            $num = $quality - $shoppingCart->quality;
+            $shopMerchandise->stockNum -= $num;
+            $shopMerchandise->sellNum += $num;
             $shopMerchandise->save();
             return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
         });
@@ -209,6 +212,7 @@ class ShoppingCartController extends Controller
         if ($shopMerchandise['stock_num'] <= $request->input('quality')){
             throw new StoreResourceFailedException('商品库存不足');
         }
+        /** @var ShoppingCart $shoppingCart */
         $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($storeId,$request){
             return $shoppingCart->where('shop_id', $storeId)
                 ->where('type', ShoppingCart::MERCHANT_ORDER)
@@ -217,8 +221,13 @@ class ShoppingCartController extends Controller
 
         $quality = $request->input('quality');
         $message = '店铺';
-
-        return $this->shoppingCartMerchandiseNumChange($shoppingCart, $quality, $message);
+        return DB::transaction(function () use($shopMerchandise, $shoppingCart, $quality, $message) {
+            $num = $quality - $shoppingCart->quality;
+            $shopMerchandise->stockNum -= $num;
+            $shopMerchandise->sellNum += $num;
+            $shopMerchandise->save();
+            return $this->shoppingCartMerchandiseNumChange($shoppingCart, $quality, $message);
+        });
     }
 
     /**
@@ -229,6 +238,7 @@ class ShoppingCartController extends Controller
      */
     public function bookingMallShoppingCartMerchandiseNumChange(int $shoppingCartId, BookingMallShoppingCartRequest $request)
     {
+        /** @var Merchandise $merchandise */
         $merchandise = $this->merchandiseRepository
             ->scopeQuery(function (Merchandise $merchandise) use ($request){
                 return $merchandise->where('id', $request->input('merchandise_id'));
@@ -243,6 +253,7 @@ class ShoppingCartController extends Controller
             throw new StoreResourceFailedException('商品库存不足');
         }
 
+        /** @var ShoppingCart $shoppingCart */
         $shoppingCart = $this->shoppingCartRepository->scopeQuery(function (ShoppingCart $shoppingCart) use($request){
             return $shoppingCart->where('merchandise_id', $request->input('merchandise_id'))
                     ->where('type', ShoppingCart::USER_ORDER);
@@ -251,7 +262,14 @@ class ShoppingCartController extends Controller
         $quality = $request->input('quality');
         $message = '预定商城';
 
-        return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+        return DB::transaction(function () use($merchandise, $shoppingCart, $quality, $message) {
+            $num = $quality - $shoppingCart->quality;
+            $merchandise->stockNum -= $num;
+            $merchandise->sellNum += $num;
+            $merchandise->save();
+            return $this->shoppingCartMerchandiseNumChange($shoppingCart,$quality,$message);
+        });
+
     }
 
     public function shoppingCartAddMerchandise($shoppingCart, $merchandise)
@@ -292,7 +310,13 @@ class ShoppingCartController extends Controller
         $shoppingCart['quality'] = $request->input('quality');
         $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
         $shoppingCart['type'] = ShoppingCart::USER_ORDER;
-        return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
+        return DB::transaction(function () use ($activityMerchandise, $shoppingCart, $merchandise){
+            $activityMerchandise->stockNum -= 1;
+            $activityMerchandise->sellNum += 1;
+            $activityMerchandise->save();
+            return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
+        });
+
     }
 
     /**
@@ -323,8 +347,12 @@ class ShoppingCartController extends Controller
         $shoppingCart['quality'] = $request->input('quality');
         $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
         $shoppingCart['type'] = ShoppingCart::USER_ORDER;
-
-        return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
+        return DB::transaction(function () use ($shopMerchandise, $shoppingCart, $merchandise){
+            $shopMerchandise->stockNum -= 1;
+            $shopMerchandise->sellNum += 1;
+            $shopMerchandise->save();
+            return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
+        });
     }
 
     /**
@@ -350,7 +378,12 @@ class ShoppingCartController extends Controller
         $shoppingCart['merchandise_id'] = $request->input('merchandise_id');
         $shoppingCart['type'] = ShoppingCart::USER_ORDER;
 
-        return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
+        return DB::transaction(function () use ($shoppingCart, $merchandise){
+            $merchandise->stockNum -= 1;
+            $merchandise->sellNum += 1;
+            $merchandise->save();
+            return $this->shoppingCartAddMerchandise($shoppingCart, $merchandise);
+        });
     }
 
     /**
@@ -359,8 +392,40 @@ class ShoppingCartController extends Controller
      * @return Response
      */
     public function shoppingCartDelete(int $id) {
-        $result = $this->shoppingCartRepository->delete($id);
-        return $this->response(new JsonResponse(['delete_count' => $result]));
+        /** @var ShoppingCart $shoppingCart */
+        $shoppingCart = $this->shoppingCartRepository->with(['activity'])->find($id);
+        if($shoppingCart) {
+            return DB::transaction(function () use ($shoppingCart) {
+                /** @var ShopMerchandise|ActivityMerchandise|Merchandise $merchandise */
+                $merchandise = $shoppingCart->activity ? $shoppingCart->activity->merchandises()
+                    ->where(['merchandise_id' => $shoppingCart->merchandiseId])->first() : null;
+                if($merchandise) {
+                    $merchandise->stockNum += 1;
+                    $merchandise->sellNum -= 1;
+                    $merchandise->save();
+                }else{
+                    $merchandise = $shoppingCart->shop ? $shoppingCart->shop->shopMerchandises()
+                        ->where(['merchandise_id' => $shoppingCart->merchandiseId])->first() : null;
+                    if($merchandise) {
+                        $merchandise->stockNum += 1;
+                        $merchandise->sellNum -= 1;
+                        $merchandise->save();
+                    }else{
+                        $merchandise = $shoppingCart->merchandise;
+                        if($merchandise) {
+                            $merchandise->stockNum += 1;
+                            $merchandise->sellNum -= 1;
+                            $merchandise->save();
+                        }
+                    }
+                }
+                $result  = $shoppingCart->delete();
+                return $this->response(new JsonResponse(['delete_count' => $result]));
+            });
+        }else{
+            throw new ModelNotFoundException(['message' => '没有购物车数据']);
+        }
+
     }
 
     /**
@@ -371,33 +436,101 @@ class ShoppingCartController extends Controller
      * @return \Dingo\Api\Http\Response
      */
     public function clearShoppingCart(int $storeId = null, int $activityId = null, string $type = ShoppingCart::USER_ORDER){
-        $user = $this->mpUser();
-        if (isset($storeId) && $storeId){
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'shop_id' => $storeId,
-                'customer_id' => $user['id'],
-                'type' => $type
-            ]);
-        }elseif(isset($activityId) && $activityId){
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'activity_id' => $activityId,
-                'customer_id' => $user['id'],
-                'type' => $type
-            ]);
-        }else{
-            $shoppingMerchandise = $this->shoppingCartRepository->findWhere([
-                'customer_id'=>$user['id'],
-                'shop_id' => null,
-                'activity_id' => null,
-                'type' => $type
-            ]);
-        }
-        $deleteIds = [];
-        foreach ($shoppingMerchandise as $v){
-            $deleteIds[] = $v['id'];
-        }
-        $item = ShoppingCart::destroy($deleteIds);
-        return $this->response(new JsonResponse(['delete_count' => $item]));
+        return DB::transaction(function () use($storeId, $activityId, $type){
+            $user = $this->mpUser();
+            $deleteIds = [];
+            if (isset($storeId) && $storeId){
+                /** @var ShoppingCart[]|Collection $shoppingCarts */
+                $shoppingCarts = $this->shoppingCartRepository->with(['shopMerchandise'])->findWhere([
+                    'shop_id' => $storeId,
+                    'customer_id' => $user['id'],
+                    'type' => $type
+                ]);
+                $whereFields = [];
+                foreach ($shoppingCarts as $v){
+                    $deleteIds[] = $v->id;
+                    $whereFields[] = [
+                        'shop_id' => $v->shopId,
+                        'merchandise_id' => $v->merchandiseId
+                    ];
+                }
+                /** @var Collection $merchandises */
+                $merchandises = $this->shopMerchandiseRepository->findWhere($whereFields);
+                if($merchandises && $merchandises->count() > 0) {
+                    $merchandises->map(function (ShopMerchandise $merchandise) use ($shoppingCarts) {
+                        /** @var ShoppingCart $shoppingCart */
+                        $shoppingCart = $shoppingCarts->where([
+                            'shop_id' => $merchandise->shopId,
+                            'merchandise_id' => $merchandise->merchandiseId
+                        ])->first();
+                        $merchandise->sellNum -= $shoppingCart->quality;
+                        $merchandise->stockNum += $shoppingCart->quality;
+                        $merchandise->save();
+                    });
+                }
+            }elseif(isset($activityId) && $activityId){
+                /** @var ShoppingCart[]|Collection $shoppingCarts */
+                $shoppingCarts = $this->shoppingCartRepository->with(['activityMerchandise'])->findWhere([
+                    'activity_id' => $activityId,
+                    'customer_id' => $user['id'],
+                    'type' => $type
+                ]);
+                $whereFields = [];
+                foreach ($shoppingCarts as $v){
+                    $deleteIds[] = $v->id;
+                    $whereFields[] = [
+                        'activity_id' => $v->activityId,
+                        'merchandise_id' => $v->merchandiseId
+                    ];
+                }
+                /** @var Collection $merchandises */
+                $merchandises = $this->activityMerchandiseRepository->findWhere($whereFields);
+                if($merchandises && $merchandises->count() > 0) {
+                    $merchandises->map(function (ActivityMerchandise $merchandise) use ($shoppingCarts) {
+                        /** @var ShoppingCart $shoppingCart */
+                        $shoppingCart = $shoppingCarts->where([
+                            'activity_id' => $merchandise->activityId,
+                            'merchandise_id' => $merchandise->merchandiseId
+                        ])->first();
+                        $merchandise->sellNum -= $shoppingCart->quality;
+                        $merchandise->stockNum += $shoppingCart->quality;
+                        $merchandise->save();
+                    });
+                }
+            }else{
+                /** @var ShoppingCart[] $shoppingCarts */
+                $shoppingCarts = $this->shoppingCartRepository->findWhere([
+                    'customer_id'=>$user['id'],
+                    'shop_id' => null,
+                    'activity_id' => null,
+                    'type' => $type
+                ]);
+                $whereFields = [];
+                foreach ($shoppingCarts as $v){
+                    $deleteIds[] = $v->id;
+                    $whereFields[] = [
+                        'id' => $v->merchandiseId
+                    ];
+                }
+                /** @var Collection $merchandises */
+                $merchandises = $this->merchandiseRepository->findWhere($whereFields);
+                if($merchandises && $merchandises->count() > 0) {
+                    $merchandises->map(function (Merchandise $merchandise) use ($shoppingCarts) {
+                        /** @var ShoppingCart $shoppingCart */
+                        $shoppingCart = $shoppingCarts->where([
+                            'merchandise_id' => $merchandise->id
+                        ])->first();
+                        $merchandise->sellNum -= $shoppingCart->quality;
+                        $merchandise->stockNum += $shoppingCart->quality;
+                        $merchandise->save();
+                    });
+                }
+            }
+
+
+            $item = ShoppingCart::destroy($deleteIds);
+            return $this->response(new JsonResponse(['delete_count' => $item]));
+        });
     }
 
 
