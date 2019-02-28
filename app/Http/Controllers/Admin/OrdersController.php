@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
-use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
 
@@ -130,12 +130,12 @@ class OrdersController extends Controller
         });
 
         /** @var LaravelExcelWriter $excel */
-        $excel = Excel::create(Carbon::now()->format('Y-m-d').'订单', function(LaravelExcelWriter $excel) use ($data) {
+        $excel = app(Excel::class)->create(Carbon::now()->format('Y-m-d').'订单', function(LaravelExcelWriter $excel) use ($data) {
 
             $excel->sheet('Sheet', function(LaravelExcelWorksheet $sheet) use ($data) {
 
                 // Sheet manipulation
-                $sheet->fromArray($data);
+                $sheet->rows($data);
 
             });
 
