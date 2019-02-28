@@ -122,7 +122,7 @@ class OrdersController extends Controller
                          number_format($order->paymentAmount, 2)
                     ];
                 });
-                array_merge($list, $items);
+                array_merge($list, $items->toArray());
             });
             return $list;
         });
