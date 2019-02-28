@@ -40,7 +40,7 @@ class BackendApiRoutes extends ApiRoutes
             if($this->app->environment() !== 'local') {
                 $attributes['middleware'] = ['api.auth'];
             }
-            $router->get('/download/orders/xls', ['as' => 'orders.xls', 'uses' => 'OrdersController@downloadExcel']);
+
             $router->get('/public/key',['as'=>'administrator.public.key','uses'=>'AuthController@getPublicKey']);
             $router->post('/register', ['as' => 'administrator.register', 'uses' => 'AuthController@register']);
             $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
@@ -70,6 +70,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('/orders', ['as' => 'orders', 'uses' => 'OrdersController@index']);
                 $router->put('/order/{id}/sent', ['as' =>'order.sent', 'uses' => 'OrdersController@orderSent']);
                 $router->get('/order/{id}', ['as' => 'order.show', 'uses' => 'OrdersController@show']);
+                $router->get('/download/orders/xls', ['as' => 'orders.xls', 'uses' => 'OrdersController@downloadExcel']);
 
                 $router->post('/app/logo/{driver?}', ['as' => 'app.logo.upload', 'uses' => 'AppController@uploadLogo']);
                 $router->get('/apps', ['as' => 'app.list', 'uses' => 'AppController@index']);
