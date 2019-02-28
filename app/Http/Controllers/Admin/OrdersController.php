@@ -6,6 +6,7 @@ use App\Criteria\Admin\OrderCriteria;
 use App\Criteria\Admin\OrderSearchCriteria;
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Order;
+use App\Entities\OrderItem;
 use App\Exceptions\HttpValidationException;
 use App\Http\Requests\OrderSendRequest;
 use App\Http\Response\JsonResponse;
@@ -74,28 +75,56 @@ class OrdersController extends Controller
         $this->repository->pushCriteria(OrderCriteria::class);
         $this->repository->pushCriteria(SearchRequestCriteria::class);
         $orders = $this->repository
-            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity'])
+            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity', 'receivingShopAddress'])
             ->all();
-        $headers = $request->input('headers', null);
-        if(!$headers || empty($headers)) {
+        $header = $request->input('header',  [
+            '支付订单号',
+            '商户名称',
+            '店铺名称',
+            '店铺编号',
+            '买家',
+            '下单时间',
+            '交易渠道',
+            '订单类型',
+            '产品名称',
+            '产品数',
+            '售价',
+            '优惠券',
+            '优惠金额',
+            '实付'
+        ]);
+        if(!$header || empty($header)) {
             throw new HttpValidationException(['缺少头部信息错误']);
         }
-
-        $data = with($orders, function (Collection $orders) use($headers){
-            $excelOrders = [];
-            $header = [];
-            $orders->map(function (Order $order) use ($headers, &$excelOrders) {
-                if(count($excelOrders) === 0)
-                    $header = [];
-                foreach($headers as $key => $value) {
-                    $data[] = $order[$key];
-                    if(count($excelOrders) === 0)
-                        $header[] = $value;
-                }
-                if(count($excelOrders) === 0)
-                    $excelOrders[] = $header;
-                $excelOrders[] = $data;
+        $list  = [];
+        $list[] = $header;
+        $data = with($orders, function (Collection $orders)use(&$list){
+            $orders->map(function (Order $order)  use(&$list) {
+                $items = $order->orderItems->map(function (OrderItem $item) use($order){
+                    $shop = $item->shop ? $item->shop : $order->receivingShopAddress;
+                    $nickname= ($item->customer->nickname ? $item->customer->nickname : '匿名用户');
+                    $mobile = $item->customer->mobile ? $item->customer->mobile : '未绑定手机';
+                    $paidAt = $order->paidAt->format('m/d/Y');
+                    return [
+                        $order->code,
+                        '安徽青松食品有限公司',
+                         $shop ? $shop->name : '--',
+                         $shop->code ? $shop->code : '--',
+                         "$nickname $mobile",
+                         $paidAt,
+                         $order->payTypeStr(),
+                         $order->orderTypeStr(),
+                         $item->merchandiseName,
+                         $item->quality,
+                         $item->sellPrice,
+                         $order->tickets ? $order->tickets->cardInfo['base_info']['title'] : '--',
+                         number_format($order->discountAmount, 2),
+                         number_format($order->paymentAmount, 2)
+                    ];
+                });
+                array_merge($list, $items);
             });
+            return $list;
         });
 
         Excel::create('Filename', function(LaravelExcelWriter $excel) use ($data) {

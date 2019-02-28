@@ -471,4 +471,34 @@ class Order extends Model implements Transformable
             return $query->where('shop_id', $shopId);
         });
     }
+
+    public function payTypeStr()
+    {
+        switch ($this->payType) {
+            case self::WECHAT_PAY:
+                return '微信支付';
+                break;
+            case self::ALI_PAY:
+                return '支付宝支付';
+                break;
+            case self::UNKOWN_PAY:
+                return '其他支付方式';
+                break;
+        }
+    }
+
+    public function orderTypeStr()
+    {
+        if($this->type === self::OFF_LINE_PAYMENT_ORDER) {
+            return '聚合支付';
+        }
+        switch ($this->pickUpMethod) {
+            case self::USER_SELF_PICK_UP:
+                return '预订自提';
+                break;
+            case self::SEND_ORDER_TO_USER:
+                return '送货上门';
+                break;
+        }
+    }
 }
