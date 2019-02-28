@@ -76,6 +76,7 @@ class OrdersController extends Controller
         $this->repository->pushCriteria(SearchRequestCriteria::class);
         $orders = $this->repository
             ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity', 'receivingShopAddress'])
+            ->orderBy('paid_at', 'desc')
             ->all();
         $header = $request->input('header',  [
             '支付订单号',
