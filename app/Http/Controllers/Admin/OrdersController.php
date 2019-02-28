@@ -128,8 +128,8 @@ class OrdersController extends Controller
                 });
                return $items->toArray();
             });
-            Log::debug('order items', $orderItems->flatten(2)->toArray());
-            return $orderItems->flatten(2)->toArray();
+            Log::debug('order items', $orderItems->toArray());
+            return $orderItems->toArray();
         });
         Log::debug('order excel data', [$data, $list]);
         /** @var LaravelExcelWriter $excel */
