@@ -140,7 +140,7 @@ class OrdersController extends Controller
         });
 
         $content = $excel->string();
-        return $this->response(['excel' => $content]);
+        return $this->response(new JsonResponse(['excel' => $content]));
 #
     }
     /**
