@@ -104,7 +104,7 @@ class OrdersController extends Controller
                     $shop = $item->shop ? $item->shop : $order->receivingShopAddress;
                     $nickname= ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
                     $mobile = $order->customer && $order->customer->mobile ? $order->customer->mobile : '未绑定手机';
-                    $paidAt = $order->paidAt->format('m/d/Y');
+                    $paidAt = $order->paidAt ? $order->paidAt->format('m/d/Y') : '--';
                     return [
                         $order->code,
                         '安徽青松食品有限公司',
