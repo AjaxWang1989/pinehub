@@ -103,7 +103,7 @@ class OrdersController extends Controller
         $list  = [];
 //        $list[] = $header;
         $data = with($orders, function (Collection $orders)use(&$list){
-            $orders->map(function (Order $order)  use(&$list) {
+            $orderItems = $orders->map(function (Order $order) {
                 $items = $order->orderItems->map(function (OrderItem $item) use($order){
                     $shop = $item->shop ? $item->shop : ($order->shop ? $order->shop : $order->receivingShopAddress);
                     $nickname= ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
@@ -126,10 +126,10 @@ class OrdersController extends Controller
                          number_format($order->paymentAmount, 2)
                     ];
                 });
-                Log::debug('orders map', $items->toArray());
-                array_merge($list, $items->toArray());
+               return $items->toArray();
             });
-            return $list;
+            Log::debug('order items', $orderItems->toArray());
+            return $orderItems->toArray();
         });
         Log::debug('order excel data', [$data, $list]);
         /** @var LaravelExcelWriter $excel */
