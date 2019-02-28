@@ -139,7 +139,7 @@ class OrdersController extends Controller
 
         });
 
-        $content = $excel->store();
+        $content = $excel->store('xls', 'excel');
 
         return $this->response(new JsonResponse(['path' => $content->storagePath]));
 #
