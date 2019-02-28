@@ -98,7 +98,6 @@ class OrdersController extends Controller
             throw new HttpValidationException(['缺少头部信息错误']);
         }
         $list  = [];
-        $list[] = $header;
         $data = with($orders, function (Collection $orders)use(&$list){
             $orders->map(function (Order $order)  use(&$list) {
                 $items = $order->orderItems->map(function (OrderItem $item) use($order){
@@ -128,16 +127,16 @@ class OrdersController extends Controller
             return $list;
         });
 
-        Excel::create('Filename', function(LaravelExcelWriter $excel) use ($data) {
+        Excel::create(Carbon::now()->format('Y-m-d').'订单', function(LaravelExcelWriter $excel) use ($data) {
 
-            $excel->sheet('Sheetname', function(LaravelExcelWorksheet $sheet) use ($data) {
+            $excel->sheet('Sheet', function(LaravelExcelWorksheet $sheet) use ($data) {
 
                 // Sheet manipulation
                 $sheet->fromArray($data);
 
             });
 
-        })->export('xls');
+        })->export('xls', $header);
 #
     }
     /**
