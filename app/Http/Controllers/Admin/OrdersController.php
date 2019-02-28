@@ -109,7 +109,7 @@ class OrdersController extends Controller
                     $nickname= ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
                     $mobile = $order->customer && $order->customer->mobile ? $order->customer->mobile : '未绑定手机';
                     $paidAt = $order->paidAt ? $order->paidAt->format('m/d/Y') : '--';
-                    $list = [
+                    $list[] = [
                         $order->code,
                         '安徽青松食品有限公司',
                          $shop ? $shop->name : '--',
