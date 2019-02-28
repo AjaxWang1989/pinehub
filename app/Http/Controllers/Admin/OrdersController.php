@@ -22,6 +22,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
 use Maatwebsite\Excel\Excel;
 use Maatwebsite\Excel\Writers\LaravelExcelWriter;
@@ -100,6 +101,7 @@ class OrdersController extends Controller
             throw new HttpValidationException(['缺少头部信息错误']);
         }
         $list  = [];
+//        $list[] = $header;
         $data = with($orders, function (Collection $orders)use(&$list){
             $orders->map(function (Order $order)  use(&$list) {
                 $items = $order->orderItems->map(function (OrderItem $item) use($order){
@@ -128,7 +130,7 @@ class OrdersController extends Controller
             });
             return $list;
         });
-
+        Log::debug('order excel data', [$data, $list]);
         /** @var LaravelExcelWriter $excel */
         $excel = app(Excel::class)->create(Carbon::now()->format('Y-m-d').'订单', function(LaravelExcelWriter $excel) use ($data) {
 
