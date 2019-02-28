@@ -102,7 +102,7 @@ class OrdersController extends Controller
             throw new HttpValidationException(['缺少头部信息错误']);
         }
         $list  = [];
-//        $list[] = $header;
+        $list[] = $header;
         $data = with($orders, function (Collection $orders) use (& $list){
             $orders->map(function (Order $order) use (& $list){
                 $order->orderItems->map(function (OrderItem $item) use($order, & $list){
@@ -146,7 +146,7 @@ class OrdersController extends Controller
 
         });
 
-        $excel->export('xls', $header);
+        $excel->export();
 #
     }
     /**
