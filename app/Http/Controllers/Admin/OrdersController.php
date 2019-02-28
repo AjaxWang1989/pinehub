@@ -127,7 +127,8 @@ class OrdersController extends Controller
             return $list;
         });
 
-        Excel::create(Carbon::now()->format('Y-m-d').'订单', function(LaravelExcelWriter $excel) use ($data) {
+        /** @var LaravelExcelWriter $excel */
+        $excel = Excel::create(Carbon::now()->format('Y-m-d').'订单', function(LaravelExcelWriter $excel) use ($data) {
 
             $excel->sheet('Sheet', function(LaravelExcelWorksheet $sheet) use ($data) {
 
@@ -136,7 +137,10 @@ class OrdersController extends Controller
 
             });
 
-        })->export('xls', $header);
+        });
+
+        $content = $excel->string();
+        return $this->response($content);
 #
     }
     /**
