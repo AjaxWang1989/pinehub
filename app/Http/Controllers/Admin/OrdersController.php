@@ -102,8 +102,8 @@ class OrdersController extends Controller
             $orders->map(function (Order $order)  use(&$list) {
                 $items = $order->orderItems->map(function (OrderItem $item) use($order){
                     $shop = $item->shop ? $item->shop : $order->receivingShopAddress;
-                    $nickname= ($item->customer->nickname ? $item->customer->nickname : '匿名用户');
-                    $mobile = $item->customer->mobile ? $item->customer->mobile : '未绑定手机';
+                    $nickname= ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
+                    $mobile = $order->customer && $order->customer->mobile ? $order->customer->mobile : '未绑定手机';
                     $paidAt = $order->paidAt->format('m/d/Y');
                     return [
                         $order->code,
