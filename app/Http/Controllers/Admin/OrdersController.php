@@ -126,6 +126,7 @@ class OrdersController extends Controller
                          number_format($order->paymentAmount, 2)
                     ];
                 });
+                Log::debug('orders map', $items->toArray());
                 array_merge($list, $items->toArray());
             });
             return $list;
