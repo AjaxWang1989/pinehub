@@ -75,7 +75,7 @@ class OrdersController extends Controller
         $this->repository->pushCriteria(OrderCriteria::class);
         $this->repository->pushCriteria(SearchRequestCriteria::class);
         $orders = $this->repository
-            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity', 'receivingShopAddress'])
+            ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity', 'receivingShopAddress', 'shop'])
             ->orderBy('paid_at', 'desc')
             ->all();
         $header = $request->input('header',  [
@@ -102,7 +102,7 @@ class OrdersController extends Controller
         $data = with($orders, function (Collection $orders)use(&$list){
             $orders->map(function (Order $order)  use(&$list) {
                 $items = $order->orderItems->map(function (OrderItem $item) use($order){
-                    $shop = $item->shop ? $item->shop : $order->receivingShopAddress;
+                    $shop = $item->shop ? $item->shop : ($order->shop ? $order->shop : $order->receivingShopAddress);
                     $nickname= ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
                     $mobile = $order->customer && $order->customer->mobile ? $order->customer->mobile : '未绑定手机';
                     $paidAt = $order->paidAt ? $order->paidAt->format('m/d/Y') : '--';
@@ -110,7 +110,7 @@ class OrdersController extends Controller
                         $order->code,
                         '安徽青松食品有限公司',
                          $shop ? $shop->name : '--',
-                         $shop->code ? $shop->code : '--',
+                         $shop ? $shop->code : '--',
                          "$nickname $mobile",
                          $paidAt,
                          $order->payTypeStr(),
