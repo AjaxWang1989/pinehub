@@ -22,7 +22,7 @@ class BackendServiceProvider extends ServiceProvider
 
     public function boot(Request $request, AppRepository $repository) {
         $appId = $request->header('ProjectId', null);
-        $appId = $appId ? $appId : $request->query('ProjectId', null);
+        $appId = $appId ? $appId : $request->input('ProjectId', null);
         $appId = $appId ? $appId : (app()->has('session') ? app()->make('session')->get('project_id') : null);
         $currentApp = $appId ? $repository->find($appId) : null;
         $appManager = app(AppManager::class);

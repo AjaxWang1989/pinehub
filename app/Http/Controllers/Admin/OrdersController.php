@@ -64,11 +64,13 @@ class OrdersController extends Controller
             ->paginate($request->input('limit', PAGE_LIMIT));
         return $this->response()->paginator($orders, new OrderItemTransformer());
     }
+
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return void
+     * @throws \Maatwebsite\Excel\Exceptions\LaravelExcelException
      */
     public function downloadExcel(Request $request)
     {
@@ -139,9 +141,7 @@ class OrdersController extends Controller
 
         });
 
-        $content = $excel->store('xls', 'excel');
-
-        return $this->response(new JsonResponse(['path' => $content->storagePath]));
+        $excel->export('xls', $header);
 #
     }
     /**
