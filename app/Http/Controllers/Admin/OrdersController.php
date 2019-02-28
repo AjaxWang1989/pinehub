@@ -86,7 +86,8 @@ class OrdersController extends Controller
             '商户名称',
             '店铺名称',
             '店铺编号',
-            '买家',
+            '买家姓名',
+            '买家手机',
             '下单时间',
             '交易渠道',
             '订单类型',
@@ -110,11 +111,12 @@ class OrdersController extends Controller
                     $mobile = $order->customer && $order->customer->mobile ? $order->customer->mobile : '未绑定手机';
                     $paidAt = $order->paidAt ? $order->paidAt->format('m/d/Y') : '--';
                     $list[] = [
-                        $order->code,
+                        "'$order->code",
                         '安徽青松食品有限公司',
                          $shop ? $shop->name : '--',
                          $shop ? $shop->code : '--',
-                         "$nickname $mobile",
+                         $nickname,
+                        "'$mobile",
                          $paidAt,
                          $order->payTypeStr(),
                          $order->orderTypeStr(),
