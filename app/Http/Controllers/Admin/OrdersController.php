@@ -102,14 +102,14 @@ class OrdersController extends Controller
         }
         $list  = [];
 //        $list[] = $header;
-        $data = with($orders, function (Collection $orders)use(&$list){
-            $orderItems = $orders->map(function (Order $order) {
-                $items = $order->orderItems->map(function (OrderItem $item) use($order){
+        $data = with($orders, function (Collection $orders) use (& $list){
+            $orders->map(function (Order $order) use (& $list){
+                $order->orderItems->map(function (OrderItem $item) use($order, & $list){
                     $shop = $item->shop ? $item->shop : ($order->shop ? $order->shop : $order->receivingShopAddress);
                     $nickname= ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
                     $mobile = $order->customer && $order->customer->mobile ? $order->customer->mobile : '未绑定手机';
                     $paidAt = $order->paidAt ? $order->paidAt->format('m/d/Y') : '--';
-                    return [
+                    $list = [
                         $order->code,
                         '安徽青松食品有限公司',
                          $shop ? $shop->name : '--',
@@ -126,9 +126,9 @@ class OrdersController extends Controller
                          number_format($order->paymentAmount, 2)
                     ];
                 });
-               return $items->toArray();
+               //return $items->toArray();
             });
-            Log::debug('order items', $orderItems->toArray());
+            //Log::debug('order items', $orderItems->toArray());
             return [];
         });
         Log::debug('order excel data', [$data, $list]);
