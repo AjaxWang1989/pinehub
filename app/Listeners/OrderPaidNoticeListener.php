@@ -7,6 +7,7 @@ use App\Facades\JPush;
 use App\Jobs\RemoveOrderPaidVoice;
 use Carbon\Carbon;
 use Echobool\Getui\Facades\Getui;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Jormin\BaiduSpeech\BaiduSpeech;
 use Illuminate\Support\Facades\Storage;
@@ -51,6 +52,9 @@ class OrderPaidNoticeListener
                         'message_id' => $messageId,
                         'type' => 'PAYMENT_NOTICE'
                     ];
+                    $list = Cache::get($event->noticeVoiceCacheKey(), []);
+                    $list[] = $content;
+                    Cache::add($event->noticeVoiceCacheKey(), $list, 10);
                     if(isset($registerIds['jpush'])) {
                         JPush::push()->setPlatform(['android', 'ios'])
                             ->addRegistrationId($registerIds['jpush'])

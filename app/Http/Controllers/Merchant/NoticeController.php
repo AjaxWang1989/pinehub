@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Events\OrderPaidNoticeEvent;
 use App\Http\Response\JsonResponse;
 use App\Jobs\RemoveOrderPaidVoice;
 use App\Repositories\ShopRepository;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use function GuzzleHttp\Psr7\str;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Jormin\BaiduSpeech\BaiduSpeech;
@@ -46,9 +48,9 @@ class NoticeController extends Controller
             ];
             cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
         }
-        $key = "shop.{$id}.order.paid";
-        $messages = cache($key);
-        $hasNotice = !!$messages && !empty($messages);
+        $key = OrderPaidNoticeEvent::CACHE_KEY.$id;
+        $messages = Cache::get($key, null);
+        $hasNotice = $messages && !empty($messages);
         if($hasNotice) {
             Log::info('-------- order paid voice play -------');
             cache()->delete($key);

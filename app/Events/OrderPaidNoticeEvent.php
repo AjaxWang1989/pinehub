@@ -16,6 +16,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
 
     protected $shopId = null;
     protected $voiceText = null;
+    public static const CACHE_KEY = 'payment-notice-voice-shop-';
     /**
      * Create a new event instance.
      * @param int $shopId
@@ -40,6 +41,11 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
     {
         Log::info("shop-{$this->shopId}-registerId");
         return cache("shop-{$this->shopId}-registerId", null);
+    }
+
+    public function noticeVoiceCacheKey()
+    {
+        return self::CACHE_KEY.$this->shopId;
     }
 
     public function broadcastWith()
