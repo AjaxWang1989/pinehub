@@ -43,7 +43,7 @@ class OrderPaidNoticeListener
                 Log::info("========= result success ==========");
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
-                dispatch((new RemoveOrderPaidVoice($file))->delay(5));
+                dispatch((new RemoveOrderPaidVoice($file))->delay(60));
                 if(($registerIds = $event->broadcastOn())) {
                     Log::info("========= result success ==========", [$registerIds]);
                     $messageId = str_random();
@@ -54,7 +54,7 @@ class OrderPaidNoticeListener
                     ];
                     $list = Cache::get($event->noticeVoiceCacheKey(), []);
                     $list[] = $content;
-                    Cache::add($event->noticeVoiceCacheKey(), $list, 10);
+                    Cache::add($event->noticeVoiceCacheKey(), $list, 1);
                     if(isset($registerIds['jpush'])) {
                         JPush::push()->setPlatform(['android', 'ios'])
                             ->addRegistrationId($registerIds['jpush'])
