@@ -269,10 +269,11 @@ class OrderBuilder implements InterfaceServiceHandler
                 }
                 case ActivityMerchandise::class: {
                     return /** @lang text */
-                        DB::update("UPDATE `activity_merchandises` SET 
+                        $result = DB::update("UPDATE `activity_merchandises` SET 
                         `stock_num` = {$merchandise->stockNum} ,
                         `sell_num` = {$merchandise->sellNum} 
                         WHERE `merchandise_id` = {$merchandise->id}");
+                        Log::debug('activity merchandise update stock', [$result]);
                     break;
                 }
             }
@@ -489,6 +490,6 @@ class OrderBuilder implements InterfaceServiceHandler
         }
         $merchandise->stockNum -= $quality;
         $merchandise->sellNum += $quality;
-        Log::debug('merchandise ',[get_class($merchandise), $model->toArray()]);
+        Log::debug('-------- merchandise --------------',[get_class($merchandise), $model->toArray()]);
     }
 }
