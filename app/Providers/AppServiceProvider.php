@@ -139,5 +139,9 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->register(LaravelSServiceProvider::class);
         $this->app->register(QueueServiceProvider::class);
+
+        if($this->app->runningInConsole()) {
+            $this->app->register(\EchoServer\BroadcastServerServiceProvider::class);
+        }
     }
 }
