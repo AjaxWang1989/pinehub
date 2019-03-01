@@ -70,7 +70,7 @@ class OrderPaidNoticeListener
                                 'content'=> json_encode($content),
                                 'payload' => json_encode($content),
                                 'body' => $message,
-                                'title'=>'平台收款'
+                                'title'=> '平台收款'
                             ], 4);
                             Log::info('========= 推送 ==========', [$result]);
                         }catch (\Exception $exception) {
