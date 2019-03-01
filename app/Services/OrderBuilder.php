@@ -264,7 +264,7 @@ class OrderBuilder implements InterfaceServiceHandler
                         DB::update("UPDATE `shop_merchandises` SET
                          `stock_num` = {$merchandise->stockNum} ,
                          `sell_num` = {$merchandise->sellNum} 
-                         WHERE `id` = {$merchandise->id}");
+                         WHERE `merchandise_id` = {$merchandise->id}");
                     break;
                 }
                 case ActivityMerchandise::class: {
@@ -272,7 +272,7 @@ class OrderBuilder implements InterfaceServiceHandler
                         DB::update("UPDATE `activity_merchandises` SET 
                         `stock_num` = {$merchandise->stockNum} ,
                         `sell_num` = {$merchandise->sellNum} 
-                        WHERE `id` = {$merchandise->id}");
+                        WHERE `merchandise_id` = {$merchandise->id}");
                     break;
                 }
             }
