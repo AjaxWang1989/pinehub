@@ -16,7 +16,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
 
     protected $shopId = null;
     protected $voiceText = null;
-    public static const CACHE_KEY = 'payment-notice-voice-shop-';
+    public  const CACHE_KEY = 'payment-notice-voice-shop-';
     /**
      * Create a new event instance.
      * @param int $shopId
