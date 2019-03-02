@@ -389,6 +389,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $this->skuProduct($model, $quality);
             $this->merchandise($model->merchandise, $quality);
         }else {
+            Log::debug("---------- build order item $model->id ------------\n", [$model]);
             $this->merchandise($model, $quality);
         }
         $data['quality'] = $quality;
