@@ -252,7 +252,7 @@ class OrderBuilder implements InterfaceServiceHandler
                     $repository = app()->make(ActivityMerchandiseRepository::class);
                     $product = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')
-                            ->where('deleted_at', '!=', null)
+                            ->whereActivityId($orderItem['activity_id'])
                             ->whereProductId($orderItem['sku_product_id']);
                     })->first();
 
@@ -260,12 +260,12 @@ class OrderBuilder implements InterfaceServiceHandler
                     $repository = app()->make(ShopProductRepository::class);
                     $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')
-                            ->where('deleted_at', '!=', null)
+                            ->whereShopId($orderItem['shop_id'])
                             ->whereProductId($orderItem['sku_product_id']);
                     })->first();
                 }else{
                     $repository =$this->skuProduct->with('merchandise');
-                    $product = $repository->where('deleted_at', '!=', null)->find($orderItem['sku_product_id']);
+                    $product = $repository->find($orderItem['sku_product_id']);
                 }
 
                 if(!$product) {
@@ -280,19 +280,19 @@ class OrderBuilder implements InterfaceServiceHandler
                     $repository = app()->make(ActivityMerchandiseRepository::class);
                     $goods = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')
-                            ->where('deleted_at', '!=', null)
+                            ->whereActivityId($orderItem['activity_id'])
                             ->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
                 }elseif($orderItem['shop_id']) {
                     $repository = app()->make(ShopMerchandiseRepository::class);
                     $goods = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
                         return $merchandise->with('merchandise')
-                            ->where('deleted_at', '!=', null)
+                            ->whereShopId($orderItem['shop_id'])
                             ->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
                 }else{
                     $repository = $this->merchandise;
-                    $goods = $repository->where('deleted_at', '!=', null)->find($orderItem['merchandise_id']);
+                    $goods = $repository->find($orderItem['merchandise_id']);
                 }
                 if(!$goods) {
                     throw new NotFoundResourceException('购买产品不存在！');
