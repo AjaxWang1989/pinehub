@@ -55,6 +55,7 @@ class OrderPaidNoticeListener
                     $list = Cache::get($event->noticeVoiceCacheKey(), []);
                     $list[] = $content;
                     Cache::add($event->noticeVoiceCacheKey(), $list, 1);
+                    Log::debug("{$event->noticeVoiceCacheKey()} = ", Cache::get($event->noticeVoiceCacheKey()));
                     if(isset($registerIds['jpush'])) {
                         JPush::push()->setPlatform(['android', 'ios'])
                             ->addRegistrationId($registerIds['jpush'])
