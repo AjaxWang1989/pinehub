@@ -355,7 +355,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 'quality' => 'SKU库存不足'
             ]));
         }
-        Log::info('order item SKUProduct/Merchandise', [$model]);
+        Log::info('order item SKUProduct/Merchandise', $model->only(['id', 'code', 'stock_num', 'sell_num', 'name']));
 
         if ($model instanceof ShopMerchandise || $model instanceof ShopProduct || $model instanceof ActivityMerchandise) {
             $sellPrice = $model->merchandise->sellPrice;
@@ -389,7 +389,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $this->skuProduct($model, $quality);
             $this->merchandise($model->merchandise, $quality);
         }else {
-            Log::debug("---------- build order item $model->id ------------\n", [$model]);
+            Log::debug("---------- build order item $model->id ------------\n", $model->only(['id', 'code', 'stock_num', 'sell_num', 'name']));
             $this->merchandise($model, $quality);
         }
         $data['quality'] = $quality;
@@ -452,6 +452,6 @@ class OrderBuilder implements InterfaceServiceHandler
         $merchandise->stockNum -= $quality;
         $merchandise->sellNum += $quality;
         Log::debug("========= change merchandise stock num, merchandise name $merchandise->name===========\n",
-            $merchandise->only(['id', 'stock_num', 'sell_num', 'name']));
+            $merchandise->only(['id', 'stock_num', 'sell_num', 'name', 'code']));
     }
 }
