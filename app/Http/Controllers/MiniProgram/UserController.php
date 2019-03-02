@@ -82,13 +82,13 @@ class UserController extends Controller
                 ->sum('amount');
         }
         if (!$request->input('use', null)) {
-            $items = $this->customerTicketCardRepository->userTickets($status, $user['id'], $shoppingCartAmount);
+            $items = $this->customerTicketCardRepository->with('card')->userTickets($status, $user['id'], $shoppingCartAmount);
         }else{
-            $items = $this->customerTicketCardRepository->userTickets($status, $user['id']);
+            $items = $this->customerTicketCardRepository->with('card')->userTickets($status, $user['id']);
         }
 
         Log::info('----------------------------card------------------',$items->toArray());
-        return $this->response()->paginator($items,new CustomerTicketCardTransformer());
+        return $this->response()->paginator($items, new CustomerTicketCardTransformer());
     }
 
     /**

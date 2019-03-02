@@ -489,5 +489,7 @@ class OrderBuilder implements InterfaceServiceHandler
         }
         $merchandise->stockNum -= $quality;
         $merchandise->sellNum += $quality;
+        Log::debug("========= change merchandise stock num ===========\n",
+            $merchandise->only(['id', 'stock_num', 'sell_num']));
     }
 }
