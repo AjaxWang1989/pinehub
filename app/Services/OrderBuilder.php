@@ -235,7 +235,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 $result  = $merchandise->save();
 
                 Log::debug("------- merchandise update stock -------\n",
-                    [$result, $merchandise->only(['id', 'stock_num', 'sell_num'])]);
+                    [$result, $merchandise->only(['id', 'stock_num', 'sell_num']), get_class($merchandise), $merchandise->name]);
         });
     }
 
@@ -450,6 +450,6 @@ class OrderBuilder implements InterfaceServiceHandler
         $merchandise->stockNum -= $quality;
         $merchandise->sellNum += $quality;
         Log::debug("========= change merchandise stock num, merchandise name $merchandise->name===========\n",
-            $merchandise->only(['id', 'stock_num', 'sell_num']));
+            $merchandise->only(['id', 'stock_num', 'sell_num', 'name']));
     }
 }
