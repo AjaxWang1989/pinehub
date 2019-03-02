@@ -223,59 +223,19 @@ class OrderBuilder implements InterfaceServiceHandler
     }
 
     protected function updateStockNum() {
-         collect($this->updateStockNumSqlContainer['sku'])->map(/**
-         * @param SKUProduct|ShopProduct $sku
-         * @return string
-         */
-            function ( $sku) {
-                if(get_class($sku) === SKUProduct::class) {
-                    return/** @lang text */
-                        DB::update("UPDATE `sku_products` SET 
-                        `stock_num` = {$sku->stockNum},
-                        `sell_num` = {$sku->sellNum} 
-                        WHERE `id` = {$sku->id}");
+         collect($this->updateStockNumSqlContainer['sku'])->map(function ( $sku) {
+              /**@var SKUProduct $sku**/
+             $result = $sku->save();
+         });
 
-                }elseif(get_class($sku) === ShopProduct::class){
-                    return /** @lang text */
-                        DB::update("UPDATE `shop_products` SET 
-                        `stock_num` = {$sku->stockNum},
-                        `sell_num` = {$sku->sellNum} 
-                        WHERE `id` = {$sku->id}");
-                }
+        collect($this->updateStockNumSqlContainer['merchandise'])->map(function ($merchandise) {
+                /**
+                 * @var  ActivityMerchandise|ShopMerchandise|Merchandise $merchandise
+                 */
+                $result  = $merchandise->save();
 
-        });
-
-        collect($this->updateStockNumSqlContainer['merchandise'])->map(/**
-         * @param Merchandise|ShopMerchandise|ActivityMerchandise $merchandise
-         * @return string
-         */
-            function ($merchandise) {
-            switch(get_class($merchandise)) {
-                case Merchandise::class: {
-                    return /** @lang text */
-                        DB::update("UPDATE `merchandises` SET 
-                        `stock_num` = {$merchandise->stockNum} ,
-                        `sell_num` = {$merchandise->sellNum} 
-                        WHERE `id` = {$merchandise->id}");
-                    break;
-                }
-                case ShopMerchandise::class: {
-                    return /** @lang text */
-                        DB::update("UPDATE `shop_merchandises` SET
-                         `stock_num` = {$merchandise->stockNum} ,
-                         `sell_num` = {$merchandise->sellNum} 
-                         WHERE `id` = {$merchandise->id}");
-                    break;
-                }
-                case ActivityMerchandise::class: {
-                    return /** @lang text */
-                        DB::update("UPDATE `activity_merchandises` SET 
-                        `stock_num` = {$merchandise->stockNum} ,
-                        `sell_num` = {$merchandise->sellNum} 
-                        WHERE `id` = {$merchandise->id}");
-                    break;
-                }
-            }
+                Log::debug("------- merchandise update stock -------\n",
+                    [$result, $merchandise->only(['id', 'stock_num', 'sell_num'])]);
         });
     }
 
@@ -489,7 +449,7 @@ class OrderBuilder implements InterfaceServiceHandler
         }
         $merchandise->stockNum -= $quality;
         $merchandise->sellNum += $quality;
-        Log::debug("========= change merchandise stock num ===========\n",
+        Log::debug("========= change merchandise stock num, merchandise name $merchandise->name===========\n",
             $merchandise->only(['id', 'stock_num', 'sell_num']));
     }
 }

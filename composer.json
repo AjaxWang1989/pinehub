@@ -33,6 +33,7 @@
         "tymon/jwt-auth": "^0.5.12",
         "urameshibr/lumen-form-request": "^1.5",
         "vlucas/phpdotenv": "~2.2",
+        "zhaohehe/laravel-echo-server": "^0.0.1",
         "zoran-wang/jwt-auth-guard": "0.0.1.*"
     },
     "require-dev": {

@@ -7,6 +7,7 @@ use App\Facades\JPush;
 use App\Jobs\RemoveOrderPaidVoice;
 use Carbon\Carbon;
 use Echobool\Getui\Facades\Getui;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Jormin\BaiduSpeech\BaiduSpeech;
 use Illuminate\Support\Facades\Storage;
@@ -42,7 +43,7 @@ class OrderPaidNoticeListener
                 Log::info("========= result success ==========");
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
-                dispatch((new RemoveOrderPaidVoice($file))->delay(5));
+                dispatch((new RemoveOrderPaidVoice($file))->delay(60));
                 if(($registerIds = $event->broadcastOn())) {
                     Log::info("========= result success ==========", [$registerIds]);
                     $messageId = str_random();
@@ -51,6 +52,9 @@ class OrderPaidNoticeListener
                         'message_id' => $messageId,
                         'type' => 'PAYMENT_NOTICE'
                     ];
+                    $list = Cache::get($event->noticeVoiceCacheKey(), []);
+                    $list[] = $content;
+                    Cache::add($event->noticeVoiceCacheKey(), $list, 1);
                     if(isset($registerIds['jpush'])) {
                         JPush::push()->setPlatform(['android', 'ios'])
                             ->addRegistrationId($registerIds['jpush'])
@@ -66,7 +70,7 @@ class OrderPaidNoticeListener
                                 'content'=> json_encode($content),
                                 'payload' => json_encode($content),
                                 'body' => $message,
-                                'title'=>'平台收款'
+                                'title'=> '平台收款'
                             ], 4);
                             Log::info('========= 推送 ==========', [$result]);
                         }catch (\Exception $exception) {
