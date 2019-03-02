@@ -442,7 +442,8 @@ class OrderBuilder implements InterfaceServiceHandler
      * @param int $quality
      * */
     protected function merchandise($model, int $quality){
-        $merchandise = isset($this->updateStockNumSqlContainer['merchandise'][$model->code]) ?
+        Log::debug("========= update array ========\n", $this->updateStockNumSqlContainer);
+        $merchandise = isset($this->updateStockNumSqlContainer['merchandise'][$model->code]) && $this->updateStockNumSqlContainer['merchandise'][$model->code]?
             $this->updateStockNumSqlContainer['merchandise'][$model->code] : null;
         if(!$merchandise) {
             $this->updateStockNumSqlContainer['merchandise'][$model->code] = $model;
