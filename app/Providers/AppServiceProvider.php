@@ -107,6 +107,7 @@ class AppServiceProvider extends ServiceProvider
         app('queue')->stopping(function () {
             Log::info('queue stopping');
         });
+
     }
     /**
      * Register any application services.
@@ -141,7 +142,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(QueueServiceProvider::class);
 
         if($this->app->runningInConsole()) {
-            $this->app->register(\EchoServer\BroadcastServerServiceProvider::class);
+//            $this->app->register(\EchoServer\BroadcastServerServiceProvider::class);
         }
     }
 }
