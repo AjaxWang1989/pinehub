@@ -26,7 +26,7 @@ class NewActivityMerchandiseStockRequest extends FormRequest
     {
         return [
             //
-            'stock_num' => ['required', 'integer', 'min:1']
+            'stock_num' => ['required', 'integer', 'min:0']
         ];
     }
 }
