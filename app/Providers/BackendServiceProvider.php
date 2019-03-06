@@ -16,17 +16,33 @@ use Illuminate\Support\ServiceProvider;
 
 class BackendServiceProvider extends ServiceProvider
 {
-    public function register() {
+//    private $except = ['/^\/app\/logo\/(.*)$/'];
+    private $except = [
+        '/app/logo/default',
+        '/app/logo/cloud',
+    ];
+
+    public function register()
+    {
     }
 
-    public function boot(Request $request, AppRepository $repository) {
+    public function boot(Request $request, AppRepository $repository)
+    {
+        $path = $request->getPathInfo();
+        if (in_array($path, $this->except)) {
+            return;
+        }
+        $this->setCurrentApp($request, $repository);
+    }
+
+    private function setCurrentApp(Request $request, AppRepository $repository)
+    {
         $appId = $request->header('ProjectId', null);
         $appId = $appId ? $appId : $request->input('ProjectId', null);
         $appId = $appId ? $appId : (app()->has('session') ? app()->make('session')->get('project_id') : null);
-        $appId = $appId === 'undefined' ? null : $appId;
         $currentApp = $appId ? $repository->find($appId) : null;
         $appManager = app(AppManager::class);
-        if($currentApp)
+        if ($currentApp)
             $appManager->setCurrentApp($currentApp);
     }
 }
