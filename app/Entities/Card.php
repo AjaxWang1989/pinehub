@@ -6,6 +6,7 @@ use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -69,7 +70,7 @@ class Card extends Model implements Transformable
     const STATUS_ON = 1;
     const STATUS_EXPIRE = 2;
 
-    const OWNER_TICKET  = 'OWNER_TICKET';
+    const OWNER_TICKET = 'OWNER_TICKET';
     const ALI_TICKET = 'ALI_TICKET';
     const WX_TICKET = 'WX_TICKET';
 
@@ -125,14 +126,19 @@ class Card extends Model implements Transformable
     ];
 
 
-
-    public function app() : BelongsTo
+    public function app(): BelongsTo
     {
         return $this->belongsTo(App::class, 'app_id', 'id');
     }
 
-    public function records() :HasMany
+    public function records(): HasMany
     {
-        return $this->hasMany(CustomerTicketCard::class,'card_id','card_id');
+        return $this->hasMany(CustomerTicketCard::class, 'card_id', 'card_id');
+    }
+
+    // 优惠券领取条件
+    public function condition(): HasOne
+    {
+        return $this->hasOne(CardConditions::class, 'card_id', 'id');
     }
 }
