@@ -4,6 +4,7 @@ namespace App\Http\Controllers\MiniProgram;
 
 use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
+use App\Entities\Ticket;
 use App\Repositories\AppRepository;
 use App\Repositories\CardRepository;
 use App\Services\AppManager;
@@ -28,6 +29,7 @@ class TicketController extends Controller
         $this->cardRepository = $cardRepository;
     }
 
+    // 通用优惠券发放
     public function tickets(Request $request)
     {
         $tickets = $this->cardRepository->scopeQuery(function (Card $card) {
@@ -57,7 +59,7 @@ class TicketController extends Controller
             && $ticket->cardInfo['base_info']['get_limit'] <= $count) {
             throw new ModelNotFoundException('此优惠券不可以重复领取');
         }
-        if ($ticket->userGetCount < $ticket->cardId['base_info']['sku']['quantity']) {
+        if ($ticket->userGetCount < $ticket->cardInfo['base_info']['sku']['quantity']) {
             $record = new CustomerTicketCard();
             $record->cardId = $ticket->cardId;
             $record->customerId = $customer->id;
@@ -96,5 +98,23 @@ class TicketController extends Controller
         }
 
         throw new ModelNotFoundException('优惠券已领取完');
+    }
+
+    private function conditionalTickets()
+    {
+        /** @var \Illuminate\Database\Eloquent\Builder $query */
+        $query = Ticket::newQuery()->select('id');
+
+        $query->with(['condition' => function (Builder $query) {
+//            $query->where('')
+        }]);
+
+        $tickets = $query->get();
+    }
+
+    // tickets user can receive when action trigger
+    public function ticketsUserReceivable(Request $request)
+    {
+
     }
 }
