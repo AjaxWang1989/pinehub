@@ -3,9 +3,6 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
-use App\Jobs\TicketUpdateStatus;
-use App\Jobs\CustomerTicketRecordUpdateStatus;
-use App\Repositories\CustomerTicketCardRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -68,8 +65,8 @@ class CustomerTicketCard extends Model implements Transformable
     const ACTIVE_OFF = 0;
 
     protected $casts = [
-        'begin_at'  => 'date',
-        'end_at'    => 'date'
+        'begin_at' => 'date',
+        'end_at' => 'date'
     ];
     /**
      * The attributes that are mass assignable.
@@ -101,13 +98,15 @@ class CustomerTicketCard extends Model implements Transformable
             if ($customerTicketCard->cardCode === '' || $customerTicketCard->cardCode === null) {
                 $customerTicketCard->cardCode = strtoupper(uniqid());
                 $customerTicketCard->save();
+                $customerTicketCard->card->userGetCount++;
+                $customerTicketCard->card->save();
             }
         });
         self::saved(function (CustomerTicketCard $customerTicketCard) {
             $nowDate = Carbon::now();
-            if(!$customerTicketCard->beginAt
+            if (!$customerTicketCard->beginAt
                 || $nowDate->diffInRealSeconds($customerTicketCard->beginAt, false) < 1
-                && $customerTicketCard->status === CustomerTicketCard::STATUS_OFF){
+                && $customerTicketCard->status === CustomerTicketCard::STATUS_OFF) {
                 $customerTicketCard->status = CustomerTicketCard::STATUS_ON;
                 $customerTicketCard->save();
             }

@@ -21,13 +21,14 @@ class TicketController extends Controller
      * @var CardRepository
      * */
     protected $cardRepository = null;
+
     public function __construct(Request $request, AppRepository $appRepository, CardRepository $cardRepository)
     {
         parent::__construct($request, $appRepository);
         $this->cardRepository = $cardRepository;
     }
 
-    public function tickets (Request $request)
+    public function tickets(Request $request)
     {
         $tickets = $this->cardRepository->scopeQuery(function (Card $card) {
             return $card->whereNotIn('id', function (Builder $query) {
@@ -47,49 +48,53 @@ class TicketController extends Controller
     {
         /** @var Card $ticket */
         $appId = app(AppManager::class)->getAppId();
-        $ticket = $this->cardRepository->scopeQuery(function (Card $card) use($appId){
+        $ticket = $this->cardRepository->scopeQuery(function (Card $card) use ($appId) {
             return $card->whereAppId($appId);
         })->find($cardId);
         $customer = $this->mpUser();
         $count = $customer->ticketRecords()->where('card_id', $ticket->cardId)->count();
-        if(isset($ticket->cardInfo['base_info']['get_limit']) && $ticket->cardInfo['base_info']['get_limit'] > 0
+        if (isset($ticket->cardInfo['base_info']['get_limit']) && $ticket->cardInfo['base_info']['get_limit'] > 0
             && $ticket->cardInfo['base_info']['get_limit'] <= $count) {
             throw new ModelNotFoundException('此优惠券不可以重复领取');
         }
-        $record = new CustomerTicketCard();
-        $record->cardId = $ticket->cardId;
-        $record->customerId = $customer->id;
-        $record->appId = $appId;
-        $record->openId = $customer->platformOpenId;
-        $record->unionId = $customer->unionId;
-        if ($ticket->cardInfo) {
-            if($ticket->cardInfo['base_info'] && $ticket->cardInfo['base_info']['date_info']) {
-                $dateInfo = $ticket->cardInfo['base_info']['date_info'];
-                if($dateInfo['type'] === DATE_TYPE_FIX_TERM) {
-                    $record->beginAt = Carbon::now()->addDay($dateInfo['fixed_begin_term']);
-                    $record->endAt = $record->beginAt->copy()->addDay($dateInfo['fixed_term']);
-                }elseif ($dateInfo['type'] === DATE_TYPE_FIX_TIME_RANGE) {
-                    $record->beginAt = Carbon::createFromTimestamp($dateInfo['begin_timestamp']);
-                    $record->endAt = Carbon::createFromTimestamp($dateInfo['end_timestamp']);
-                }else {
+        if ($ticket->userGetCount < $ticket->cardId['base_info']['sku']['quantity']) {
+            $record = new CustomerTicketCard();
+            $record->cardId = $ticket->cardId;
+            $record->customerId = $customer->id;
+            $record->appId = $appId;
+            $record->openId = $customer->platformOpenId;
+            $record->unionId = $customer->unionId;
+            if ($ticket->cardInfo) {
+                if ($ticket->cardInfo['base_info'] && $ticket->cardInfo['base_info']['date_info']) {
+                    $dateInfo = $ticket->cardInfo['base_info']['date_info'];
+                    if ($dateInfo['type'] === DATE_TYPE_FIX_TERM) {
+                        $record->beginAt = Carbon::now()->addDay($dateInfo['fixed_begin_term']);
+                        $record->endAt = $record->beginAt->copy()->addDay($dateInfo['fixed_term']);
+                    } elseif ($dateInfo['type'] === DATE_TYPE_FIX_TIME_RANGE) {
+                        $record->beginAt = Carbon::createFromTimestamp($dateInfo['begin_timestamp']);
+                        $record->endAt = Carbon::createFromTimestamp($dateInfo['end_timestamp']);
+                    } else {
+                        $record->beginAt = $ticket->beginAt;
+                        $record->endAt = $ticket->endAt;
+                    }
+                } else {
                     $record->beginAt = $ticket->beginAt;
                     $record->endAt = $ticket->endAt;
                 }
-            }else{
+            } else {
                 $record->beginAt = $ticket->beginAt;
                 $record->endAt = $ticket->endAt;
             }
-        }else{
-            $record->beginAt = $ticket->beginAt;
-            $record->endAt = $ticket->endAt;
+            if ($record->beginAt->diffInRealSeconds(Carbon::now()) > 1) {
+                $record->status = CustomerTicketCard::STATUS_OFF;
+            } else {
+                $record->status = CustomerTicketCard::STATUS_ON;
+                $record->active = CustomerTicketCard::ACTIVE_ON;
+            }
+            $record->save();
+            return $this->response()->item($record, new CustomerTicketCardTransformer());
         }
-        if ($record->beginAt->diffInRealSeconds(Carbon::now()) > 1) {
-            $record->status = CustomerTicketCard::STATUS_OFF;
-        }else{
-            $record->status = CustomerTicketCard::STATUS_ON;
-            $record->active = CustomerTicketCard::ACTIVE_ON;
-        }
-        $record->save();
-        return $this->response()->item($record, new CustomerTicketCardTransformer());
+
+        throw new ModelNotFoundException('优惠券已领取完');
     }
 }
