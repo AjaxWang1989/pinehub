@@ -22,7 +22,7 @@ class CardConditions extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'card_id', 'paid', 'merchandise_id', 'shop_id', 'pre_payment_amount',
+        'card_id', 'paid', 'valid_obj', 'pre_payment_amount',
         'loop', 'loop_order_num', 'loop_order_amount'
     ];
 

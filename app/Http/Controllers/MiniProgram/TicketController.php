@@ -38,7 +38,7 @@ class TicketController extends Controller
                 $query->from('cards')->select(DB::raw('cards.id  as id'))
                     ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
                     ->where('customer_ticket_cards.customer_id', $this->mpUser()->id);
-            })->whereNotIn('id', $this->conditionalTickets()->pluck('id'))
+            })->doesntHave('condition')
                 ->whereAppId(app(AppManager::class)->getAppId())
                 ->whereStatus(Card::STATUS_ON)
                 ->where(DB::raw('(issue_count - user_get_count)'), '>', 0)
@@ -100,11 +100,6 @@ class TicketController extends Controller
         }
 
         throw new ModelNotFoundException('优惠券已领取完');
-    }
-
-    private function conditionalTickets(): \Illuminate\Database\Eloquent\Builder
-    {
-        return Card::query()->select('id')->has('condition');
     }
 
     // 条件优惠券
