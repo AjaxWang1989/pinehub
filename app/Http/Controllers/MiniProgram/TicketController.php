@@ -125,17 +125,33 @@ class TicketController extends Controller
         /** @var Card $ticket */
         foreach ($tickets as $ticket) {
             $condition = $ticket->condition;
-            if (!$condition->paid) {// 支付可领取
+            // 支付可领取
+            if (!$condition->paid) {
                 continue;
             }
-            // 未指定店铺 或者 指定店铺与订单店铺一致
-            if (!(is_null($condition->shop_id) || $condition->shop_id && $condition->shop_id === $order->shopId)) {
-                continue;
-            }
-            // 未指定商品 或者 指定商品与订单商品一致
-            $merchandises = $order->orderItems()->pluck('merchandise_id');
-            if (!(is_null($condition->merchandise_id) || $condition->merchandise_id && in_array($condition->merchandise_id, $merchandises))) {
-                continue;
+            if (isset($condition->valid_obj)) {
+                // 未指定店铺 或者 指定店铺与订单店铺一致
+                if (isset($condition->valid_obj['shops'])) {
+                    $shops = (array)$condition->valid_obj['shops'];
+                    if (!in_array($order->shopId, $shops)) {
+                        continue;
+                    }
+                }
+                // 未指定商品 或者 指定商品与订单商品一致
+                $order_merchandises = $order->orderItems()->pluck('merchandise_id');
+                if (isset($condition->valid_obj['merchandises'])) {
+                    $merchandises = (array)$condition->valid_obj['merchandises'];
+                    if (count(array_intersect($merchandises, $order_merchandises->toArray())) === 0) {
+                        continue;
+                    }
+                }
+                // 未指定可使用用户 或者 指定可使用用户与下单用户一致
+                if (isset($condition->valid_obj['customers'])) {
+                    $customers = (array)$condition->valid_obj['customers'];
+                    if (!in_array($order->customerId, $customers)) {
+                        continue;
+                    }
+                }
             }
             // 订单实际支付金额满足优惠券可领取门槛
             if ($order->paymentAmount === $condition->pre_payment_amount) {

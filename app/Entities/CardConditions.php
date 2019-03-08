@@ -26,6 +26,10 @@ class CardConditions extends Model implements Transformable
         'loop', 'loop_order_num', 'loop_order_amount'
     ];
 
+    protected $casts = [
+        'valid_obj' => 'array'
+    ];
+
     public function card(): BelongsTo
     {
         return $this->belongsTo(Card::class, 'card_id', 'id');
