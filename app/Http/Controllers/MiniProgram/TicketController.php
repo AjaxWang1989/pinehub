@@ -128,7 +128,7 @@ class TicketController extends Controller
                 // 未指定店铺 或者 指定店铺与订单店铺一致
                 if (isset($condition->valid_obj['shops'])) {
                     $shops = (array)$condition->valid_obj['shops'];
-                    if (!in_array($order->shopId, $shops)) {
+                    if (count($shops) && !in_array($order->shopId, $shops)) {
                         continue;
                     }
                 }
@@ -136,20 +136,20 @@ class TicketController extends Controller
                 $order_merchandises = $order->orderItems()->pluck('merchandise_id');
                 if (isset($condition->valid_obj['merchandises'])) {
                     $merchandises = (array)$condition->valid_obj['merchandises'];
-                    if (count(array_intersect($merchandises, $order_merchandises->toArray())) === 0) {
+                    if (count($merchandises) && !count(array_intersect($merchandises, $order_merchandises->toArray()))) {
                         continue;
                     }
                 }
                 // 未指定可使用用户 或者 指定可使用用户与下单用户一致
                 if (isset($condition->valid_obj['customers'])) {
                     $customers = (array)$condition->valid_obj['customers'];
-                    if (!in_array($order->customerId, $customers)) {
+                    if (count($customers) && !in_array($order->customerId, $customers)) {
                         continue;
                     }
                 }
             }
             // 订单实际支付金额满足优惠券可领取门槛
-            if ($order->paymentAmount === $condition->pre_payment_amount) {
+            if ($order->paymentAmount >= $condition->pre_payment_amount) {
                 $availableTickets[] = $ticket;
                 continue;
             }
@@ -157,7 +157,7 @@ class TicketController extends Controller
                 ->where('created_at', '>=', Carbon::now()->subDays($condition->loop))
                 ->select(DB::raw('count(*) as order_num,sum(payment_amount) as payment_amount_total'))
                 ->first()->toArray();
-            foreach ($$loopResults as $key => $item) {
+            foreach ($loopResults as $key => $item) {
                 $$key = $item;
             }
             // 周期内订单数满足 或者 周期内消费总额满足
@@ -167,7 +167,7 @@ class TicketController extends Controller
             }
         };
 
-        $paginator = new LengthAwarePaginator($availableTickets, count($availableTickets), $request->input('limit'), $request->input('page'));
+        $paginator = new LengthAwarePaginator($availableTickets, count($availableTickets), $request->input('limit', PAGE_LIMIT), $request->input('page', 1));
 
         return $this->response()->paginator($paginator, new TicketTransformer());
     }
