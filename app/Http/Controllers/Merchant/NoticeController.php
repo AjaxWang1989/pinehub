@@ -55,7 +55,7 @@ class NoticeController extends Controller
         $messages = [];
         $hasNotice = false;
         foreach ($keys as $key) {
-            $messages[] = app('redis')->get($key);
+            $messages[] = unserialize(app('redis')->get($key));
             Log::debug('---------messages----------', $messages);
             app('redis')->delete($key);
             $hasNotice = true;
