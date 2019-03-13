@@ -53,7 +53,7 @@ class OrderPaidNoticeListener
 //                $list = Cache::get($event->noticeVoiceCacheKey(), []);
 //                $list[$messageId] = $content;
                 Cache::add($event->noticeVoiceCacheKey($messageId), $content, 1);
-                Log::debug("{$event->noticeVoiceCacheKey()} = ", Cache::get($event->noticeVoiceCacheKey()));
+                Log::debug("{$event->noticeVoiceCacheKey()} = ", Cache::get($event->noticeVoiceCacheKey($messageId)));
 
                 if(($registerIds = $event->broadcastOn())) {
                     Log::info("========= result success ==========", [$registerIds]);
