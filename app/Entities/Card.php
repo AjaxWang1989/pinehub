@@ -35,6 +35,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\CardConditions|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
+ * @property-read \App\Entities\CardConditions|null $condition
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAliAppId($value)

@@ -51,7 +51,7 @@ class OrderPaidNoticeListener
                     'type' => 'PAYMENT_NOTICE'
                 ];
                 $list = Cache::get($event->noticeVoiceCacheKey(), []);
-                $list[] = $content;
+                $list[$messageId] = $content;
                 Cache::add($event->noticeVoiceCacheKey(), $list, 1);
                 Log::debug("{$event->noticeVoiceCacheKey()} = ", Cache::get($event->noticeVoiceCacheKey()));
 

@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Prettus\Repository\Contracts\Transformable;
@@ -9,12 +10,19 @@ use Prettus\Repository\Traits\TransformableTrait;
 
 /**
  * Class CardConditions.
- *
+ * @property array $validObj
+ * @property int $cardId
+ * @property int $paid
+ * @property double $prePaymentAmount
+ * @property int $loop
+ * @property int $loopOrderNum
+ * @property int $loopOrderAmount
+ * @property-read \App\Entities\Card|null $card
  * @package namespace App\Entities;
  */
 class CardConditions extends Model implements Transformable
 {
-    use TransformableTrait;
+    use TransformableTrait, ModelAttributesAccess;
 
     /**
      * The attributes that are mass assignable.
