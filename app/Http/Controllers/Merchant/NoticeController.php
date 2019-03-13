@@ -51,10 +51,12 @@ class NoticeController extends Controller
         }
         $key = OrderPaidNoticeEvent::CACHE_KEY.$id;
         $keys = app('redis')->keys("*$key*");
+        Log::debug('------- payment voice keys -------', ['keys' => $keys]);
         $messages = [];
         $hasNotice = false;
         foreach ($keys as $key) {
             $messages[] = Cache::get($key, null);
+            Log::debug('---------messages----------', $messages);
             cache()->delete($key);
             $hasNotice = true;
         }
