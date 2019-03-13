@@ -44,15 +44,15 @@ class OrderPaidNoticeListener
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
                 dispatch((new RemoveOrderPaidVoice($file))->delay(60));
-                $messageId = uniqid('PV');
+                $messageId = microtime(true);
                 $content = [
                     'voice' => $file,
                     'message_id' => $messageId,
                     'type' => 'PAYMENT_NOTICE'
                 ];
-                $list = Cache::get($event->noticeVoiceCacheKey(), []);
-                $list[$messageId] = $content;
-                Cache::add($event->noticeVoiceCacheKey(), $list, 1);
+//                $list = Cache::get($event->noticeVoiceCacheKey(), []);
+//                $list[$messageId] = $content;
+                Cache::add($event->noticeVoiceCacheKey($messageId), $content, 1);
                 Log::debug("{$event->noticeVoiceCacheKey()} = ", Cache::get($event->noticeVoiceCacheKey()));
 
                 if(($registerIds = $event->broadcastOn())) {

@@ -49,11 +49,11 @@ class NoticeController extends Controller
             cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
         }
         $key = OrderPaidNoticeEvent::CACHE_KEY.$id;
-        $messages = Cache::get($key, null);
+        $messages = Cache::get("*$key*", null);
         $hasNotice = $messages && !empty($messages);
         if($hasNotice) {
             Log::info('-------- order paid voice play -------');
-            cache()->delete($key);
+            cache()->delete("*$key*");
         }
         return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
