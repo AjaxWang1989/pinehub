@@ -5,12 +5,14 @@ namespace App\Http\Controllers\MiniProgram;
 use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
 use App\Entities\Order;
+use App\Entities\Ticket;
 use App\Repositories\AppRepository;
 use App\Repositories\CardRepository;
 use App\Services\AppManager;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\TicketTransformer;
 use Dingo\Api\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -105,8 +107,14 @@ class TicketController extends Controller
     // 条件优惠券
     public function ticketsUserReceivable(Request $request, int $orderId)
     {
+        /**
+         * @var Order $order
+         * */
         $order = Order::query()->findOrFail($orderId);
 
+        /**
+         * @var Ticket[]|Collection $tickets
+         * */
         $tickets = $this->cardRepository->scopeQuery(function (Card $card) {
             return $card->has('condition')->with('condition')
                 ->whereNotIn('id', function (Builder $query) {
@@ -117,28 +125,24 @@ class TicketController extends Controller
         })->all();
 
         $availableTickets = [];
-        /** @var Card $ticket */
         foreach ($tickets as $ticket) {
             $condition = $ticket->condition;
             // 支付可领取
             if (!$condition->paid) {
                 continue;
             }
-            if (isset($condition->valid_obj)) {
+            if (isset($condition->validObj)) {
                 // 未指定店铺 或者 指定店铺与订单店铺一致
                 if (isset($condition->valid_obj['shops'])) {
-                    $shops = (array)$condition->valid_obj['shops'];
+                    $shops = (array)$condition->validObj['shops'];
                     if (count($shops) && !in_array($order->shopId, $shops)) {
                         continue;
                     }
                 }
                 // 未指定商品 或者 指定商品与订单商品一致
                 $order_merchandises = $order->orderItems()->pluck('merchandise_id');
-                if (isset($condition->valid_obj['merchandises'])) {
-                    $merchandises = (array)$condition->valid_obj['merchandises'];
-                    if (count($merchandises) && !count(array_intersect($merchandises, $order_merchandises->toArray()))) {
-                        continue;
-                    }
+                if (!empty($condition->valid_obj['merchandises']) && !$order_merchandises->intersect((array)$condition->validObj['merchandises'])->count()) {
+                    continue;
                 }
                 // 未指定可使用用户 或者 指定可使用用户与下单用户一致
                 if (isset($condition->valid_obj['customers'])) {
@@ -155,7 +159,7 @@ class TicketController extends Controller
             }
             $loopResults = Order::query()->where('customer_id', $order->customerId)
                 ->where('created_at', '>=', Carbon::now()->subDays($condition->loop))
-                ->select(DB::raw('count(*) as order_num,sum(payment_amount) as payment_amount_total'))
+                ->select(DB::raw('count(*) as order_num, sum(payment_amount) as payment_amount_total'))
                 ->first()->toArray();
             foreach ($loopResults as $key => $item) {
                 $$key = $item;

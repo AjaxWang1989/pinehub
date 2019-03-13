@@ -33,6 +33,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
  * @property-read \App\Entities\App|null $app
+ * @property-read \App\Entities\CardConditions|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card query()

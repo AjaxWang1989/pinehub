@@ -28,6 +28,7 @@
         "prettus/l5-repository": "^2.6",
         "riverslei/payment": "^4.1",
         "simplesoftwareio/simple-qrcode": "1.3.*",
+        "staudenmeir/eloquent-json-relations": "^1.1",
         "symfony/event-dispatcher": "~4.0",
         "toplan/laravel-sms": "~2.6",
         "tymon/jwt-auth": "^0.5.12",
