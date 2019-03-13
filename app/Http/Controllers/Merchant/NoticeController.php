@@ -63,7 +63,9 @@ class NoticeController extends Controller
 
         return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
-            ->addMeta('voices', $messages);
+            ->addMeta('voices', collect($messages)->map(function ($message) {
+                return $message['voice'];
+            }));
     }
 
     /**
