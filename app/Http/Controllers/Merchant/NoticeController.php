@@ -19,6 +19,7 @@ use function GuzzleHttp\Psr7\str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Jormin\BaiduSpeech\BaiduSpeech;
 
@@ -49,11 +50,13 @@ class NoticeController extends Controller
             cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
         }
         $key = OrderPaidNoticeEvent::CACHE_KEY.$id;
-        $messages = Cache::get("*$key*", null);
-        $hasNotice = $messages && !empty($messages);
-        if($hasNotice) {
-            Log::info('-------- order paid voice play -------');
-            cache()->delete("*$key*");
+        $keys = app('redis')->keys("*$key*");
+        $messages = [];
+        $hasNotice = false;
+        foreach ($keys as $key) {
+            $messages[] = Cache::get($key, null);
+            cache()->delete($key);
+            $hasNotice = true;
         }
         return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
