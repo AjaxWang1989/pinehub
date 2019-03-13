@@ -55,9 +55,9 @@ class NoticeController extends Controller
         $messages = [];
         $hasNotice = false;
         foreach ($keys as $key) {
-            $messages[] = Cache::get($key, null);
+            $messages[] = app('redis')->get($key, null);
             Log::debug('---------messages----------', $messages);
-            cache()->delete($key);
+            app('redis')->delete($key);
             $hasNotice = true;
         }
         return $this->response->item($shop, new ShopTransformer($hasNotice))
