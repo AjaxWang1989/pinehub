@@ -57,9 +57,9 @@ class NoticeController extends Controller
         foreach ($keys as $key) {
             $messages[] = unserialize(app('redis')->get($key));
             Log::debug('---------messages----------', $messages);
-            app('redis')->delete($key);
             $hasNotice = true;
         }
+        app('redis')->del($keys);
         return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
             ->addMeta('voices', $messages);
