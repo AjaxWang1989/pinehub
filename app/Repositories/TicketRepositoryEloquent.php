@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\Card;
 use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\Order;
@@ -35,71 +36,55 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
      */
     public function boot()
     {
-//        $this->pushCriteria(app(RequestCriteria::class));
-//        Ticket::creating(function (Ticket &$ticket) {
-//            if($ticket->ticketType)
-//                $ticket->cardType = $ticket->ticketType;
-//            if($ticket->ticketInfo)
-//                $ticket->cardInfo = $ticket->ticketInfo;
-//            unset($ticket->ticketType, $ticket->ticketType);
-//        });
     }
 
-    public function getConditionalTickets(Order $order)
+    public function getTickets($scenario)
     {
-        $orderRepository = app(OrderRepository::class);
-        /** @var Ticket[] $tickets */
-        $tickets = $this->scopeQuery(function (Ticket $ticket) {
-            return $ticket->has('condition')->with('condition')
-                ->whereNotIn('id', function (Builder $query) {
-                    $query->from('cards')->select(DB::raw('cards.id  as id'))
-                        ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
-                        ->where('customer_ticket_cards.customer_id', $this->mpUser()->id);
+        $scenario = (array)$scenario;
+
+        $order = null;
+        if ($orderId = request()->input('orderId', null)) {
+            /** @var Order $order */
+            $order = app(OrderRepository::class)->find($orderId);
+        }
+
+        $tickets = $this->scopeQuery(function (Ticket $ticket) use ($scenario, $order) {
+            $currentMpUser = $this->mpUser();
+            return $ticket->whereNotIn('cards.id', function (Builder $query) use ($currentMpUser) {
+                $query->from('cards')->select(DB::raw('cards.id  as id'))
+                    ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
+                    ->where('customer_ticket_cards.customer_id', $currentMpUser->id);
+            })->whereHas('putCondition', function ($query) use ($currentMpUser, $scenario, $order) {
+                $query->where(function ($query) use ($currentMpUser, $scenario, $order) {
+                    $query->where(function ($query) use ($currentMpUser, $scenario) {
+                        $query->where(function ($query) use ($currentMpUser, $scenario) {// 适用场景
+                            $query->jsonSearch('show', $scenario);
+                        })->where(function ($query) use ($currentMpUser) {// 适用性别
+                            $query->where('valid_obj->customers->sex', 'ALL')
+                                ->orWhere('valid_obj->customers->sex', $currentMpUser->sex);
+                        })->where(function ($query) use ($currentMpUser) {// 适用用户
+                            $query->jsonSearch('valid_obj->customers->tags', $currentMpUser->tags);
+                        });
+                    })->whereExists(function ($query) use ($currentMpUser) {// 订单loop
+                        $query->select(DB::raw(1))
+                            ->from('orders')
+                            ->whereRaw("orders.customer_id = {$currentMpUser->id}")
+                            ->whereRaw("created_at >= DATE_SUB(now(),INTERVAL (case when card_conditions.`loop` > 0 then card_conditions.`loop` else 15 end) DAY)")
+                            ->havingRaw("count(*) >= loop_order_num and sum(payment_amount) >= loop_order_amount");
+                    });
+                    if (!is_null($order)) {// 单笔订单
+                        $query->where('pre_payment_amount', '<=', $order->paymentAmount);
+                    }
                 });
-        })->all();
+            })
+                ->whereAppId(app(AppManager::class)->getAppId())
+                ->whereStatus(Card::STATUS_ON)
+                ->where(DB::raw('(issue_count - user_get_count)'), '>', 0)
+                ->orderBy('cards.created_at', 'desc')
+                ->orderBy('cards.updated_at', 'desc');
+        })->paginate(request()->input('limit', PAGE_LIMIT));
 
-        $availableTickets = [];
-        foreach ($tickets as $ticket) {
-            $condition = $ticket->condition;
-            // 支付可领取
-            if (!$condition->paid) {
-                continue;
-            }
-            if (isset($condition->validObj)) {
-                // 未指定店铺 或者 指定店铺与订单店铺一致
-                if (!empty($condition->validObj['shops']) && !in_array($order->shopId, (array)$condition->validObj['shops'])) {
-                    continue;
-                }
-                // 未指定商品 或者 指定商品与订单商品一致
-                $order_merchandises = $order->orderItems()->pluck('merchandise_id');
-                if (!empty($condition->validObj['merchandises']) && !$order_merchandises->intersect((array)$condition->validObj['merchandises'])->count()) {
-                    continue;
-                }
-                // 未指定可使用用户 或者 指定可使用用户与下单用户一致
-                if (!empty($condition->validObj['customers']) && !in_array($order->customerId, (array)$condition->validObj['customers'])) {
-                    continue;
-                }
-            }
-            // 订单实际支付金额满足优惠券可领取门槛
-            if ($order->paymentAmount >= $condition->prePaymentAmount) {
-                $availableTickets[] = $ticket;
-                continue;
-            }
-
-            $loopResults = $orderRepository->scopeQuery(function (Order $query) use ($condition, $order) {
-                return $query->where('customer_id', $order->customerId)
-                    ->where('created_at', '>=', Carbon::now()->subDays($condition->loop))
-                    ->select(DB::raw('count(*) as order_num,sum(payment_amount) as payment_amount_total'));
-            })->first()->toArray();
-
-            // 周期内订单数满足 或者 周期内消费总额满足
-            if ($condition->loopOrderNum && $condition->loopOrderNum <= $loopResults['order_num'] ||
-                $condition->loopOrderAmount && $condition->loopOrderAmount < $loopResults['payment_amount_total']) {
-                $availableTickets[] = $ticket;
-            }
-        };
-
-        return $availableTickets;
+        return $tickets;
     }
 
     public function receiveTicket(Customer $customer, Ticket $ticket)

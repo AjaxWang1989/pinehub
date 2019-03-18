@@ -37,7 +37,6 @@ class MiniProgramApiRoutes extends ApiRoutes
             /** @var DingoRouter $router */
             $router->get('/tickets', ['as' => 'tickets', 'uses' => 'TicketController@tickets']);
             $router->get('/user/receive/ticket/{cardId}', ['as' => 'tickets', 'uses' => 'TicketController@userReceiveTicket']);
-            $router->get('/tickets/{orderId}', ['as' => 'tickets.receivable', 'uses' => 'TicketController@ticketsUserReceivable']);
             $router->get('/user/info', ['as' => 'user.info', 'uses' => 'AuthController@userInfo']);
 
             $router->post('/save/mobile', ['as' => 'user.save.mobile', 'uses' => 'AuthController@saveMobile']);

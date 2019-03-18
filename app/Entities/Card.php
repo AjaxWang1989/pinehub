@@ -2,11 +2,11 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\JsonQuery;
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -35,7 +35,6 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\CardConditions|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
- * @property-read \App\Entities\CardConditions|null $condition
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAliAppId($value)
@@ -61,7 +60,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Card extends Model implements Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use TransformableTrait, ModelAttributesAccess, JsonQuery;
 
     const SYNC_NO_NEED = -1;
     const SYNC_FAILED = 0;
@@ -139,8 +138,8 @@ class Card extends Model implements Transformable
     }
 
     // 优惠券领取条件
-    public function condition(): HasOne
+    public function condition(): HasMany
     {
-        return $this->hasOne(CardConditions::class, 'card_id', 'id');
+        return $this->hasMany(CardConditions::class, 'card_id', 'card_id');
     }
 }

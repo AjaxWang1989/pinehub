@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 
 use App\Entities\Customer;
-use App\Entities\Order;
 use App\Entities\Ticket;
 
 /**
@@ -15,7 +14,7 @@ use App\Entities\Ticket;
 interface TicketRepository extends CardRepository
 {
     //
-    public function getConditionalTickets(Order $order);
+    public function getTickets($scenario);
 
     public function receiveTicket(Customer $customer, Ticket $ticket);
 }
