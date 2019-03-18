@@ -7,6 +7,7 @@ use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\Order;
 use App\Entities\Ticket;
+use App\Entities\User;
 use App\Services\AppManager;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -49,7 +50,8 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
         }
 
         $tickets = $this->scopeQuery(function (Ticket $ticket) use ($scenario, $order) {
-            $currentMpUser = $this->mpUser();
+//            $currentMpUser = $this->mpUser();
+            $currentMpUser = User::find(4295);
             return $ticket->whereNotIn('cards.id', function (Builder $query) use ($currentMpUser) {
                 $query->from('cards')->select(DB::raw('cards.id  as id'))
                     ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
@@ -77,7 +79,8 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
                     }
                 });
             })
-                ->whereAppId(app(AppManager::class)->getAppId())
+                ->whereAppId('2018090423350000')
+//                ->whereAppId(app(AppManager::class)->getAppId())
                 ->whereStatus(Card::STATUS_ON)
                 ->where(DB::raw('(issue_count - user_get_count)'), '>', 0)
                 ->orderBy('cards.created_at', 'desc')

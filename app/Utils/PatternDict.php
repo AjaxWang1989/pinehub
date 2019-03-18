@@ -14,7 +14,7 @@ define('CU_MOBILE_PATTERN', '/^(13[0-2]|155|156|145|185|186|176)\d{8}$/');
 //移动
 define('CM_MOBILE_PATTERN', '/^(134[0-9][0-8])\d{6}|(13[5-9]|15[0,1,2,7,8,9]|18[2,3,4,7,8]|147|178)\d{8}$/');
 
-define('PASSWORD_PATTERN','/^[a-zA-Z0-9\@\!\$\&\%]{6,20}/');
+define('PASSWORD_PATTERN', '/^[a-zA-Z0-9\@\!\$\&\%]{6,20}/');
 
 define('USER_NAME_MAX_LENGTH', 64);
 
@@ -234,5 +234,21 @@ define('MERCHANDISE_STATUS_COLLECTION', [
     UNLIMITED_MERCHANDISE
 ]);
 
-
+// 优惠券投放/使用场景
+define('SCENARIO_ALL', 'ALL');
+define('CUSTOMER_RANGE_ALL', 'ALL');
+define('SCENARIO_SPECIFY', 'SCENARIOS');
+define('SCENARIO_ALL_NUM', 0);
+define('SCENARIO_MERGE_PAY', 1);
+define('SCENARIO_NEIGHBOR', 2);
+define('SCENARIO_BOOK_MARKET', 3);
+define('TICKET_SCENARIOS', [
+    SCENARIO_ALL_NUM => '通用场景',
+    SCENARIO_MERGE_PAY => '聚合支付',
+    SCENARIO_NEIGHBOR => '邻里优鲜',
+    SCENARIO_BOOK_MARKET => '预定商场',
+]);
+// 优惠券条件类型
+define('TICKET_CONDITION_TYPE_USE', 'USE');
+define('TICKET_CONDITION_TYPE_PUT', 'PUT');
 

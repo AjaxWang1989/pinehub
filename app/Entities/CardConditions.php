@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\JsonQuery;
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -22,7 +23,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class CardConditions extends Model implements Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use TransformableTrait, ModelAttributesAccess, JsonQuery;
 
     /**
      * The attributes that are mass assignable.
