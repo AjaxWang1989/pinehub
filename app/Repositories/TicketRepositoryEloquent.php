@@ -7,7 +7,6 @@ use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\Order;
 use App\Entities\Ticket;
-use App\Entities\User;
 use App\Services\AppManager;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -50,8 +49,8 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
         }
 
         $tickets = $this->scopeQuery(function (Ticket $ticket) use ($scenario, $order) {
-//            $currentMpUser = $this->mpUser();
-            $currentMpUser = User::find(4295);
+            $currentMpUser = $this->mpUser();
+//            $currentMpUser = User::find(4295);
             return $ticket->whereNotIn('cards.id', function (Builder $query) use ($currentMpUser) {
                 $query->from('cards')->select(DB::raw('cards.id  as id'))
                     ->join('customer_ticket_cards', 'cards.card_id', '=', 'customer_ticket_cards.card_id')
@@ -71,7 +70,8 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
                         $query->select(DB::raw(1))
                             ->from('orders')
                             ->whereRaw("orders.customer_id = {$currentMpUser->id}")
-                            ->whereRaw("created_at >= DATE_SUB(now(),INTERVAL (case when card_conditions.`loop` > 0 then card_conditions.`loop` else 15 end) DAY)")
+//                            ->whereRaw("created_at >= DATE_SUB(now(),INTERVAL (case when card_conditions.`loop` > 0 then card_conditions.`loop` else 15 end) DAY)")
+                            ->whereRaw("created_at >= DATE_SUB(now(),INTERVAL IF(card_conditions.`loop`,card_conditions.`loop`,15) DAY)")
                             ->havingRaw("count(*) >= loop_order_num and sum(payment_amount) >= loop_order_amount");
                     });
                     if (!is_null($order)) {// 单笔订单
@@ -79,8 +79,7 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
                     }
                 });
             })
-                ->whereAppId('2018090423350000')
-//                ->whereAppId(app(AppManager::class)->getAppId())
+                ->whereAppId(app(AppManager::class)->getAppId())
                 ->whereStatus(Card::STATUS_ON)
                 ->where(DB::raw('(issue_count - user_get_count)'), '>', 0)
                 ->orderBy('cards.created_at', 'desc')
