@@ -74,7 +74,7 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
                             ->where(function ($query) {
                                 $query->where('loop', 0)
                                     ->orWhere(function ($query) {
-                                        $query->whereRaw("paid_at >= DATE_SUB(now(),INTERVAL IF(card_conditions.`loop`,card_conditions.`loop`,15) DAY)")
+                                        $query->whereRaw("paid_at >= DATE_SUB(now(),INTERVAL card_conditions.`loop` DAY)")
                                             ->havingRaw("count(*) >= loop_order_num and sum(payment_amount) >= loop_order_amount");
                                     });
                             });
