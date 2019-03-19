@@ -6,19 +6,18 @@ use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Card;
 use App\Entities\MemberCardInfo;
 use App\Entities\Ticket;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\MemberCardCreateRequest;
 use App\Http\Requests\Admin\MemberCardUpdateRequest;
 use App\Http\Requests\Admin\TicketCreateRequest;
+use App\Http\Requests\Admin\TicketUpdateRequest;
 use App\Http\Response\JsonResponse;
-
+use App\Repositories\CardRepository;
 use App\Repositories\MemberCardInfoRepository;
 use App\Repositories\TicketRepository;
 use App\Services\AppManager;
 use Dingo\Api\Http\Request;
 use Exception;
-use App\Http\Requests\Admin\TicketUpdateRequest;
-use App\Repositories\CardRepository;
-use App\Http\Controllers\Controller;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -39,7 +38,7 @@ class CardsController extends Controller
      *
      * @param CardRepository $repository
      */
-    public function __construct( $repository)
+    public function __construct($repository)
     {
         $this->repository = $repository;
         parent::__construct();
@@ -50,7 +49,7 @@ class CardsController extends Controller
         return $this->wechat->officeAccount()->card->colors();
     }
 
-    public function  categories()
+    public function categories()
     {
         return $this->wechat->officeAccount()->card->categories();
     }
@@ -85,13 +84,56 @@ class CardsController extends Controller
         $data['begin_at'] = $request->input('begin_at', null);
         $data['end_at'] = $request->input('end_at', null);
         $data['card_type'] = $request->input('card_type');
-        $data['sync']   = $request->input('sync');
+        $data['sync'] = $request->input('sync');
         $data['issue_count'] = $request->input('issue_count', 0);
         $data['platform'] = $request->input('platform');
         $data['begin_at'] = $request->input('begin_at', null);
         $data['end_at'] = $request->input('end_at', null);
         $data['status'] = Card::STATUS_OFF;
-        return $this->repository->create($data);
+
+        /** @var Ticket $ticket */
+        $ticket = $this->repository->create($data);
+
+        if ($request->input('conditions.put.scenarios.type') === SCENARIO_ALL) {
+            $put_show = SCENARIO_ALL_NUM;
+        } else {
+            $put_show = $request->input('conditions.put.scenarios.selected_scenarios', null);
+        }
+        if ($request->input('conditions.use.scenarios.type') === SCENARIO_ALL) {
+            $use_show = SCENARIO_ALL_NUM;
+        } else {
+            $use_show = $request->input('conditions.use.scenarios.selected_scenarios', null);
+        }
+
+        if ($request->input('conditions.put.range.type') == CUSTOMER_RANGE_ALL) {
+            $put_tags = null;
+        } else {
+            $put_tags = $request->input('conditions.put.range.selected_user_tags', null);
+        }
+
+        $put_loop_type = $request->input('conditions.put.loop.type', TICKET_LOOP_TYPE_NO_CONDITION);
+
+        $ticket->putCondition()->create([
+            'valid_obj' => [
+                'customers' => [
+                    'sex' => $request->input('conditions.put.sex', 'ALL'),
+                    'tags' => $put_tags
+                ]
+            ],
+            'show' => (array)$put_show,
+            'pre_payment_amount' => $put_loop_type === TICKET_LOOP_TYPE_SINGLE ? $request->input('conditions.put.loop.single_amount', 0) : 0,
+            'loop' => $put_loop_type === TICKET_LOOP_TYPE_LOOP ? $request->input('conditions.put.loop.days', 0) : 0,
+            'loop_order_num' => $put_loop_type === TICKET_LOOP_TYPE_LOOP ? $request->input('conditions.put.loop.count', 0) : 0,
+            'loop_order_amount' => $put_loop_type === TICKET_LOOP_TYPE_LOOP ? $request->input('conditions.put.loop.total_amount', 0) : 0,
+            'type' => TICKET_CONDITION_TYPE_PUT
+        ]);
+
+        $ticket->useCondition()->create([
+            'show' => (array)$use_show,
+            'type' => TICKET_CONDITION_TYPE_USE
+        ]);
+
+        return $ticket;
     }
 
     /**
@@ -125,7 +167,7 @@ class CardsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  TicketUpdateRequest|Request|MemberCardUpdateRequest $request
-     * @param  string            $id
+     * @param  string $id
      *
      * @return Card|Ticket|MemberCardInfo
      *
@@ -135,16 +177,15 @@ class CardsController extends Controller
     {
         $data = $request->all();
 
-       $card = $this->repository->find($id);
-       tap($card, function (Card $card) use($data){
-           if (isset($data['card_info']) && $data['card_info']) {
-               $data['card_info'] = multi_array_merge($card->cardInfo, $data['card_info']);
-           }
-          $card->update($data);
-       });
-       return $card;
+        $card = $this->repository->find($id);
+        tap($card, function (Card $card) use ($data) {
+            if (isset($data['card_info']) && $data['card_info']) {
+                $data['card_info'] = multi_array_merge($card->cardInfo, $data['card_info']);
+            }
+            $card->update($data);
+        });
+        return $card;
     }
-
 
 
     public function qrCode(int $id)

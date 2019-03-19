@@ -31,13 +31,23 @@ class CardConditions extends Model implements Transformable
      * @var array
      */
     protected $fillable = [
-        'card_id', 'paid', 'valid_obj', 'pre_payment_amount',
+        'type', 'card_id', 'valid_obj', 'pre_payment_amount', 'show',
         'loop', 'loop_order_num', 'loop_order_amount'
     ];
 
     protected $casts = [
-        'valid_obj' => 'array'
+        'valid_obj' => 'array',
+        'show' => 'array'
     ];
+
+    public function setShowAttribute($scenarios)
+    {
+        $newShow = [];
+        foreach ($scenarios as $scenario) {
+            $newShow[] = $scenario . '';
+        }
+        $this->attributes['show'] = json_encode($newShow);
+    }
 
     public function card(): BelongsTo
     {

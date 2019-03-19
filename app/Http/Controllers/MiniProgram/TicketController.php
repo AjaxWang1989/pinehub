@@ -41,9 +41,9 @@ class TicketController extends Controller
     // 领取优惠券
     public function userReceiveTicket(int $cardId)
     {
-        /** @var Card $ticket */
         $appId = app(AppManager::class)->getAppId();
 
+        /** @var Card $ticket */
         $ticket = $this->ticketRepository->scopeQuery(function (Card $card) use ($appId) {
             return $card->whereAppId($appId);
         })->find($cardId);

@@ -70,15 +70,20 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
                         $query->select(DB::raw(1))
                             ->from('orders')
                             ->whereRaw("orders.customer_id = {$currentMpUser->id}")
-//                            ->whereRaw("created_at >= DATE_SUB(now(),INTERVAL (case when card_conditions.`loop` > 0 then card_conditions.`loop` else 15 end) DAY)")
-                            ->whereRaw("created_at >= DATE_SUB(now(),INTERVAL IF(card_conditions.`loop`,card_conditions.`loop`,15) DAY)")
-                            ->havingRaw("count(*) >= loop_order_num and sum(payment_amount) >= loop_order_amount");
+                            ->where(function ($query) {
+                                $query->where('loop', 0)
+                                    ->orWhere(function ($query) {
+                                        $query->whereRaw("paid_at >= DATE_SUB(now(),INTERVAL IF(card_conditions.`loop`,card_conditions.`loop`,15) DAY)")
+                                            ->havingRaw("count(*) >= loop_order_num and sum(payment_amount) >= loop_order_amount");
+                                    });
+                            });
                     });
                     if (!is_null($order)) {// 单笔订单
                         $query->where('pre_payment_amount', '<=', $order->paymentAmount);
                     }
                 });
             })
+//                ->whereAppId('2018090423350000')
                 ->whereAppId(app(AppManager::class)->getAppId())
                 ->whereStatus(Card::STATUS_ON)
                 ->where(DB::raw('(issue_count - user_get_count)'), '>', 0)
