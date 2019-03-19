@@ -9,6 +9,7 @@ use App\Entities\Order;
 use App\Entities\Ticket;
 use App\Services\AppManager;
 use Carbon\Carbon;
+use Dingo\Api\Auth\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
@@ -49,7 +50,7 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
         }
 
         $tickets = $this->scopeQuery(function (Ticket $ticket) use ($scenario, $order) {
-            $currentMpUser = $this->mpUser();
+            $currentMpUser = app(Auth::class)->user();
 //            $currentMpUser = User::find(4295);
             return $ticket->whereNotIn('cards.id', function (Builder $query) use ($currentMpUser) {
                 $query->from('cards')->select(DB::raw('cards.id  as id'))
