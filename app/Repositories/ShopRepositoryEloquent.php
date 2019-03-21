@@ -82,7 +82,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     public function nearBy(float $lng, float $lat, float $distance = 15)
     {
         $this->scopeQuery(function (Shop $shop) use ($lat, $lng, $distance) {
-            return $shop->whereStatus(Shop::STATUS_OPEN)->near($lng, $lat, $distance);
+            return $shop->whereHas('shopManager')->whereStatus(Shop::STATUS_OPEN)->near($lng, $lat, $distance);
         });
         return $this->paginate();
     }
