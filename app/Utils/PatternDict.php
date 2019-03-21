@@ -20,6 +20,8 @@ define('USER_NAME_MAX_LENGTH', 64);
 
 define('UNKNOWN', 'UNKNOWN');
 
+define('SEX_ALL', 'ALL');
+
 define('MALE', 'MALE');
 
 define('FEMALE', 'FEMALE');

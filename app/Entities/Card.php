@@ -32,6 +32,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read string $statusDesc 状态描述
  * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\CardConditions|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
@@ -70,6 +71,14 @@ class Card extends Model implements Transformable
     const STATUS_OFF = 0;
     const STATUS_ON = 1;
     const STATUS_EXPIRE = 2;
+    const UNAVAILABLE = 3;
+
+    const CARD_STATUS = [
+        self::STATUS_OFF => '未生效',
+        self::STATUS_ON => '生效中',
+        self::STATUS_EXPIRE => '已失效',
+        self::UNAVAILABLE => '已下架',
+    ];
 
     const OWNER_TICKET = 'OWNER_TICKET';
     const ALI_TICKET = 'ALI_TICKET';
@@ -141,5 +150,10 @@ class Card extends Model implements Transformable
     public function condition(): HasMany
     {
         return $this->hasMany(CardConditions::class, 'card_id', 'card_id');
+    }
+
+    public function getStatusDescAttribute()
+    {
+        return self::CARD_STATUS[$this->status];
     }
 }

@@ -117,6 +117,8 @@ class MiniProgramApiRoutes extends ApiRoutes
 
             $router->get('/merchant/saved/shoppingcart/{id}/use', ['as' => 'user.merchant.shoppingcart.use', 'uses' => 'ShoppingCartController@useMerchantSavedShoppingCart']);
 
+            $router->get('/advertisements', ['as' => 'advertisements', 'uses' => 'AdvertisementController@index']);
+
         });
 
         $router->addRoute(['GET', 'POST'], '/wechat/payment/notify/{token?}', [
