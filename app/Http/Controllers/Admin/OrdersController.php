@@ -62,7 +62,7 @@ class OrdersController extends Controller
         $orders = $this->repository
             ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity', 'receivingShopAddress'])
             ->scopeQuery(function ($query) {
-                return $query->whereHas('member');
+                return $query->whereHas('customer');
             })
             ->orderBy('paid_at', 'desc')
             ->paginate($request->input('limit', PAGE_LIMIT));
@@ -83,7 +83,7 @@ class OrdersController extends Controller
         $orders = $this->repository
             ->with(['orderItems.merchandise', 'orderItems.shop', 'customer', 'member', 'activity', 'receivingShopAddress', 'shop', 'tickets'])
             ->scopeQuery(function ($query) {
-                return $query->whereHas('member');
+                return $query->whereHas('customer');
             })
             ->orderBy('paid_at', 'desc')
             ->all();
