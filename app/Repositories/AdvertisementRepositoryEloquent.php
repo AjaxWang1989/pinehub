@@ -37,13 +37,13 @@ class AdvertisementRepositoryEloquent extends BaseRepository implements Advertis
     public function getAdvertisements()
     {
         // TODO
-        $advertisements = $this->scopeQuery(function (Advertisement $advertisement) {
-//            $currentMpUser = app(Auth::class)->user();
-            $currentMpUser = User::find(106);
+        $advertisement = $this->scopeQuery(function (Advertisement $advertisement) {
+            $currentMpUser = app(Auth::class)->user();
+//            $currentMpUser = User::find(106);
 
-            $orderId = request()->input('orderId', null);
+            $orderId = request()->input('order_id', null);
             if (!$orderId) {
-                throw new InvalidArgumentException('缺少orderId参数');
+                throw new InvalidArgumentException('缺少order_id参数');
             }
 
             /** @var Order $order */
@@ -53,13 +53,12 @@ class AdvertisementRepositoryEloquent extends BaseRepository implements Advertis
                 $query->where('conditions->sex', SEX_ALL)
                     ->orWhere('conditions->sex', $currentMpUser->sex);
             })->where('conditions->payment_amount', '<=', $order->paymentAmount)
-//                ->whereAppId(app(AppManager::class)->getAppId())
-                ->whereAppId('2018090423350000')
+                ->whereAppId(app(AppManager::class)->getAppId())
+//                ->whereAppId('2018090423350000')
                 ->whereStatus(Advertisement::STATUS_ON)
-                ->orderByDesc('created_at')
-                ->orderByDesc('updated_at');
-        })->paginate(request()->input('limit', PAGE_LIMIT));
+                ->orderBy('created_at', 'desc');
+        })->first();
 
-        return $advertisements;
+        return $advertisement;
     }
 }

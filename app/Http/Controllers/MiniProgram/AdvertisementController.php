@@ -28,8 +28,8 @@ class AdvertisementController extends Controller
 
     public function index(Request $request)
     {
-        $advertisements = $this->repository->getAdvertisements();
+        $advertisement = $this->repository->getAdvertisements();
 
-        return $this->response()->paginator($advertisements, new AdvertisementTransformer());
+        return $this->response()->item($advertisement, new AdvertisementTransformer());
     }
 }
