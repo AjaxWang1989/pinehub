@@ -44,7 +44,7 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
         $scenario = (array)$scenario;
 
         $order = null;
-        if ($orderId = request()->input('orderId', null)) {
+        if ($orderId = request()->input('order_id', null)) {
             /** @var Order $order */
             $order = app(OrderRepository::class)->find($orderId);
         }

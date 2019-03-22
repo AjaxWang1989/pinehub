@@ -22,7 +22,7 @@ class AdvertisementTransformer extends TransformerAbstract
             'id' => (int)$model->id,
             'title' => (string)$model->title,
             'banner_url' => (string)$model->bannerUrl,
-            'ticket' => $model->ticket,
+//            'ticket' => $model->ticket,
             'begin_at' => (string)$model->beginAt,
             'end_at' => (string)$model->endAt,
         ];

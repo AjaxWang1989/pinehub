@@ -26,7 +26,7 @@ class AdvertisementController extends Controller
         $this->repository = $advertisementRepository;
     }
 
-    public function index(Request $request)
+    public function getLatestAdvertisement(Request $request)
     {
         $advertisement = $this->repository->getAdvertisements();
 

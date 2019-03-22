@@ -73,6 +73,7 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->get('/confirm/order/{id}', ['as' => 'user.confirm.order.', 'uses' => 'OrderController@confirmOrder']);
             $router->get('/{status}/orders', ['as' => 'user.orders', 'uses' => 'OrderController@userOrders']);
             $router->post('/create/order', ['as' => 'user.create.order', 'uses' => 'OrderController@createOrder']);
+            $router->get('/order/{id}', ['as' => 'user.order.detail', 'uses' => 'OrderController@show']);
             $router->get('/{type}/order/{orderId}/payment', ['as' => 'user.again.order', 'uses' => 'OrderController@payByOrderId']);
             $router->get('/store/buffet/orders', ['as' => 'user.store.buffet.orders', 'uses' => 'OrderController@storeBuffetOrders']);
             $router->get('/store/send/orders', ['as' => 'user.store.send.orders', 'uses' => 'OrderController@storeSendOrders']);
@@ -117,7 +118,7 @@ class MiniProgramApiRoutes extends ApiRoutes
 
             $router->get('/merchant/saved/shoppingcart/{id}/use', ['as' => 'user.merchant.shoppingcart.use', 'uses' => 'ShoppingCartController@useMerchantSavedShoppingCart']);
 
-            $router->get('/advertisements', ['as' => 'advertisements', 'uses' => 'AdvertisementController@index']);
+            $router->get('/advertisement/latest', ['as' => 'advertisements', 'uses' => 'AdvertisementController@getLatestAdvertisement']);
 
         });
 
