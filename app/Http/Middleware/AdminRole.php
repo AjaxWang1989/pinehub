@@ -23,6 +23,7 @@ class AdminRole
      */
     public function handle($request, \Closure $next = null)
     {
+//        $request->route();
         $user = $request->user();
         tap($user, function (User $user) {
             $roles = [];
