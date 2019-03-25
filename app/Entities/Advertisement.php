@@ -53,7 +53,7 @@ class Advertisement extends Model
     const STATUS = [
         self::STATUS_WAIT => '未投放',
         self::STATUS_ON => '投放中',
-        self::STATUS_EXPIRE => '已过期',
+        self::STATUS_EXPIRE => '已过期自动下架',
         self::STATUS_UNAVAILABLE => '已下架'
     ];
 

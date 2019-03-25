@@ -14,14 +14,14 @@ use App\Entities\User;
 use App\Repositories\Traits\Destruct;
 use App\Services\AppManager;
 use Dingo\Api\Auth\Auth;
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 class AdvertisementRepositoryEloquent extends BaseRepository implements AdvertisementRepository
 {
     use Destruct;
     protected $fieldSearchable = [
-        'status' => '='
+        'status' => '=',
     ];
 
     /**
@@ -38,8 +38,8 @@ class AdvertisementRepositoryEloquent extends BaseRepository implements Advertis
     {
         // TODO
         $advertisement = $this->scopeQuery(function (Advertisement $advertisement) {
-            $currentMpUser = app(Auth::class)->user();
-//            $currentMpUser = User::find(106);
+//            $currentMpUser = app(Auth::class)->user();
+            $currentMpUser = User::find(106);
 
             $orderId = request()->input('order_id', null);
             if (!$orderId) {
@@ -53,8 +53,8 @@ class AdvertisementRepositoryEloquent extends BaseRepository implements Advertis
                 $query->where('conditions->sex', SEX_ALL)
                     ->orWhere('conditions->sex', $currentMpUser->sex);
             })->where('conditions->payment_amount', '<=', $order->paymentAmount)
-                ->whereAppId(app(AppManager::class)->getAppId())
-//                ->whereAppId('2018090423350000')
+//                ->whereAppId(app(AppManager::class)->getAppId())
+                ->whereAppId('2018090423350000')
                 ->whereStatus(Advertisement::STATUS_ON)
                 ->orderBy('created_at', 'desc');
         })->first();
