@@ -9,7 +9,7 @@ use App\Services\AppManager;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\TicketTransformer;
 use Dingo\Api\Http\Request;
-use http\Exception\InvalidArgumentException;
+use InvalidArgumentException;
 
 class TicketController extends Controller
 {
