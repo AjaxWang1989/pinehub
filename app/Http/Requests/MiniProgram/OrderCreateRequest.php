@@ -35,7 +35,7 @@ class OrderCreateRequest extends FormRequest
         return [
             //
             'receiver_name' => 'required|string',
-            'receiver_address' => 'required|nullable|string',
+            'receiver_address' => 'nullable|string',
             'receiver_mobile' => 'nullable|mobile',
             'comment' => 'nullable|string',
             'type' => Rule::in(Order::OFF_LINE_PAYMENT_ORDER, Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER,
