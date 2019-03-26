@@ -32,9 +32,9 @@ class StatusOrdersTransformer extends TransformerAbstract
             'quantity' => $model->merchandiseNum,
             'total_amount' => round($model->totalAmount, 2),
             'payment_amount' => round($model->paymentAmount, 2),
-            'shop_end_hour' => isset($model->shop->end_at) ? $model->shop->end_at : null,
+            'shop_end_hour' => isset($model->shop->endAt) ? $model->shop->endAt : null,
             'created_at' => $model->createdAt->format('Y-m-d H:i:s'),
-            'paid_at' => $model->paidAt->format('Y-m-d H:i:s'),
+            'paid_at' => $model->paidAt ? $model->paidAt->format('Y-m-d H:i:s'): null,
             'order_item_merchandises' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
                 $data = $orderItem->only(['merchandise_name', 'sell_price', 'quality', 'total_amount', 'main_image']);
                 $data['sell_price'] = number_format($data['sell_price'], 2);

@@ -104,7 +104,7 @@ class ShopsController extends Controller
     public function nearbyStores(Request $request){
         $lng = $request->input('lng');
         $lat = $request->input('lat');
-        $items= $this->shopRepository->nearBy($lng,$lat);
+        $items= $this->shopRepository->nearBy($lng, $lat);
         return $this->response()->paginator($items, new ShopPositionTransformer());
     }
 
@@ -207,7 +207,9 @@ class ShopsController extends Controller
 
     public function showShop(int $id)
     {
-        $shop = $this->shopRepository->find($id);
+        $shop = $this->shopRepository->scopeQuery(function (Shop $shop) {
+            return $shop->whereHas('shopManager');
+        })->find($id);
         if (!$shop) {
             throw new ModelNotFoundException('无法查找到相应店铺');
         }else{
