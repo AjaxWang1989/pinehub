@@ -11,12 +11,14 @@ namespace App\Transformers\Mp;
 
 use App\Entities\Card;
 use App\Entities\Ticket;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 
 class TicketTransformer extends TransformerAbstract
 {
     public function transform(Ticket $card)
     {
+        Log::debug('customer tickets', [$card->customerTickets->count(), $card->cardInfo['base_info']['get_limit']]);
         return [
             'id' => $card->id,
             'card_id' => $card->cardId,
