@@ -38,8 +38,8 @@ class AdvertisementRepositoryEloquent extends BaseRepository implements Advertis
     {
         // TODO
         $advertisement = $this->scopeQuery(function (Advertisement $advertisement) {
-//            $currentMpUser = app(Auth::class)->user();
-            $currentMpUser = User::find(106);
+            $currentMpUser = app(Auth::class)->user();
+//            $currentMpUser = User::find(106);
 
             $orderId = request()->input('order_id', null);
             if (!$orderId) {
@@ -49,12 +49,13 @@ class AdvertisementRepositoryEloquent extends BaseRepository implements Advertis
             /** @var Order $order */
             $order = app(OrderRepository::class)->find($orderId);
 
-            return $advertisement->where(function ($query) use ($currentMpUser) {
-                $query->where('conditions->sex', SEX_ALL)
-                    ->orWhere('conditions->sex', $currentMpUser->sex);
-            })->where('conditions->payment_amount', '<=', $order->paymentAmount)
-//                ->whereAppId(app(AppManager::class)->getAppId())
-                ->whereAppId('2018090423350000')
+            return $advertisement->with(['ticket.customerTickets'])
+                ->where(function ($query) use ($currentMpUser) {
+                    $query->where('conditions->sex', SEX_ALL)
+                        ->orWhere('conditions->sex', $currentMpUser->sex);
+                })
+                ->where('conditions->payment_amount', '<=', $order->paymentAmount)
+                ->whereAppId(app(AppManager::class)->getAppId())
                 ->whereStatus(Advertisement::STATUS_ON)
                 ->orderBy('created_at', 'desc');
         })->first();
