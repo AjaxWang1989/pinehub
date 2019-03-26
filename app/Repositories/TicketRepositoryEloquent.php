@@ -115,11 +115,11 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
                 if ($ticket->cardInfo['base_info'] && $ticket->cardInfo['base_info']['date_info']) {
                     $dateInfo = $ticket->cardInfo['base_info']['date_info'];
                     if ($dateInfo['type'] === DATE_TYPE_FIX_TERM) {
-                        $record->beginAt = Carbon::now()->addDay($dateInfo['fixed_begin_term']);
-                        $record->endAt = $record->beginAt->copy()->addDay($dateInfo['fixed_term']);
+                        $record->beginAt = Carbon::now()->addDay($dateInfo['fixed_begin_term'])->startOfDay();
+                        $record->endAt = $record->beginAt->copy()->addDay($dateInfo['fixed_term'])->endOfDay();
                     } elseif ($dateInfo['type'] === DATE_TYPE_FIX_TIME_RANGE) {
-                        $record->beginAt = Carbon::createFromTimestamp($dateInfo['begin_timestamp']);
-                        $record->endAt = Carbon::createFromTimestamp($dateInfo['end_timestamp']);
+                        $record->beginAt = Carbon::createFromTimestamp($dateInfo['begin_timestamp'])->startOfDay();
+                        $record->endAt = Carbon::createFromTimestamp($dateInfo['end_timestamp'])->startOfDay();
                     } else {
                         $record->beginAt = $ticket->beginAt;
                         $record->endAt = $ticket->endAt;

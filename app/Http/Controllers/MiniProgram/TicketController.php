@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 use App\Entities\Card;
+use App\Entities\Ticket;
 use App\Repositories\AppRepository;
 use App\Repositories\TicketRepository;
 use App\Services\AppManager;
@@ -44,7 +45,7 @@ class TicketController extends Controller
         $appId = app(AppManager::class)->getAppId();
 
         /** @var Card $ticket */
-        $ticket = $this->ticketRepository->scopeQuery(function (Card $card) use ($appId) {
+        $ticket = $this->ticketRepository->scopeQuery(function (Ticket $card) use ($appId) {
             return $card->whereAppId($appId);
         })->find($cardId);
 
