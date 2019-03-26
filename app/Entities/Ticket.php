@@ -97,12 +97,12 @@ class Ticket extends Card
 
     public function orders(): HasMany
     {
-        return $this->hasMany(Order::class, 'card_id', 'id');
+        return $this->hasMany(Order::class, 'card_id', 'card_id');
     }
 
     public function customerTickets(): HasMany
     {
-        return $this->hasMany(CustomerTicketCard::class, 'card_id', 'id');
+        return $this->hasMany(CustomerTicketCard::class, 'card_id', 'card_id');
     }
 
     public function putCondition(): HasMany
