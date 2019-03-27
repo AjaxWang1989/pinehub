@@ -50,7 +50,7 @@ class AdvertisementRepositoryEloquent extends BaseRepository implements Advertis
             $order = app(OrderRepository::class)->find($orderId);
 
             return $advertisement->with([
-                'ticket.customerTickets' => function($query) use($currentMpUser) {
+                'ticket.customerTickets' => function ($query) use ($currentMpUser) {
                     $query->where('customer_id', $currentMpUser->id);
                 }])
                 ->where(function ($query) use ($currentMpUser) {

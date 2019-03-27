@@ -27,7 +27,6 @@ class AdvertisementCriteria implements CriteriaInterface
     public function apply($model, RepositoryInterface $repository)
     {
         $appManager = app(AppManager::class);
-//        $model = $model->whereAppId($appManager->currentApp->id);
         $model = $model->whereAppId($appManager->currentApp->id);
         if ($appManager->officialAccount) {
             $model = $model->whereWechatAppId($appManager->officialAccount->appId);

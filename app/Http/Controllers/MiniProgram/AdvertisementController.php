@@ -11,6 +11,7 @@ namespace App\Http\Controllers\MiniProgram;
 use App\Repositories\AdvertisementRepository;
 use App\Repositories\AppRepository;
 use App\Transformers\Mp\AdvertisementTransformer;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class AdvertisementController extends Controller
@@ -30,6 +31,9 @@ class AdvertisementController extends Controller
     {
         $advertisement = $this->repository->getAdvertisements();
 
-        return $this->response()->item($advertisement, new AdvertisementTransformer());
+        if ($advertisement) {
+            return $this->response()->item($advertisement, new AdvertisementTransformer());
+        }
+        throw new ModelNotFoundException('未找到合适的投放广告');
     }
 }
