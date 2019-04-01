@@ -15,6 +15,7 @@ use App\Services\AppManager;
 use App\Transformers\TicketItemTransformer;
 use App\Transformers\TicketTransformer;
 use Dingo\Api\Http\Request;
+use EasyWeChat\Kernel\Http\StreamResponse;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -168,15 +169,12 @@ class TicketController extends Controller
      * 小程序码
      * @param Request $request
      * @param int $ticketId
+     * @return StreamResponse
      */
     public function promoteMiniCode(Request $request, int $ticketId)
     {
-        $appId = app(AppManager::class)->getAppId();
-
         /** @var Ticket $ticket */
-        $ticket = $this->ticketRepository->scopeQuery(function (Ticket $card) use ($appId) {
-            return $card->whereAppId($appId);
-        })->find($ticketId);
+        $ticket = $this->ticketRepository->find($ticketId);
 
         $response = $this->ticketRepository->getPromoteMiniCode($ticket);
 

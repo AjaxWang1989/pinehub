@@ -61,9 +61,7 @@ class TicketController extends Controller
     {
         $appId = app(AppManager::class)->getAppId();
 
-        $ticket = $this->ticketRepository->scopeQuery(function (Ticket $card) use ($appId) {
-            return $card->whereAppId($appId);
-        })->find($cardId);
+        $ticket = $this->ticketRepository->find($cardId);
 
         return $this->response()->item($ticket, new TicketTransformer());
     }
