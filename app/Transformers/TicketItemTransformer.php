@@ -78,6 +78,8 @@ class TicketItemTransformer extends TransformerAbstract
             'used_count' => $model->usedCount,
             'user_get_count' => $model->userGetCount,
             'used_rate' => $model->userGetCount ? $model->usedCount / $model->userGetCount : 0,
+            'promote_url' => buildUrl('api.backend', '/ticket/{ticketId}/promote/qrcode', ['ticketId' => 1]),//TODO
+            'promote_minicode_url' => '',
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];

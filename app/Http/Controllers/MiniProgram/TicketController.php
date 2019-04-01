@@ -10,6 +10,7 @@ use App\Services\AppManager;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\TicketTransformer;
 use Dingo\Api\Http\Request;
+use function foo\func;
 use InvalidArgumentException;
 
 class TicketController extends Controller
@@ -54,5 +55,16 @@ class TicketController extends Controller
         $record = $this->ticketRepository->receiveTicket($customer, $ticket);
 
         return $this->response()->item($record, new CustomerTicketCardTransformer());
+    }
+
+    public function show(int $cardId)
+    {
+        $appId = app(AppManager::class)->getAppId();
+
+        $ticket = $this->ticketRepository->scopeQuery(function (Ticket $card) use ($appId) {
+            return $card->whereAppId($appId);
+        })->find($cardId);
+
+        return $this->response()->item($ticket, new TicketTransformer());
     }
 }

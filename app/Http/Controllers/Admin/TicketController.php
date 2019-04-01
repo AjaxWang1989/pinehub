@@ -13,6 +13,7 @@ use App\Http\Requests\Admin\TicketUpdateRequest;
 use App\Repositories\TicketRepository;
 use App\Transformers\TicketItemTransformer;
 use App\Transformers\TicketTransformer;
+use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
@@ -145,5 +146,29 @@ class TicketController extends Controller
         /** @var Ticket $id */
         $ticket = parent::show($id);
         return $this->response()->item($ticket, new TicketTransformer());
+    }
+
+    /**
+     * Ticket normal promote qrCode.
+     *
+     * @param Request $request
+     * @param int $ticketId
+     * @return \Dingo\Api\Http\Response
+     */
+    public function promoteQRCode(Request $request, int $ticketId)
+    {
+        $url = buildUrl('web.wxMp', '/ticket/receive/{ticketId}', ['ticketId' => $ticketId]);
+        $code = app('qrcode')->format('png')->margin(2)->size($request->input('size', 128))->generate($url);
+        return $this->response()->created()->setContent($code)->header('Content-Type', 'image/png');
+    }
+
+    /**
+     * 小程序码
+     * @param Request $request
+     * @param int $ticketId
+     */
+    public function promoteMiniCode(Request $request, int $ticketId)
+    {
+
     }
 }

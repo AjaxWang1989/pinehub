@@ -9,7 +9,6 @@
 namespace App\Transformers\Mp;
 
 use App\Entities\Advertisement;
-use App\Entities\Ticket;
 use League\Fractal\TransformerAbstract;
 
 class AdvertisementTransformer extends TransformerAbstract
