@@ -147,6 +147,8 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
 
     public function getPromoteMiniCode(Ticket $ticket)
     {
-        return app('wechat')->miniProgram()->app_code->getUnlimit($ticket->id);
+        return app('wechat')->miniProgram()->app_code->getUnlimit($ticket->id, [
+            'page' => 'pages/user/ticket/main'
+        ]);
     }
 }

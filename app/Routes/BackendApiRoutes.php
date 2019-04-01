@@ -49,6 +49,7 @@ class BackendApiRoutes extends ApiRoutes
             $router->get('/refresh/token', ['as' => 'administrator.refresh.token', 'uses' => 'AuthController@RefreshToken']);
             $router->get('/store/{storeId}/payment/code', ['as' => 'store.payment.code', 'uses' => 'ShopsController@payQRCode']);
             $router->get('/ticket/{ticketId}/promote/qrcode', ['uses' => 'TicketController@promoteQRCode']);
+            $router->get('/ticket/{ticketId}/promote/minicode', ['uses' => 'TicketController@promoteMiniCode']);
             $router->group($attributes, function ($router) {
                 /**
                  * @var  LumenRouter|DingoRouter $router
