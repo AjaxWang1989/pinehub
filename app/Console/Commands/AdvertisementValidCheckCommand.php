@@ -43,7 +43,7 @@ class AdvertisementValidCheckCommand extends Command
     public function handle()
     {
         Advertisement::query()->where('status', Advertisement::STATUS_WAIT)
-            ->whereTime('begin_at', '<=', Carbon::now())
+            ->where('begin_at', '<=', Carbon::now())
             ->chunk(100, function (Collection $advertisements) {
                 $advertisements->map(function (Advertisement $advertisement) {
                     $job = (new AdvertisementValidCheck($advertisement, Advertisement::STATUS_ON))->delay(1);
@@ -52,7 +52,7 @@ class AdvertisementValidCheckCommand extends Command
             });
 
         Advertisement::query()->where('status', Advertisement::STATUS_ON)
-            ->whereTime('end_at', '<=', Carbon::now())
+            ->where('end_at', '<=', Carbon::now())
             ->chunk(100, function (Collection $advertisements) {
                 $advertisements->map(function (Advertisement $advertisement) {
                     $job = (new AdvertisementValidCheck($advertisement, Advertisement::STATUS_EXPIRE))->delay(1);
