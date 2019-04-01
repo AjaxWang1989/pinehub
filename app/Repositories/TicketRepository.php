@@ -17,4 +17,6 @@ interface TicketRepository extends CardRepository
     public function getTickets($scenario);
 
     public function receiveTicket(Customer $customer, Ticket $ticket);
+
+    public function getPromoteMiniCode(Ticket $ticket);
 }

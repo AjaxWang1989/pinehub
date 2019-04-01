@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\CardsController as Controller;
 use App\Http\Requests\Admin\TicketCreateRequest;
 use App\Http\Requests\Admin\TicketUpdateRequest;
 use App\Repositories\TicketRepository;
+use App\Services\AppManager;
 use App\Transformers\TicketItemTransformer;
 use App\Transformers\TicketTransformer;
 use Dingo\Api\Http\Request;
@@ -149,6 +150,7 @@ class TicketController extends Controller
     }
 
     /**
+     * 普通链接二维码
      * Ticket normal promote qrCode.
      *
      * @param Request $request
@@ -169,6 +171,15 @@ class TicketController extends Controller
      */
     public function promoteMiniCode(Request $request, int $ticketId)
     {
+        $appId = app(AppManager::class)->getAppId();
 
+        /** @var Ticket $ticket */
+        $ticket = $this->ticketRepository->scopeQuery(function (Ticket $card) use ($appId) {
+            return $card->whereAppId($appId);
+        })->find($ticketId);
+
+        $response = $this->ticketRepository->getPromoteMiniCode($ticket);
+
+        return $response;
     }
 }

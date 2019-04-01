@@ -145,4 +145,8 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
         throw new ModelNotFoundException('优惠券已领取完');
     }
 
+    public function getPromoteMiniCode(Ticket $ticket)
+    {
+        return app('wechat')->miniProgram()->app_code->getUnlimit($ticket->id);
+    }
 }
