@@ -48,6 +48,7 @@ class BackendApiRoutes extends ApiRoutes
             $router->post('/login', ['as' => 'administrator.login', 'uses' => 'AuthController@authenticate']);
             $router->get('/refresh/token', ['as' => 'administrator.refresh.token', 'uses' => 'AuthController@RefreshToken']);
             $router->get('/store/{storeId}/payment/code', ['as' => 'store.payment.code', 'uses' => 'ShopsController@payQRCode']);
+            $router->get('/ticket/{ticketId}/promote/qrcode', ['uses' => 'TicketController@promoteQRCode']);
             $router->group($attributes, function ($router) {
                 /**
                  * @var  LumenRouter|DingoRouter $router
@@ -103,8 +104,6 @@ class BackendApiRoutes extends ApiRoutes
 
                 $router->get('/tickets', ['as' => 'tickets', 'middleware' => ['ticket'], 'uses' => 'TicketController@index']);
                 $router->get('/ticket/{id}', ['as' => 'ticket.show', 'uses' => 'TicketController@show']);
-                $router->get('/ticket/{ticketId}/promote/qrcode', ['uses' => 'TicketController@promoteQRCode']);
-
                 $router->put('/ticket/{id}', ['as' => 'ticket.update', 'uses' => 'TicketController@update']);
 
                 $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
