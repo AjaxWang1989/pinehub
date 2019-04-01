@@ -10,6 +10,7 @@ use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Controllers\Admin\CardsController as Controller;
 use App\Http\Requests\Admin\TicketCreateRequest;
 use App\Http\Requests\Admin\TicketUpdateRequest;
+use App\Repositories\AppRepository;
 use App\Repositories\TicketRepository;
 use App\Services\AppManager;
 use App\Transformers\TicketItemTransformer;
@@ -27,9 +28,10 @@ class TicketController extends Controller
 
     protected $ticketRepository = null;
 
-    public function __construct(TicketRepository $ticketRepository)
+    public function __construct(Request $request, TicketRepository $ticketRepository, AppRepository $appRepository)
     {
         $this->ticketRepository = $ticketRepository;
+        $this->parseApp($request, $appRepository);
         parent::__construct($ticketRepository);
     }
 

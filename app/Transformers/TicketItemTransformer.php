@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Services\AppManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
@@ -79,7 +80,9 @@ class TicketItemTransformer extends TransformerAbstract
             'user_get_count' => $model->userGetCount,
             'used_rate' => $model->userGetCount ? $model->usedCount / $model->userGetCount : 0,
             'promote_url' => buildUrl('api.backend', '/ticket/{ticketId}/promote/qrcode', ['ticketId' => $model->id]),//TODO
-            'promote_minicode_url' => buildUrl('api.backend', '/ticket/{ticketId}/promote/minicode', ['ticketId' => $model->id]),
+            'promote_minicode_url' => buildUrl('api.backend', '/ticket/{ticketId}/promote/minicode',
+                ['ticketId' => $model->id],
+                ['project_id' => app(AppManager::class)->getAppId()]),
             'created_at' => $model->createdAt,
             'updated_at' => $model->updatedAt
         ];
