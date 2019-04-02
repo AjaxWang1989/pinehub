@@ -6,6 +6,7 @@ use App\Console\Commands\AdvertisementValidCheckCommand;
 use App\Console\Commands\BroadcastEventCommand;
 use App\Console\Commands\Console\TestMakeCommand;
 use App\Console\Commands\CustomerTicketRefreshStatusCommand;
+use App\Console\Commands\ExecuteSqlFilesCommand;
 use App\Console\Commands\HashEncrypt;
 use App\Console\Commands\JWTGenerateCommand;
 use App\Console\Commands\ModelsCommand;
@@ -80,7 +81,8 @@ class Kernel extends ConsoleKernel
         CustomerTicketRefreshStatusCommand::class,
         OrderUpdateStatusCommand::class,
         BroadcastEventCommand::class,
-        AdvertisementValidCheckCommand::class
+        AdvertisementValidCheckCommand::class,
+        ExecuteSqlFilesCommand::class
     ];
 
     /**

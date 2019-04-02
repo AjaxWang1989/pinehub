@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
-class CreateWechatTemplateMessages extends Migration
+class CreateWxTemplateMessageTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +14,10 @@ class CreateWechatTemplateMessages extends Migration
      */
     public function up()
     {
-        //
-        Schema::create('wechat_template_messages', function (Blueprint $table) {
+        Schema::create('wx_template_messages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('template_id', 16)->comment('模版消息id');
-            $table->string('app_id', 32)->comment('微信 app id');
+            $table->string('wx_app_id', 32)->comment('微信 app id');
             $table->text('content')->comment('消息模版内容');
             $table->string('primary_industry')->comment('模板所属行业的一级行业');
             $table->string('deputy_industry')->comment('模板所属行业的二级行业');
@@ -28,6 +28,8 @@ class CreateWechatTemplateMessages extends Migration
             $table->index('primary_industry');
             $table->index('deputy_industry');
         });
+        DB::statement('ALTER TABLE wx_template_messages AUTO_INCREMENT=11');
+
     }
 
     /**
@@ -37,7 +39,6 @@ class CreateWechatTemplateMessages extends Migration
      */
     public function down()
     {
-        //
-        Schema::drop('wechat_template_messages');
+        Schema::dropIfExists('wx_template_messages');
     }
 }

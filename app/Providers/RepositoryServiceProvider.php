@@ -78,6 +78,10 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\OrderPostRepository::class, \App\Repositories\OrderPostRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\MemberCardInfoRepository::class, \App\Repositories\MemberCardInfoRepositoryEloquent::class);
         $this->app->bind(AdvertisementRepository::class, AdvertisementRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WxTemplateMessageRepository::class, \App\Repositories\WxTemplateMessageRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\UserTemplateMessageRepository::class, \App\Repositories\UserTemplateMessageRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\PaymentConfigRepository::class, \App\Repositories\PaymentConfigRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\TicketTemplateMessageRepository::class, \App\Repositories\TicketTemplateMessageRepositoryEloquent::class);
         //:end-bindings:
     }
 }
