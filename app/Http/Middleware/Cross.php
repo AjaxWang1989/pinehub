@@ -18,6 +18,7 @@ class Cross
     public function handle($request, Closure $next = null)
     {
         if ($request->method() === HTTP_METHOD_OPTIONS) {
+            exit;
             $response = app(Factory::class)->created();
             return $this->setHeader($response, $request);
         }
