@@ -12,6 +12,7 @@ use App\Excel\SendOrderSheet;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Routing\Router as DingoRouter;
 use Dingo\Api\Routing\Router;
+use FastRoute\Route;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Router as LumenRouter;
 use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
@@ -101,7 +102,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->post('/coupon/ticket', ['as' => 'coupon-ticket.create', 'middleware' => ['ticket:coupon_card'], 'uses' => 'TicketController@store']);
                 $router->post('/gift/ticket', ['as' => 'gift-ticket.create', 'middleware' => ['ticket:gift'], 'uses' => 'TicketController@store']);
                 $router->post('/cash/ticket', ['as' => 'cash-ticket.create', 'middleware' => ['ticket:cash'], 'uses' => 'TicketController@store']);
-                $router->post('/ticket', ['as' => 'ticket.create', 'uses' => 'TicketController@store']);
+                $router->post('/tickets', ['as' => 'ticket.create', 'uses' => 'TicketController@store']);
 
                 $router->get('/tickets', ['as' => 'tickets', 'middleware' => ['ticket'], 'uses' => 'TicketController@index']);
                 $router->get('/ticket/{id}', ['as' => 'ticket.show', 'uses' => 'TicketController@show']);
@@ -184,6 +185,29 @@ class BackendApiRoutes extends ApiRoutes
                     $router->put("auto_reply_message/{id}", ['as' => 'wechat.auto_reply_message.update', 'uses' => 'AutoReplyMessagesController@update']);
                     $router->delete("auto_reply_message/{id}", ['as' => 'wechat.auto_reply_message.delete', 'uses' => 'AutoReplyMessagesController@destroy']);
                     $router->delete("auto_reply_messages", ['as' => 'wechat.auto_reply_message.delete.bat', 'uses' => 'AutoReplyMessagesController@destroy']);
+
+                    // template message --- Official Account
+                    $router->group(['prefix' => 'template'], function (Router $router) {
+                        $router->get('sync', ['uses' => 'WxTemplateMessageController@syncOfficialAccount']);
+                        $router->get('sync/check', ['uses' => 'WxTemplateMessageController@syncOfficialAccountCheck']);
+                        $router->get('list', ['uses' => 'WxTemplateMessageController@privateTemplates']);
+                    });
+
+                    // template message --- Miniprogram
+                    $router->group(['prefix' => 'wxopen/template'], function (Router $router) {
+                        $router->get('sync', ['uses' => 'WxTemplateMessageController@syncMiniProgram']);
+                        $router->get('sync/check', ['uses' => 'WxTemplateMessageController@syncMiniProgramCheck']);
+                        $router->get('list', ['uses' => 'WxTemplateMessageController@templates']);
+
+                        $router->group(['prefix' => 'custom'], function (Router $router) {
+                            $router->get('/{parentId}', ['uses' => 'UserTemplateMessageController@templates']);
+                            $router->post('/', ['uses' => 'UserTemplateMessageController@create']);
+                            $router->put('/{id}', ['uses' => 'UserTemplateMessageController@update']);
+                            $router->delete('/{id}', ['uses' => 'UserTemplateMessageController@delete']);
+                        });
+                        // Just for test : fetch templates data
+                        $router->get('list/test', ['uses' => 'WxTemplateMessageController@templatesTest']);
+                    });
                 });
             });
 
