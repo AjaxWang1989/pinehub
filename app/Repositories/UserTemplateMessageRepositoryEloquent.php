@@ -2,11 +2,11 @@
 
 namespace App\Repositories;
 
+use function foo\func;
+use Illuminate\Pagination\Paginator;
 use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\UserTemplateMessageRepository;
 use App\Entities\UserTemplateMessage;
-use App\Validators\UserTemplateMessageValidator;
 
 /**
  * Class UserTemplateMessageRepositoryEloquent.
@@ -25,7 +25,6 @@ class UserTemplateMessageRepositoryEloquent extends BaseRepository implements Us
         return UserTemplateMessage::class;
     }
 
-    
 
     /**
      * Boot up the repository, pushing criteria
@@ -34,5 +33,13 @@ class UserTemplateMessageRepositoryEloquent extends BaseRepository implements Us
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
+    public function getTemplatesViaParent(int $parentTemplateId)
+    {
+        $paginator = $this->scopeQuery(function (UserTemplateMessage $userTemplateMessage) use ($parentTemplateId) {
+            return $userTemplateMessage->whereTemplateId($parentTemplateId);
+        })->paginate(request()->input('limit', PAGE_LIMIT));
+
+        return $paginator;
+    }
 }

@@ -74,7 +74,7 @@ class App extends Model implements Transformable
         'logo',
         'contact_phone_num',
         'contact_name',
-        'wechat_app_id',
+        '',
         'mini_app_id',
         'open_app_id'
     ];

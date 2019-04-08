@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -113,5 +114,16 @@ class Ticket extends Card
     public function useCondition(): HasMany
     {
         return parent::condition()->where('type', TICKET_CONDITION_TYPE_USE);
+    }
+
+    public function templateMessages(): BelongsToMany
+    {
+        return $this->belongsToMany(UserTemplateMessage::class, 'ticket_template_messages', 'ticket_id', 'user_template_id')
+            ->orderByDesc('ticket_template_messages.created_at')->withTimestamps();
+    }
+
+    public function templateMessage(): UserTemplateMessage
+    {
+        return $this->templateMessages()->first();
     }
 }

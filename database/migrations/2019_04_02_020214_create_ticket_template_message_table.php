@@ -16,6 +16,7 @@ class CreateTicketTemplateMessageTable extends Migration
         Schema::create('ticket_template_messages', function (Blueprint $table) {
             $table->unsignedInteger('ticket_id')->comment('卡券ID');
             $table->unsignedInteger('user_template_id')->comment('自定义模版消息ID');
+            $table->timestamps();
         });
     }
 

@@ -11,5 +11,5 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface UserTemplateMessageRepository extends RepositoryInterface
 {
-    //
+    public function getTemplatesViaParent(int $parentTemplateId);
 }
