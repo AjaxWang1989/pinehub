@@ -17,7 +17,7 @@ class CreateUserTemplateMessageTable extends Migration
         Schema::create('user_template_messages', function (Blueprint $table) {
             $table->increments('id');
             $table->string('wx_app_id', 32)->comment('微信ID');
-            $table->unsignedTinyInteger('type')->default(UNDEFINED)->comment('模版类型');
+            $table->unsignedTinyInteger('type')->default(TEMPLATE_UNDEFINED)->comment('模版类型');
             $table->unsignedInteger('template_id')->comment('模版消息ID');
             $table->json('content')->comment('模版消息填充内容，参考微信文档');
             $table->timestamps();
