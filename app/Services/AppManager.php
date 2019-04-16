@@ -15,11 +15,9 @@ use App\Entities\OfficialAccount;
 use App\Entities\WechatConfig;
 use App\Repositories\AppRepository;
 use App\Services\AliPay\AliPayOpenPlatform;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Laravel\Lumen\Application;
 use EasyWeChat\OpenPlatform\Application as OpenPlatform;
+use Illuminate\Support\Facades\Cache;
+use Laravel\Lumen\Application;
 
 /**
  * @property App $currentApp
@@ -40,7 +38,7 @@ class AppManager
      * */
     protected $app = null;
 
-    /**
+    /**N
      * @var WechatConfig|null
      * */
     protected $officialAccount = null;
