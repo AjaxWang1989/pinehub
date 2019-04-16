@@ -10,12 +10,14 @@ namespace App\Jobs\wechat;
 
 use App\Repositories\WxTemplateMessageRepository;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
 {
     public function handle(WxTemplateMessageRepository $wxTemplateMessageRepository)
     {
         $wxTemplateMessageRepository->deleteWhere(['wx_app_id' => $this->wxAppId]);
+        Log::info('删除小程序原有模板信息完毕');
 
         $templates = [];
 
@@ -34,7 +36,7 @@ class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
             $this->parseTemplateContent($template);
             $wxTemplateMessageRepository->create($template);
         }
-
+        Log::info("小程序模板消息已更新");
 
         Cache::forget('template_message_sync:miniprogram:' . $this->wxAppId);
     }
