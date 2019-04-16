@@ -9,19 +9,18 @@
 namespace App\Jobs\wechat;
 
 use App\Jobs\Job;
-use App\Services\Wechat\WechatService;
 use Illuminate\Queue\SerializesModels;
 
 class WechatTemplateMessageSync extends Job
 {
     use SerializesModels;
 
-    protected $wechatService;
+    protected $app;
     protected $wxAppId;
 
-    public function __construct(WechatService $wechatService, $wxAppId)
+    public function __construct($app, $wxAppId)
     {
-        $this->wechatService = $wechatService;
+        $this->app = $app;
         $this->wxAppId = $wxAppId;
     }
 
