@@ -6,7 +6,6 @@ use App\Entities\WxTemplateMessage;
 use App\Jobs\wechat\MiniProgramTemplateMessageSync;
 use App\Services\AppManager;
 use App\Validators\WxTemplateMessageValidator;
-use function foo\func;
 use Illuminate\Contracts\Pagination\Paginator;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -74,9 +73,9 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
      */
     public function syncMiniProgram()
     {
-        $wxAppId = app(AppManager::class)->miniProgram()->appId;
+        $platform = app(AppManager::class)->miniProgram();
 
-        $job = (new MiniProgramTemplateMessageSync($wxAppId))->delay(1);
+        $job = (new MiniProgramTemplateMessageSync($platform))->delay(1);
 
         dispatch($job);
     }
@@ -89,9 +88,9 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
 
     }
 
-    public function getMiniProgramTemplateMessages(int $offset, int $count = PAGE_LIMIT)
+    public function getMiniProgramTemplateMessages($platform, int $offset, int $count = PAGE_LIMIT)
     {
-        $result = app('wechat')->miniProgram()->template_message->getTemplates($offset, $count);
+        $result = $platform->template_message->getTemplates($offset, $count);
 
         if (!$result['errcode']) {
             return $result['list'];
@@ -115,7 +114,7 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
     {
         $wxAppId = app(AppManager::class)->miniProgram()->appId;
 
-//        $this->deleteWhere(['wx_app_id' => $wxAppId]);
+        $this->deleteWhere(['wx_app_id' => $wxAppId]);
 
         $templates = [];
 
