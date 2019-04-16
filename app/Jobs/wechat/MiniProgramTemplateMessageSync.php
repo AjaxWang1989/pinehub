@@ -24,7 +24,7 @@ class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
         $count = PAGE_LIMIT;
 
         for ($i = 0; ; $i++) {
-            $result = $wxTemplateMessageRepository->getMiniProgramTemplateMessages($this->platform, $i, $count);
+            $result = $wxTemplateMessageRepository->getMiniProgramTemplateMessages($this->wechatService, $i, $count);
             $templates = array_merge($templates, $result);
             if (count($result) < $count) {
                 break;

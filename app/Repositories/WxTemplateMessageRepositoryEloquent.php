@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Entities\WxTemplateMessage;
 use App\Jobs\wechat\MiniProgramTemplateMessageSync;
 use App\Services\AppManager;
+use App\Services\Wechat\WechatService;
 use App\Validators\WxTemplateMessageValidator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -73,10 +74,10 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
      */
     public function syncMiniProgram()
     {
-        $platform = app('wechat')->miniProgram()->template_message;
+        $wechatService = app('wechat');
         $wxAppId = app(AppManager::class)->miniProgram()->appId;
 
-        $job = (new MiniProgramTemplateMessageSync($platform, $wxAppId))->delay(1);
+        $job = (new MiniProgramTemplateMessageSync($wechatService, $wxAppId))->delay(1);
 
         dispatch($job);
     }
@@ -89,9 +90,9 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
 
     }
 
-    public function getMiniProgramTemplateMessages($platform, int $offset, int $count = PAGE_LIMIT)
+    public function getMiniProgramTemplateMessages(WechatService $wechatService, int $offset, int $count = PAGE_LIMIT)
     {
-        $result = $platform->getTemplates($offset, $count);
+        $result = $wechatService->miniProgram()->template_message->getTemplates($offset, $count);
 
         if (!$result['errcode']) {
             return $result['list'];
