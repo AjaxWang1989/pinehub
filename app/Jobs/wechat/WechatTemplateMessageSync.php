@@ -16,10 +16,12 @@ class WechatTemplateMessageSync extends Job
     use SerializesModels;
 
     protected $platform;
+    protected $wxAppId;
 
-    public function __construct($platform)
+    public function __construct($platform, $wxAppId)
     {
         $this->platform = $platform;
+        $this->wxAppId = $wxAppId;
     }
 
     protected function parseTemplateContent(array &$template)

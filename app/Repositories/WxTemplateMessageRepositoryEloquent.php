@@ -73,9 +73,10 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
      */
     public function syncMiniProgram()
     {
-        $platform = app(AppManager::class)->miniProgram();
+        $platform = app('wechat')->miniProgram();
+        $wxAppId = app(AppManager::class)->miniProgram()->appId;
 
-        $job = (new MiniProgramTemplateMessageSync($platform))->delay(1);
+        $job = (new MiniProgramTemplateMessageSync($platform, $wxAppId))->delay(1);
 
         dispatch($job);
     }

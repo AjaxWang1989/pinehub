@@ -16,7 +16,7 @@ class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
 {
     public function handle(WxTemplateMessageRepository $wxTemplateMessageRepository)
     {
-        $wxTemplateMessageRepository->deleteWhere(['wx_app_id' => $this->platform->appId]);
+        $wxTemplateMessageRepository->deleteWhere(['wx_app_id' => $this->wxAppId]);
         Log::info('删除小程序原有模板信息完毕');
 
         $templates = [];
@@ -32,13 +32,13 @@ class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
         }
 
         foreach ($templates as $template) {
-            $template['wx_app_id'] = $this->platform->appId;
+            $template['wx_app_id'] = $this->wxAppId;
             $this->parseTemplateContent($template);
             $wxTemplateMessageRepository->create($template);
         }
         Log::info("小程序模板消息已更新");
 
-        Cache::forget('template_message_sync:miniprogram:' . $this->platform->appId);
+        Cache::forget('template_message_sync:miniprogram:' . $this->wxAppId);
     }
 
 
