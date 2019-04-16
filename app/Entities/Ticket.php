@@ -2,7 +2,6 @@
 
 namespace App\Entities;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -26,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read UserTemplateMessage|null $templateMessage
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $customerTickets
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Ticket newQuery()
@@ -54,6 +54,8 @@ class Ticket extends Card
     protected $table = 'cards';
 
     const UNAVAILABLE = 3;//unavailable
+
+    const TEMPLATE_SCENES = [TEMPLATE_TICKET_EXPIRE, TEMPLATE_TICKET_BOOK];
 
     public static function boot()
     {
@@ -116,14 +118,22 @@ class Ticket extends Card
         return parent::condition()->where('type', TICKET_CONDITION_TYPE_USE);
     }
 
-    public function templateMessages(): BelongsToMany
+    // 通过微信平台类型和场景定位优惠券关联模板消息
+    public function templateMessages($wxAppId, $scene)
     {
         return $this->belongsToMany(UserTemplateMessage::class, 'ticket_template_messages', 'ticket_id', 'user_template_id')
+            ->wherePivot('scene', $scene)
+            ->where('wx_app_id', $wxAppId)
             ->orderByDesc('ticket_template_messages.created_at')->withTimestamps();
     }
 
-    public function templateMessage(): UserTemplateMessage
+    public function normalTemplateMessages()
     {
-        return $this->templateMessages()->first();
+        return $this->belongsToMany(UserTemplateMessage::class, 'ticket_template_messages', 'ticket_id', 'user_template_id')->withTimestamps();
+    }
+
+    public function templateMessage($wxAppId, $scene)
+    {
+        return $this->templateMessages($wxAppId, $scene)->first();
     }
 }

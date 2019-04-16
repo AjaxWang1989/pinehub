@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\MiniProgram;
 
-use App\Entities\Card;
 use App\Entities\Ticket;
 use App\Repositories\AppRepository;
 use App\Repositories\TicketRepository;
@@ -10,7 +9,6 @@ use App\Services\AppManager;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\TicketTransformer;
 use Dingo\Api\Http\Request;
-use function foo\func;
 use InvalidArgumentException;
 
 class TicketController extends Controller
@@ -45,7 +43,7 @@ class TicketController extends Controller
     {
         $appId = app(AppManager::class)->getAppId();
 
-        /** @var Card $ticket */
+        /** @var Ticket $ticket */
         $ticket = $this->ticketRepository->scopeQuery(function (Ticket $card) use ($appId) {
             return $card->whereAppId($appId);
         })->find($cardId);
@@ -59,8 +57,6 @@ class TicketController extends Controller
 
     public function show(int $cardId)
     {
-        $appId = app(AppManager::class)->getAppId();
-
         $ticket = $this->ticketRepository->find($cardId);
 
         return $this->response()->item($ticket, new TicketTransformer());

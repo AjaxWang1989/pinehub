@@ -31,6 +31,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\App $app
  * @property-read \App\Entities\Card $card
  * @property-read \App\Entities\Customer $customer
+ * @property-read \App\Entities\Ticket $ticket
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\CustomerTicketCard whereActive($value)
@@ -122,6 +123,11 @@ class CustomerTicketCard extends Model implements Transformable
     public function card(): BelongsTo
     {
         return $this->belongsTo(Card::class, 'card_id', 'card_id');
+    }
+
+    public function ticket()
+    {
+        return $this->belongsTo(Ticket::class, 'card_id', 'card_id');
     }
 
     public function app(): BelongsTo

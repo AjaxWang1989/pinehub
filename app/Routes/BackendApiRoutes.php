@@ -10,15 +10,10 @@ namespace App\Routes;
 
 use App\Excel\SendOrderSheet;
 use Dingo\Api\Http\Request;
-use Dingo\Api\Routing\Router as DingoRouter;
 use Dingo\Api\Routing\Router;
-use FastRoute\Route;
+use Dingo\Api\Routing\Router as DingoRouter;
 use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Routing\Router as LumenRouter;
-use Maatwebsite\Excel\Classes\LaravelExcelWorksheet;
-use Maatwebsite\Excel\Facades\Excel;
-use Maatwebsite\Excel\Readers\LaravelExcelReader;
-use Maatwebsite\Excel\Writers\LaravelExcelWriter;
 
 class BackendApiRoutes extends ApiRoutes
 {
@@ -107,6 +102,13 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('/tickets', ['as' => 'tickets', 'middleware' => ['ticket'], 'uses' => 'TicketController@index']);
                 $router->get('/ticket/{id}', ['as' => 'ticket.show', 'uses' => 'TicketController@show']);
                 $router->put('/ticket/{id}', ['as' => 'ticket.update', 'uses' => 'TicketController@update']);
+                $router->get('/ticket/{ticketId}/template/{wxType}/{scene:[A-Za-z_]+}', ['uses' => 'TicketController@templateMessage']);
+                $router->get('/ticket/{ticketId}/templates', ['uses' => 'TicketController@templateMessages']);
+                $router->get('/ticket/{ticketId}/template/bind/{templateId:[0-9]+}', ['uses' => 'TicketController@bindTemplateMessage']);
+                $router->get('/ticket/{ticketId}/template/unbind/{templateId:[0-9]+}', ['uses' => 'TicketController@unBindTemplateMessage']);
+                $router->get('/ticket/templates/default', ['uses' => 'TicketController@defaultTemplateMessages']);
+                $router->get('/ticket/template/default/bind/{templateId:[0-9]+}', ['uses' => 'TicketController@bindDefaultTemplateMessage']);
+                $router->get('/ticket/template/default/unbind/{templateId:[0-9]+}', ['uses' => 'TicketController@unBindDefaultTemplateMessage']);
 
                 $router->get('/score-rules', ['as' => 'score-rules', 'uses' => 'ScoreRulesController@index']);
                 $router->get('/general/score/rule', ['as' => 'general-rule.show', 'uses' => 'ScoreRulesController@generalRule']);
@@ -200,7 +202,8 @@ class BackendApiRoutes extends ApiRoutes
                         $router->get('list', ['uses' => 'WxTemplateMessageController@templates']);
 
                         $router->group(['prefix' => 'custom'], function (Router $router) {
-                            $router->get('/{parentId}', ['uses' => 'UserTemplateMessageController@templates']);
+                            $router->get('/{parentId:[0-9]+}', ['uses' => 'UserTemplateMessageController@templates']);
+                            $router->get('/{wxType:[A-Za-z_]+}', ['uses' => 'UserTemplateMessageController@index']);
                             $router->post('/', ['uses' => 'UserTemplateMessageController@create']);
                             $router->put('/{id}', ['uses' => 'UserTemplateMessageController@update']);
                             $router->delete('/{id}', ['uses' => 'UserTemplateMessageController@delete']);

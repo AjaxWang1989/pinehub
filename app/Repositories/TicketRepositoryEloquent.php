@@ -7,7 +7,11 @@ use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\Order;
 use App\Entities\Ticket;
+use App\Jobs\wechat\SendMiniprogramTemplateMessage;
+use App\Jobs\wechat\SendOfficialAccountTemplateMessage;
 use App\Services\AppManager;
+use App\Services\TemplateParser\TicketExpireParser;
+use App\Services\TemplateParser\TicketReceiveParser;
 use Carbon\Carbon;
 use Dingo\Api\Auth\Auth;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -139,10 +143,49 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
                 $record->active = CustomerTicketCard::ACTIVE_ON;
             }
             $record->save();
+
+            $this->sendTemplateMessage($customer, $ticket, $record);
+
             return $record;
         }
 
         throw new ModelNotFoundException('优惠券已领取完');
+    }
+
+    private function sendTemplateMessage(Customer $customer, Ticket $ticket, CustomerTicketCard $record)
+    {
+        // 领取优惠券模板消息通知---小程序
+        $appManager = app(AppManager::class);
+        if (WECHAT_TYPES[$customer->type] === 'miniprogram') {
+            $userTemplate = $ticket->templateMessage($appManager->miniProgram->appId, TEMPLATE_TICKET_BOOK);
+            if ($userTemplate) {
+                $wxTemplate = $userTemplate->wxTemplateMessage;
+                dispatch((new SendMiniprogramTemplateMessage($customer, $wxTemplate->templateId, $userTemplate->content, new TicketReceiveParser($ticket)))->delay(1));
+            }
+            $userTemplate = $ticket->templateMessage($appManager->miniProgram->appId, TEMPLATE_TICKET_EXPIRE);
+            if ($userTemplate) {
+                $wxTemplate = $userTemplate->wxTemplateMessage;
+                $date = $record->endAt->subHours(5);
+                $job = (new SendMiniprogramTemplateMessage($customer, $wxTemplate->templateId, $userTemplate->content, new TicketExpireParser($ticket)))
+                    ->delay($date);
+                dispatch($job);
+            }
+        }
+        if (WECHAT_TYPES[$customer->type] === 'official_account') {
+            $userTemplate = $ticket->templateMessage($appManager->officialAccount->appId, TEMPLATE_TICKET_BOOK);
+            if ($userTemplate) {
+                $wxTemplate = $userTemplate->wxTemplateMessage;
+                dispatch((new SendOfficialAccountTemplateMessage($customer->platformOpenId, $wxTemplate->templateId, $userTemplate->content, new TicketReceiveParser($ticket)))->delay(1));
+            }
+            $userTemplate = $ticket->templateMessage($appManager->officialAccount->appId, TEMPLATE_TICKET_EXPIRE);
+            if ($userTemplate) {
+                $wxTemplate = $userTemplate->wxTemplateMessage;
+                $date = $record->endAt->subHours(5);
+                $job = (new SendOfficialAccountTemplateMessage($customer->platformOpenId, $wxTemplate->templateId, $userTemplate->content, new TicketExpireParser($ticket)))
+                    ->delay($date);
+                dispatch($job);
+            }
+        }
     }
 
     public function getPromoteMiniCode(Ticket $ticket)

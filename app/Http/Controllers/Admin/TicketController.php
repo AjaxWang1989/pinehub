@@ -6,20 +6,27 @@ use App\Criteria\Admin\SearchRequestCriteria;
 use App\Criteria\Admin\TicketCriteria;
 use App\Entities\CustomerTicketCard;
 use App\Entities\Ticket;
+use App\Entities\TicketTemplateMessage;
 use App\Events\SyncTicketCardInfoEvent;
 use App\Http\Controllers\Admin\CardsController as Controller;
 use App\Http\Requests\Admin\TicketCreateRequest;
 use App\Http\Requests\Admin\TicketUpdateRequest;
+use App\Http\Response\UpdateResponse;
 use App\Repositories\AppRepository;
 use App\Repositories\TicketRepository;
+use App\Repositories\TicketTemplateMessageRepository;
 use App\Services\AppManager;
 use App\Transformers\TicketItemTransformer;
+use App\Transformers\TicketTemplateMessageTransformer;
 use App\Transformers\TicketTransformer;
+use App\Transformers\UserTemplateMessageTransformer;
 use Dingo\Api\Http\Request;
 use EasyWeChat\Kernel\Http\StreamResponse;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
+use InvalidArgumentException;
 
 class TicketController extends Controller
 {
@@ -69,11 +76,21 @@ class TicketController extends Controller
         ]);
         $ticket = parent::storeCard($request);
 
+        $ticketTemplateMessages = app(TicketTemplateMessageRepository::class)->scopeQuery(function (TicketTemplateMessage $ticketTemplateMessage) {
+            return $ticketTemplateMessage->whereIsDefault(true)->whereIn('type', [TEMPLATE_TICKET_RECEIVE, TEMPLATE_TICKET_OVER_DATE]);
+        })->all();
+
+        $attachOptions = [];
+        foreach ($ticketTemplateMessages as $templateMessage) {
+            $attachOptions[$templateMessage->userTemplateId] = ['scene' => $templateMessage->scene, 'type' => $templateMessage->type];
+        }
+        $ticket->normalTemplateMessages()->attach($attachOptions);
+
         if ($request->input('sync', false)) {
             $ticket->exists = true;
             Event::fire(new SyncTicketCardInfoEvent($ticket, null, app('wechat')->officeAccount()));
         }
-        return $this->response()->item($ticket, new TicketTransformer());
+        return $this->response()->item($ticket, new TicketItemTransformer());
     }
 
     /**
@@ -181,5 +198,175 @@ class TicketController extends Controller
         $response = $this->ticketRepository->getPromoteMiniCode($ticket);
 
         return $response;
+    }
+
+    public function bindTemplateMessage(Request $request, int $ticketId, int $templateId)
+    {
+        /** @var Ticket $ticket */
+        $ticket = $this->ticketRepository->find($ticketId);
+
+        if (!($scene = $request->input('scene'))) {
+            throw new InvalidArgumentException('缺少模板消息应用场景scene');
+        }
+
+        if (!in_array($scene, Ticket::TEMPLATE_SCENES)) {
+            throw new InvalidArgumentException('应用场景scene错误');
+        }
+
+        if (!($type = $request->input('type'))) {
+            throw new InvalidArgumentException('缺少模板消息类型type参数');
+        }
+
+        $wxType = $request->input('wx_type', 'miniprogram');
+        $appManager = app(AppManager::class);
+        $wxAppId = null;
+        switch ($wxType) {
+            case TEMPLATE_PLATFORM_MINIPROGRAM:
+                $wxAppId = $appManager->miniProgram()->appId;
+                break;
+            case TEMPLATE_PLATFORM_OFFICIAL_ACCOUNT:
+                $wxAppId = $appManager->officialAccount()->appId;
+                break;
+        }
+        if (!$wxAppId) {
+            throw new ModelNotFoundException("未找到微信类型'{$wxType}'的实体");
+        }
+        $ticket->templateMessages($wxAppId, $scene)->detach();
+        $ticket->templateMessages($wxAppId, $scene)->attach($templateId, ['scene' => $scene, 'type' => $type]);
+        $templateMessage = $ticket->templateMessage($wxAppId, $scene);
+
+        return $this->response()->item($templateMessage, new UserTemplateMessageTransformer());
+    }
+
+    public function unBindTemplateMessage(int $ticketId, int $templateId)
+    {
+        /** @var Ticket $ticket */
+        $ticket = $this->ticketRepository->find($ticketId);
+
+        $result = $ticket->normalTemplateMessages()->detach($templateId);
+
+        if (!$result) {
+            throw new ModelNotFoundException('解绑失败');
+        }
+
+        return $this->response(new UpdateResponse('解绑成功'));
+    }
+
+    public function unBindDefaultTemplateMessage(Request $request, int $templateId)
+    {
+        if (!($scene = $request->input('scene'))) {
+            throw new InvalidArgumentException('缺少模板消息应用场景scene');
+        }
+
+        if (!in_array($scene, Ticket::TEMPLATE_SCENES)) {
+            throw new InvalidArgumentException('应用场景scene错误');
+        }
+
+        if (!($type = $request->input('type'))) {
+            throw new InvalidArgumentException('缺少模板消息类型type参数');
+        }
+
+        $ticketTemplate = app(TicketTemplateMessageRepository::class)->scopeQuery(function (TicketTemplateMessage $ticketTemplateMessage) use ($scene, $type, $templateId) {
+            return $ticketTemplateMessage->whereIsDefault(true)->whereUserTemplateId($templateId)->whereType($type);
+        })->firstOrNew();
+
+        if (!app(TicketTemplateMessageRepository::class)->delete($ticketTemplate->id)) {
+            throw new ModelNotFoundException('解绑失败');
+        }
+
+        return $this->response(new UpdateResponse('解绑成功'));
+    }
+
+    public function templateMessages($ticketId)
+    {
+        $ticketTemplateMessages = app(TicketTemplateMessageRepository::class)->scopeQuery(function (TicketTemplateMessage $ticketTemplateMessage) use ($ticketId) {
+            return $ticketTemplateMessage->whereTicketId($ticketId);
+        })->all();
+
+        return $this->response()->collection($ticketTemplateMessages, new TicketTemplateMessageTransformer());
+    }
+
+    public function templateMessage(Request $request, int $ticketId, string $wxType, string $scene)
+    {
+        /** @var Ticket $ticket */
+        $ticket = $this->ticketRepository->find($ticketId);
+
+        if (!in_array($scene, Ticket::TEMPLATE_SCENES)) {
+            throw new InvalidArgumentException('应用场景scene错误');
+        }
+
+        $appManager = app(AppManager::class);
+        $wxAppId = null;
+        switch ($wxType) {
+            case TEMPLATE_PLATFORM_MINIPROGRAM:
+                $wxAppId = $appManager->miniProgram()->appId;
+                break;
+            case TEMPLATE_PLATFORM_OFFICIAL_ACCOUNT:
+                $wxAppId = $appManager->officialAccount()->appId;
+                break;
+        }
+        if (!$wxAppId) {
+            throw new ModelNotFoundException("未找到微信类型'{$wxType}'的实体");
+        }
+
+        $templateMessage = $ticket->templateMessage($wxAppId, $scene);
+
+        return $this->response()->item($templateMessage, new UserTemplateMessageTransformer());
+    }
+
+    public function defaultTemplateMessages(Request $request, TicketTemplateMessageRepository $ticketTemplateMessageRepository)
+    {
+        if (!($types = json_decode($request->input('types', null))) || !count($types)) {
+            throw new InvalidArgumentException('模板消息类型types不明确');
+        }
+
+        $templateMessages = $ticketTemplateMessageRepository->scopeQuery(function (TicketTemplateMessage $ticketTemplateMessage) use ($types) {
+            return $ticketTemplateMessage->whereIsDefault(true)->whereIn('type', $types);
+        })->all();
+
+        return $this->response()->collection($templateMessages, new TicketTemplateMessageTransformer());
+    }
+
+    public function bindDefaultTemplateMessage(Request $request, TicketTemplateMessageRepository $ticketTemplateMessageRepository, int $templateId)
+    {
+        if (!($scene = $request->input('scene'))) {
+            throw new InvalidArgumentException('缺少模板消息应用场景scene');
+        }
+
+        if (!in_array($scene, Ticket::TEMPLATE_SCENES)) {
+            throw new InvalidArgumentException('应用场景scene错误');
+        }
+
+        if (!($type = $request->input('type'))) {
+            throw new InvalidArgumentException('缺少模板消息类型type参数');
+        }
+
+        $wxType = $request->input('wx_type', 'miniprogram');
+        $appManager = app(AppManager::class);
+        $wxAppId = null;
+        switch ($wxType) {
+            case TEMPLATE_PLATFORM_MINIPROGRAM:
+                $wxAppId = $appManager->miniProgram()->appId;
+                break;
+            case TEMPLATE_PLATFORM_OFFICIAL_ACCOUNT:
+                $wxAppId = $appManager->officialAccount()->appId;
+                break;
+        }
+        if (!$wxAppId) {
+            throw new ModelNotFoundException("未找到微信类型'{$wxType}'的实体");
+        }
+
+        /** @var TicketTemplateMessage $ticketTemplateMessage */
+        $ticketTemplateMessage = $ticketTemplateMessageRepository->firstOrNew([
+            'scene' => $scene,
+            'is_default' => true,
+            'type' => $type
+        ]);
+        $ticketTemplateMessage->userTemplateId = $templateId;
+        $ticketTemplateMessage->save();
+
+        $templateMessage = $ticketTemplateMessage->userTemplateMessage;
+
+        return $this->response()->item($templateMessage, new UserTemplateMessageTransformer());
     }
 }

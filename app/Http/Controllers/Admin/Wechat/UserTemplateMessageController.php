@@ -11,10 +11,10 @@ namespace App\Http\Controllers\Admin\Wechat;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Wechat\UserTemplateMessageCreateRequest;
 use App\Http\Requests\Admin\Wechat\UserTemplateMessageUpdateRequest;
+use App\Repositories\TicketRepository;
 use App\Repositories\UserTemplateMessageRepository;
 use App\Services\AppManager;
 use App\Transformers\UserTemplateMessageTransformer;
-use League\Fractal\Resource\Item;
 
 class UserTemplateMessageController extends Controller
 {
@@ -24,6 +24,15 @@ class UserTemplateMessageController extends Controller
     {
         parent::__construct();
         $this->userTemplateMessageRepository = $userTemplateMessageRepository;
+    }
+
+    public function index(string $wxType)
+    {
+        $ticket = app(TicketRepository::class)->find(279);
+
+        $paginator = $this->userTemplateMessageRepository->getTemplates($wxType);
+
+        return $this->response->paginator($paginator, new UserTemplateMessageTransformer());
     }
 
     // 某一微信模板下的自定义模板消息
@@ -37,7 +46,6 @@ class UserTemplateMessageController extends Controller
     public function create(UserTemplateMessageCreateRequest $request)
     {
         $data['wx_app_id'] = app(AppManager::class)->miniProgram()->appId;
-        $data['type'] = $request->input('type');
         $data['template_id'] = $request->input('template_id');
         $data['content'] = $request->input('content');
 
@@ -62,5 +70,10 @@ class UserTemplateMessageController extends Controller
         $this->userTemplateMessageRepository->delete($id);
 
         return $this->response()->noContent();
+    }
+
+    public function show()
+    {
+
     }
 }

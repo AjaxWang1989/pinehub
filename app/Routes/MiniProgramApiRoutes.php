@@ -8,7 +8,6 @@
 
 namespace App\Routes;
 
-
 use Dingo\Api\Routing\Router as DingoRouter;
 use Laravel\Lumen\Routing\Router as LumenRouter;
 
@@ -33,8 +32,9 @@ class MiniProgramApiRoutes extends ApiRoutes
         }
 
         $router->group($attributes, function ($router) {
-
             /** @var DingoRouter $router */
+            $router->post('/formid/{formId}', ['uses' => 'FormIdController@collect']);
+
             $router->get('/tickets', ['as' => 'tickets', 'uses' => 'TicketController@tickets']);
             $router->get('/ticket/{cardId}', ['as' => 'ticket.detail', 'uses' => 'TicketController@show']);
             $router->get('/user/receive/ticket/{cardId}', ['as' => 'tickets', 'uses' => 'TicketController@userReceiveTicket']);
