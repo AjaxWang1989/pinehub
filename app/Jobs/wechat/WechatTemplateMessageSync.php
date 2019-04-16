@@ -10,6 +10,7 @@ namespace App\Jobs\wechat;
 
 use App\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class WechatTemplateMessageSync extends Job
 {
@@ -22,6 +23,7 @@ class WechatTemplateMessageSync extends Job
     {
         $this->app = $app;
         $this->wxAppId = $wxAppId;
+        Log::info('APP@@@@@@@@@@@@@@@@：', [$app]);
     }
 
     protected function parseTemplateContent(array &$template)
