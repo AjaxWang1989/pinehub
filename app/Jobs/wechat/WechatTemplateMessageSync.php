@@ -9,9 +9,11 @@
 namespace App\Jobs\wechat;
 
 use App\Jobs\Job;
+use Illuminate\Queue\SerializesModels;
 
 class WechatTemplateMessageSync extends Job
 {
+    use SerializesModels;
 
     protected $wxAppId;
 
