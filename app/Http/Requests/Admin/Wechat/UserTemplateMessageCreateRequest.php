@@ -23,7 +23,7 @@ class UserTemplateMessageCreateRequest extends FormRequest
         return [
             'type' => ['required', Rule::in(TEMPLATE_MESSAGE_TYPES)],
             'template_id' => ['required', 'integer'],
-            'content' => ['required', 'array']
+//            'content' => ['required', 'array']
         ];
     }
 }
