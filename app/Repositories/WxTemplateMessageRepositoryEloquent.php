@@ -70,7 +70,6 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
 
     /**
      * Sync miniprogram's template messages.
-     * @param AppManager $appManager
      */
     public function syncMiniProgram()
     {

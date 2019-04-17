@@ -10,6 +10,7 @@ namespace App\Jobs\wechat;
 
 use App\Entities\Customer;
 use App\Jobs\Job;
+use App\Services\AppManager;
 use App\Services\TemplateParser\Parser;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -29,9 +30,11 @@ class SendMiniprogramTemplateMessage extends Job
     private $formId;
     private $data;
     private $parser;
+    private $appManager;
 
-    public function __construct(Customer $customer, $templateId, $data, Parser $parser)
+    public function __construct(AppManager $appManager, Customer $customer, $templateId, $data, Parser $parser)
     {
+        $this->appManager = $appManager;
         $this->customer = $customer;
         $this->templateId = $templateId;
         $this->data = $data;
@@ -44,6 +47,7 @@ class SendMiniprogramTemplateMessage extends Job
 
         $this->getFormId();
 
+        app('wechat')->setAppManager($this->appManager);
         while ($this->formId) {
             $result = app('wechat')->miniProgram()->template_message->send([
                 'touser' => $this->customer->platformOpenId,

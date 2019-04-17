@@ -9,6 +9,7 @@
 namespace App\Jobs\wechat;
 
 use App\Jobs\Job;
+use App\Services\AppManager;
 use App\Services\TemplateParser\Parser;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
@@ -21,9 +22,11 @@ class SendOfficialAccountTemplateMessage extends Job
     private $templateId;
     private $data;
     private $parser;
+    private $appManager;
 
-    public function __construct($touser, $templateId, $data, Parser $parser)
+    public function __construct(AppManager $appManager, $touser, $templateId, $data, Parser $parser)
     {
+        $this->appManager = $appManager;
         $this->touser = $touser;
         $this->templateId = $templateId;
         $this->data = $data;
@@ -34,6 +37,7 @@ class SendOfficialAccountTemplateMessage extends Job
     {
         $this->parser->parse($this->data);
 
+        app('wechat')->setAppManager($this->appManager);
         for ($i = 0; $i < 3; $i++) {
             $result = app('wechat')->officeAccount()->template_message->send([
                 'touser' => $this->touser,

@@ -160,13 +160,13 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
             $userTemplate = $ticket->templateMessage($appManager->miniProgram->appId, TEMPLATE_TICKET_BOOK);
             if ($userTemplate) {
                 $wxTemplate = $userTemplate->wxTemplateMessage;
-                dispatch((new SendMiniprogramTemplateMessage($customer, $wxTemplate->templateId, $userTemplate->content, new TicketReceiveParser($ticket)))->delay(1));
+                dispatch((new SendMiniprogramTemplateMessage($appManager, $customer, $wxTemplate->templateId, $userTemplate->content, new TicketReceiveParser($ticket)))->delay(1));
             }
             $userTemplate = $ticket->templateMessage($appManager->miniProgram->appId, TEMPLATE_TICKET_EXPIRE);
             if ($userTemplate) {
                 $wxTemplate = $userTemplate->wxTemplateMessage;
                 $date = $record->endAt->subHours(5);
-                $job = (new SendMiniprogramTemplateMessage($customer, $wxTemplate->templateId, $userTemplate->content, new TicketExpireParser($ticket)))
+                $job = (new SendMiniprogramTemplateMessage($appManager, $customer, $wxTemplate->templateId, $userTemplate->content, new TicketExpireParser($ticket)))
                     ->delay($date);
                 dispatch($job);
             }
@@ -175,13 +175,13 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
             $userTemplate = $ticket->templateMessage($appManager->officialAccount->appId, TEMPLATE_TICKET_BOOK);
             if ($userTemplate) {
                 $wxTemplate = $userTemplate->wxTemplateMessage;
-                dispatch((new SendOfficialAccountTemplateMessage($customer->platformOpenId, $wxTemplate->templateId, $userTemplate->content, new TicketReceiveParser($ticket)))->delay(1));
+                dispatch((new SendOfficialAccountTemplateMessage($appManager, $customer->platformOpenId, $wxTemplate->templateId, $userTemplate->content, new TicketReceiveParser($ticket)))->delay(1));
             }
             $userTemplate = $ticket->templateMessage($appManager->officialAccount->appId, TEMPLATE_TICKET_EXPIRE);
             if ($userTemplate) {
                 $wxTemplate = $userTemplate->wxTemplateMessage;
                 $date = $record->endAt->subHours(5);
-                $job = (new SendOfficialAccountTemplateMessage($customer->platformOpenId, $wxTemplate->templateId, $userTemplate->content, new TicketExpireParser($ticket)))
+                $job = (new SendOfficialAccountTemplateMessage($appManager, $customer->platformOpenId, $wxTemplate->templateId, $userTemplate->content, new TicketExpireParser($ticket)))
                     ->delay($date);
                 dispatch($job);
             }
