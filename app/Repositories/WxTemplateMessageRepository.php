@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Services\AppManager;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -15,7 +16,7 @@ interface WxTemplateMessageRepository extends RepositoryInterface
 
     public function getPrivateTemplateMessages();
 
-    public function syncMiniProgram();
+    public function syncMiniProgram(AppManager $appManager);
 
     public function syncOfficialAccount();
 

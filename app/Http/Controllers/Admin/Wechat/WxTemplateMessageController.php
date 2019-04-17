@@ -12,9 +12,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\WxTemplateMessageRepository;
 use App\Services\AppManager;
 use App\Transformers\WxTemplateMessageTransformer;
-use Dingo\Api\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class WxTemplateMessageController extends Controller
 {
@@ -31,8 +29,10 @@ class WxTemplateMessageController extends Controller
 
     /**
      * Sync miniprogram's template messages with db.
+     * @param AppManager $appManager
+     * @return WxTemplateMessageController|\Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|\Laravel\Lumen\Application|mixed
      */
-    public function syncMiniProgram()
+    public function syncMiniProgram(AppManager $appManager)
     {
         $wxAppId = app(AppManager::class)->miniProgram()->appId;
 
@@ -44,7 +44,7 @@ class WxTemplateMessageController extends Controller
 
         Cache::put('template_message_sync:miniprogram:' . $wxAppId, true, 1);
 
-        $this->wxTemplateMessageRepository->syncMiniProgram();
+        $this->wxTemplateMessageRepository->syncMiniProgram($appManager);
 
         return $this->response(['status' => 'accepted', 'msg' => '已处理，正在同步中']);
     }

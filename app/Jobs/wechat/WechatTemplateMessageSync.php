@@ -9,21 +9,20 @@
 namespace App\Jobs\wechat;
 
 use App\Jobs\Job;
+use App\Services\AppManager;
 use Illuminate\Queue\SerializesModels;
 
 class WechatTemplateMessageSync extends Job
 {
     use SerializesModels;
 
-    protected $app;
     protected $wxAppId;
+    protected $appManager;
 
-//    public function __construct($app, $wxAppId)
-    public function __construct($wxAppId)
+    public function __construct(AppManager $appManager, $wxAppId)
     {
-//        $this->app = $app;
         $this->wxAppId = $wxAppId;
-//        Log::info('APP@@@@@@@@@@@@@@@@：', [$app]);
+        $this->appManager = $appManager;
     }
 
     protected function parseTemplateContent(array &$template)

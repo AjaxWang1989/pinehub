@@ -70,14 +70,13 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
 
     /**
      * Sync miniprogram's template messages.
+     * @param AppManager $appManager
      */
-    public function syncMiniProgram()
+    public function syncMiniProgram(AppManager $appManager)
     {
-        $app = app(AppManager::class);
-        $wxAppId = $app->miniProgram()->appId;
+        $wxAppId = $appManager->miniProgram()->appId;
 
-//        $job = (new MiniProgramTemplateMessageSync($app, $wxAppId))->delay(1);
-        $job = (new MiniProgramTemplateMessageSync($wxAppId))->delay(1);
+        $job = (new MiniProgramTemplateMessageSync($appManager, $wxAppId))->delay(1);
 
         dispatch($job);
     }
