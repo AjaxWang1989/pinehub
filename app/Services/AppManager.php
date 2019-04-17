@@ -26,7 +26,7 @@ use Laravel\Lumen\Application;
  * @property OpenPlatform $openPlatform
  * @property AliPayOpenPlatform $aliPayOpenPlatform
  * */
-class AppManager
+class AppManager implements \Serializable
 {
     /**
      * @var App|null
@@ -62,17 +62,18 @@ class AppManager
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $this->ttl =  config('jwt.ttl');
+        $this->ttl = config('jwt.ttl');
         $this->uid = md5(microtime(true));
         $this->reset();
     }
 
-    public function reset() {
+    public function reset()
+    {
         $repository = $this->app->make(AppRepository::class);
         $appId = $this->getAppId();
-        if($appId) {
+        if ($appId) {
             $this->currentApp = $repository->find($appId);
-            $this->officialAccount = with($this->currentApp, function (App $app){
+            $this->officialAccount = with($this->currentApp, function (App $app) {
                 return $app->officialAccount;
             });
 
@@ -85,7 +86,7 @@ class AppManager
 
     public function openPlatform()
     {
-        if(!$this->openPlatform) {
+        if (!$this->openPlatform) {
             $this->openPlatform = $this->app->make('wechat')->openPlatform();
         }
         return $this->openPlatform;
@@ -98,14 +99,15 @@ class AppManager
         return $this;
     }
 
-    public function setAccessToken(string  $accessToken) {
+    public function setAccessToken(string $accessToken)
+    {
         Cache::add($accessToken, $this->currentApp->id, $this->ttl);
     }
 
     public function getAppId()
     {
         $appId = $this->currentApp ? $this->currentApp->id : null;
-        if($appId) {
+        if ($appId) {
             return $appId;
         }
         return null;
@@ -113,12 +115,12 @@ class AppManager
 
     public function officialAccount()
     {
-        if(!$this->officialAccount) {
+        if (!$this->officialAccount) {
             $repository = $this->app->make(AppRepository::class);
             $appId = $this->getAppId();
-            if($appId) {
+            if ($appId) {
                 $this->currentApp = $this->currentApp ? $this->currentApp : $repository->find($appId);
-                $this->officialAccount = with($this->currentApp, function (App $app){
+                $this->officialAccount = with($this->currentApp, function (App $app) {
                     return $app->officialAccount;
                 });
             }
@@ -128,12 +130,12 @@ class AppManager
 
     public function miniProgram()
     {
-        if(!$this->miniProgram){
+        if (!$this->miniProgram) {
             $repository = $this->app->make(AppRepository::class);
             $appId = $this->getAppId();
-            if($appId) {
+            if ($appId) {
                 $this->currentApp = $this->currentApp ? $this->currentApp : $repository->find($appId);
-                $this->miniProgram = with($this->currentApp, function (App $app){
+                $this->miniProgram = with($this->currentApp, function (App $app) {
                     return $app->miniProgram;
                 });
             }
@@ -145,5 +147,31 @@ class AppManager
     {
         // TODO: Implement __get() method.
         return $this->{$name};
+    }
+
+    /**
+     * String representation of object
+     * @link https://php.net/manual/en/serializable.serialize.php
+     * @return string the string representation of the object or null
+     * @since 5.1.0
+     */
+    public function serialize()
+    {
+
+        return serialize($this->currentApp);
+    }
+
+    /**
+     * Constructs the object
+     * @link https://php.net/manual/en/serializable.unserialize.php
+     * @param string $serialized <p>
+     * The string representation of the object.
+     * </p>
+     * @return void
+     * @since 5.1.0
+     */
+    public function unserialize($serialized)
+    {
+        $this->currentApp = unserialize($serialized);
     }
 }

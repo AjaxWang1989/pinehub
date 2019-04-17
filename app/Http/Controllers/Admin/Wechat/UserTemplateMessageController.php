@@ -11,7 +11,6 @@ namespace App\Http\Controllers\Admin\Wechat;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Wechat\UserTemplateMessageCreateRequest;
 use App\Http\Requests\Admin\Wechat\UserTemplateMessageUpdateRequest;
-use App\Repositories\TicketRepository;
 use App\Repositories\UserTemplateMessageRepository;
 use App\Services\AppManager;
 use App\Transformers\UserTemplateMessageTransformer;
@@ -28,8 +27,6 @@ class UserTemplateMessageController extends Controller
 
     public function index(string $wxType)
     {
-        $ticket = app(TicketRepository::class)->find(279);
-
         $paginator = $this->userTemplateMessageRepository->getTemplates($wxType);
 
         return $this->response->paginator($paginator, new UserTemplateMessageTransformer());
