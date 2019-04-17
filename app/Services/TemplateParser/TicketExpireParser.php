@@ -12,7 +12,7 @@ use App\Entities\Ticket;
 
 class TicketExpireParser extends BaseParser
 {
-    private $ticket;
+    public $ticket;
 
     public function __construct(Ticket $ticket)
     {

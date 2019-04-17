@@ -12,24 +12,24 @@ use App\Entities\Ticket;
 
 class TicketReceiveParser extends BaseParser
 {
-    private $ticket;
+    public $ticket;
 
     public function __construct(Ticket $ticket)
     {
         $this->ticket = $ticket;
     }
 
-    private function title()
+    public function title()
     {
         return $this->ticket->cardInfo['base_info']['title'];
     }
 
-    private function cardCode()
+    public function cardCode()
     {
         return $this->ticket->code;
     }
 
-    private function validateTime()
+    public function validateTime()
     {
         return $this->ticket->beginAt . '至' . $this->ticket->endAt;
     }

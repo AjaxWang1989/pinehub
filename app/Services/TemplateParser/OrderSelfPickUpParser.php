@@ -14,7 +14,7 @@ use Carbon\Carbon;
 
 class OrderSelfPickUpParser extends BaseParser
 {
-    private $order;
+    public $order;
 
     public function __construct(Order $order)
     {
@@ -22,25 +22,25 @@ class OrderSelfPickUpParser extends BaseParser
     }
 
     // 自提码
-    private function selfPickUpCode()
+    public function selfPickUpCode()
     {
         return $this->order->code;
     }
 
-    private function address()
+    public function address()
     {
         return $this->order->shop->address;
     }
 
     // 店铺营业时间
-    private function pickUpTime()
+    public function pickUpTime()
     {
         /** @var Shop $shop */
         $shop = $this->order->shop;
         return Carbon::now()->addDay()->toDateString() . ' ' . $shop->startAt . '-' . $shop->endAt;
     }
 
-    private function title()
+    public function title()
     {
         $items = $this->order->orderItems;
         $title = '';
@@ -51,12 +51,12 @@ class OrderSelfPickUpParser extends BaseParser
         return $title;
     }
 
-    private function amount()
+    public function amount()
     {
         return $this->order->paymentAmount;
     }
 
-    private function paidAt()
+    public function paidAt()
     {
         return $this->order->paidAt;
     }
