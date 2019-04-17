@@ -72,12 +72,12 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
      * Sync miniprogram's template messages.
      * @param AppManager $appManager
      */
-    public function syncMiniProgram(AppManager $appManager)
+    public function syncMiniProgram()
     {
+        $appManager = app(AppManager::class);
         $wxAppId = $appManager->miniProgram()->appId;
 
         $job = (new MiniProgramTemplateMessageSync($appManager, $wxAppId))->delay(1);
-
         dispatch($job);
     }
 
@@ -91,7 +91,7 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
 
     public function getMiniProgramTemplateMessages($app, int $offset, int $count = PAGE_LIMIT)
     {
-        app(AppManager::class)->setCurrentApp($app);
+        app('wechat')->setAppManager($app);
         $result = app('wechat')->miniProgram()->template_message->getTemplates($offset, $count);
 
         if (!$result['errcode']) {

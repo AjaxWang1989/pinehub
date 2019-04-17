@@ -32,7 +32,7 @@ class WxTemplateMessageController extends Controller
      * @param AppManager $appManager
      * @return WxTemplateMessageController|\Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|\Laravel\Lumen\Application|mixed
      */
-    public function syncMiniProgram(AppManager $appManager)
+    public function syncMiniProgram()
     {
         $wxAppId = app(AppManager::class)->miniProgram()->appId;
 
@@ -44,7 +44,7 @@ class WxTemplateMessageController extends Controller
 
         Cache::put('template_message_sync:miniprogram:' . $wxAppId, true, 1);
 
-        $this->wxTemplateMessageRepository->syncMiniProgram($appManager);
+        $this->wxTemplateMessageRepository->syncMiniProgram();
 
         return $this->response(['status' => 'accepted', 'msg' => '已处理，正在同步中']);
     }

@@ -158,7 +158,10 @@ class AppManager implements \Serializable
     public function serialize()
     {
 
-        return serialize($this->currentApp);
+        return serialize([
+            'currentApp' => $this->currentApp,
+//            'app' => $this->app
+        ]);
     }
 
     /**
@@ -172,6 +175,7 @@ class AppManager implements \Serializable
      */
     public function unserialize($serialized)
     {
-        $this->currentApp = unserialize($serialized);
+        $this->app = app(Application::class);
+        $this->currentApp = unserialize($serialized)['currentApp'];
     }
 }

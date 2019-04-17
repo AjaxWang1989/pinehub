@@ -10,13 +10,11 @@ namespace App\Jobs\wechat;
 
 use App\Jobs\Job;
 use App\Services\AppManager;
-use Illuminate\Queue\SerializesModels;
 
 class WechatTemplateMessageSync extends Job
 {
-    use SerializesModels;
-
     protected $wxAppId;
+
     protected $appManager;
 
     public function __construct(AppManager $appManager, $wxAppId)
@@ -27,14 +25,14 @@ class WechatTemplateMessageSync extends Job
 
     protected function parseTemplateContent(array &$template)
     {
-        $keywords = [];
-        $contentArray = explode("\n", $template['content']);
+        $items = [];
+        $contentArray = explode("\n", $template['example']);
         foreach ($contentArray as $content) {
-            $content = explode("{{", $content);
+            $content = explode("：", $content);
             if ($content[0]) {
-                $keywords[] = $content[0];
+                $items[] = ['key' => $content[0], 'value' => $content[1]];
             }
         }
-        $template['keywords'] = $keywords;
+        $template['items'] = $items;
     }
 }
