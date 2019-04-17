@@ -77,7 +77,8 @@ class SendMiniprogramTemplateMessage extends Job
 
     private function getFormId()
     {
-        $ids = Redis::command('zpopmin', ["formid:{$this->customer->id}"]);
+//        $ids = Redis::command('zpopmin', ["formid:{$this->customer->id}"]);
+        $ids = Redis::command('zrange', ["formid:{$this->customer->id}", 0, 0]);
         $this->formId = count($ids) > 0 ? $ids[0] : null;
         $this->removeFormId($this->formId);
     }
