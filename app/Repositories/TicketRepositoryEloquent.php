@@ -144,7 +144,7 @@ class TicketRepositoryEloquent extends CardRepositoryEloquent implements TicketR
             }
             $record->save();
 
-            $this->sendTemplateMessage($customer, $ticket, $record);
+//            $this->sendTemplateMessage($customer, $ticket, $record);
 
             return $record;
         }
