@@ -16,8 +16,8 @@ abstract class BaseParser implements Parser
             $value = preg_replace_callback('{{[a-zA-Z]+}}', function ($item) {
                 $method = substr($item[0], 1, -1);
                 return method_exists($this, $method) ? $this->$method() : $method;
-            }, $item->value);
-            $item->value = $value;
+            }, $item['value']);
+            $item['value'] = $value;
         }
     }
 }
