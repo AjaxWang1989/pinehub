@@ -21,7 +21,7 @@ abstract class BaseParser implements Parser
                 return method_exists($this, $method) ? $this->$method() : $method;
             }, $item['value']);
             Log::info('转换后值:', [$value]);
-            $item['value'] = $value;
+            $data[$key]['value'] = $value;
         }
     }
 }
