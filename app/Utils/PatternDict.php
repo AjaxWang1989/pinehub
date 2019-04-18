@@ -301,3 +301,7 @@ define('TEMPLATE_SEND_ERRCODE', [
     TEMPLATE_SEND_OVER_LIMIT => '接口调用超过限额（目前默认每个帐号日调用限额为100万）',
 ]);
 
+define('PAYMENT_TYPE_ALI', 'ALI');
+define('PAYMENT_TYPE_WX', 'WX');
+define('PAYMENT_TYPE_OTHER', 'other');
+

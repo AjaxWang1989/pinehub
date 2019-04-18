@@ -9,7 +9,6 @@
 namespace App\Services\TemplateParser;
 
 use App\Entities\Ticket;
-use Illuminate\Support\Facades\Log;
 
 class TicketReceiveParser extends BaseParser
 {
@@ -22,7 +21,6 @@ class TicketReceiveParser extends BaseParser
 
     public function title()
     {
-        Log::info('转化优惠券title：', [$this->ticket->cardInfo['base_info']['title']]);
         return $this->ticket->cardInfo['base_info']['title'];
     }
 
@@ -33,7 +31,6 @@ class TicketReceiveParser extends BaseParser
 
     public function validateTime()
     {
-        Log::info('转化优惠券有效期：', [$this->ticket->beginAt . '至' . $this->ticket->endAt]);
         return $this->ticket->beginAt . '至' . $this->ticket->endAt;
     }
 }
