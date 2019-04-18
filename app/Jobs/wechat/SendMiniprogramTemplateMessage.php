@@ -61,14 +61,16 @@ class SendMiniprogramTemplateMessage extends Job
             if (in_array($result['errcode'], [TEMPLATE_SEND_INVALID_FORMID, TEMPLATE_SEND_USED_FORMID])) {
                 Log::info('小程序模板消息未正确发送，尝试重新发送:', [
                     'touser' => $this->customer->platformOpenId,
-                    'msg' => TEMPLATE_SEND_ERRCODE[$result['errcode']]
+                    'msg' => TEMPLATE_SEND_ERRCODE[$result['errcode']],
+                    'templateId' => $this->templateId,
                 ]);
                 $this->getFormId();
                 continue;
             } else {
                 Log::info('小程序模板消息未正确发送：', [
                     'touser' => $this->customer->platformOpenId,
-                    'msg' => TEMPLATE_SEND_ERRCODE[$result['errcode']] ?? "未知错误代码${$result['errcode']}"
+                    'msg' => TEMPLATE_SEND_ERRCODE[$result['errcode']] ?? "未知错误代码${$result['errcode']}",
+                    'templateId' => $this->templateId,
                 ]);
                 break;
             }
