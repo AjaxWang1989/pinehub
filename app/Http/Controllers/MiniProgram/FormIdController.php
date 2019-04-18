@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\MiniProgram;
 
+use App\Http\Response\UpdateResponse;
 use Illuminate\Support\Facades\Redis;
 
 class FormIdController extends Controller
@@ -17,5 +18,9 @@ class FormIdController extends Controller
         $customer = $this->mpUser();
 
         Redis::command('zadd', ["formid:{$customer->id}", time(), $formId]);
+
+        $formIds = Redis::command('zrange', ["formid:{$this->customer->id}", 0, -1]);
+
+        return $this->response(new UpdateResponse(['code' => 200, 'msg' => 'success', 'formIds' => $formIds]));
     }
 }
