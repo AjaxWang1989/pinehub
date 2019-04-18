@@ -19,7 +19,7 @@ class FormIdController extends Controller
 
         Redis::command('zadd', ["formid:{$customer->id}", time(), $formId]);
 
-        $formIds = Redis::command('zrange', ["formid:{$this->customer->id}", 0, -1]);
+        $formIds = Redis::command('zrange', ["formid:{$customer->id}", 0, -1]);
 
         return $this->response(new UpdateResponse(['code' => 200, 'msg' => 'success', 'formIds' => $formIds]));
     }
