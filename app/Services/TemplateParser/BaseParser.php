@@ -13,7 +13,7 @@ abstract class BaseParser implements Parser
     public function parse(&$data)
     {
         foreach ($data as $key => $item) {
-            $value = preg_replace_callback('\{[a-zA-Z]+\}', function ($item) {
+            $value = preg_replace_callback('{[a-zA-Z]+}', function ($item) {
                 $method = substr($item[0], 1, -1);
                 return method_exists($this, $method) ? $this->$method() : $method;
             }, $item['value']);
