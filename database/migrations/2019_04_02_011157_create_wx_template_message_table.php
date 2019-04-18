@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class CreateWxTemplateMessageTable extends Migration
 {
@@ -16,7 +16,7 @@ class CreateWxTemplateMessageTable extends Migration
     {
         Schema::create('wx_template_messages', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('template_id', 16)->comment('模版消息id');
+            $table->string('template_id', 100)->comment('模版消息id');
             $table->string('wx_app_id', 32)->comment('微信 app id');
             $table->string('title', 16)->comment('模板标题');
             $table->string('primary_industry')->comment('模板所属行业的一级行业');
