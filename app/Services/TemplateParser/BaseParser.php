@@ -20,6 +20,7 @@ abstract class BaseParser implements Parser
                 Log::info('匹配值：', [$item, $method]);
                 return method_exists($this, $method) ? $this->$method() : $method;
             }, $item['value']);
+            Log::info('转换后值:', [$value]);
             $item['value'] = $value;
         }
     }
