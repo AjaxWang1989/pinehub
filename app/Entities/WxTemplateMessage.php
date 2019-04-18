@@ -3,10 +3,8 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
-use App\Services\AppManager;
 use Barryvdh\LaravelIdeHelper\Eloquent;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -50,10 +48,16 @@ class WxTemplateMessage extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['template_id', 'wx_app_id', 'title', 'primary_industry', 'deputy_industry', 'content', 'items'];
+    protected $fillable = ['template_id', 'wx_app_id', 'title', 'primary_industry', 'deputy_industry', 'content', 'items', 'status'];
 
     protected $casts = [
-        'items' => 'array'
+        'items' => 'array',
+        'status' => 'boolean'
     ];
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
 
 }

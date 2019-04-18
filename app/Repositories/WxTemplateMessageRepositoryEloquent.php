@@ -47,7 +47,7 @@ class WxTemplateMessageRepositoryEloquent extends BaseRepository implements WxTe
         $wxAppId = app(AppManager::class)->miniProgram()->appId;
 
         $paginator = $this->scopeQuery(function (WxTemplateMessage $wxTemplateMessage) use ($wxAppId) {
-            return $wxTemplateMessage->whereWxAppId($wxAppId);
+            return $wxTemplateMessage->active()->whereWxAppId($wxAppId);
         })->paginate(request()->input('limit', PAGE_LIMIT));
 
         return $paginator;

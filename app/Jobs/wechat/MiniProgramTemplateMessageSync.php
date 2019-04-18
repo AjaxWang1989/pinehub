@@ -8,6 +8,7 @@
 
 namespace App\Jobs\wechat;
 
+use App\Entities\WxTemplateMessage;
 use App\Repositories\WxTemplateMessageRepository;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
@@ -16,9 +17,7 @@ class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
 {
     public function handle(WxTemplateMessageRepository $wxTemplateMessageRepository)
     {
-        Log::info('##########################Succeed...');
-        $wxTemplateMessageRepository->deleteWhere(['wx_app_id' => $this->wxAppId]);
-        Log::info('删除小程序原有模板信息完毕');
+        WxTemplateMessage::query()->update(['status' => false]);
 
         $templates = [];
 
@@ -34,8 +33,19 @@ class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
         foreach ($templates as $template) {
             $template['wx_app_id'] = $this->wxAppId;
             $this->parseTemplateContent($template);
-            $wxTemplateMessageRepository->create($template);
+            $templateMessage = $wxTemplateMessageRepository->firstOrNew([
+                'template_id' => $template['template_id'],
+                'wx_app_id' => $template['wx_app_id'],
+                'title' => $template['title'],
+                'content' => $template['content'],
+            ]);
+            $templateMessage->items = $template['items'];
+            $templateMessage->status = true;
+            $templateMessage->save();
+            echo $templateMessage . PHP_EOL;
         }
+
+        WxTemplateMessage::query()->where('status', false)->delete();
 
         Log::info("小程序模板消息已更新");
 
