@@ -34,7 +34,7 @@ class MiniProgramTemplateMessageSync extends WechatTemplateMessageSync
         foreach ($templates as $template) {
             $template['wx_app_id'] = $this->wxAppId;
             $this->parseTemplateContent($template);
-            $wxTemplateMessageRepository->firstOrCreate(['template_id' => $template['template_id']]);
+            $wxTemplateMessageRepository->firstOrCreate($template);
         }
 
         Log::info("小程序模板消息已更新");
