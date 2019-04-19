@@ -48,6 +48,9 @@ class SendMiniprogramTemplateMessage extends Job
         $this->getFormId();
 
         app('wechat')->setAppManager($this->appManager);
+        if (!$this->formId) {
+            Log::info('该用户没有formId，小程序模板消息发送失败');
+        }
         while ($this->formId) {
             $result = app('wechat')->miniProgram()->template_message->send([
                 'touser' => $this->customer->platformOpenId,
