@@ -14,6 +14,7 @@ use App\Http\Requests\Admin\Wechat\UserTemplateMessageUpdateRequest;
 use App\Repositories\UserTemplateMessageRepository;
 use App\Services\AppManager;
 use App\Transformers\UserTemplateMessageTransformer;
+use Illuminate\Support\Facades\Redis;
 
 class UserTemplateMessageController extends Controller
 {
