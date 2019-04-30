@@ -279,7 +279,7 @@ if (!function_exists('domainAndPrefix')) {
         $path = $request->path();
         $tmp = explode('/', $path);
         $prefix = $tmp[0];
-        return [$www.$domain, $prefix];
+        return [$www, $domain, $prefix];
     }
 }
 
