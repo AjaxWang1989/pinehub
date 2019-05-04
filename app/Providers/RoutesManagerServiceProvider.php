@@ -138,7 +138,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
     {
         $version = app('request') instanceof \Dingo\Api\Http\Request ? app('request')->version() : null;
         foreach (config('routes') as $route) {
-            Log::debug('------- router class --------', [$route['gateway'], $this->gateway, $version, app('request')->path()]);
+            Log::debug('------- router class 0 --------', [$route['gateway'], $this->gateway, $version, app('request')->path()]);
             if($this->gateway === gateway($route['gateway']) && ($version === null || $version === $route['version'])) {
                 $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
                 $auth = isset($route['auth']) ? $route['auth'] : null ;
@@ -146,7 +146,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 if(isset($route['provider']) && $route['provider']) {
                     $this->app->register($route['provider']);
                 }
-                Log::debug('------- router class --------', [$route['gateway'], app('request')->path()]);
+                Log::debug('------- router class 1 --------', [$route['gateway'], app('request')->path()]);
                 if($auth){
                     $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain, $auth);
                 }else{
@@ -154,6 +154,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 }
 
                 $routes->load();
+                return;
             }
         }
     }
