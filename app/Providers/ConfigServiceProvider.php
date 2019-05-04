@@ -35,6 +35,6 @@ class ConfigServiceProvider extends ServiceProvider
                  ] as $name){
             laravelToLumen($this->app)->configure($name);
         }
-        var_dump(config('cache'));exit();
+//        var_dump(config('cache'));exit();
     }
 }
