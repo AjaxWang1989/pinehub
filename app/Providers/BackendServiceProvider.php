@@ -40,9 +40,11 @@ class BackendServiceProvider extends ServiceProvider
         $appId = $request->header('ProjectId', null);
         $appId = $appId ? $appId : $request->input('ProjectId', null);
         $appId = $appId ? $appId : (app()->has('session') ? app()->make('session')->get('project_id') : null);
-        $currentApp = $appId ? $repository->find($appId) : null;
-        $appManager = app(AppManager::class);
-        if ($currentApp)
-            $appManager->setCurrentApp($currentApp);
+        if($appId){
+            $currentApp = $appId ? $repository->find($appId) : null;
+            $appManager = app(AppManager::class);
+            if ($currentApp)
+                $appManager->setCurrentApp($currentApp);
+        }
     }
 }

@@ -160,8 +160,6 @@ class RoutesManagerServiceProvider extends ServiceProvider
             }
         }catch (\Exception $exception) {
             Log::debug('------ route load exception ---- '.$exception->getMessage());
-            var_dump($exception->getTrace());
-            exit();
         }
 
     }
