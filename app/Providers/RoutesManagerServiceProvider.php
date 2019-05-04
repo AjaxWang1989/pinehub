@@ -68,7 +68,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
         $this->www = $www;
 
 
-        Log::info('----------- api gateway -------------', [$this->gateway]);
+        Log::info('----------- api gateway -------------', [$this->gateway, $this->request->path()]);
         if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway) && !$this->app->runningInConsole()) {
             throw new GatewayNotAllowed('网关错误');
         }
@@ -138,6 +138,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
     {
         $version = app('request') instanceof \Dingo\Api\Http\Request ? app('request')->version() : null;
         foreach (config('routes') as $route) {
+            Log::debug('------- router class --------', [$route['gateway'], $this->gateway, $version, app('request')->path()]);
             if($this->gateway === gateway($route['gateway']) && ($version === null || $version === $route['version'])) {
                 $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
                 $auth = isset($route['auth']) ? $route['auth'] : null ;
