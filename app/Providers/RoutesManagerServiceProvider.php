@@ -136,27 +136,32 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     protected function registerRoutes()
     {
-        $version = app('request') instanceof \Dingo\Api\Http\Request ? app('request')->version() : null;
-        foreach (config('routes') as $route) {
-            Log::debug('------- router class 0 --------', [$route['gateway'], $this->gateway, $version, app('request')->path()]);
-            if($this->gateway === gateway($route['gateway']) && ($version === null || $version === $route['version'])) {
-                $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
-                $auth = isset($route['auth']) ? $route['auth'] : null ;
-                $domain = $this->www.$this->gateway;
-                if(isset($route['provider']) && $route['provider']) {
-                    $this->app->register($route['provider']);
-                }
-                Log::debug('------- router class 1 --------', [$route['gateway'], app('request')->path()]);
-                if($auth){
-                    $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain, $auth);
-                }else{
-                    $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain);
-                }
+        try{
+            $version = app('request') instanceof \Dingo\Api\Http\Request ? app('request')->version() : null;
+            foreach (config('routes') as $route) {
+                Log::debug('------- router class 0 --------', [$route['gateway'], $this->gateway, $version, app('request')->path()]);
+                if($this->gateway === gateway($route['gateway']) && ($version === null || $version === $route['version'])) {
+                    $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
+                    $auth = isset($route['auth']) ? $route['auth'] : null ;
+                    $domain = $this->www.$this->gateway;
+                    if(isset($route['provider']) && $route['provider']) {
+                        $this->app->register($route['provider']);
+                    }
+                    Log::debug('------- router class 1 --------', [$route['gateway'], app('request')->path()]);
+                    if($auth){
+                        $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain, $auth);
+                    }else{
+                        $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain);
+                    }
 
-                $routes->load();
-                return;
+                    $routes->load();
+                    return;
+                }
             }
+        }catch (\Exception $exception) {
+            Log::debug('------ route load exception ---- '.$exception->getMessage());
         }
+
     }
 
     protected function routeExceptionHandle() {
