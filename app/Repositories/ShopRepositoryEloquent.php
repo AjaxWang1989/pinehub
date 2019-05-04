@@ -2,19 +2,15 @@
 
 namespace App\Repositories;
 
-use App\Criteria\Admin\SearchRequestCriteria;
-use App\Entities\Country;
 use App\Entities\Order;
+use App\Entities\Shop;
 use App\Repositories\Traits\Destruct;
 use App\Repositories\Traits\RepositoryRelationShip;
-use App\Validators\Admin\ShopsValidator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Entities\Shop;
 use Illuminate\Support\Facades\DB;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class ShopRepositoryEloquent.
@@ -36,6 +32,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
         'province_id' => '=',
         'code' => 'like'
     ];
+
     /**
      * Specify Model class name
      *
@@ -46,7 +43,6 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
         return Shop::class;
     }
 
-    
 
     /**
      * Boot up the repository, pushing criteria
@@ -67,12 +63,12 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
      * */
     public function nearest(float $lng, float $lat, float $distance = 15)
     {
-        $this->scopeQuery(function (Shop $shop) use($lat, $lng, $distance) {
+        $this->scopeQuery(function (Shop $shop) use ($lat, $lng, $distance) {
             return $shop->whereStatus(Shop::STATUS_OPEN)->near($lng, $lat, $distance);
         });
         $shop = $this->first();
-        if($shop)
-            return $shop ;
+        if ($shop)
+            return $shop;
         throw (new ModelNotFoundException)->setModel(get_class($this->model));
     }
 
@@ -85,8 +81,8 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
      */
     public function nearBy(float $lng, float $lat, float $distance = 15)
     {
-        $this->scopeQuery(function (Shop $shop) use($lat, $lng, $distance) {
-            return $shop->whereStatus(Shop::STATUS_OPEN)->near($lng, $lat, $distance);
+        $this->scopeQuery(function (Shop $shop) use ($lat, $lng, $distance) {
+            return $shop->whereHas('shopManager')->whereStatus(Shop::STATUS_OPEN)->near($lng, $lat, $distance);
         });
         return $this->paginate();
     }
@@ -150,10 +146,9 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     }
 
 
-
     /**
-     *@param int $id
-     *@return Shop
+     * @param int $id
+     * @return Shop
      * */
     public function todayOrderInfo(int $id)
     {
@@ -163,51 +158,53 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
         $shop = $this->scopeQuery(function (Shop $shop) use ($start, $end) {
 
             return $shop->withCount([
-                'orders as order_num' => function(Builder $query) use($start, $end){
+                'orders as order_num' => function (Builder $query) use ($start, $end) {
                     return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                 },
 
-                'orders as payment_amount' => function (Builder $query) use($start, $end){
+                'orders as payment_amount' => function (Builder $query) use ($start, $end) {
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
                         ->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                 },
-                'orders as ali_payment_amount' => function (Builder $query) use($start, $end){
+                'orders as ali_payment_amount' => function (Builder $query) use ($start, $end) {
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
                         ->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
                         ->where('pay_type', Order::ALI_PAY)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                 },
-                'orders as wechat_payment_amount' => function (Builder $query) use($start, $end) {
+                'orders as wechat_payment_amount' => function (Builder $query) use ($start, $end) {
                     return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
                         ->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
                         ->where('pay_type', Order::WECHAT_PAY)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                 },
-                'orders as self_pick_order_num' => function (Builder $query) use($start, $end) {
+                'orders as self_pick_order_num' => function (Builder $query) use ($start, $end) {
                     return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
                         ->where('pick_up_method', Order::USER_SELF_PICK_UP)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                 },
-                'orders as need_send_order_num' => function (Builder $query) use($start, $end) {
+                'orders as need_send_order_num' => function (Builder $query) use ($start, $end) {
                     return $query->where('paid_at', '>=', $start)
                         ->where('paid_at', '<', $end)
                         ->where('pick_up_method', Order::SEND_ORDER_TO_USER)
-                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ]);
+                        ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED]);
                 }
             ]);
         })->find($id);
 
         $shop['buyer_num'] = $shop->orders()->where('paid_at', '>=', $start)
             ->where('paid_at', '<', $end)
-            ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED ])
-            ->groupBy('customer_id')->count();
+            ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED])
+            ->groupBy('customer_id')->get();
+        $shop['buyer_num'] = count($shop['buyer_num']);
+
         return $shop;
     }
 

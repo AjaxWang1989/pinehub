@@ -2,6 +2,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\JsonQuery;
 use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -31,7 +32,9 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
  * @property string|null $deletedAt
+ * @property-read string $statusDesc 状态描述
  * @property-read \App\Entities\App|null $app
+ * @property-read \App\Entities\CardConditions|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card query()
@@ -58,7 +61,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class Card extends Model implements Transformable
 {
-    use TransformableTrait, ModelAttributesAccess;
+    use TransformableTrait, ModelAttributesAccess, JsonQuery;
 
     const SYNC_NO_NEED = -1;
     const SYNC_FAILED = 0;
@@ -68,8 +71,16 @@ class Card extends Model implements Transformable
     const STATUS_OFF = 0;
     const STATUS_ON = 1;
     const STATUS_EXPIRE = 2;
+    const UNAVAILABLE = 3;
 
-    const OWNER_TICKET  = 'OWNER_TICKET';
+    const CARD_STATUS = [
+        self::STATUS_OFF => '未生效',
+        self::STATUS_ON => '生效中',
+        self::STATUS_EXPIRE => '已失效',
+        self::UNAVAILABLE => '已下架',
+    ];
+
+    const OWNER_TICKET = 'OWNER_TICKET';
     const ALI_TICKET = 'ALI_TICKET';
     const WX_TICKET = 'WX_TICKET';
 
@@ -125,14 +136,24 @@ class Card extends Model implements Transformable
     ];
 
 
-
-    public function app() : BelongsTo
+    public function app(): BelongsTo
     {
         return $this->belongsTo(App::class, 'app_id', 'id');
     }
 
-    public function records() :HasMany
+    public function records(): HasMany
     {
-        return $this->hasMany(CustomerTicketCard::class,'card_id','card_id');
+        return $this->hasMany(CustomerTicketCard::class, 'card_id', 'card_id');
+    }
+
+    // 优惠券领取条件
+    public function condition(): HasMany
+    {
+        return $this->hasMany(CardConditions::class, 'card_id', 'card_id');
+    }
+
+    public function getStatusDescAttribute()
+    {
+        return self::CARD_STATUS[$this->status];
     }
 }

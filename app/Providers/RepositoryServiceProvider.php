@@ -2,7 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Log;
+use App\Repositories\AdvertisementRepository;
+use App\Repositories\AdvertisementRepositoryEloquent;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -75,6 +76,12 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\SKUProductRepository::class, \App\Repositories\SKUProductRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\OrderPostRepository::class, \App\Repositories\OrderPostRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\MemberCardInfoRepository::class, \App\Repositories\MemberCardInfoRepositoryEloquent::class);
+        $this->app->bind(AdvertisementRepository::class, AdvertisementRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WxTemplateMessageRepository::class, \App\Repositories\WxTemplateMessageRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\UserTemplateMessageRepository::class, \App\Repositories\UserTemplateMessageRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\PaymentConfigRepository::class, \App\Repositories\PaymentConfigRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\TicketTemplateMessageRepository::class, \App\Repositories\TicketTemplateMessageRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\WxTemplateMessageRepository::class, \App\Repositories\WxTemplateMessageRepositoryEloquent::class);
         //:end-bindings:
     }
 }

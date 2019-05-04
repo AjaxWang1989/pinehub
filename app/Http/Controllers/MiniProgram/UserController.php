@@ -88,7 +88,7 @@ class UserController extends Controller
         }
 
         Log::info('----------------------------card------------------',$items->toArray());
-        return $this->response()->paginator($items,new CustomerTicketCardTransformer());
+        return $this->response()->paginator($items, new CustomerTicketCardTransformer());
     }
 
     /**

@@ -121,25 +121,25 @@ class OrderController extends Controller
                                 CustomerTicketCardRepository $customerTicketCardRepository,
                                 MemberCardRepository $memberCardRepository,
                                 Application $app,
-                                OrderItemRepository $orderItemRepository ,
+                                OrderItemRepository $orderItemRepository,
                                 ShopRepository $shopRepository,
-                                MerchandiseRepository $merchandiseRepository ,
+                                MerchandiseRepository $merchandiseRepository,
                                 CardRepository $cardRepository,
                                 ShoppingCartRepository $shoppingCartRepository,
-                                OrderRepository $orderRepository ,
+                                OrderRepository $orderRepository,
                                 Request $request)
     {
         parent::__construct($request, $appRepository);
 
-        $this->appRepository                = $appRepository;
-        $this->orderRepository              = $orderRepository;
-        $this->cardRepository               = $cardRepository;
-        $this->shoppingCartRepository       = $shoppingCartRepository;
-        $this->merchandiseRepository        = $merchandiseRepository;
-        $this->shopRepository               = $shopRepository;
-        $this->orderItemRepository          = $orderItemRepository;
-        $this->app                          = $app;
-        $this->memberCardRepository         = $memberCardRepository;
+        $this->appRepository = $appRepository;
+        $this->orderRepository = $orderRepository;
+        $this->cardRepository = $cardRepository;
+        $this->shoppingCartRepository = $shoppingCartRepository;
+        $this->merchandiseRepository = $merchandiseRepository;
+        $this->shopRepository = $shopRepository;
+        $this->orderItemRepository = $orderItemRepository;
+        $this->app = $app;
+        $this->memberCardRepository = $memberCardRepository;
         $this->customerTicketCardRepository = $customerTicketCardRepository;
     }
 
@@ -150,14 +150,16 @@ class OrderController extends Controller
      * @return mixed
      */
 
-    public function payByOrderId(string $type = 'wx', int $orderId){
-        $order = $this->orderRepository->findWhere(['id'=>$orderId])->first();
+    public function payByOrderId(string $type = 'wx', int $orderId)
+    {
+        $order = $this->orderRepository->findWhere(['id' => $orderId])->first();
         return $this->order($order, $type);
     }
 
-    protected function order(Order $order, string $type){
-        return DB::transaction(function () use(&$order, $type){
-            if($order->paymentAmount === 0) {
+    protected function order(Order $order, string $type)
+    {
+        return DB::transaction(function () use (&$order, $type) {
+            if ($order->paymentAmount === 0) {
                 $order->status = Order::PAID;
                 $order->save();
                 return $this->response()->item($order, new OrderTransformer());
@@ -169,19 +171,19 @@ class OrderController extends Controller
                 $order->prepayId = $result['prepay_id'];
                 $order->payType = Order::WECHAT_PAY;
                 $order->save();
-                if($result['return_code'] === 'SUCCESS'){
+                if ($result['return_code'] === 'SUCCESS') {
                     $order->status = Order::MAKE_SURE;
                     $order->save();
-                    $sdkConfig  = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
+                    $sdkConfig = app('wechat')->jssdk($result['prepay_id'], $order->wechatAppId);
                     $result['sdk_config'] = $sdkConfig;
                     return $this->response(new JsonResponse($result));
-                }else{
+                } else {
                     throw new UnifyOrderException($result['return_msg']);
                 }
             } else {
                 /** @var AliChargeContext $charge */
                 $charge = app('mp.payment.ali.create');
-                $order->payType = Order::ALI_PAY; 
+                $order->payType = Order::ALI_PAY;
                 $order->save();
                 $data = $order->buildAliAggregatePaymentOrder();
                 $signed = $charge->charge($data);
@@ -203,19 +205,19 @@ class OrderController extends Controller
             (isset($order['store_id']) ? $order['store_id'] : null);
         //有店铺id就是今日店铺下单的购物车,有活动商品id就是在活动商品里的购物车信息,两个都没有的话就是预定商城下单的购物车
         return $this->shoppingCartRepository->findWhere([
-                'customer_id'               => $user->id,
-                'activity_id'  => isset($order['activity_id']) ? $order['activity_id'] : null,
-                'shop_id'                   => $storeId,
-                'type' => $type
-            ]);
+            'customer_id' => $user->id,
+            'activity_id' => isset($order['activity_id']) ? $order['activity_id'] : null,
+            'shop_id' => $storeId,
+            'type' => $type
+        ]);
     }
 
     protected function useTicket(array &$order, MpUser $user)
     {
-        if(isset($order['card_id']) && $order['card_id'] ){
+        if (isset($order['card_id']) && $order['card_id']) {
             $condition = [
                 'card_id' => $order['card_id'],
-                'status'  => CustomerTicketCard::STATUS_ON,
+                'status' => CustomerTicketCard::STATUS_ON,
 //                'active'  => CustomerTicketCard::ACTIVE_ON,
             ];
             if (isset($order['card_code']) && $order['card_code']) {
@@ -227,20 +229,20 @@ class OrderController extends Controller
                 ->where($condition)
                 ->orderByDesc('created_at')
                 ->first();
-            if ($customerTicketRecord){
+            if ($customerTicketRecord) {
                 $card = $customerTicketRecord['card'];
-                with($card, function (Card $card) use(&$order){
+                with($card, function (Card $card) use (&$order) {
                     if ($card->cardType === Card::DISCOUNT) {
-                        $order['discount_amount'] = $card->cardInfo['discount']/10 * $order['total_amount'];
-                        Log::info('discount amount '.$order['discount_amount'].' (0)');
-                    }else if($card->cardType === Card::CASH){
+                        $order['discount_amount'] = $card->cardInfo['discount'] / 10 * $order['total_amount'];
+                        Log::info('discount amount ' . $order['discount_amount'] . ' (0)');
+                    } else if ($card->cardType === Card::CASH) {
                         $order['discount_amount'] = $card && $card->cardInfo ? (float)$card->cardInfo['reduce_cost'] : 0;
-                        Log::info('discount amount '.$order['discount_amount']."\n");
+                        Log::info('discount amount ' . $order['discount_amount'] . "\n");
                     }
                 });
                 $order['card_id'] = $card['card_id'];
                 $order['card_code'] = $customerTicketRecord->cardCode;
-            }else{
+            } else {
                 throw new ModelNotFoundException('使用的优惠券不存在');
             }
         }
@@ -256,19 +258,19 @@ class OrderController extends Controller
     protected function buildOrderItemsFromShoppingCarts(array &$order, Collection $shoppingCarts)
     {
         $order['order_items'] = [];
-        $order['shopping_cart_ids']  = [];
+        $order['shopping_cart_ids'] = [];
         //取出购物车商品信息组装成一个子订单数组
-        $shoppingCarts->map(function (ShoppingCart $cart) use(&$order){
+        $shoppingCarts->map(function (ShoppingCart $cart) use (&$order) {
             $orderItem = $cart->only(['activity_id', 'shop_id', 'customer_id', 'merchandise_id', 'quality', 'sku_product_id']);
             $orderItem['total_amount'] = $cart->amount;
             $orderItem['payment_amount'] = $cart->amount;
             $orderItem['discount_amount'] = 0;
             $orderItem['status'] = Order::WAIT;
-            if($cart->date) {
+            if ($cart->date) {
                 $orderItem['send_date'] = $cart->date;
             }
 
-            if($cart->batch) {
+            if ($cart->batch) {
                 $orderItem['send_batch'] = $cart->batch;
             }
             array_push($order['order_items'], $orderItem);
@@ -282,12 +284,12 @@ class OrderController extends Controller
         $order['member_id'] = $user->memberId;
         $order['wechat_app_id'] = $user->platformAppId;
         $order['customer_id'] = $user->id;
-        $order['open_id']  = $user->platformOpenId;
+        $order['open_id'] = $user->platformOpenId;
         $order['app_id'] = $user->appId;
         $order['member_id'] = $user->memberId;
         $order['wechat_app_id'] = $user->platformAppId;
         $order['customer_id'] = $user->id;
-        $order['open_id']  = $user->platformOpenId;
+        $order['open_id'] = $user->platformOpenId;
     }
 
     /**
@@ -300,11 +302,11 @@ class OrderController extends Controller
         $user = $this->mpUser();
         $order = $request->all();
         $now = Carbon::now();
-        if (isset($order['receiver_address']) && isset($order['build_num']) && isset($order['room_num'])){
+        if (isset($order['receiver_address']) && isset($order['build_num']) && isset($order['room_num'])) {
             $address = [
                 'receiver_address' => $order['receiver_address'],
-                'build_num'        => $order['build_num'],
-                'room_num'         => $order['room_num']
+                'build_num' => $order['build_num'],
+                'room_num' => $order['room_num']
             ];
             $order['receiver_address'] = json_encode($address);
         }
@@ -313,17 +315,17 @@ class OrderController extends Controller
         $order['discount_amount'] = 0;
         $shop = null;
 
-        if(isset($order['receiving_shop_id']) && $order['receiving_shop_id']) {
-            if(!(new Shop)->find($order['receiving_shop_id'])) {
+        if (isset($order['receiving_shop_id']) && $order['receiving_shop_id']) {
+            if (!(new Shop)->find($order['receiving_shop_id'])) {
                 throw new ModelNotFoundException('站点不存在');
             }
         }
-        if(!$shop && isset($order['store_id']) && $order['store_id']) {
-            if(!(new Shop)->find($order['store_id'])) {
+        if (!$shop && isset($order['store_id']) && $order['store_id']) {
+            if (!(new Shop)->find($order['store_id'])) {
                 throw new ModelNotFoundException('下单店铺不存在');
             }
         }
-        if (!isset($order['send_date']) || !$order['send_date']){
+        if (!isset($order['send_date']) || !$order['send_date']) {
             $order['send_date'] = Carbon::now()->addDay(1)->format('Y-m-d');
         }
 
@@ -332,7 +334,7 @@ class OrderController extends Controller
             $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
             $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
 
-            $order['total_amount']    = round($shoppingCarts->sum('amount'),2);
+            $order['total_amount'] = round($shoppingCarts->sum('amount'), 2);
             $order['merchandise_num'] = $shoppingCarts->sum('quality');
             $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
         }
@@ -343,14 +345,13 @@ class OrderController extends Controller
         $order['shop_id'] = isset($order['store_id']) ? $order['store_id'] : null;
 
 
-
-        $order['payment_amount']  = round(($order['total_amount'] - $order['discount_amount']),2);
+        $order['payment_amount'] = round(($order['total_amount'] - $order['discount_amount']), 2);
 
         $order['year'] = $now->year;
         $order['month'] = $now->month;
-        $order ['day']   = $now->day;
-        $order['week']  = $now->dayOfWeekIso;
-        $order['hour']  = $now->hour;
+        $order ['day'] = $now->day;
+        $order['week'] = $now->dayOfWeekIso;
+        $order['hour'] = $now->hour;
         Log::info("-------------------- order info ---------------------\n", $order);
         //生成提交中的订单
         $order = $this->app
@@ -365,22 +366,23 @@ class OrderController extends Controller
      * @param StoreBuffetOrdersRequest $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeBuffetOrders(StoreBuffetOrdersRequest $request){
+    public function storeBuffetOrders(StoreBuffetOrdersRequest $request)
+    {
         $user = $this->shopManager();
 
         /** @var Shop $shop */
         $shop = $this->shopRepository
-            ->findWhere(['user_id'  =>  $user->id])
+            ->findWhere(['user_id' => $user->id])
             ->first();
 
-        if ($shop){
+        if ($shop) {
             //查询今日下单和预定商城的所有自提订单
             $items = $this->orderRepository
                 ->storeBuffetOrders($request->input('date', null), $shop->id);
 
             return $this->response()
-                ->paginator($items,new OrderStoreBuffetTransformer());
-        }else{
+                ->paginator($items, new OrderStoreBuffetTransformer());
+        } else {
             throw new ModelNotFoundException('您不是店铺老板无权查询此接口');
         }
     }
@@ -396,16 +398,16 @@ class OrderController extends Controller
 
         /** @var Shop $shop */
         $shop = $this->shopRepository
-            ->findWhere(['user_id'   =>  $user['member_id']])
+            ->findWhere(['user_id' => $user['member_id']])
             ->first();
 
         if ($shop) {
-           //查询今日下单和预定商城的所有配送订单
+            //查询今日下单和预定商城的所有配送订单
             $items = $this->orderRepository
                 ->storeSendOrders($request->input('date', null),
                     $request->input('batch'), $shop->id);
-            return $this->response()->paginator($items,new OrderStoreSendTransformer());
-        }else{
+            return $this->response()->paginator($items, new OrderStoreSendTransformer());
+        } else {
             throw new ModelNotFoundException('您不是店铺老板无权查询此接口');
         }
     }
@@ -418,11 +420,12 @@ class OrderController extends Controller
      * @return \Dingo\Api\Http\Response
      */
 
-    public function userOrders(string  $status, Request $request){
-        $customer   = $this->mpUser();
+    public function userOrders(string $status, Request $request)
+    {
+        $customer = $this->mpUser();
 
         $items = $this->orderRepository
-            ->userOrders($status,   $customer->id, $request->input('limit', PAGE_LIMIT));
+            ->userOrders($status, $customer->id, $request->input('limit', PAGE_LIMIT));
         return $this->response()
             ->paginator($items, new StatusOrdersTransformer());
     }
@@ -432,13 +435,14 @@ class OrderController extends Controller
      * @param StoreOrdersSummaryRequest $request
      * @return \Dingo\Api\Http\Response
      */
-    public function storeOrdersSummary(StoreOrdersSummaryRequest $request){
+    public function storeOrdersSummary(StoreOrdersSummaryRequest $request)
+    {
         $user = $this->mpUser();
 
 
         /** @var Shop $shop */
         $shop = $this->shopRepository
-            ->findWhere(['user_id'  =>  $user['member_id']])
+            ->findWhere(['user_id' => $user['member_id']])
             ->first();
 
         if ($shop) {
@@ -456,22 +460,23 @@ class OrderController extends Controller
         }
     }
 
-    public function storeOrders(int $storeId, Request $request) {
+    public function storeOrders(int $storeId, Request $request)
+    {
 
         $user = $this->shopManager();
-        if($user) {
+        if ($user) {
             $shop = $user->shops()->find($storeId);
-            if($shop) {
+            if ($shop) {
                 $order = new Order();
                 $order = $order->with(['customer'])->where('shop_id', $shop->id);
                 if (($type = $request->input('type', null))) {
                     $order = $order->where('type', $type);
                 }
                 if (($date = $request->input('paid_date', date('Y-m-d')))) {
-                    if(is_string($date)) {
+                    if (is_string($date)) {
                         $date = [
-                            $date.' 00:00:00',
-                            $date.'23:59:59'
+                            $date . ' 00:00:00',
+                            $date . '23:59:59'
                         ];
                     }
                     $start = Carbon::createFromFormat('Y-m-d H:i:s', $date[0]);
@@ -490,10 +495,10 @@ class OrderController extends Controller
                 return $this->response()->paginator($orders, new OrderTransformer())
                     ->addMeta('total_amount', number_format($totalAmount, 2))
                     ->addMeta('payment_amount', number_format($paymentAmount, 2));
-            }else{
+            } else {
                 throw new ModelNotFoundException('你不是店铺管理员无权访问');
             }
-        }else{
+        } else {
             throw new ModelNotFoundException('未登录');
         }
     }
@@ -503,15 +508,16 @@ class OrderController extends Controller
      * @param int $id
      * @return \Dingo\Api\Http\Response
      */
-    public function cancelOrder(int $id){
+    public function cancelOrder(int $id)
+    {
         /** @var Order $order */
         $order = $this->orderRepository->with('orderItems')->find($id);
 
-        if ($order->status === Order::WAIT || $order->status === Order::MAKE_SURE ){
+        if ($order->status === Order::WAIT || $order->status === Order::MAKE_SURE) {
             $order->status = Order::CANCEL;
             $order->save();
             return $this->response()->item($order, new StatusOrdersTransformer());
-        }else{
+        } else {
             $errCode = '状态提交错误';
             throw new UserCodeException($errCode);
         }
@@ -523,17 +529,25 @@ class OrderController extends Controller
      * @param int $id
      * @return mixed
      */
-    public function confirmOrder(int $id){
+    public function confirmOrder(int $id)
+    {
         /** @var Order $order */
         $order = $this->orderRepository->find($id);
-        if ($order->status === Order::PAID || $order->status === Order::SEND){
+        if ($order->status === Order::PAID || $order->status === Order::SEND) {
             $order->status = Order::COMPLETED;
             $order->save();
             return $this->response()->item($order, new StatusOrdersTransformer());
-        }else{
+        } else {
             $errCode = '状态提交错误';
             throw new UserCodeException($errCode);
         }
 
+    }
+
+    public function show(int $id)
+    {
+        $order = $this->orderRepository->find($id);
+
+        return $this->response()->item($order, new StatusOrdersTransformer());
     }
 }

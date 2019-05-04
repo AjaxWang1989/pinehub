@@ -44,17 +44,20 @@ class OrderPaidNoticeListener
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
                 dispatch((new RemoveOrderPaidVoice($file))->delay(60));
+                $messageId = md5(microtime(true));
+                $content = [
+                    'voice' => $file,
+                    'message_id' => $messageId,
+                    'type' => 'PAYMENT_NOTICE'
+                ];
+//                $list = Cache::get($event->noticeVoiceCacheKey(), []);
+//                $list[$messageId] = $content;
+                Cache::add($event->noticeVoiceCacheKey($messageId), $content, 1);
+                Log::debug("{$event->noticeVoiceCacheKey($messageId)} = ", Cache::get($event->noticeVoiceCacheKey($messageId)));
+
                 if(($registerIds = $event->broadcastOn())) {
                     Log::info("========= result success ==========", [$registerIds]);
-                    $messageId = str_random();
-                    $content = [
-                        'voice' => $file,
-                        'message_id' => $messageId,
-                        'type' => 'PAYMENT_NOTICE'
-                    ];
-                    $list = Cache::get($event->noticeVoiceCacheKey(), []);
-                    $list[] = $content;
-                    Cache::add($event->noticeVoiceCacheKey(), $list, 1);
+
                     if(isset($registerIds['jpush'])) {
                         JPush::push()->setPlatform(['android', 'ios'])
                             ->addRegistrationId($registerIds['jpush'])
@@ -62,7 +65,7 @@ class OrderPaidNoticeListener
                             ->send();
                     }
 
-                    if(isset($registerIds['igt'])) {
+                     if(isset($registerIds['igt'])) {
                         try{
                             Log::info('=========+ 推送 +==========');
 

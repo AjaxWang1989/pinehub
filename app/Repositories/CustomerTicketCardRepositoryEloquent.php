@@ -60,6 +60,7 @@ class CustomerTicketCardRepositoryEloquent extends BaseRepository implements Cus
 
         $this->scopeQuery(function (CustomerTicketCard $customerTicketCard) use($status, $userId, $shoppingCartAmount) {
             return $customerTicketCard
+                ->with(['card'])
                 ->where(['customer_id' => $userId, 'status' => $status])
                 ->whereHas('card', function (Builder $query) use($shoppingCartAmount){
                     if($shoppingCartAmount) {

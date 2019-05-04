@@ -441,7 +441,7 @@ class ShoppingCartController extends Controller
             $deleteIds = [];
             if (isset($storeId) && $storeId){
                 /** @var ShoppingCart[]|Collection $shoppingCarts */
-                $shoppingCarts = $this->shoppingCartRepository->with(['shopMerchandise'])->findWhere([
+                $shoppingCarts = $this->shoppingCartRepository->with(['shop.merchandises'])->findWhere([
                     'shop_id' => $storeId,
                     'customer_id' => $user['id'],
                     'type' => $type
@@ -470,7 +470,7 @@ class ShoppingCartController extends Controller
 //                }
             }elseif(isset($activityId) && $activityId){
                 /** @var ShoppingCart[]|Collection $shoppingCarts */
-                $shoppingCarts = $this->shoppingCartRepository->with(['activityMerchandise'])->findWhere([
+                $shoppingCarts = $this->shoppingCartRepository->with(['activity.merchandises'])->findWhere([
                     'activity_id' => $activityId,
                     'customer_id' => $user['id'],
                     'type' => $type

@@ -42,6 +42,8 @@ class RoutesManagerServiceProvider extends ServiceProvider
 
     protected $request = null;
 
+    protected $www = '';
+
     /**
      * Bootstrap services.
      *
@@ -60,12 +62,13 @@ class RoutesManagerServiceProvider extends ServiceProvider
         if(preg_match(IP_REGEX, $this->host)) {
             exit('不能直接使用ip访问本站的！');
         }
-        list( $gateway, $prefix) = domainAndPrefix($this->request);
+        list( $www, $gateway, $prefix) = domainAndPrefix($this->request);
         $this->prefix  = $prefix;
         $this->gateway = $gateway;
+        $this->www = $www;
 
 
-        Log::info('api gateway ', [$this->gateway]);
+        Log::info('----------- api gateway -------------', [$this->gateway]);
         if(!$this->app->make('api.gateways')->has($this->gateway) && !$this->app->make('web.gateways')->has($this->gateway) && !$this->app->runningInConsole()) {
             throw new GatewayNotAllowed('网关错误');
         }
@@ -138,7 +141,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
             if($this->gateway === gateway($route['gateway']) && ($version === null || $version === $route['version'])) {
                 $prefix = isset($route['prefix']) ? $route['prefix'] : null ;
                 $auth = isset($route['auth']) ? $route['auth'] : null ;
-                $domain = $this->gateway;
+                $domain = $this->www.$this->gateway;
                 if(isset($route['provider']) && $route['provider']) {
                     $this->app->register($route['provider']);
                 }

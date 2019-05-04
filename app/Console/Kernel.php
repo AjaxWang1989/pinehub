@@ -2,9 +2,11 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AdvertisementValidCheckCommand;
 use App\Console\Commands\BroadcastEventCommand;
 use App\Console\Commands\Console\TestMakeCommand;
 use App\Console\Commands\CustomerTicketRefreshStatusCommand;
+use App\Console\Commands\ExecuteSqlFilesCommand;
 use App\Console\Commands\HashEncrypt;
 use App\Console\Commands\JWTGenerateCommand;
 use App\Console\Commands\ModelsCommand;
@@ -78,7 +80,9 @@ class Kernel extends ConsoleKernel
         TicketRefreshStatusCommand::class,
         CustomerTicketRefreshStatusCommand::class,
         OrderUpdateStatusCommand::class,
-        BroadcastEventCommand::class
+        BroadcastEventCommand::class,
+        AdvertisementValidCheckCommand::class,
+        ExecuteSqlFilesCommand::class
     ];
 
     /**
@@ -91,9 +95,10 @@ class Kernel extends ConsoleKernel
     {
         //
         Log::debug('schedule start');
-        $schedule->command('wechat.access.token:refresh')->dailyAt('00:00');
-        $schedule->command('refresh:ticket')->dailyAt('00:00');
-        $schedule->command('refresh:customer_ticket')->dailyAt('00:00');
+        $schedule->command('wechat.access.token:refresh')->dailyAt('00:00')->runInBackground();
+        $schedule->command('refresh:ticket')->everyMinute()->runInBackground();
+        $schedule->command('refresh:customer_ticket')->everyMinute()->runInBackground();
+        $schedule->command('advertisement:check')->everyMinute()->runInBackground();
         Log::debug('schedule end');
     }
 }

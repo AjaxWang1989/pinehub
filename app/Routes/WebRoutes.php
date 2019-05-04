@@ -55,6 +55,13 @@ class WebRoutes extends Routes
     {
         tap($router, function (Router $router) {
             $router->addRoute(['GET', 'POST'], '/{server}/serve', 'Wechat\MessageServerController@serve');
+            $router->addRoute('GET', 'pay/{id}', function () {
+                exit('payment url');
+            });
+
+            $router->addRoute('GET', 'ticket/receive/{id}', function () {
+                exit('ticket receive url');
+            });
         });
 
     }

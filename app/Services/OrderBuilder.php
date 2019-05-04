@@ -225,14 +225,17 @@ class OrderBuilder implements InterfaceServiceHandler
     protected function updateStockNum() {
          collect($this->updateStockNumSqlContainer['sku'])->map(function ( $sku) {
               /**@var SKUProduct $sku**/
-             $sku->save();
+             $result = $sku->save();
          });
 
         collect($this->updateStockNumSqlContainer['merchandise'])->map(function ($merchandise) {
                 /**
                  * @var  ActivityMerchandise|ShopMerchandise|Merchandise $merchandise
                  */
-                $merchandise->save();
+                $result  = $merchandise->save();
+
+                Log::debug("------- merchandise update stock -------\n",
+                    [$result, $merchandise->only(['id', 'stock_num', 'sell_num']), get_class($merchandise), $merchandise->name]);
         });
     }
 
@@ -248,13 +251,17 @@ class OrderBuilder implements InterfaceServiceHandler
                 if($orderItem['activity_id']) {
                     $repository = app()->make(ActivityMerchandiseRepository::class);
                     $product = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
-                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
+                        return $merchandise->with('merchandise')
+                            ->whereActivityId($orderItem['activity_id'])
+                            ->whereProductId($orderItem['sku_product_id']);
                     })->first();
 
                 }elseif($orderItem['shop_id']) {
                     $repository = app()->make(ShopProductRepository::class);
                     $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
-                        return $merchandise->with('merchandise')->whereProductId($orderItem['sku_product_id']);
+                        return $merchandise->with('merchandise')
+                            ->whereShopId($orderItem['shop_id'])
+                            ->whereProductId($orderItem['sku_product_id']);
                     })->first();
                 }else{
                     $repository =$this->skuProduct->with('merchandise');
@@ -272,12 +279,16 @@ class OrderBuilder implements InterfaceServiceHandler
                 if($orderItem['activity_id']) {
                     $repository = app()->make(ActivityMerchandiseRepository::class);
                     $goods = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use($orderItem){
-                        return $merchandise->with('merchandise')->whereMerchandiseId($orderItem['merchandise_id']);
+                        return $merchandise->with('merchandise')
+                            ->whereActivityId($orderItem['activity_id'])
+                            ->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
                 }elseif($orderItem['shop_id']) {
                     $repository = app()->make(ShopMerchandiseRepository::class);
                     $goods = $repository->scopeQuery(function (ShopMerchandise $merchandise) use($orderItem){
-                        return $merchandise->with('merchandise')->whereMerchandiseId($orderItem['merchandise_id']);
+                        return $merchandise->with('merchandise')
+                            ->whereShopId($orderItem['shop_id'])
+                            ->whereMerchandiseId($orderItem['merchandise_id']);
                     })->first();
                 }else{
                     $repository = $this->merchandise;
@@ -352,7 +363,7 @@ class OrderBuilder implements InterfaceServiceHandler
                 'quality' => 'SKU库存不足'
             ]));
         }
-        Log::info('order item SKUProduct/Merchandise', [$model]);
+        Log::info('order item SKUProduct/Merchandise', $model->only(['id', 'code', 'stock_num', 'sell_num', 'name']));
 
         if ($model instanceof ShopMerchandise || $model instanceof ShopProduct || $model instanceof ActivityMerchandise) {
             $sellPrice = $model->merchandise->sellPrice;
@@ -386,6 +397,7 @@ class OrderBuilder implements InterfaceServiceHandler
             $this->skuProduct($model, $quality);
             $this->merchandise($model->merchandise, $quality);
         }else {
+            Log::debug("---------- build order item $model->id ------------\n", $model->only(['id', 'code', 'stock_num', 'sell_num', 'name']));
             $this->merchandise($model, $quality);
         }
         $data['quality'] = $quality;
@@ -438,14 +450,17 @@ class OrderBuilder implements InterfaceServiceHandler
      * @param int $quality
      * */
     protected function merchandise($model, int $quality){
-        $merchandise = isset($this->updateStockNumSqlContainer['merchandise'][$model->code]) ?
-            $this->updateStockNumSqlContainer['merchandise'][$model->code] : null;
+        $key = get_class($model).'-'.$model->id;
+        $merchandise = isset($this->updateStockNumSqlContainer['merchandise'][$key])
+        && $this->updateStockNumSqlContainer['merchandise'][$key]?
+            $this->updateStockNumSqlContainer['merchandise'][$key] : null;
         if(!$merchandise) {
-            $this->updateStockNumSqlContainer['merchandise'][$model->code] = $model;
+            $this->updateStockNumSqlContainer['merchandise'][$key] = $model;
             $merchandise = $model;
         }
         $merchandise->stockNum -= $quality;
         $merchandise->sellNum += $quality;
-        Log::debug('-------- merchandise --------------',[get_class($merchandise), $model->toArray()]);
+        Log::debug("========= change merchandise stock num, merchandise name $merchandise->name===========\n",
+            $merchandise->only(['id', 'stock_num', 'sell_num', 'name', 'code']));
     }
 }

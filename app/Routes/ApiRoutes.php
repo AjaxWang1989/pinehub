@@ -45,7 +45,9 @@ class ApiRoutes extends Routes
 
         $this->router->version($this->version, $second, function (Router $router){
             $self = $this;
-
+            $router->options('*', function () {
+                return 'options';
+            });
             $router->any('/', function (Request $request) use ($self){
                 return 'web api version '.$self->version.', host domain '.$request->getHost();
             });
