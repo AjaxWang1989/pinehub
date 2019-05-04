@@ -34,6 +34,7 @@ class ConfigServiceProvider extends ServiceProvider
             'laravel-baidu-speech'
                  ] as $name){
             laravelToLumen($this->app)->configure($name);
+            var_dump(config('cache'));exit();
         }
     }
 }
