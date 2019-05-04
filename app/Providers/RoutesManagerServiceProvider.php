@@ -145,7 +145,7 @@ class RoutesManagerServiceProvider extends ServiceProvider
                 if(isset($route['provider']) && $route['provider']) {
                     $this->app->register($route['provider']);
                 }
-                Log::debug('------- router class --------', $route);
+                Log::debug('------- router class --------', [$route['gateway'], app('request')->path()]);
                 if($auth){
                     $routes = new $route['router']($this->app, $route['version'], $route['namespace'], $prefix, $domain, $auth);
                 }else{
