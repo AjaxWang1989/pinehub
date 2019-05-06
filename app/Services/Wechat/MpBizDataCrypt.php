@@ -69,6 +69,7 @@ class MpBizDataCrypt
         $data = json_decode($result, true);
         $data['session_key'] = $this->sessionKey;
         $data['app_id'] = $this->app->id;
+        $data['unionId'] = $data['unionId'] ?? '';
         return [self::OK, $data];
     }
 }
