@@ -285,11 +285,6 @@ class OrderController extends Controller
         $order['wechat_app_id'] = $user->platformAppId;
         $order['customer_id'] = $user->id;
         $order['open_id'] = $user->platformOpenId;
-        $order['app_id'] = $user->appId;
-        $order['member_id'] = $user->memberId;
-        $order['wechat_app_id'] = $user->platformAppId;
-        $order['customer_id'] = $user->id;
-        $order['open_id'] = $user->platformOpenId;
     }
 
     /**

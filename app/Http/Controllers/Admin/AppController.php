@@ -131,7 +131,7 @@ class AppController extends Controller
             $project = $miniProject->app;
         }else{
             $miniProject = $this->miniProgramRepository->create($request->all());
-            $app->currentApp->miniAppId = $miniProject->id;
+            $app->currentApp->miniAppId = $miniProject->appId;
             $app->currentApp->save();
             $project = $app->currentApp;
         }
