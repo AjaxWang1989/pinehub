@@ -26,9 +26,9 @@ class CreateRechargeableCardsTable extends Migration
             $table->unsignedTinyInteger('discount')->default(100)->comment('卡种享受购买折扣（百分比）');
             $table->unsignedTinyInteger('card_type')->comment('卡种');
             $table->unsignedTinyInteger('type')->comment('卡种期限类型');
-
+            $table->string('unit', 5)->comment('时间单位');
             $table->integer('count')->comment('有限期数量，结合时间单位');
-            $table->json('usage_scenarios')->default([SCENARIO_ALL])->comment('使用场景，默认全场通用');
+            $table->json('usage_scenarios')->comment('使用场景，默认全场通用');
             $table->time('specified_start')->nullable()->default(null)->comment('特定时段开始/天');
             $table->time('specified_end')->nullable()->default(null)->comment('特定时段结束/天');
             $table->unsignedTinyInteger('status')->default(0)->comment('卡种状态，0=>暂未上架,11=>上架,12=>优惠,21=>删除');
