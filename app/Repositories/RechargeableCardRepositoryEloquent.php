@@ -2,11 +2,10 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
-use App\Repositories\RechargeableCardRepository;
 use App\Entities\RechargeableCard;
-use App\Validators\RechargeableCardValidator;
+use App\Validators\Admin\RechargeableCardValidator;
+use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class RechargeableCardRepositoryEloquent.
@@ -26,10 +25,10 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
     }
 
     /**
-    * Specify Validator class name
-    *
-    * @return mixed
-    */
+     * Specify Validator class name
+     *
+     * @return mixed
+     */
     public function validator()
     {
 
@@ -44,5 +43,5 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
-    
+
 }

@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Ali\Oauth\AliOauthServiceProvider;
-use App\Entities\User;
+use App\Entities\RechargeableCard;
 use App\Entities\Role;
+use App\Entities\User;
 use App\Http\Middleware\Cross;
+use App\Observers\RechargeableCardObserver;
 use App\Providers\LumenIdeHelperServiceProvider as IdeHelperServiceProvider;
 use App\Services\AppManager;
 use App\Services\FileService;
@@ -20,30 +22,27 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
 use Illuminate\Queue\Events\Looping;
-use Illuminate\Queue\QueueManager;
-use Illuminate\Support\Facades\{
-    Broadcast, DB, Log, Validator
-};
+use Illuminate\Support\Facades\{DB, Log, Validator};
 use Illuminate\Support\ServiceProvider;
 use Jacobcyl\AliOSS\AliOssServiceProvider;
 use Laravel\Lumen\Application;
 use Mpociot\ApiDoc\ApiDocGeneratorServiceProvider;
-use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
-use Prettus\Repository\Providers\RepositoryServiceProvider;
 use Overtrue\LaravelWeChat\ServiceProvider as WechatLumenServiceProvider;
+use Prettus\Repository\Providers\RepositoryServiceProvider;
+use SimpleSoftwareIO\QrCode\QrCodeServiceProvider;
 
 
 class AppServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        if($this->app->environment() !== "production" && !$this->app->runningInConsole()){
-            DB::listen(function (QueryExecuted $event){
-                Log::debug($event->time.':'.$event->sql, $event->bindings);
+        if ($this->app->environment() !== "production" && !$this->app->runningInConsole()) {
+            DB::listen(function (QueryExecuted $event) {
+                Log::debug($event->time . ':' . $event->sql, $event->bindings);
             });
         }
 
-        $this->app->singleton('file',function (Application $app) {
+        $this->app->singleton('file', function (Application $app) {
             return $app->make(FileService::class);
         });
 
@@ -51,11 +50,10 @@ class AppServiceProvider extends ServiceProvider
             return $this->app['filesystem'];
         });
 
-        Validator::extend('not_exists', function($attribute, $value, $parameters)
-        {
+        Validator::extend('not_exists', function ($attribute, $value, $parameters) {
             return DB::table($parameters[0])
                     ->where($parameters[1], '=', $value)
-                    ->count()<1;
+                    ->count() < 1;
         });
 
         Validator::extend('file_exist', function ($attribute, $value, $parameters) {
@@ -74,8 +72,8 @@ class AppServiceProvider extends ServiceProvider
             $user = User::with('roles')->where($attribute, $value)->first();
             $roles = [];
             foreach ($parameters as $key => $value) {
-                if(property_exists(Role::class, $value)) {
-                    $role = eval(Role::class.$value);
+                if (property_exists(Role::class, $value)) {
+                    $role = eval(Role::class . $value);
                     $roles[] = $role;
                 } else {
                     return false;
@@ -108,7 +106,10 @@ class AppServiceProvider extends ServiceProvider
             Log::info('queue stopping');
         });
 
+        RechargeableCard::observe(RechargeableCardObserver::class);
+
     }
+
     /**
      * Register any application services.
      *
@@ -117,7 +118,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
-        $this->app->singleton(Request::class, function (){
+        $this->app->singleton(Request::class, function () {
             return Request::capture();
         });
         laravelToLumen($this->app)->middleware(Cross::class);
@@ -141,7 +142,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->register(LaravelSServiceProvider::class);
         $this->app->register(QueueServiceProvider::class);
 
-        if($this->app->runningInConsole()) {
+        if ($this->app->runningInConsole()) {
 //            $this->app->register(\EchoServer\BroadcastServerServiceProvider::class);
         }
     }

@@ -15,7 +15,7 @@ class RechargeableCardPresenter extends FractalPresenter
     /**
      * Transformer
      *
-     * @return \League\Fractal\TransformerAbstract
+     * @return RechargeableCardTransformer
      */
     public function getTransformer()
     {
