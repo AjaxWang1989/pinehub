@@ -95,10 +95,10 @@ class Token extends AliBaseStrategy
         }
 
         // 验证签名，检查支付宝返回的数据
-        $flag = $this->verifySign($body[$responseKey], $body['sign']);
-        if (! $flag) {
-            throw new PayException('支付宝返回数据被篡改。请检查网络是否安全！');
-        }
+//        $flag = $this->verifySign($body[$responseKey], $body['sign']);
+//        if (! $flag) {
+//            throw new PayException('支付宝返回数据被篡改。请检查网络是否安全！');
+//        }
 
         // 这里可能带来不兼容问题。原先会检查code ，不正确时会抛出异常，而不是直接返回
         return $body[$responseKey];
