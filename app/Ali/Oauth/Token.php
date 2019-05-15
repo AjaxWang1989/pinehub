@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Log;
 use Payment\Common\Ali\AliBaseStrategy;
 use Payment\Common\PayException;
 use Payment\Utils\ArrayUtil;
+use Payment\Utils\Rsa2Encrypt;
+use Payment\Utils\RsaEncrypt;
 
 class Token extends AliBaseStrategy
 {
