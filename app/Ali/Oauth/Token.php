@@ -88,12 +88,12 @@ class Token extends AliBaseStrategy
         } catch (\InvalidArgumentException $e) {
             throw new PayException('返回数据 json 解析失败');
         }
-
+        Log::debug('----------- ali token -----------', $body);
         $responseKey = str_ireplace('.', '_', $this->config->method) . '_response';
         if (! isset($body[$responseKey])) {
             throw new PayException('支付宝系统故障或非法请求');
         }
-        Log::debug('----------- ali token -----------', $body);
+
         // 验证签名，检查支付宝返回的数据
         $flag = $this->verifySign($body[$responseKey], $body['sign']);
         if (! $flag) {
