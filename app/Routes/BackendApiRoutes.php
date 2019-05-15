@@ -146,7 +146,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->post('advertisement', ['as' => 'advertisement.create', 'uses' => 'AdvertisementController@store']);
                 $router->put('advertisement/{id}', ['as' => 'advertisement.update', 'uses' => 'AdvertisementController@update']);
 
-                $router->group(["prefix" => "wechat", "namespace" => "Wechat"], function ($router) {
+                $router->group(['prefix' => 'wechat', 'namespace' => 'Wechat'], function ($router) {
                     /**
                      * @var LumenRouter|DingoRouter $router
                      * */
@@ -211,6 +211,14 @@ class BackendApiRoutes extends ApiRoutes
                         // Just for test : fetch templates data
                         $router->get('list/test', ['uses' => 'WxTemplateMessageController@templatesTest']);
                     });
+                });
+
+                $router->group(['prefix' => 'rechargeable_cards'], function (Router $router) {
+                    $router->get('/', ['as' => 'rechargeable_card.list', 'uses' => 'RechargeableCardController@index']);
+                    $router->get('/{id:[0-9]+}', ['as' => 'rechargeable_card.detail', 'uses' => 'RechargeableCardController@show']);
+                    $router->post('/', ['as' => 'rechargeable_card.create', 'uses' => 'RechargeableCardController@store']);
+                    $router->put('/{id}', ['as' => 'rechargeable_card.update', 'uses' => 'RechargeableCardController@update']);
+                    $router->delete('/{id}', ['as' => 'rechargeable_card.delete', 'uses' => 'RechargeableCardController@delete']);
                 });
             });
 

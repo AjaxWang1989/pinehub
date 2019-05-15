@@ -2,19 +2,17 @@
 
 namespace App\Entities;
 
-use Dingo\Blueprint\Annotation\Member;
-use Illuminate\Database\Eloquent\Builder;
+use App\Entities\Traits\ModelAttributesAccess;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Laravel\Lumen\Auth\Authorizable;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-use Illuminate\Auth\Authenticatable;
-use Laravel\Lumen\Auth\Authorizable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use App\Entities\Traits\ModelAttributesAccess;
 
 /**
  * App\Entities\User
@@ -86,7 +84,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
 {
     use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
 
-    const FREEZE_ACCOUNT    = 0;
+    const FREEZE_ACCOUNT = 0;
     const ACTIVATED_ACCOUNT = 1;
     const WAIT_AUTH_ACCOUNT = 2;
 
@@ -106,9 +104,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
      * @var array
      */
     protected $fillable = [
-        'app_id','mobile','user_name','nickname','real_name','password','sex','avatar','city','province',
-        'country','can_use_score','score','total_score','vip_level','last_login_at','status','order_count',
-        'channel','register_channel','tags','mobile_company','balance'
+        'app_id', 'mobile', 'user_name', 'nickname', 'real_name', 'password', 'sex', 'avatar', 'city', 'province',
+        'country', 'can_use_score', 'score', 'total_score', 'vip_level', 'last_login_at', 'status', 'order_count',
+        'channel', 'register_channel', 'tags', 'mobile_company', 'balance'
     ];
 
     /**
@@ -120,25 +118,25 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         'password',
     ];
 
-    public function roles() : BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id')
             ->withTimestamps();
     }
 
-    public function apps() : BelongsToMany
+    public function apps(): BelongsToMany
     {
         return $this->belongsToMany(App::class, 'app_users', 'user_id', 'app_id');
     }
 
-    public function customers() : HasMany
+    public function customers(): HasMany
     {
         return $this->hasMany(Customer::class, 'member_id', 'id');
     }
 
-    public function orders() : HasMany
+    public function orders(): HasMany
     {
-        return $this->hasMany(Order::class,'member_id','id');
+        return $this->hasMany(Order::class, 'member_id', 'id');
     }
 
     /**
@@ -147,7 +145,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function officialAccountCustomer()
     {
         return $this->customers ? $this->customers->where('type',
-            'WECHAT_OFFICIAL_ACCOUNT')->first( ) : null;
+            'WECHAT_OFFICIAL_ACCOUNT')->first() : null;
     }
 
     /**
@@ -156,7 +154,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function miniProgramCustomer()
     {
         return $this->customers ? $this->customers->where('type',
-            'WECHAT_MINI_PROGRAM')->first( ) : null;
+            'WECHAT_MINI_PROGRAM')->first() : null;
     }
 
     public function memberCard(): HasOne
@@ -167,9 +165,21 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     public function ordersNum()
     {
         $count = 0;
-        foreach ($this->customers as $customer){
+        foreach ($this->customers as $customer) {
             $count += $customer->orders->count();
         }
         return $count;
+    }
+
+    // 用户持有卡种
+    public function rechargeableCards()
+    {
+        return $this->belongsToMany(RechargeableCard::class)->using(UserRechargeableCard::class);
+    }
+
+    // 用户卡种购买记录
+    public function rechargeRecords()
+    {
+        return $this->belongsToMany(Order::class)->using(UserRechargeableCard::class);
     }
 }

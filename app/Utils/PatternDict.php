@@ -245,7 +245,7 @@ define('SCENARIO_MERGE_PAY', 1);
 define('SCENARIO_NEIGHBOR', 2);
 define('SCENARIO_BOOK_MARKET', 3);
 define('TICKET_SCENARIOS', [
-    SCENARIO_ALL_NUM => '通用场景',
+    SCENARIO_ALL_NUM => '全场通用',
     SCENARIO_MERGE_PAY => '聚合支付',
     SCENARIO_NEIGHBOR => '邻里优鲜',
     SCENARIO_BOOK_MARKET => '预定商场',
