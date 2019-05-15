@@ -118,7 +118,7 @@ class Token extends AliBaseStrategy
     {
         $data = ArrayUtil::arraySort($data);
         $preStr = \GuzzleHttp\json_encode($data, JSON_UNESCAPED_UNICODE);// 主要是为了解决中文问题
-        Log::debug('--------------- config -------------', $this->config);
+        Log::debug('--------------- config -------------', [$this->config->rsaAliPubKey]);
         if ($this->config->signType === 'RSA') {// 使用RSA
             $rsa = new RsaEncrypt($this->config->rsaAliPubKey);
 
