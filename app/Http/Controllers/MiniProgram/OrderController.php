@@ -167,7 +167,7 @@ class OrderController extends Controller
             //跟微信打交道生成预支付订单
             if ($type === 'wx') {
                 $result = app('wechat')->unify($order, $order->wechatAppId, app('tymon.jwt.auth')->getToken());
-                Log::info("------- unify result ------\n", $result);
+                Log::info("------- unify result ------\n", [$result, $order->wechatAppId]);
                 $order->prepayId = $result['prepay_id'];
                 $order->payType = Order::WECHAT_PAY;
                 $order->save();
