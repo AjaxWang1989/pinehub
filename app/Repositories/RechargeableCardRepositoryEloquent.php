@@ -14,6 +14,10 @@ use Prettus\Repository\Eloquent\BaseRepository;
  */
 class RechargeableCardRepositoryEloquent extends BaseRepository implements RechargeableCardRepository
 {
+    protected $fieldSearchable = [
+        'status' => '='
+    ];
+
     /**
      * Specify Model class name
      *

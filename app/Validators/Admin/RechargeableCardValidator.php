@@ -35,8 +35,8 @@ class RechargeableCardValidator extends LaravelValidator
             'usage_scenarios' => 'required|array',
             'status' => 'nullable|integer|in:' . RechargeableCard::STATUS_DEFINED_ONLY . ',' . RechargeableCard::STATUS_ON
                 . ',' . RechargeableCard::STATUS_PREFERENTIAL . ',' . RechargeableCard::STATUS_OFF,
-            'specified_start' => 'nullable|date',
-            'specified_end' => 'nullable|date',
+            'specified_start' => 'nullable|string',
+            'specified_end' => 'nullable|string',
         ],
         ValidatorInterface::RULE_UPDATE => [],
     ];

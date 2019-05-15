@@ -46,7 +46,7 @@ class RechargeableCardController extends Controller
 
         $this->repository->pushCriteria(app(SearchRequestCriteria::class));
 
-        $rechargeableCards = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
+        $rechargeableCards = $this->repository->orderBy('created_at', 'desc')->paginate($request->input('limit', PAGE_LIMIT));
 
         return $this->response()->paginator($rechargeableCards, new RechargeableCardTransformer);
     }
@@ -77,14 +77,14 @@ class RechargeableCardController extends Controller
         return $this->response()->item($rechargeableCard, new RechargeableCardTransformer);
     }
 
-    /** 修改 仅允许修改 推荐位/优惠态/排序
+    /** 修改 仅允许修改 推荐位/优惠态/排序/状态
      * @param Request $request
      * @param int $id
      * @return Response
      */
     public function update(Request $request, int $id)
     {
-        $postData = $request->only(['is_recommend', 'on_sale', 'sort']);
+        $postData = $request->only(['is_recommend', 'on_sale', 'sort', 'status']);
 
         try {
             $this->validator->with($postData)->passesOrFail(ValidatorInterface::RULE_UPDATE);
@@ -97,10 +97,13 @@ class RechargeableCardController extends Controller
     }
 
     /** 删除
-     *
+     * @param int $id
+     * @return Response
      */
-    public function delete()
+    public function delete(int $id)
     {
+        $this->repository->delete($id);
 
+        return $this->response()->noContent();
     }
 }

@@ -91,9 +91,7 @@ class RechargeableCard extends Model
     ];
 
     protected $dates = [
-        'deleted_at',
-        'specified_start',
-        'specified_end'
+        'deleted_at'
     ];
 
     public $moneyFields = ['price', 'amount', 'preferential_price', 'auto_renew_price'];
