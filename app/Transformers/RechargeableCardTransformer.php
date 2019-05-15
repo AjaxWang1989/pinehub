@@ -27,6 +27,7 @@ class RechargeableCardTransformer extends TransformerAbstract
             'preferential_price' => $rechargeableCard->preferentialPrice,// 优惠价格
             'auto_renew_price' => $rechargeableCard->autoRenewPrice,// 自动续费价格
             'on_sale' => $rechargeableCard->onSale,// 是否优惠
+            'is_recommend' => $rechargeableCard->isRecommend,
             'discount' => $rechargeableCard->discount,// 卡内折扣
             'card_type' => $rechargeableCard->cardType,
             'card_type_desc' => $rechargeableCard->cardTypeDesc,
