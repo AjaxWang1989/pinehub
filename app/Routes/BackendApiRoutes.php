@@ -129,6 +129,7 @@ class BackendApiRoutes extends ApiRoutes
 
                 $router->group(['prefix' => 'categories'], function (Router $router) {
                     $router->get('/', ['as' => 'category.list', 'uses' => 'CategoriesController@index']);
+                    $router->get('/all', ['as' => 'category.all', 'uses' => 'CategoriesController@all']);
                     $router->get('/{id:[0-9]+}', ['as' => 'category.show', 'uses' => 'CategoriesController@show']);
                     $router->get('/key', ['as' => 'category.showByKey', 'uses' => 'CategoriesController@showByKey']);
                     $router->post('/', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);

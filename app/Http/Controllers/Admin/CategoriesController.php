@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\CategoryCriteria;
+use App\Criteria\Admin\SearchRequestCriteria;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryCreateRequest;
 use App\Http\Requests\Admin\CategoryUpdateRequest;
@@ -48,9 +49,23 @@ class CategoriesController extends Controller
     public function index(Request $request)
     {
         $this->repository->pushCriteria(CategoryCriteria::class);
+
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
+
         $categories = $this->repository->paginate($request->input('limit', PAGE_LIMIT));
 
         return $this->response()->paginator($categories, new CategoryItemTransformer());
+    }
+
+    public function all()
+    {
+        $this->repository->pushCriteria(CategoryCriteria::class);
+
+        $this->repository->pushCriteria(SearchRequestCriteria::class);
+
+        $categories = $this->repository->all();
+
+        return $this->response()->collection($categories, new CategoryTransformer());
     }
 
     /**

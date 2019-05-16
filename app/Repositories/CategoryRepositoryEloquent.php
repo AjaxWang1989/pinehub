@@ -2,12 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Criteria\Admin\CategoryCriteria;
-use App\Services\AppManager;
-use Prettus\Repository\Eloquent\BaseRepository;
-use Prettus\Repository\Criteria\RequestCriteria;
 use App\Entities\Category;
 use App\Validators\CategoryValidator;
+use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
  * Class CategoryRepositoryEloquent.
@@ -17,8 +14,10 @@ use App\Validators\CategoryValidator;
 class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepository
 {
     protected $fieldSearchable = [
-        'app_id' => '='
+        'app_id' => '=',
+        'key' => '='
     ];
+
     /**
      * Specify Model class name
      *
@@ -29,7 +28,6 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
         return Category::class;
     }
 
-    
 
     /**
      * Boot up the repository, pushing criteria
@@ -38,5 +36,5 @@ class CategoryRepositoryEloquent extends BaseRepository implements CategoryRepos
     public function boot()
     {
     }
-    
+
 }

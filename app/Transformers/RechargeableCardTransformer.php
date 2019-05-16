@@ -12,6 +12,10 @@ use League\Fractal\TransformerAbstract;
 
 class RechargeableCardTransformer extends TransformerAbstract
 {
+    protected $defaultIncludes = [
+        'category'
+    ];
+
     protected $availableIncludes = [
         'giftTickets'
     ];
@@ -51,5 +55,13 @@ class RechargeableCardTransformer extends TransformerAbstract
         $giftTickets = $rechargeableCard->giftTickets;
 
         return $this->collection($giftTickets, new TicketItemTransformer);
+    }
+
+    // 产品类别
+    public function includeCategory(RechargeableCard $rechargeableCard)
+    {
+        $category = $rechargeableCard->category;
+
+        return $this->item($category, new CategoryTransformer);
     }
 }

@@ -11,6 +11,7 @@ use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -20,6 +21,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property string $name 卡种名称
+ * @property int $categoryId 产品类别
  * @property int $amount 卡内金额（分）
  * @property int $price 售价（分）
  * @property int $preferentialPrice 优惠价格（分）
@@ -44,6 +46,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $createdAt
  * @property Carbon|null $updatedAt
  * @property-read Collection|Ticket[] $giftTickets
+ * @property-read Category|null $category
  * @method static bool|null forceDelete()
  * @method static Builder|RechargeableCard newModelQuery()
  * @method static Builder|RechargeableCard newQuery()
@@ -59,6 +62,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|RechargeableCard whereDiscount($value)
  * @method static Builder|RechargeableCard whereId($value)
  * @method static Builder|RechargeableCard whereIsRecommend($value)
+ * @method Static Builder|RechargeableCard whereCategoryId($value)
  * @method static Builder|RechargeableCard whereName($value)
  * @method static Builder|RechargeableCard whereOnSale($value)
  * @method static Builder|RechargeableCard wherePreferentialPrice($value)
@@ -80,7 +84,7 @@ class RechargeableCard extends Model
     use SoftDeletes, ModelAttributesAccess;
 
     protected $fillable = [
-        'name', 'amount', 'price', 'preferential_price', 'auto_renew_price', 'on_sale', 'is_recommend', 'discount', 'card_type', 'type', 'unit', 'count',
+        'name', 'category_id', 'amount', 'price', 'preferential_price', 'auto_renew_price', 'on_sale', 'is_recommend', 'discount', 'card_type', 'type', 'unit', 'count',
         'usage_scenarios', 'status', 'specified_start', 'specified_end', 'sort'
     ];
 
@@ -141,6 +145,12 @@ class RechargeableCard extends Model
     public function giftTickets(): BelongsToMany
     {
         return $this->belongsToMany(Ticket::class, 'rechargeable_card_tickets', 'rechargeable_card_id', 'ticket_id');
+    }
+
+    // 产品类别
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 
     // 卡种中文描述

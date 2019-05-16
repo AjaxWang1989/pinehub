@@ -18,6 +18,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string|null $appId 系统app id
  * @property string $icon 图标
  * @property string $name 分类名称
+ * @property string $key 分类标识key
  * @property int $parentId 分类父级
  * @property \Illuminate\Support\Carbon|null $createdAt
  * @property \Illuminate\Support\Carbon|null $updatedAt
@@ -28,6 +29,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereAppId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereKey($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereIcon($value)
