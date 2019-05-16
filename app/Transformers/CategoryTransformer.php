@@ -2,8 +2,8 @@
 
 namespace App\Transformers;
 
-use League\Fractal\TransformerAbstract;
 use App\Entities\Category;
+use League\Fractal\TransformerAbstract;
 
 /**
  * Class CategoryTransformer.
@@ -15,19 +15,19 @@ class CategoryTransformer extends TransformerAbstract
     /**
      * Transform the Category entity.
      *
-     * @param \App\Entities\Category $model
+     * @param Category $model
      *
      * @return array
      */
     public function transform(Category $model)
     {
         return [
-            'id'         => (int) $model->id,
+            'id' => (int)$model->id,
             /* place your other model properties here */
             'name' => $model->name,
             'icon' => $model->icon,
-            'created_at' => $model->createdAt,
-            'updated_at' => $model->updatedAt
+            'created_at' => (string)$model->createdAt,
+            'updated_at' => (string)$model->updatedAt
         ];
     }
 }

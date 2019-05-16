@@ -46,7 +46,18 @@ class Category extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['app_id', 'icon', 'name', 'parent_id'];
+    protected $fillable = ['app_id', 'icon', 'name', 'key', 'parent_id'];
+
+    // 预定义 key
+    const KEY_VIRTUAL = 'virtual';
+    const KEY_DEPOSIT_CARD = 'deposit_card';
+    const KEY_DEPOSIT_CARD_GENERAL = 'deposit_card_general';
+    const KEY_DEPOSIT_CARD_USER = 'deposit_card_user';
+    const KEY_DEPOSIT_CARD_MERCHANT = 'deposit_card_merchant';
+    const KEY_DISCOUNT_CARD = 'discount_card';
+    const KEY_DISCOUNT_CARD_GENERAL = 'discount_card_general';
+    const KEY_DISCOUNT_CARD_USER = 'discount_card_user';
+    const KEY_DISCOUNT_CARD_MERCHANT = 'discount_card_merchant';
 
     public static function boot()
     {
@@ -57,23 +68,23 @@ class Category extends Model implements Transformable
         });
     }
 
-    public function children() : HasMany
+    public function children(): HasMany
     {
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
 
-    public function parent() : BelongsTo
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'parent_id', 'id');
     }
 
-    public function merchandises() : BelongsToMany
+    public function merchandises(): BelongsToMany
     {
         return $this->belongsToMany(Merchandise::class, 'merchandise_categories',
             'category_id', 'merchandise_id');
     }
 
-    public function shopMerchandises() : BelongsToMany
+    public function shopMerchandises(): BelongsToMany
     {
         return $this->belongsToMany(ShopMerchandise::class, 'merchandise_categories',
             'category_id', 'merchandise_id');

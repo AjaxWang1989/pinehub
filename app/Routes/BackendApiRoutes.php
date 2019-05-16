@@ -127,9 +127,12 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('new/merchandise/activity/{activityId}/merchandises', ['as' => 'new-merchandise-activity-merchandises', 'uses' => 'NewMerchandiseActivityController@merchandises']);
                 $router->delete('new/merchandise/{id}/activity', ['as' => 'delete-merchandise-activity-merchandises', 'uses' => 'NewMerchandiseActivityController@removeMerchandise']);
 
-
-                $router->get('categories', ['as' => 'categories.list', 'uses' => 'CategoriesController@index']);
-                $router->post('category', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);
+                $router->group(['prefix' => 'categories'], function (Router $router) {
+                    $router->get('/', ['as' => 'category.list', 'uses' => 'CategoriesController@index']);
+                    $router->get('/{id:[0-9]+}', ['as' => 'category.show', 'uses' => 'CategoriesController@show']);
+                    $router->get('/key', ['as' => 'category.showByKey', 'uses' => 'CategoriesController@showByKey']);
+                    $router->post('/', ['as' => 'category.create', 'uses' => 'CategoriesController@store']);
+                });
 
                 $router->get('merchandises', ['as' => 'merchandises.list', 'uses' => 'MerchandisesController@index']);
                 $router->post('merchandise', ['as' => 'merchandise.create', 'uses' => 'MerchandisesController@store']);

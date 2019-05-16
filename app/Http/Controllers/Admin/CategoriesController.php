@@ -3,17 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\CategoryCriteria;
-use App\Http\Response\JsonResponse;
-
-use App\Services\AppManager;
-use Dingo\Api\Http\Request;
-use Exception;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\CategoryCreateRequest;
 use App\Http\Requests\Admin\CategoryUpdateRequest;
-use App\Transformers\CategoryTransformer;
-use App\Transformers\CategoryItemTransformer;
+use App\Http\Response\JsonResponse;
 use App\Repositories\CategoryRepository;
-use App\Http\Controllers\Controller;
+use App\Transformers\CategoryItemTransformer;
+use App\Transformers\CategoryTransformer;
+use Dingo\Api\Http\Request;
+use Exception;
+use http\Exception\InvalidArgumentException;
+use Illuminate\Http\Response;
 
 /**
  * Class CategoriesController.
@@ -43,7 +43,7 @@ class CategoriesController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -56,9 +56,9 @@ class CategoriesController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  CategoryCreateRequest $request
+     * @param CategoryCreateRequest $request
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @throws Exception
      */
@@ -71,9 +71,9 @@ class CategoriesController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show($id)
     {
@@ -88,11 +88,28 @@ class CategoriesController extends Controller
     }
 
     /**
+     * Get single resource by specified key.(Key is unique in database.)
+     * @param Request $request
+     * @return Response
+     */
+    public function showByKey(Request $request)
+    {
+        if (!$request->has('key')) {
+            throw  new InvalidArgumentException('缺失必要参数key');
+        }
+        $key = $request->get('key');
+
+        $category = $this->repository->findByField('key', $key);
+
+        return $this->response()->item($category, new CategoryTransformer);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -104,37 +121,37 @@ class CategoriesController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  CategoryUpdateRequest $request
-     * @param  string            $id
+     * @param CategoryUpdateRequest $request
+     * @param string $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      *
      * @throws Exception
      */
     public function update(CategoryUpdateRequest $request, $id)
     {
-       $category = $this->repository->update($request->all(), $id);
+        $category = $this->repository->update($request->all(), $id);
 
-       $response = [
-           'message' => 'Category updated.',
-           'data'    => $category->toArray(),
-       ];
+        $response = [
+            'message' => 'Category updated.',
+            'data' => $category->toArray(),
+        ];
 
-       if ($request->wantsJson()) {
+        if ($request->wantsJson()) {
 
-           return $this->response()->item($category, new CategoryTransformer());
-       }
+            return $this->response()->item($category, new CategoryTransformer());
+        }
 
-       return redirect()->back()->with('message', $response['message']);
+        return redirect()->back()->with('message', $response['message']);
     }
 
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
