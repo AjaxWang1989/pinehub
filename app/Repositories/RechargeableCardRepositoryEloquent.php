@@ -68,4 +68,15 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
     {
         // TODO: Implement getList() method.
     }
+
+    /**
+     * 用户购买卡片
+     * @param Customer $customer 小程序用户
+     * @param RechargeableCard $rechargeableCard 被购买卡片
+     * @return mixed
+     */
+    public function buy(Customer $customer, RechargeableCard $rechargeableCard)
+    {
+        // TODO: Implement buy() method.
+    }
 }

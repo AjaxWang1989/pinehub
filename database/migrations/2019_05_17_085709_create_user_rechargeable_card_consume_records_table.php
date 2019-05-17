@@ -30,7 +30,7 @@ class CreateUserRechargeableCardConsumeRecordsTable extends Migration
             $table->timestamps();
         });
 
-        DB::statement("alter table `rechargeable_cards` comment '用户卡片消费记录'");
+        DB::statement("alter table `user_rechargeable_card_consume_records` comment '用户卡片消费记录'");
     }
 
     /**
