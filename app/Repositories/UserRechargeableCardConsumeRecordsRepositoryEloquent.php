@@ -2,17 +2,17 @@
 
 namespace App\Repositories;
 
-use App\Entities\UserRechargeableCardConsumeRecords;
-use App\Validators\UserRechargeableCardConsumeRecordsValidator;
+use App\Entities\UserRechargeableCardConsumeRecord;
+use App\Validators\UserRechargeableCardConsumeRecordValidator;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
- * Class UserRechargeableCardConsumeRecordsRepositoryEloquent.
+ * Class UserRechargeableCardConsumeRecordRepositoryEloquent.
  *
  * @package namespace App\Repositories;
  */
-class UserRechargeableCardConsumeRecordsRepositoryEloquent extends BaseRepository implements UserRechargeableCardConsumeRecordsRepository
+class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository implements UserRechargeableCardConsumeRecordRepository
 {
     /**
      * Specify Model class name
@@ -21,7 +21,7 @@ class UserRechargeableCardConsumeRecordsRepositoryEloquent extends BaseRepositor
      */
     public function model()
     {
-        return UserRechargeableCardConsumeRecords::class;
+        return UserRechargeableCardConsumeRecord::class;
     }
 
     /**
@@ -32,7 +32,7 @@ class UserRechargeableCardConsumeRecordsRepositoryEloquent extends BaseRepositor
     public function validator()
     {
 
-        return UserRechargeableCardConsumeRecordsValidator::class;
+        return UserRechargeableCardConsumeRecordValidator::class;
     }
 
 

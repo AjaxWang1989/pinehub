@@ -6,11 +6,11 @@ use Prettus\Validator\Contracts\ValidatorInterface;
 use Prettus\Validator\LaravelValidator;
 
 /**
- * Class UserRechargeableCardConsumeRecordsValidator.
+ * Class UserRechargeableCardConsumeRecordValidator.
  *
  * @package namespace App\Validators;
  */
-class UserRechargeableCardConsumeRecordsValidator extends LaravelValidator
+class UserRechargeableCardConsumeRecordValidator extends LaravelValidator
 {
     /**
      * Validation Rules

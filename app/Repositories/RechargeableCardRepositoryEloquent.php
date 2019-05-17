@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Entities\Customer;
 use App\Entities\RechargeableCard;
+use App\Entities\UserRechargeableCard;
 use App\Validators\Admin\RechargeableCardValidator;
 use Illuminate\Database\Eloquent\Collection;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -73,9 +74,9 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
      * 用户购买卡片
      * @param Customer $customer 小程序用户
      * @param RechargeableCard $rechargeableCard 被购买卡片
-     * @return mixed
+     * @return UserRechargeableCard 返回购买记录
      */
-    public function buy(Customer $customer, RechargeableCard $rechargeableCard)
+    public function buy(Customer $customer, RechargeableCard $rechargeableCard): UserRechargeableCard
     {
         // TODO: Implement buy() method.
     }

@@ -8,7 +8,7 @@
 namespace App\Http\Controllers\MiniProgram;
 
 use App\Repositories\AppRepository;
-use App\Repositories\UserRechargeableCardConsumeRecordsRepository;
+use App\Repositories\UserRechargeableCardConsumeRecordRepository;
 use Dingo\Api\Http\Request;
 
 /**
@@ -20,7 +20,7 @@ class UserRechargeableCardConsumeRecordController extends Controller
 {
     private $repository;
 
-    public function __construct(Request $request, AppRepository $appRepository, UserRechargeableCardConsumeRecordsRepository $repository)
+    public function __construct(Request $request, AppRepository $appRepository, UserRechargeableCardConsumeRecordRepository $repository)
     {
         $this->repository = $repository;
         parent::__construct($request, $appRepository);

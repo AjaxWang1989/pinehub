@@ -46,17 +46,39 @@ class RechargeableCardController extends Controller
         return $this->response()->collection($rechargeableCards, new RechargeableCardTransformer);
     }
 
-    /**
-     * 购买卡片
-     * @param Request $request
-     * @param int $id 被购买卡片的ID
-     */
-    public function buy(Request $request, int $id)
-    {
-        $user = $this->mpUser();
-
-        $rechargeableCard = $this->repository->find($id);
-
-        $this->repository->buy($user, $rechargeableCard);
-    }
+//    /**
+//     * 购买卡片
+//     * @param int $id 被购买卡片的ID
+//     * @return Response
+//     */
+//    public function buy(int $id)
+//    {
+//        $user = $this->mpUser();
+//
+//        $rechargeableCard = $this->repository->find($id);
+//
+//        $userRechargeableCard = $this->repository->buy($user, $rechargeableCard);
+//
+//        return $this->response()->item($userRechargeableCard, new UserRechargeableCardTransformer);
+//    }
+//
+//    /**
+//     * 卡片余额消费
+//     * @param Request $request
+//     * @return Response
+//     */
+//    public function consume(Request $request)
+//    {
+//        $user = $this->mpUser();
+//
+//        if (!$request->has('amount')) {
+//            throw new InvalidArgumentException('缺少实际消费金额');
+//        }
+//
+//        $amount = $request->input('amount');
+//
+//        $consumeRecord = $this->repository->consume($user, $amount);
+//
+//        return $this->response()->item($consumeRecord, new UserRechargeableCardConsumeRecord);
+//    }
 }

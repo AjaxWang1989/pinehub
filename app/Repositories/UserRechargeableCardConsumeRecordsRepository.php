@@ -5,11 +5,11 @@ namespace App\Repositories;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
- * Interface UserRechargeableCardConsumeRecordsRepository.
+ * Interface UserRechargeableCardConsumeRecordRepository.
  *
  * @package namespace App\Repositories;
  */
-interface UserRechargeableCardConsumeRecordsRepository extends RepositoryInterface
+interface UserRechargeableCardConsumeRecordRepository extends RepositoryInterface
 {
     //
 }

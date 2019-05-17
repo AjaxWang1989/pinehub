@@ -20,9 +20,10 @@ use Illuminate\Support\Carbon;
  * @property int $rechargeableCardId 卡种ID
  * @property int $orderId 订单ID
  * @property int $amount 卡内余额，初始值为卡内设定余额，逾期不可用
- * @property Carbon $invalidAt 卡种失效时间
+ * @property Carbon|null $invalidAt 卡种失效时间
  * @property bool $isAutoRenew 是否自动续费，默认否
- * @property int $status 用户持有卡种状态 1=>有效 2=>失效
+ * @property int $status 用户持有卡种状态 1=>有效 2=>失效 3=>已自动失效
+ * @property-read string $statusDesc
  * @property Carbon|null $createdAt
  * @property Carbon|null $updatedAt
  * @property-read Order $order
@@ -61,6 +62,15 @@ class UserRechargeableCard extends Model
 
     protected $dates = ['invalid_at'];
 
+    const STATUS_VALID = 1;
+    const STATUS_INVALID = 2;
+    const STATUS_AUTO_INVALID = 3;
+    const STATUS = [
+        self::STATUS_VALID => '有效',
+        self::STATUS_INVALID => '失效',
+        self::STATUS_AUTO_INVALID => '自动失效'
+    ];
+
     // 所属订单
     public function order()
     {
@@ -71,5 +81,10 @@ class UserRechargeableCard extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getStatusDescAttribute()
+    {
+        return self::STATUS[$this->status];
     }
 }
