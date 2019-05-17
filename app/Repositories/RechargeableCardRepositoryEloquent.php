@@ -15,7 +15,15 @@ use Prettus\Repository\Eloquent\BaseRepository;
 class RechargeableCardRepositoryEloquent extends BaseRepository implements RechargeableCardRepository
 {
     protected $fieldSearchable = [
-        'status' => '='
+        'status' => '=',
+        'price' => 'between',
+        'discount' => 'between',
+        'category_id' => '=',
+        'card_type' => '=',
+        'type' => '=',
+        'on_sale' => '=',
+        'is_recommend' => '=',
+        'name' => 'like'
     ];
 
     /**

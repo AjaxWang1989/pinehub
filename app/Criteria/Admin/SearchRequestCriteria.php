@@ -236,6 +236,22 @@ class SearchRequestCriteria implements CriteriaInterface
                     $query->where($key, $operator, "%{$value}%");
                     break;
                 }
+            case 'between':
+                {
+                    if ($value === null || !is_array($value) || count($value) < 2) {
+                        return $query;
+                    }
+                    if (is_numeric($value[0]) && is_numeric($value[1])) {
+                        $query->whereBetween($key, $value);
+                    } else if (!is_numeric($value[0]) && !is_numeric($value[1])) {
+                        return $query;
+                    } else if (!is_numeric($value[0])) {
+                        $query->where($key, '<=', $value[1]);
+                    } else {
+                        $query->where($key, '>=', $value[0]);
+                    }
+                    break;
+                }
         }
         return $query;
     }
