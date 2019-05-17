@@ -2,8 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Entities\Customer;
 use App\Entities\RechargeableCard;
 use App\Validators\Admin\RechargeableCardValidator;
+use Illuminate\Database\Eloquent\Collection;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 
@@ -56,4 +58,14 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    /**
+     * 卡片列表
+     * @param Customer $customer 小程序用户
+     * @param array $conditions 查询条件
+     * @return Collection 查询结果 不分页
+     */
+    public function getList(Customer $customer, array $conditions): Collection
+    {
+        // TODO: Implement getList() method.
+    }
 }
