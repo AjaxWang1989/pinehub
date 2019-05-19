@@ -17,6 +17,8 @@ class RechargeableCardTransformer extends TransformerAbstract
         return [
             'id' => $rechargeableCard->id,
             'name' => $rechargeableCard->name,
+            'merchandise_id' => $rechargeableCard->merchandiseId,
+            'category_id' => $rechargeableCard->categoryId,
             'price' => (double)$rechargeableCard->price / 100,
             'amount' => (double)$rechargeableCard->amount / 100,
             'on_sale' => $rechargeableCard->onSale,
