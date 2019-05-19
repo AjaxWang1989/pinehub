@@ -9,6 +9,7 @@ namespace App\Http\Controllers\MiniProgram;
 
 use App\Repositories\AppRepository;
 use App\Repositories\RechargeableCardRepository;
+use App\Transformers\Mp\RechargeableCardTransformer;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 
@@ -37,6 +38,11 @@ class RechargeableCardController extends Controller
 
         $result = $this->repository->getList($user, $params);
 
-        return $this->response($result);
+        $response = $this->response->collection($result['rechargeableCards'], new RechargeableCardTransformer);
+        if (isset($result['data'])) {
+            $response->addMeta('balance', $result['balance']);
+        }
+
+        return $response;
     }
 }
