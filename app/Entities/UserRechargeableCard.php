@@ -32,6 +32,7 @@ use Illuminate\Support\Carbon;
  * @property-read Order $order 订单
  * @property-read User $user 会员
  * @property-read Customer $customer 用户
+ * @property-read RechargeableCard $rechargeableCard
  * @method static bool|null forceDelete()
  * @method static Builder|UserRechargeableCard newModelQuery()
  * @method static Builder|UserRechargeableCard newQuery()
@@ -93,6 +94,11 @@ class UserRechargeableCard extends Model
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
+    }
+
+    public function rechargeableCard(): BelongsTo
+    {
+        return $this->belongsTo(RechargeableCard::class, 'rechargeable_card_id');
     }
 
     // 状态中文描述

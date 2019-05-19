@@ -95,10 +95,10 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             /** @var Collection $userRechargeableCards */
             $userRechargeableCards = $user->rechargeableCards()->wherePivot('status', '=', 1)
                 ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
-            /** @var RechargeableCard $userRechargeableCard */
             $limitCard = false;
             $unLimitCard = false;
             $today = Carbon::now()->startOfDay();
+            /** @var RechargeableCard $userRechargeableCard */
             foreach ($userRechargeableCards as $userRechargeableCard) {
                 // 累加有效余额---一张无限期卡余额&一张当前有效卡余额
                 /** @var UserRechargeableCard $pivot */
@@ -117,22 +117,31 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
 
             $priceDisparity = $amount - $balance;// 差价，基于差价选择推荐卡种
 
-            $rechargeableCards = $this->scopeQuery(function (RechargeableCard $rechargeableCard) use ($priceDisparity, $cardType) {
-                // 选择卡种：卡内金额大于等于差价
-                return $rechargeableCard->active()->where(function (Builder $query) use ($priceDisparity, $cardType) {
+            $rechargeableCards = $this->scopeQuery(function (RechargeableCard $rechargeableCard) use ($priceDisparity, $cardType, $unLimitCard) {
+                /*
+                 * 选择卡种：卡内金额大于等于差价 且 唯一性无限期储值
+                 */
+                return $rechargeableCard->active()->where(function (Builder $query) use ($priceDisparity, $cardType, $unLimitCard) {
                     if ($priceDisparity >= 0) {
                         $query->where('amount', '>=', $priceDisparity);
                     }
                     if ($cardType) {
                         $query->where('card_type', $cardType);
                     }
+                    if ($unLimitCard) {
+                        $query->where('type', '<>', RechargeableCard::TYPE_INDEFINITE);
+                    }
                 });
             })->all();
         } else {
-            $rechargeableCards = $this->scopeQuery(function (RechargeableCard $rechargeableCard) use ($cardType) {
-                return $rechargeableCard->active()->where(function (Builder $query) use ($cardType) {
+            $indefiniteCard = $customer->indefiniteRechargeCardRecords()->where('status', '=', UserRechargeableCard::STATUS_VALID)->first();
+            $rechargeableCards = $this->scopeQuery(function (RechargeableCard $rechargeableCard) use ($cardType, $indefiniteCard) {
+                return $rechargeableCard->active()->where(function (Builder $query) use ($cardType, $indefiniteCard) {
                     if ($cardType) {
                         $query->where('card_type', $cardType);
+                    }
+                    if ($indefiniteCard) {
+                        $query->where('type', '<>', RechargeableCard::TYPE_INDEFINITE);
                     }
                 });
             })->all();

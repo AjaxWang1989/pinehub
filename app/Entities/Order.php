@@ -147,8 +147,8 @@ class Order extends Model implements Transformable
 
     const UNKOWN_PAY = 0;
     const ALI_PAY = 1;
-
     const WECHAT_PAY = 2;
+    const BALANCE_PAY = 3;
 
     // 取货方式
     const NOT_NEED_PICK_UP_METHOD = 0;
@@ -488,6 +488,9 @@ class Order extends Model implements Transformable
                 break;
             case self::ALI_PAY:
                 return '支付宝支付';
+                break;
+            case self::BALANCE_PAY:
+                return '余额支付';
                 break;
             case self::UNKOWN_PAY:
                 return '其他支付方式';

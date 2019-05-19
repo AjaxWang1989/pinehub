@@ -4,6 +4,7 @@ namespace App\Entities;
 
 use App\Entities\Traits\JsonQuery;
 use App\Entities\Traits\ModelAttributesAccess;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -36,27 +37,27 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\App|null $app
  * @property-read \App\Entities\CardConditions|null $condition
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\CustomerTicketCard[] $records
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAliAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereBeginAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardInfo($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCardType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card wherePlatform($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereEndAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereIssueCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereSyncStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereSync($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereUserGetCount($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Card whereWechatAppId($value)
+ * @method static Builder|Card newQuery()
+ * @method static Builder|Card query()
+ * @method static Builder|Card whereAliAppId($value)
+ * @method static Builder|Card whereAppId($value)
+ * @method static Builder|Card whereBeginAt($value)
+ * @method static Builder|Card whereCardId($value)
+ * @method static Builder|Card whereCardInfo($value)
+ * @method static Builder|Card whereCardType($value)
+ * @method static Builder|Card whereCode($value)
+ * @method static Builder|Card wherePlatform($value)
+ * @method static Builder|Card whereCreatedAt($value)
+ * @method static Builder|Card whereDeletedAt($value)
+ * @method static Builder|Card whereEndAt($value)
+ * @method static Builder|Card whereId($value)
+ * @method static Builder|Card whereIssueCount($value)
+ * @method static Builder|Card whereSyncStatus($value)
+ * @method static Builder|Card whereStatus($value)
+ * @method static Builder|Card whereSync($value)
+ * @method static Builder|Card whereUpdatedAt($value)
+ * @method static Builder|Card whereUserGetCount($value)
+ * @method static Builder|Card whereWechatAppId($value)
  * @mixin \Eloquent
  */
 class Card extends Model implements Transformable

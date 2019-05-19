@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Prettus\Repository\Contracts\Transformable;
@@ -22,15 +23,15 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read Order $order 所属订单
  * @property-read User $user 所属用户
  * @property-read RechargeableCard $rechargeableCard 关联卡片
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereCustomerId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereRechargeableCardId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord query()
+ * @method static Builder|UserRechargeableCardConsumeRecord whereId($value)
+ * @method static Builder|UserRechargeableCardConsumeRecord whereUserId($value)
+ * @method static Builder|UserRechargeableCardConsumeRecord whereCustomerId($value)
+ * @method static Builder|UserRechargeableCardConsumeRecord whereOrderId($value)
+ * @method static Builder|UserRechargeableCardConsumeRecord whereType($value)
+ * @method static Builder|UserRechargeableCardConsumeRecord whereRechargeableCardId($value)
+ * @method static Builder|UserRechargeableCardConsumeRecord newModelQuery()
+ * @method static Builder|UserRechargeableCardConsumeRecord newQuery()
+ * @method static Builder|UserRechargeableCardConsumeRecord query()
  * @mixin \Eloquent
  */
 class UserRechargeableCardConsumeRecord extends Model implements Transformable

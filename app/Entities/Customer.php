@@ -183,6 +183,17 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
             'user_rechargeable_cards', 'customer_id', 'rechargeable_card_id');
     }
 
+    // 用户持有卡种记录，如剩余金额，有效期等
+    public function rechargeableCardRecords(): HasMany
+    {
+        return $this->hasMany(UserRechargeableCard::class, 'customer_id', 'id');
+    }
+
+    public function indefiniteRechargeCardRecords(): HasMany
+    {
+        return $this->rechargeableCardRecords()->whereNull('invalid_at');
+    }
+
     // 用户卡种购买记录
     public function rechargeRecords(): BelongsToMany
     {

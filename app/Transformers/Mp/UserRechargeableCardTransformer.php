@@ -21,6 +21,7 @@ class UserRechargeableCardTransformer extends TransformerAbstract
             'order_id' => $rechargeableCard->orderId,
             'rechargeable_card_id' => $rechargeableCard->rechargeableCardId,
             'amount' => $rechargeableCard->amount,
+            'valid_at' => (string)$rechargeableCard->validAt,
             'invalid_at' => (string)$rechargeableCard->invalidAt,
             'is_auto_renew' => (bool)$rechargeableCard->isAutoRenew,
             'status' => $rechargeableCard->status,
