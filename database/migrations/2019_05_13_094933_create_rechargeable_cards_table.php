@@ -19,6 +19,7 @@ class CreateRechargeableCardsTable extends Migration
 
             $table->string('name', 20)->comment('卡种名称');
             $table->unsignedInteger('category_id')->comment('产品类别');
+            $table->unsignedInteger('merchandise_id')->comment('产品ID');
             $table->unsignedInteger('amount')->default(0)->comment('卡内金额（分）');
             $table->unsignedInteger('price')->comment('售价（分）');
             $table->unsignedInteger('preferential_price')->comment('优惠价格（分）');

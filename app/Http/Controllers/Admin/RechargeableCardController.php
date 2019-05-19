@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\SearchRequestCriteria;
+use App\Entities\Merchandise;
+use App\Entities\RechargeableCard;
 use App\Exceptions\HttpValidationException;
 use App\Http\Controllers\Controller;
+use App\Repositories\MerchandiseRepository;
 use App\Repositories\RechargeableCardRepository;
 use App\Transformers\RechargeableCardTransformer;
 use App\Validators\Admin\RechargeableCardValidator;
@@ -61,14 +64,32 @@ class RechargeableCardController extends Controller
 
     /** 新建
      * @param Request $request
+     * @param MerchandiseRepository $merchandiseRepository
      * @return Response
      */
-    public function store(Request $request)
+    public function store(Request $request, MerchandiseRepository $merchandiseRepository)
     {
         $postData = $request->post();
 
         try {
             $this->validator->with($postData)->passesOrFail(ValidatorInterface::RULE_CREATE);
+            $merchandiseData = [
+                'name' => $postData['name'],
+                'main_image' => '',
+                'images' => '',
+                'preview' => '',
+                'detail' => '',
+                'origin_price' => $postData['price'],
+                'sell_price' => $postData['price'],
+                'cost_price' => $postData['price'],
+                'factory_price' => $postData['price'],
+                'status' => in_array($postData['status'], [RechargeableCard::STATUS_ON, RechargeableCard::STATUS_PREFERENTIAL]) ? 1 : 0,
+            ];
+            $merchandise = $merchandiseRepository->create($merchandiseData);
+            tap($merchandise, function (Merchandise $merchandise) use ($postData) {
+                $merchandise->categories()->sync([$postData['category_id']]);
+            });
+            $postData['merchandise_id'] = $merchandise->id;
             $rechargeableCard = $this->repository->create($postData);
         } catch (ValidatorException $exception) {
             throw new HttpValidationException($exception->getMessageBag());

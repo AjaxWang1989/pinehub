@@ -34,11 +34,9 @@ class RechargeableCardController extends Controller
         $params = $request->only(['amount', 'card_type']);
 
         $user = $this->mpUser();
-//        $user = app(Customer::class)->find(1);
 
         $result = $this->repository->getList($user, $params);
 
         return $this->response($result);
-//        return $this->response()->collection($result['rechargeableCards'], new RechargeableCardTransformer);
     }
 }

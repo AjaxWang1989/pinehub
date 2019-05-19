@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $name 卡种名称
  * @property int $categoryId 产品类别
+ * @property int $merchandiseId 产品ID
  * @property int $amount 卡内金额（分）
  * @property int $price 售价（分）
  * @property int $preferentialPrice 优惠价格（分）
@@ -56,6 +57,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|RechargeableCard whereAmount($value)
  * @method static Builder|RechargeableCard whereAutoRenewPrice($value)
  * @method static Builder|RechargeableCard whereCardType($value)
+ * @method static Builder|RechargeableCard whereMerchandiseId($value)
  * @method static Builder|RechargeableCard whereCount($value)
  * @method static Builder|RechargeableCard whereCreatedAt($value)
  * @method static Builder|RechargeableCard whereDeletedAt($value)
@@ -84,7 +86,7 @@ class RechargeableCard extends Model
     use SoftDeletes, ModelAttributesAccess;
 
     protected $fillable = [
-        'name', 'category_id', 'amount', 'price', 'preferential_price', 'auto_renew_price', 'on_sale', 'is_recommend', 'discount', 'card_type', 'type',
+        'name', 'category_id', 'merchandise_id', 'amount', 'price', 'preferential_price', 'auto_renew_price', 'on_sale', 'is_recommend', 'discount', 'card_type', 'type',
         'unit', 'count', 'usage_scenarios', 'status', 'specified_start', 'specified_end', 'sort'
     ];
 
@@ -156,6 +158,12 @@ class RechargeableCard extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    // 对应商品
+    public function merchandise(): BelongsTo
+    {
+        return $this->belongsTo(Merchandise::class, 'merchandise_id');
     }
 
     // 卡种中文描述
