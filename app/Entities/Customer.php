@@ -3,16 +3,17 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Hash;
+use Laravel\Lumen\Auth\Authorizable;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
-use Illuminate\Auth\Authenticatable;
-use Laravel\Lumen\Auth\Authorizable;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 /**
  * App\Entities\Customer
@@ -88,8 +89,6 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Customer whereUserType($value)
  * @mixin \Eloquent
- * @property string $userStatus 用户状态（Q/T/B/W）。 Q代表快速注册用户 T代表已认证用户 
- *             B代表被冻结账户 W代表已注册，未激活的账户
  */
 class Customer extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
@@ -144,7 +143,7 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         'tags'
     ];
 
-    public function member() : BelongsTo
+    public function member(): BelongsTo
     {
         return $this->belongsTo(Member::class, 'member_id', 'id');
     }
@@ -154,12 +153,12 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         return $this->belongsTo(App::class, 'app_id', 'id');
     }
 
-    public function orders() : HasMany
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class, 'customer_id', 'id');
     }
 
-    public function ticketRecords() : HasMany
+    public function ticketRecords(): HasMany
     {
         return $this->hasMany(CustomerTicketCard::class, 'customer_id', 'id');
     }
@@ -174,5 +173,21 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         $count = 0;
         $count += $this->orders->count();
         return $count;
+    }
+
+    // 用户持有的卡种
+    public function rechargeableCards(): BelongsToMany
+    {
+//        return $this->belongsToMany(RechargeableCard::class)->using(UserRechargeableCard::class);
+        return $this->belongsToMany(RechargeableCard::class,
+            'user_rechargeable_cards', 'customer_id', 'rechargeable_card_id');
+    }
+
+    // 用户卡种购买记录
+    public function rechargeRecords(): BelongsToMany
+    {
+//        return $this->belongsToMany(Order::class)->using(UserRechargeableCard::class);
+        return $this->belongsToMany(Order::class,
+            'user_rechargeable_cards', 'customer_id', 'order_id');
     }
 }

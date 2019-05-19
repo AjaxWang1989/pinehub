@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserRechargeableCardConsumeRecordTable extends Migration
+class UserRechargeableCardConsumeRecordsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,9 @@ class CreateUserRechargeableCardConsumeRecordTable extends Migration
         Schema::create('user_rechargeable_card_consume_records', function (Blueprint $table) {
             $table->increments('id');
 
-            $table->unsignedInteger('user_id')->comment('用户ID');
+            $table->unsignedInteger('user_id')->comment('用户会员ID');
+
+            $table->unsignedInteger('customer_id')->comment('用户ID');
 
             $table->unsignedInteger('order_id')->comment('订单ID');
 
@@ -40,6 +42,6 @@ class CreateUserRechargeableCardConsumeRecordTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_rechargeable_card_consume_records');
+        //
     }
 }

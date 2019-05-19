@@ -9,10 +9,8 @@ namespace App\Http\Controllers\MiniProgram;
 
 use App\Repositories\AppRepository;
 use App\Repositories\RechargeableCardRepository;
-use App\Transformers\Mp\RechargeableCardTransformer;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
-use http\Exception\InvalidArgumentException;
 
 class RechargeableCardController extends Controller
 {
@@ -33,52 +31,14 @@ class RechargeableCardController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->has('amount') && !$request->has('card_type')) {
-            throw new InvalidArgumentException();
-        }
-
         $params = $request->only(['amount', 'card_type']);
 
         $user = $this->mpUser();
+//        $user = app(Customer::class)->find(1);
 
-        $rechargeableCards = $this->repository->getList($user, $params);
+        $result = $this->repository->getList($user, $params);
 
-        return $this->response()->collection($rechargeableCards, new RechargeableCardTransformer);
+        return $this->response($result);
+//        return $this->response()->collection($result['rechargeableCards'], new RechargeableCardTransformer);
     }
-
-//    /**
-//     * 购买卡片
-//     * @param int $id 被购买卡片的ID
-//     * @return Response
-//     */
-//    public function buy(int $id)
-//    {
-//        $user = $this->mpUser();
-//
-//        $rechargeableCard = $this->repository->find($id);
-//
-//        $userRechargeableCard = $this->repository->buy($user, $rechargeableCard);
-//
-//        return $this->response()->item($userRechargeableCard, new UserRechargeableCardTransformer);
-//    }
-//
-//    /**
-//     * 卡片余额消费
-//     * @param Request $request
-//     * @return Response
-//     */
-//    public function consume(Request $request)
-//    {
-//        $user = $this->mpUser();
-//
-//        if (!$request->has('amount')) {
-//            throw new InvalidArgumentException('缺少实际消费金额');
-//        }
-//
-//        $amount = $request->input('amount');
-//
-//        $consumeRecord = $this->repository->consume($user, $amount);
-//
-//        return $this->response()->item($consumeRecord, new UserRechargeableCardConsumeRecord);
-//    }
 }

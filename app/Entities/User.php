@@ -49,6 +49,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\MemberCard $memberCard
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\RechargeableCard rechargeableCards 用户持有的卡片
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAppId($value)
@@ -171,15 +172,19 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
         return $count;
     }
 
-    // 用户持有卡种
-    public function rechargeableCards()
+    // 用户持有的卡种
+    public function rechargeableCards(): BelongsToMany
     {
-        return $this->belongsToMany(RechargeableCard::class)->using(UserRechargeableCard::class);
+//        return $this->belongsToMany(RechargeableCard::class)->using(UserRechargeableCard::class);
+        return $this->belongsToMany(RechargeableCard::class,
+            'user_rechargeable_cards', 'user_id', 'rechargeable_card_id');
     }
 
     // 用户卡种购买记录
-    public function rechargeRecords()
+    public function rechargeRecords(): BelongsToMany
     {
-        return $this->belongsToMany(Order::class)->using(UserRechargeableCard::class);
+//        return $this->belongsToMany(Order::class)->using(UserRechargeableCard::class);
+        return $this->belongsToMany(Order::class,
+            'user_rechargeable_cards', 'user_id', 'order_id');
     }
 }

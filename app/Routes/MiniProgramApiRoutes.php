@@ -121,6 +121,8 @@ class MiniProgramApiRoutes extends ApiRoutes
 
             $router->get('/advertisement/latest', ['as' => 'advertisements', 'uses' => 'AdvertisementController@getLatestAdvertisement']);
 
+            // 卡种
+            $router->get('/rechargeable_cards', ['uses' => 'RechargeableCardController@index']);
         });
 
         $router->addRoute(['GET', 'POST'], '/wechat/payment/notify/{token?}', [

@@ -84,8 +84,8 @@ class RechargeableCard extends Model
     use SoftDeletes, ModelAttributesAccess;
 
     protected $fillable = [
-        'name', 'category_id', 'amount', 'price', 'preferential_price', 'auto_renew_price', 'on_sale', 'is_recommend', 'discount', 'card_type', 'type', 'unit', 'count',
-        'usage_scenarios', 'status', 'specified_start', 'specified_end', 'sort'
+        'name', 'category_id', 'amount', 'price', 'preferential_price', 'auto_renew_price', 'on_sale', 'is_recommend', 'discount', 'card_type', 'type',
+        'unit', 'count', 'usage_scenarios', 'status', 'specified_start', 'specified_end', 'sort'
     ];
 
     protected $casts = [
@@ -140,6 +140,11 @@ class RechargeableCard extends Model
     const TIME_UNIT_MONTH = 'month';
     const TIME_UNIT_DAY = 'day';
     const TIME_UNIT_HOUR = 'hour';
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->whereIn('status', [self::STATUS_ON, self::STATUS_PREFERENTIAL]);
+    }
 
     // 附赠优惠券
     public function giftTickets(): BelongsToMany

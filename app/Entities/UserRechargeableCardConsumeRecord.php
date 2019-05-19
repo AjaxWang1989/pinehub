@@ -11,7 +11,8 @@ use Prettus\Repository\Traits\TransformableTrait;
 /**
  * App\Entities\UserRechargeableCardConsumeRecord
  * @property int id
- * @property int $userId 用户ID
+ * @property int $userId 用户会员ID
+ * @property int $customerId 用户ID
  * @property int $orderId 订单ID
  * @property int $rechargeableCardId 卡片ID
  * @property int $consume 消费金额，单位：分
@@ -21,6 +22,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read RechargeableCard $rechargeableCard 关联卡片
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereUserId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereCustomerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereOrderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord whereRechargeableCardId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\UserRechargeableCardConsumeRecord newModelQuery()
@@ -37,7 +39,7 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'order_id', 'rechargeable_card_id', 'consume', 'save'];
+    protected $fillable = ['user_id', 'customer_id', 'order_id', 'rechargeable_card_id', 'consume', 'save'];
 
     public function order(): BelongsTo
     {
@@ -47,6 +49,11 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     public function rechargeableCard(): BelongsTo
