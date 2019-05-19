@@ -39,7 +39,7 @@ class RechargeableCardController extends Controller
         $result = $this->repository->getList($user, $params);
 
         $response = $this->response->collection($result['rechargeableCards'], new RechargeableCardTransformer);
-        if (isset($result['data'])) {
+        if (isset($result['balance'])) {
             $response = $response->addMeta('balance', $result['balance']);
         }
 
