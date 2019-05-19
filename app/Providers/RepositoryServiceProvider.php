@@ -98,6 +98,8 @@ use App\Repositories\TicketTemplateMessageRepository;
 use App\Repositories\TicketTemplateMessageRepositoryEloquent;
 use App\Repositories\UserRechargeableCardConsumeRecordRepository;
 use App\Repositories\UserRechargeableCardConsumeRecordRepositoryEloquent;
+use App\Repositories\UserRechargeableCardRepository;
+use App\Repositories\UserRechargeableCardRepositoryEloquent;
 use App\Repositories\UserRepository;
 use App\Repositories\UserRepositoryEloquent;
 use App\Repositories\UserTemplateMessageRepository;
@@ -196,7 +198,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(WxTemplateMessageRepository::class, WxTemplateMessageRepositoryEloquent::class);
         $this->app->bind(RechargeableCardRepository::class, RechargeableCardRepositoryEloquent::class);
         $this->app->bind(UserRechargeableCardConsumeRecordRepository::class, UserRechargeableCardConsumeRecordRepositoryEloquent::class);
-
+        $this->app->bind(UserRechargeableCardRepository::class, UserRechargeableCardRepositoryEloquent::class);
         //:end-bindings:
     }
 }

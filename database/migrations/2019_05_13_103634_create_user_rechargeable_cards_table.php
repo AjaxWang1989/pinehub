@@ -22,7 +22,7 @@ class CreateUserRechargeableCardsTable extends Migration
             $table->unsignedInteger('order_id')->comment('订单ID');
             $table->unsignedInteger('amount')->comment('卡内余额，初始值为卡内设定余额，逾期不可用');
             $table->timestamp('valid_at')->comment('卡种生效时间');
-            $table->timestamp('invalid_at')->nullable()->comment('卡种失效时间');
+            $table->timestamp('invalid_at')->nullable()->default(null)->comment('卡种失效时间');
             $table->unsignedTinyInteger('is_auto_renew')->default(0)->comment('是否自动续费，默认否');
             $table->unsignedTinyInteger('status')->default(1)->comment('用户持有卡种状态 1=>有效 2=>失效');
 

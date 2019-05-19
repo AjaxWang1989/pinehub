@@ -8,6 +8,8 @@ use App\Events\CardCheckEvent;
 use App\Events\CardPayOrderEvent;
 use App\Events\CardSKURemindEvent;
 use App\Events\MemberCardActiveEvent;
+use App\Events\OrderCreateEvent;
+use App\Events\OrderPaidEvent;
 use App\Events\OrderPaidNoticeEvent;
 use App\Events\OrderScoreEvent;
 use App\Events\SyncMemberCardInfoEvent;
@@ -28,6 +30,8 @@ use App\Listeners\CardSKURemindEventListener;
 use App\Listeners\MemberCardActiveEventListener;
 use App\Listeners\OpenPlatformAuthorized;
 use App\Listeners\OpenPlatformUnauthorized;
+use App\Listeners\OrderCreateEventListener;
+use App\Listeners\OrderPaidEventListener;
 use App\Listeners\OrderPaidNoticeListener;
 use App\Listeners\OrderScoreListener;
 use App\Listeners\SyncMemberCardInfoEventListener;
@@ -39,7 +43,6 @@ use App\Listeners\UserDelCardEventListener;
 use App\Listeners\UserEnterOfficialAccountFromCardEventListener;
 use App\Listeners\UserGetCardEventListener;
 use App\Listeners\UserSendCardEventListener;
-use App\Listeners\UserUseCardToPayEventListener;
 use App\Listeners\UserViewMemberCardEventListener;
 use App\Listeners\VerifyTicketRefreshEventListener;
 use App\Listeners\WechatAuthAccessTokenRefreshListener;
@@ -64,6 +67,7 @@ class EventServiceProvider extends ServiceProvider
         WechatMenu::observe(WechatMenuObserver::class);
         parent::boot();
     }
+
     /**
      * The event listener mappings for the application.
      *
@@ -80,9 +84,9 @@ class EventServiceProvider extends ServiceProvider
             OpenPlatformUnauthorized::class
         ],
         UpdateAuthorized::class => [
-           OpenPlatformAuthorized::class
+            OpenPlatformAuthorized::class
         ],
-        VerifyTicketRefreshed::class =>[
+        VerifyTicketRefreshed::class => [
             VerifyTicketRefreshEventListener::class
         ],
         SyncMemberCardInfoEvent::class => [
@@ -132,6 +136,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderPaidNoticeEvent::class => [
             OrderPaidNoticeListener::class
+        ],
+        OrderPaidEvent::class => [
+            OrderPaidEventListener::class
+        ],
+        OrderCreateEvent::class => [
+            OrderCreateEventListener::class
         ]
     ];
 }

@@ -25,9 +25,9 @@ class UserRechargeableCardConsumeRecordsTable extends Migration
 
             $table->unsignedInteger('rechargeable_card_id')->comment('卡片ID');
 
-            $table->unsignedInteger('consume')->comment('消费金额，单位：分');
+            $table->unsignedInteger('consume')->default(0)->comment('消费金额，单位：分');
 
-            $table->unsignedInteger('save')->comment('节省金额，单位：分');
+            $table->unsignedInteger('save')->default(0)->comment('节省金额，单位：分');
 
             $table->timestamps();
         });
