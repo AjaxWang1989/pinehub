@@ -40,7 +40,7 @@ class RechargeableCardController extends Controller
 
         $response = $this->response->collection($result['rechargeableCards'], new RechargeableCardTransformer);
         if (isset($result['data'])) {
-            $response->addMeta('balance', $result['balance']);
+            $response = $response->addMeta('balance', $result['balance']);
         }
 
         return $response;
