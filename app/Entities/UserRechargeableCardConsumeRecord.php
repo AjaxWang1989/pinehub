@@ -16,6 +16,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $customerId 用户ID
  * @property int $orderId 订单ID
  * @property int $rechargeableCardId 卡片ID
+ * @property int $userRechargeableCardId
  * @property int $type 类型 1->充值 2->消费
  * @property-read string $typeDesc
  * @property int $consume 消费金额，单位：分
@@ -50,7 +51,8 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'customer_id', 'order_id', 'rechargeable_card_id', 'type', 'consume', 'save'];
+    protected $fillable = ['user_id', 'customer_id', 'order_id', 'rechargeable_card_id',
+        'user_rechargeable_card_id', 'type', 'consume', 'save'];
 
     // 订单
     public function order(): BelongsTo

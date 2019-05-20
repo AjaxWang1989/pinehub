@@ -9,7 +9,6 @@ use App\Validators\Admin\RechargeableCardValidator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -96,7 +95,6 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             /** @var Collection $userRechargeableCards */
             $userRechargeableCards = $user->rechargeableCards()->wherePivot('status', '=', 1)
                 ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
-            Log::info("用户持有卡片：", [$userRechargeableCards]);
             $limitCard = false;
             $unLimitCard = false;
             $today = Carbon::now();
@@ -104,12 +102,10 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             foreach ($userRechargeableCards as $userRechargeableCard) {
                 // 累加有效余额---一张无限期卡余额&一张当前有效卡余额
                 $pivot = $userRechargeableCard->pivot;
-                Log::info('pivot：', [$pivot]);
                 if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
-                    Log::info('有效期卡余额：', [$pivot->amount]);
                     $balance += $pivot->amount / 100;
                     $unLimitCard = true;
-                } else if (!$limitCard && $today->gte(Carbon::now($pivot->validAt)->startOfDay()) && $today->lte(Carbon::now($pivot->invalidAt)->startOfDay())) {
+                } else if (!$limitCard && $today->gte(Carbon::now($pivot['valid_at'])->startOfDay()) && $today->lte(Carbon::now($pivot['invalid_at'])->startOfDay())) {
                     $balance += $pivot->amount / 100;
                     $limitCard = true;
                 }

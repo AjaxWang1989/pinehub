@@ -180,7 +180,8 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
     {
 //        return $this->belongsToMany(RechargeableCard::class)->using(UserRechargeableCard::class);
         return $this->belongsToMany(RechargeableCard::class,
-            'user_rechargeable_cards', 'customer_id', 'rechargeable_card_id');
+            'user_rechargeable_cards', 'customer_id', 'rechargeable_card_id')
+            ->withPivot('id', 'amount', 'valid_at', 'invalid_at')->withTimestamps();
     }
 
     // 用户持有卡种记录，如剩余金额，有效期等

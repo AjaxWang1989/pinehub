@@ -8,8 +8,10 @@
 namespace App\Jobs;
 
 use App\Entities\Order;
+use App\Entities\UserRechargeableCard;
 use App\Repositories\OrderRepository;
 use App\Repositories\UserRechargeableCardConsumeRecordRepository;
+use App\Repositories\UserRechargeableCardRepository;
 
 /**
  * Class OrderBalancePaidRecord
@@ -32,7 +34,9 @@ class OrderBalancePaidRecordJob extends Job
         $this->consumeRecords = $consumeRecords;
     }
 
-    public function handle(OrderRepository $orderRepository, UserRechargeableCardConsumeRecordRepository $consumeRecordRepository)
+    public function handle(OrderRepository $orderRepository,
+                           UserRechargeableCardConsumeRecordRepository $consumeRecordRepository,
+                           UserRechargeableCardRepository $userRechargeableCardRepository)
     {
         /** @var Order $order */
         $order = $orderRepository->find($this->orderId);
@@ -41,6 +45,9 @@ class OrderBalancePaidRecordJob extends Job
             foreach ($this->consumeRecords as $consumeRecord) {
                 $consumeRecord['order_id'] = $this->orderId;
                 $consumeRecordRepository->create($consumeRecord);
+                /** @var UserRechargeableCard $userRechargeableCardRecord */
+                $userRechargeableCardRecord = $userRechargeableCardRepository->find($consumeRecord['user_rechargeable_card_id']);
+                $userRechargeableCardRecord->update(['amount' => $userRechargeableCardRecord->amount - $consumeRecord['consume']]);
             }
         }
     }
