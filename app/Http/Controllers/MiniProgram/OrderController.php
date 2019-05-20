@@ -285,7 +285,7 @@ class OrderController extends Controller
             $pivot = $rechargeableCard->pivot;
             if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
                 $unLimitCard = compact('pivot', 'rechargeableCard');
-            } else if (!$limitCard && $today->gte(Carbon::now($pivot['valid_at'])->startOfDay()) && $today->lte(Carbon::now($pivot['invalid_at'])->startOfDay())) {
+            } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
                 $limitCard = compact('pivot', 'rechargeableCard');
             }
             if ($limitCard && $unLimitCard) {

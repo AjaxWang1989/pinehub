@@ -105,7 +105,7 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
                 if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
                     $balance += $pivot->amount / 100;
                     $unLimitCard = true;
-                } else if (!$limitCard && $today->gte(Carbon::now($pivot['valid_at'])->startOfDay()) && $today->lte(Carbon::now($pivot['invalid_at'])->startOfDay())) {
+                } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
                     $balance += $pivot->amount / 100;
                     $limitCard = true;
                 }
