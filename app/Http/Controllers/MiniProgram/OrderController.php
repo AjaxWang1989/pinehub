@@ -327,7 +327,7 @@ class OrderController extends Controller
             foreach ($unLimitCard as $userRechargeableCard) {
                 $rechargeableCard = $userRechargeableCard->rechargeableCard;
                 $priceDisparity = $paymentAmount - $userRechargeableCard->amount / 100;
-                $saveRate = ($unLimitCard['rechargeableCard']->amount - $unLimitCard['rechargeableCard']->price) / $unLimitCard['rechargeableCard']->amount;
+                $saveRate = ($rechargeableCard->amount - $rechargeableCard->price) / $rechargeableCard->amount;
                 $consumeRecords[$i] = [
                     'user_id' => $user->memberId,
                     'customer_id' => $user->id,
