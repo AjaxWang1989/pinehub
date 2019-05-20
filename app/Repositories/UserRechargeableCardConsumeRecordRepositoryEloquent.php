@@ -3,7 +3,7 @@
 namespace App\Repositories;
 
 use App\Entities\UserRechargeableCardConsumeRecord;
-use App\Validators\UserRechargeableCardConsumeRecordValidator;
+use App\Validators\Admin\UserRechargeableCardConsumeRecordValidator;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 
