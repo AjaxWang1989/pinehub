@@ -39,9 +39,9 @@ use App\Repositories\ShoppingCartRepository;
 use App\Repositories\ShopRepository;
 use App\Transformers\Mp\OrderStoreBuffetTransformer;
 use App\Transformers\Mp\OrderStoreSendTransformer;
-use App\Transformers\Mp\OrderTransformer;
 use App\Transformers\Mp\StatusOrdersTransformer;
 use App\Transformers\Mp\StoreOrdersSummaryTransformer;
+use App\Transformers\OrderTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
@@ -189,6 +189,7 @@ class OrderController extends Controller
                 $order->save();
                 $job = (new OrderBalancePaidRecordJob($order->id, $consumeRecords))->delay(3);
                 dispatch($job);
+                return $this->response()->item($order, new OrderTransformer());
             } else {
                 /** @var AliChargeContext $charge */
                 $charge = app('mp.payment.ali.create');
