@@ -11,7 +11,6 @@ namespace App\Services;
 
 
 use App\Entities\Order;
-use App\Events\OrderPaidNoticeEvent;
 use App\Repositories\OrderRepositoryEloquent;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -31,17 +30,17 @@ class PaymentNotify implements PayNotifyInterface
      * @return boolean
      * @throws \Exception
      */
-    public function notifyProcess( array $data)
+    public function notifyProcess(array $data)
     {
         // TODO: Implement notifyProcess() method.
         Log::info('============wechat payment notify ============', $data);
         /** @var TYPE_NAME $exception */
-        try{
+        try {
             /** @var Order $order */
             $order = $this->order->findWhere(['code' => $data['order_no']])->first();
             $this->offLinePayOrder($order);
             $order->transactionId = $data['transaction_id'];
-            if($data['trade_state'] === 'success'){
+            if ($data['trade_state'] === 'success') {
                 $order->tradeStatus = Order::TRADE_SUCCESS;
                 $order->status = Order::PAID;
                 $order->paidAt = Carbon::now();
@@ -53,12 +52,12 @@ class PaymentNotify implements PayNotifyInterface
                 $order->status = Order::PAY_FAILED;
                 $order->tradeStatus = Order::TRADE_FAILED;
             }
-            tap($order, function (Order $order)use($data){
+            tap($order, function (Order $order) use ($data) {
                 $result = $order->save();
-                if($result) {
+                if ($result) {
                     //发送模版消息
-                    $orderData=[];
-                    if($order->type !== Order::OFF_LINE_PAYMENT_ORDER){
+                    $orderData = [];
+                    if ($order->type !== Order::OFF_LINE_PAYMENT_ORDER) {
                         $orderData['signed_at'] = $order->signedAt;
                         $orderData['consigned_at'] = $order->consignedAt;
                     }
@@ -67,7 +66,8 @@ class PaymentNotify implements PayNotifyInterface
                 }
             });
             return true;
-        }catch (\Exception $exception) {
+        } catch (\Exception $exception) {
+            Log::error('支付通知错误：', [$exception, $exception->getTraceAsString()]);
             return false;
         }
 
@@ -75,7 +75,7 @@ class PaymentNotify implements PayNotifyInterface
 
     protected function offLinePayOrder(Order &$order)
     {
-        if($order->type !== Order::OFF_LINE_PAYMENT_ORDER)
+        if ($order->type !== Order::OFF_LINE_PAYMENT_ORDER)
             return;
         $now = Carbon::now();
         $order->signedAt = $now;
