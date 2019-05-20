@@ -32,6 +32,7 @@ class OrderPaidEventListener
         if (count($rechargeableCards) <= 0) {
             return;
         }
+
         /**
          * 添加用户持有卡片记录
          */
@@ -42,11 +43,15 @@ class OrderPaidEventListener
                 $validAt = Carbon::now();
                 $invalidAt = null;
             } else {
+                /**
+                 * 用户拥有的有效有限期卡记录
+                 */
                 $userCards = $userRechargeableCardRepository->orderBy('id', 'desc')
-                    ->scopeQuery(function (UserRechargeableCard $userRechargeableCard) use ($order) {
-                        return $userRechargeableCard->where(function (Builder $query) use ($order) {
+                    ->scopeQuery(function (Builder $query) use ($order) {
+                        return $query->where(function (Builder $query) use ($order) {
                             $query->where('customer_id', $order->customerId)
-                                ->where('user_id', $order->memberId)->where('type', '<>', RechargeableCard::TYPE_INDEFINITE);
+                                ->where('user_id', $order->memberId)->where('type', '<>', RechargeableCard::TYPE_INDEFINITE)
+                                ->where('status', '=', UserRechargeableCard::STATUS_VALID);
                         });
                     })->all();
                 if (count($userCards) === 0) {
