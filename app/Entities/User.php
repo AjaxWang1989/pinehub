@@ -50,6 +50,8 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Order[] $orders
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Role[] $roles
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\RechargeableCard rechargeableCards 用户持有的卡片
+ * @property-read \Illuminate\Database\Eloquent\Builder|\App\Entities\User rechargeableCardRecords
+ * @property-read \Illuminate\Database\Eloquent\Builder|\App\Entities\User indefiniteRechargeCardRecords
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\User whereAppId($value)
@@ -180,10 +182,20 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
             ->withPivot('id', 'amount', 'valid_at', 'invalid_at')->withTimestamps();
     }
 
+    // 用户持有卡种记录，如剩余金额，有效期等
+    public function rechargeableCardRecords(): HasMany
+    {
+        return $this->hasMany(UserRechargeableCard::class, 'user_id', 'id');
+    }
+
+    public function indefiniteRechargeCardRecords(): HasMany
+    {
+        return $this->rechargeableCardRecords()->whereNull('invalid_at');
+    }
+
     // 用户卡种购买记录
     public function rechargeRecords(): BelongsToMany
     {
-//        return $this->belongsToMany(Order::class)->using(UserRechargeableCard::class);
         return $this->belongsToMany(Order::class,
             'user_rechargeable_cards', 'user_id', 'order_id');
     }

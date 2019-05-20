@@ -93,23 +93,40 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             // 可用余额
             // 用户持有的有效储蓄卡卡种
             /** @var Collection $userRechargeableCards */
-            $userRechargeableCards = $user->rechargeableCards()->wherePivot('status', '=', 1)
-                ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
+//            $userRechargeableCards = $user->rechargeableCards()->wherePivot('status', '=', 1)
+//                ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
+
+//            $limitCard = false;
+//            $today = Carbon::now();
+//            /** @var RechargeableCard $userRechargeableCard */
+//            foreach ($userRechargeableCards as $userRechargeableCard) {
+//                // 累加有效余额---无限期卡余额&(实际上至多一张)当前有效卡余额
+//                $pivot = $userRechargeableCard->pivot;
+//                if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
+//                    $balance += $pivot->amount / 100;
+//                    $unLimitCard = true;
+//                } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
+//                    $balance += $pivot->amount / 100;
+//                    $limitCard = true;
+//                }
+//            }
+
+            $userRechargeableCards = $user->rechargeableCardRecords()->with([
+                'rechargeableCard' => function (Builder $query) {
+                    $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
+                }
+            ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
+
             $limitCard = false;
             $today = Carbon::now();
-            /** @var RechargeableCard $userRechargeableCard */
+            /** @var UserRechargeableCard $userRechargeableCard */
             foreach ($userRechargeableCards as $userRechargeableCard) {
-                // 累加有效余额---无限期卡余额&(实际上至多一张)当前有效卡余额
-                $pivot = $userRechargeableCard->pivot;
-                if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
-                    $balance += $pivot->amount / 100;
-                    $unLimitCard = true;
-                } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
-                    $balance += $pivot->amount / 100;
+                $rechargeableCard = $userRechargeableCard->rechargeableCard;
+                if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
+                    $balance += $userRechargeableCard->amount / 100;
+                } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
+                    $balance += $userRechargeableCard->amount / 100;
                     $limitCard = true;
-                }
-                if ($limitCard && $unLimitCard) {
-                    break;
                 }
             }
 
