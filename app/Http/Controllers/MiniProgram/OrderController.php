@@ -367,14 +367,16 @@ class OrderController extends Controller
                 array_push($order['shopping_cart_ids'], $cart->id);
             });
         } else {
-            $orderItem = [
-                'merchandise_id' => $merchandise->id,
-                'total_amount' => $merchandise->sellPrice,
-                'payment_amount' => $merchandise->sellPrice,
-                'discount_amount' => 0,
-                'status' => Order::WAIT
-            ];
-            array_push($order['order_items'], $orderItem);
+            if ($merchandise) {
+                $orderItem = [
+                    'merchandise_id' => $merchandise->id,
+                    'total_amount' => $merchandise->sellPrice,
+                    'payment_amount' => $merchandise->sellPrice,
+                    'discount_amount' => 0,
+                    'status' => Order::WAIT
+                ];
+                array_push($order['order_items'], $orderItem);
+            }
         }
     }
 
@@ -427,6 +429,7 @@ class OrderController extends Controller
 
         if ((int)$order['type'] !== Order::OFF_LINE_PAYMENT_ORDER) {
             if (isset($order['merchandise_id']) && $order['merchandise_id']) {
+                Log::info("订单制定产品：【#{$order['merchandise_id']}】");
                 /** @var Merchandise $merchandise */
                 $merchandise = app(MerchandiseRepository::class)->find($order['merchandise_id']);
                 $order['total_amount'] = $merchandise->sellPrice;
