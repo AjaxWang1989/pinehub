@@ -53,7 +53,7 @@ class OrderPaidEventListener
                             $query->where('customer_id', $order->customerId)
                                 ->where('user_id', $order->memberId)
                                 ->whereHas('rechargeableCard', function ($query) {
-                                    $query->where('type', '=', RechargeableCard::TYPE_INDEFINITE);
+                                    $query->where('type', '<>', RechargeableCard::TYPE_INDEFINITE);
                                 })
                                 ->where('status', '=', UserRechargeableCard::STATUS_VALID);
                         });
