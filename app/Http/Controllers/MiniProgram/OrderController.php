@@ -369,6 +369,8 @@ class OrderController extends Controller
         } else {
             if ($merchandise) {
                 $orderItem = [
+                    'customer_id' => $order['customer_id'],
+                    'member_id' => $order['member_id'],
                     'merchandise_id' => $merchandise->id,
                     'quality' => $order['quality'],
                     'total_amount' => $merchandise->sellPrice,
