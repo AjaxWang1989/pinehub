@@ -25,8 +25,8 @@ class UserRechargeableCardConsumeOrderTransformer extends TransformerAbstract
             'id' => $consumeRecord,
             'type_desc' => $consumeRecord->typeDesc,
             'type' => $consumeRecord->type,
-            'consume' => $consumeRecord->consume,
-            'save' => $consumeRecord->save,
+            'consume' => $consumeRecord->consume / 100,// 单位：元
+            'save' => $consumeRecord->save * 100,
         ];
     }
 

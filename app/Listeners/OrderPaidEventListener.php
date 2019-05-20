@@ -97,7 +97,8 @@ class OrderPaidEventListener
                 'order_id' => $order->id,
                 'rechargeable_card_id' => $rechargeableCard->id,
                 'user_rechargeable_card_id' => $userRechargeableCardRecord->id,
-                'type' => UserRechargeableCardConsumeRecord::TYPE_BUY
+                'type' => UserRechargeableCardConsumeRecord::TYPE_BUY,
+                'consume' => $order->paymentAmount * 100
             ];
             $consumeRecordRepository->create($consumeRecord);
         }
