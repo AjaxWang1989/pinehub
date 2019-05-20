@@ -22,10 +22,10 @@ class OrderPaidEventListener
     {
     }
 
-    public function handle(OrderPaidEvent $event,
-                           RechargeableCardRepository $rechargeableCardRepository,
-                           UserRechargeableCardRepository $userRechargeableCardRepository)
+    public function handle(OrderPaidEvent $event)
     {
+        $rechargeableCardRepository = app(RechargeableCardRepository::class);
+        $userRechargeableCardRepository = app(UserRechargeableCardRepository::class);
         $order = $event->order;
         $merchandiseIds = $order->orderItems()->pluck('merchandise_id');
         $rechargeableCards = $rechargeableCardRepository->findWhereIn('merchandise_id', $merchandiseIds->toArray());
