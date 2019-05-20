@@ -109,7 +109,7 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
                     Log::info('有效期卡余额：', [$pivot->amount]);
                     $balance += $pivot->amount / 100;
                     $unLimitCard = true;
-                } else if (!$limitCard && $today->gte($pivot->validAt->startOfDay()) && $today->lte($pivot->invalidAt->startOfDay())) {
+                } else if (!$limitCard && $today->gte(Carbon::now($pivot->validAt)->startOfDay()) && $today->lte(Carbon::now($pivot->invalidAt)->startOfDay())) {
                     $balance += $pivot->amount / 100;
                     $limitCard = true;
                 }

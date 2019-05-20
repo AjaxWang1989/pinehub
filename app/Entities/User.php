@@ -175,9 +175,9 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     // 用户持有的卡种
     public function rechargeableCards(): BelongsToMany
     {
-        return $this->belongsToMany(RechargeableCard::class)->using(UserRechargeableCard::class);
-//        return $this->belongsToMany(RechargeableCard::class,
-//            'user_rechargeable_cards', 'user_id', 'rechargeable_card_id');
+        return $this->belongsToMany(RechargeableCard::class,
+            'user_rechargeable_cards', 'user_id', 'rechargeable_card_id')
+            ->withPivot('amount', 'valid_at', 'invalid_at')->withTimestamps();
     }
 
     // 用户卡种购买记录
