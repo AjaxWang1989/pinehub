@@ -132,7 +132,7 @@ if (!function_exists('buildUrl')) {
             $search[] = '/({' . $key . '})|({' . $key . '\?})/';
             $replace[] = $param;
         }
-        if(\Illuminate\Support\Facades\Request::secure()){
+        if(\Illuminate\Support\Facades\Request::secure() && $_SERVER['REQUEST_SCHEME'] === 'https'){
             $proto = 'https://';
         }
         if (isset($search) && isset($replace)) {
