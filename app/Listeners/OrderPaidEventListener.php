@@ -10,8 +10,10 @@ namespace App\Listeners;
 
 use App\Entities\RechargeableCard;
 use App\Entities\UserRechargeableCard;
+use App\Entities\UserRechargeableCardConsumeRecord;
 use App\Events\OrderPaidEvent;
 use App\Repositories\RechargeableCardRepository;
+use App\Repositories\UserRechargeableCardConsumeRecordRepository;
 use App\Repositories\UserRechargeableCardRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +29,10 @@ class OrderPaidEventListener
     {
         $rechargeableCardRepository = app(RechargeableCardRepository::class);
         $userRechargeableCardRepository = app(UserRechargeableCardRepository::class);
+        $consumeRecordRepository = app(UserRechargeableCardConsumeRecordRepository::class);
+
         $order = $event->order;
+
         $merchandiseIds = $order->orderItems()->pluck('merchandise_id');
         $rechargeableCards = $rechargeableCardRepository->findWhereIn('merchandise_id', $merchandiseIds->toArray());
         if (count($rechargeableCards) <= 0) {
@@ -81,7 +86,20 @@ class OrderPaidEventListener
                 'status' => UserRechargeableCard::STATUS_VALID,
             ];
             Log::info('用户新持有卡：', [$userRechargeableCardData]);
-            $userRechargeableCardRepository->create($userRechargeableCardData);
+            $userRechargeableCardRecord = $userRechargeableCardRepository->create($userRechargeableCardData);
+
+            /**
+             * 添加用户购买卡片记录
+             */
+            $consumeRecord = [
+                'user_id' => $order->memberId,
+                'customer_id' => $order->customerId,
+                'order_id' => $order->id,
+                'rechargeable_card_id' => $rechargeableCard->id,
+                'user_rechargeable_card_id' => $userRechargeableCardRecord->id,
+                'type' => UserRechargeableCardConsumeRecord::TYPE_BUY
+            ];
+            $consumeRecordRepository->create($consumeRecord);
         }
     }
 }
