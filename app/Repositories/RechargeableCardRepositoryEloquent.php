@@ -105,6 +105,7 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
                 // 累加有效余额---一张无限期卡余额&一张当前有效卡余额
                 /** @var UserRechargeableCard $pivot */
                 $pivot = $userRechargeableCard->pivot;
+                Log::info('pivot：', [$pivot]);
                 if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
                     Log::info('有效期卡余额：', [$pivot->amount]);
                     $balance += $pivot->amount / 100;
