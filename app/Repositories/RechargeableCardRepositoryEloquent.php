@@ -8,7 +8,6 @@ use App\Entities\UserRechargeableCard;
 use App\Validators\Admin\RechargeableCardValidator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use InvalidArgumentException;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -92,25 +91,6 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
 
             // 可用余额
             // 用户持有的有效储蓄卡卡种
-            /** @var Collection $userRechargeableCards */
-//            $userRechargeableCards = $user->rechargeableCards()->wherePivot('status', '=', 1)
-//                ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
-
-//            $limitCard = false;
-//            $today = Carbon::now();
-//            /** @var RechargeableCard $userRechargeableCard */
-//            foreach ($userRechargeableCards as $userRechargeableCard) {
-//                // 累加有效余额---无限期卡余额&(实际上至多一张)当前有效卡余额
-//                $pivot = $userRechargeableCard->pivot;
-//                if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
-//                    $balance += $pivot->amount / 100;
-//                    $unLimitCard = true;
-//                } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
-//                    $balance += $pivot->amount / 100;
-//                    $limitCard = true;
-//                }
-//            }
-
             $userRechargeableCards = $user->rechargeableCardRecords()->with([
                 'rechargeableCard' => function ($query) {
                     $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
@@ -143,9 +123,6 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
                     if ($cardType) {
                         $query->where('card_type', $cardType);
                     }
-//                    if ($unLimitCard) {
-//                        $query->where('type', '<>', RechargeableCard::TYPE_INDEFINITE);
-//                    }
                 });
             })->all();
         } else {

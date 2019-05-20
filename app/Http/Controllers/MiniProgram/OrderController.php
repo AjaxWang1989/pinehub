@@ -271,70 +271,140 @@ class OrderController extends Controller
         $consumeRecords = [];
 
         // 用户持有的有效储蓄卡
-        $userOwnCards = $user->rechargeableCards()->wherePivot('status', '=', UserRechargeableCard::STATUS_VALID)
-            ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
-        $limitCard = false;
-        $unLimitCard = false;
-        $today = Carbon::now();
+//        $userOwnCards = $user->rechargeableCards()->wherePivot('status', '=', UserRechargeableCard::STATUS_VALID)
+//            ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
+//        $limitCard = false;
+//        $unLimitCard = false;
+//        $today = Carbon::now();
 
         // TODO 折扣卡
 
-        // 找到无限期卡或者当前有效的限期卡
-        /** @var RechargeableCard $rechargeableCard */
-        foreach ($userOwnCards as $rechargeableCard) {
-            $pivot = $rechargeableCard->pivot;
-            if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
-                $unLimitCard = compact('pivot', 'rechargeableCard');
-            } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
-                $limitCard = compact('pivot', 'rechargeableCard');
+        // 用户持有的有效储蓄卡卡种
+        $userRechargeableCards = $user->rechargeableCardRecords()->with([
+            'rechargeableCard' => function ($query) {
+                $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
             }
-            if ($limitCard && $unLimitCard) {
-                break;
+        ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
+
+        $limitCard = false;
+        $unLimitCard = [];
+        $today = Carbon::now();
+
+        /** @var UserRechargeableCard $userRechargeableCard */
+        foreach ($userRechargeableCards as $userRechargeableCard) {
+            if ($userRechargeableCard->rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
+                $unLimitCard[] = $userRechargeableCard;
+            } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
+                $limitCard = $userRechargeableCard;
             }
         }
 
         $i = 0;
         if ($limitCard) {
-            $priceDisparity = $paymentAmount - $limitCard['pivot']['amount'] / 100;
-            $saveRate = ($limitCard['rechargeableCard']->amount - $limitCard['rechargeableCard']->price) / $limitCard['rechargeableCard']->amount;
+            $rechargeableCard = $limitCard->rechargeableCard;
+            $priceDisparity = $paymentAmount - $limitCard->amount / 100;
+            $saveRate = ($rechargeableCard->amount - $rechargeableCard->price) / $rechargeableCard->amount;// 节省率
             $consumeRecords[$i] = [
                 'user_id' => $user->memberId,
                 'customer_id' => $user->id,
-                'rechargeable_card_id' => $limitCard['rechargeableCard']->id,
+                'rechargeable_card_id' => $rechargeableCard->id,
                 'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME,
-                'user_rechargeable_card_id' => $limitCard['pivot']['id']
+                'user_rechargeable_card_id' => $limitCard->id
             ];
             if ($priceDisparity <= 0) {
                 $consumeRecords[$i]['consume'] = $paymentAmount * 100;
                 $consumeRecords[$i]['save'] = $paymentAmount * $saveRate * 100;
             } else {
-                $consumeRecords[$i]['consume'] = $limitCard['pivot']['amount'];
-                $consumeRecords[$i]['save'] = ($limitCard['pivot']['amount']) * $saveRate;
+                $consumeRecords[$i]['consume'] = $limitCard->amount;
+                $consumeRecords[$i]['save'] = $limitCard->amount * $saveRate;
             }
             $paymentAmount = $priceDisparity;
             $i++;
         }
 
         // 如果没有有效有限期卡或者可用储蓄卡余额不足，使用有效无限期卡余额
-        if (!$limitCard || $paymentAmount > 0) {
-            $priceDisparity = $paymentAmount - $unLimitCard['pivot']['amount'] / 100;
-            $saveRate = ($unLimitCard['rechargeableCard']->amount - $unLimitCard['rechargeableCard']->price) / $unLimitCard['rechargeableCard']->amount;
-            $consumeRecords[$i] = [
-                'user_id' => $user->memberId,
-                'customer_id' => $user->id,
-                'rechargeable_card_id' => $unLimitCard['rechargeableCard']->id,
-                'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME,
-                'user_rechargeable_card_id' => $unLimitCard['pivot']['id']
-            ];
-            if ($priceDisparity <= 0) {
-                $consumeRecords[$i]['consume'] = $paymentAmount * 100;
-                $consumeRecords[$i]['save'] = $paymentAmount * $saveRate * 100;
-            } else {
-                $consumeRecords[$i]['consume'] = $limitCard['pivot']['amount'];
-                $consumeRecords[$i]['save'] = ($limitCard['pivot']['amount']) * $saveRate;
+        if (!$limitCard || $paymentAmount > 0 && count($unLimitCard) > 0) {
+            foreach ($unLimitCard as $userRechargeableCard) {
+                $rechargeableCard = $userRechargeableCard->rechargeableCard;
+                $priceDisparity = $paymentAmount - $userRechargeableCard->amount / 100;
+                $saveRate = ($unLimitCard['rechargeableCard']->amount - $unLimitCard['rechargeableCard']->price) / $unLimitCard['rechargeableCard']->amount;
+                $consumeRecords[$i] = [
+                    'user_id' => $user->memberId,
+                    'customer_id' => $user->id,
+                    'rechargeable_card_id' => $rechargeableCard->id,
+                    'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME,
+                    'user_rechargeable_card_id' => $userRechargeableCard->id
+                ];
+                if ($priceDisparity <= 0) {
+                    $consumeRecords[$i]['consume'] = $paymentAmount * 100;
+                    $consumeRecords[$i]['save'] = $paymentAmount * $saveRate * 100;
+                } else {
+                    $consumeRecords[$i]['consume'] = $userRechargeableCard->amount;
+                    $consumeRecords[$i]['save'] = $userRechargeableCard->amount * $saveRate;
+                }
+                $paymentAmount = $priceDisparity > 0 ? $priceDisparity : 0;
+                if ($paymentAmount === 0) {
+                    break;
+                }
             }
-            $paymentAmount = $priceDisparity > 0 ? $priceDisparity : 0;
         }
+
+        // 找到无限期卡或者当前有效的限期卡
+        /** @var RechargeableCard $rechargeableCard */
+//        foreach ($userOwnCards as $rechargeableCard) {
+//            $pivot = $rechargeableCard->pivot;
+//            if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
+//                $unLimitCard = compact('pivot', 'rechargeableCard');
+//            } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
+//                $limitCard = compact('pivot', 'rechargeableCard');
+//            }
+//            if ($limitCard && $unLimitCard) {
+//                break;
+//            }
+//        }
+
+//        $i = 0;
+//        if ($limitCard) {
+//            $priceDisparity = $paymentAmount - $limitCard['pivot']['amount'] / 100;
+//            $saveRate = ($limitCard['rechargeableCard']->amount - $limitCard['rechargeableCard']->price) / $limitCard['rechargeableCard']->amount;
+//            $consumeRecords[$i] = [
+//                'user_id' => $user->memberId,
+//                'customer_id' => $user->id,
+//                'rechargeable_card_id' => $limitCard['rechargeableCard']->id,
+//                'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME,
+//                'user_rechargeable_card_id' => $limitCard['pivot']['id']
+//            ];
+//            if ($priceDisparity <= 0) {
+//                $consumeRecords[$i]['consume'] = $paymentAmount * 100;
+//                $consumeRecords[$i]['save'] = $paymentAmount * $saveRate * 100;
+//            } else {
+//                $consumeRecords[$i]['consume'] = $limitCard['pivot']['amount'];
+//                $consumeRecords[$i]['save'] = ($limitCard['pivot']['amount']) * $saveRate;
+//            }
+//            $paymentAmount = $priceDisparity;
+//            $i++;
+//        }
+//
+//        // 如果没有有效有限期卡或者可用储蓄卡余额不足，使用有效无限期卡余额
+//        if (!$limitCard || $paymentAmount > 0) {
+//            $priceDisparity = $paymentAmount - $unLimitCard['pivot']['amount'] / 100;
+//            $saveRate = ($unLimitCard['rechargeableCard']->amount - $unLimitCard['rechargeableCard']->price) / $unLimitCard['rechargeableCard']->amount;
+//            $consumeRecords[$i] = [
+//                'user_id' => $user->memberId,
+//                'customer_id' => $user->id,
+//                'rechargeable_card_id' => $unLimitCard['rechargeableCard']->id,
+//                'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME,
+//                'user_rechargeable_card_id' => $unLimitCard['pivot']['id']
+//            ];
+//            if ($priceDisparity <= 0) {
+//                $consumeRecords[$i]['consume'] = $paymentAmount * 100;
+//                $consumeRecords[$i]['save'] = $paymentAmount * $saveRate * 100;
+//            } else {
+//                $consumeRecords[$i]['consume'] = $limitCard['pivot']['amount'];
+//                $consumeRecords[$i]['save'] = ($limitCard['pivot']['amount']) * $saveRate;
+//            }
+//            $paymentAmount = $priceDisparity > 0 ? $priceDisparity : 0;
+//        }
 
         return [$paymentAmount, $consumeRecords];
     }
