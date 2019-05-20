@@ -251,7 +251,7 @@ class OrderBuilder implements InterfaceServiceHandler
             function (Collection $orderItem) {
                 $subOrder = null;
                 if (isset($orderItem['sku_product_id']) && $orderItem['sku_product_id']) {
-                    if ($orderItem['activity_id']) {
+                    if (isset($orderItem['activity_id']) && $orderItem['activity_id']) {
                         $repository = app()->make(ActivityMerchandiseRepository::class);
                         $product = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use ($orderItem) {
                             return $merchandise->with('merchandise')
@@ -259,7 +259,7 @@ class OrderBuilder implements InterfaceServiceHandler
                                 ->whereProductId($orderItem['sku_product_id']);
                         })->first();
 
-                    } elseif ($orderItem['shop_id']) {
+                    } elseif (isset($orderItem['shop_id']) && $orderItem['shop_id']) {
                         $repository = app()->make(ShopProductRepository::class);
                         $product = $repository->scopeQuery(function (ShopMerchandise $merchandise) use ($orderItem) {
                             return $merchandise->with('merchandise')
@@ -361,7 +361,7 @@ class OrderBuilder implements InterfaceServiceHandler
      * */
     protected function buildOrderItem($model, int $quality, $customerId = null)
     {
-        if ($model->stockNum < 0) {
+        if ($model->stockNum === 0) {
             Log::info('库存不足 (1)', [$model->stockNum, $quality, $model]);
             throw new ValidationHttpException(new MessageBag([
                 'quality' => 'SKU库存不足'
