@@ -8,6 +8,8 @@
 
 namespace App\Http\Controllers\MiniProgram;
 
+use App\Entities\UserRechargeableCard;
+use App\Entities\UserRechargeableCardConsumeRecord;
 use App\Http\Requests\MiniProgram\FeedBackMessageRequest;
 use App\Repositories\AppRepository;
 use App\Repositories\CustomerTicketCardRepository;
@@ -15,9 +17,12 @@ use App\Repositories\FeedBackMessageRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\FeedBackMessageTransformer;
+use App\Transformers\Mp\UserRechargeableCardConsumeOrderTransformer;
 use App\Transformers\Mp\UserRechargeableCardTransformer;
 use Dingo\Api\Http\Request;
+use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
 
 class UserController extends Controller
 {
@@ -66,7 +71,7 @@ class UserController extends Controller
      * 获取用户优惠券信息
      * @param string $status
      * @param Request $request
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function userTickets(string $status, Request $request)
     {
@@ -96,7 +101,7 @@ class UserController extends Controller
 
     /**
      * 个人中心获取所有优惠券
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function customerTicketCards(string $status)
     {
@@ -108,7 +113,7 @@ class UserController extends Controller
     /**
      * 提交意见反馈
      * @param FeedBackMessageRequest $request
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
 
     public function feedBackMessage(FeedBackMessageRequest $request)
@@ -123,11 +128,58 @@ class UserController extends Controller
         return $this->response()->item($item, new FeedBackMessageTransformer());
     }
 
-    public function customerRechargeableCards()
+    /**
+     * 用户持有卡片
+     * @param Request $request
+     * @return Response
+     */
+    public function customerRechargeableCards(Request $request)
     {
-        $user = $this->mpUser();
-        $items = $user->rechargeableCardRecords()->with('rechargeableCard')->paginate();
-        return $this->response->paginator($items, new UserRechargeableCardTransformer);
+        $customer = $this->mpUser();
+
+        $status = $request->get('status', null);
+
+        if ($status) {
+            $paramsShould = array_keys(UserRechargeableCard::STATUS);
+            if (!in_array($status, $paramsShould)) {
+                throw new InvalidArgumentException("参数status错误，应该为： " . implode('或', $paramsShould) . '中的一种');
+            }
+        }
+
+        $items = $customer->rechargeableCardRecords()->with('rechargeableCard')->where(function ($query) use ($status) {
+            if ($status) {
+                $query->where('status', '=', $status);
+            }
+        })->paginate();
+
+        return $this->response()->paginator($items, new UserRechargeableCardTransformer);
+    }
+
+    /**
+     * 用户消费、购买卡片记录
+     * @param Request $request
+     * @return Response
+     */
+    public function customerRechargeableCardConsumeRecords(Request $request)
+    {
+        $customer = $this->mpUser();
+
+        $type = $request->get('type', null);
+
+        if ($type) {
+            $paramsShould = array_keys(UserRechargeableCardConsumeRecord::TYPES);
+            if (!in_array($type, $paramsShould)) {
+                throw  new InvalidArgumentException('参数type错误，应该为：' . implode('或', $paramsShould) . '中的一种');
+            }
+        }
+
+        $consumeRecords = $customer->consumeRecords()->with('rechargeableCard')->where(function ($query) use ($type) {
+            if ($type) {
+                $query->where('type', '=', $type);
+            }
+        })->orderBy('created_at', 'desc')->paginate();
+
+        return $this->response()->paginator($consumeRecords, new UserRechargeableCardConsumeOrderTransformer);
     }
 
     public function userRechargeableCards()

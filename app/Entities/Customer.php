@@ -195,10 +195,17 @@ class Customer extends Model implements AuthenticatableContract, AuthorizableCon
         return $this->rechargeableCardRecords()->whereNull('invalid_at');
     }
 
-    // 用户卡种购买记录
+    /**用户卡片购买|消费记录
+     * @return HasMany
+     */
+    public function consumeRecords(): HasMany
+    {
+        return $this->hasMany(UserRechargeableCardConsumeRecord::class, 'customer_id', 'id');
+    }
+
+    // 用户卡片购买|消费记录---订单
     public function rechargeRecords(): BelongsToMany
     {
-//        return $this->belongsToMany(Order::class)->using(UserRechargeableCard::class);
         return $this->belongsToMany(Order::class,
             'user_rechargeable_cards', 'customer_id', 'order_id');
     }

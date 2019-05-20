@@ -24,6 +24,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read Order $order 所属订单
  * @property-read User $user 所属用户
  * @property-read RechargeableCard $rechargeableCard 关联卡片
+ * @property-read UserRechargeableCard $userRechargeableCard
  * @method static Builder|UserRechargeableCardConsumeRecord whereId($value)
  * @method static Builder|UserRechargeableCardConsumeRecord whereUserId($value)
  * @method static Builder|UserRechargeableCardConsumeRecord whereCustomerId($value)
@@ -76,6 +77,11 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
     public function rechargeableCard(): BelongsTo
     {
         return $this->belongsTo(RechargeableCard::class, 'rechargeable_card_id');
+    }
+
+    public function userRechargeableCard(): BelongsTo
+    {
+        return $this->belongsTo(UserRechargeableCard::class, 'user_rechargeable_card_id');
     }
 
     // 类型描述
