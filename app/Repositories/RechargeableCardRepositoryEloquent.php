@@ -99,17 +99,18 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             Log::info("用户持有卡片：", [$userRechargeableCards]);
             $limitCard = false;
             $unLimitCard = false;
-            $today = Carbon::now()->startOfDay();
+            $today = Carbon::now();
             /** @var RechargeableCard $userRechargeableCard */
             foreach ($userRechargeableCards as $userRechargeableCard) {
                 // 累加有效余额---一张无限期卡余额&一张当前有效卡余额
                 /** @var UserRechargeableCard $pivot */
                 $pivot = $userRechargeableCard->pivot;
                 if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
-                    $balance += $pivot->amount;
+                    Log::info('有效期卡余额：', [$pivot->amount]);
+                    $balance += $pivot->amount / 100;
                     $unLimitCard = true;
-                } else if (!$limitCard && $today->lte($pivot->validAt)) {
-                    $balance += $pivot->amount;
+                } else if (!$limitCard && $today->gte($pivot->validAt->startOfDay()) && $today->lte($pivot->invalidAt->startOfDay())) {
+                    $balance += $pivot->amount / 100;
                     $limitCard = true;
                 }
                 if ($limitCard && $unLimitCard) {
@@ -117,7 +118,7 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
                 }
             }
 
-            $priceDisparity = $amount - $balance;// 差价，基于差价选择推荐卡种
+            $priceDisparity = $amount - $balance * 100;// 差价，基于差价选择推荐卡种
 
             $rechargeableCards = $this->scopeQuery(function (RechargeableCard $rechargeableCard) use ($priceDisparity, $cardType, $unLimitCard) {
                 /*
