@@ -112,7 +112,7 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
 //            }
 
             $userRechargeableCards = $user->rechargeableCardRecords()->with([
-                'rechargeableCard' => function (Builder $query) {
+                'rechargeableCard' => function ($query) {
                     $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
                 }
             ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
