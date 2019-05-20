@@ -66,7 +66,8 @@ class OrderPaidEventListener
                     $originInvalidAt = $userCards[0]->invalidAt;
                     $validAt = $originInvalidAt->addDay();
                 }
-                $invalidAt = $validAt->{'add' . ucfirst($rechargeableCard->unit)}($rechargeableCard->count);
+//                $invalidAt = $validAt->{'add' . ucfirst($rechargeableCard->unit)}($rechargeableCard->count);
+                $invalidAt = $validAt->addDay();
             }
 
             $userRechargeableCardData = [
