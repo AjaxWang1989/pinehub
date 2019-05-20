@@ -15,6 +15,7 @@ use App\Repositories\RechargeableCardRepository;
 use App\Repositories\UserRechargeableCardRepository;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
 
 class OrderPaidEventListener
 {
@@ -54,6 +55,7 @@ class OrderPaidEventListener
                                 ->where('status', '=', UserRechargeableCard::STATUS_VALID);
                         });
                     })->all();
+                Log::info('用户持有的有效有限期卡记录：', [$userCards]);
                 if (count($userCards) === 0) {
                     $validAt = Carbon::now();
                 } else {
@@ -75,6 +77,7 @@ class OrderPaidEventListener
                 'is_auto_renew' => false,
                 'status' => UserRechargeableCard::STATUS_VALID,
             ];
+            Log::info('用户新持有卡：', [$userRechargeableCardData]);
             $userRechargeableCardRepository->create($userRechargeableCardData);
         }
     }
