@@ -96,13 +96,12 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             $userRechargeableCards = $user->rechargeableCards()->wherePivot('status', '=', 1)
                 ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
             $limitCard = false;
-            $unLimitCard = false;
             $today = Carbon::now();
             /** @var RechargeableCard $userRechargeableCard */
             foreach ($userRechargeableCards as $userRechargeableCard) {
-                // 累加有效余额---一张无限期卡余额&一张当前有效卡余额
+                // 累加有效余额---无限期卡余额&(实际上至多一张)当前有效卡余额
                 $pivot = $userRechargeableCard->pivot;
-                if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
+                if ($userRechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
                     $balance += $pivot->amount / 100;
                     $unLimitCard = true;
                 } else if (!$limitCard && $today->gte((new Carbon($pivot['valid_at']))->startOfDay()) && $today->lte((new Carbon($pivot['invalid_at']))->startOfDay())) {
