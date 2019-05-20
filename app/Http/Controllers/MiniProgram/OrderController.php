@@ -370,6 +370,7 @@ class OrderController extends Controller
             if ($merchandise) {
                 $orderItem = [
                     'merchandise_id' => $merchandise->id,
+                    'quality' => $order['quality'],
                     'total_amount' => $merchandise->sellPrice,
                     'payment_amount' => $merchandise->sellPrice,
                     'discount_amount' => 0,
@@ -433,7 +434,7 @@ class OrderController extends Controller
                 /** @var Merchandise $merchandise */
                 $merchandise = app(MerchandiseRepository::class)->find($order['merchandise_id']);
                 $order['total_amount'] = $merchandise->sellPrice;
-                $order['merchandise_num'] = 1;
+                $order['merchandise_num'] = $order['quality'];
                 $shoppingCarts = null;
             } else {
                 /** @var Collection $shoppingCarts */
