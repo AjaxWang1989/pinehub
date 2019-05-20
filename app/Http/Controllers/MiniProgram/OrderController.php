@@ -261,9 +261,9 @@ class OrderController extends Controller
 
     /**
      * 使用卡片
-     * @param array $order
+     * @param Order $order
      * @param MpUser $user
-     * @return int 金额数
+     * @return array
      */
     protected function useRechargeableCards(Order &$order, MpUser $user)
     {

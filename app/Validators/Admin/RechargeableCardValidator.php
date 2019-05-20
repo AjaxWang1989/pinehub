@@ -21,7 +21,7 @@ class RechargeableCardValidator extends LaravelValidator
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
             'name' => 'required|string|max:20',
-            'amount' => 'nullable|required|integer',
+            'amount' => 'nullable|required|numeric',
             'price' => 'required|numeric',
             'preferential_price' => 'required|numeric',
             'auto_renew_price' => 'required|numeric',
