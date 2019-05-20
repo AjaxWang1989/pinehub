@@ -12,6 +12,7 @@ namespace App\Http\Controllers\MiniProgram;
 use App\Ali\Payment\AliChargeContext;
 use App\Entities\Card;
 use App\Entities\CustomerTicketCard;
+use App\Entities\Merchandise;
 use App\Entities\MpUser;
 use App\Entities\Order;
 use App\Entities\RechargeableCard;
@@ -26,6 +27,7 @@ use App\Http\Requests\MiniProgram\StoreBuffetOrdersRequest;
 use App\Http\Requests\MiniProgram\StoreOrdersSummaryRequest;
 use App\Http\Requests\MiniProgram\StoreSendOrdersRequest;
 use App\Http\Response\JsonResponse;
+use App\Jobs\OrderBalancePaidRecordJob;
 use App\Repositories\AppRepository;
 use App\Repositories\CardRepository;
 use App\Repositories\CustomerTicketCardRepository;
@@ -35,7 +37,6 @@ use App\Repositories\OrderItemRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Repositories\ShopRepository;
-use App\Repositories\UserRechargeableCardConsumeRecordRepository;
 use App\Transformers\Mp\OrderStoreBuffetTransformer;
 use App\Transformers\Mp\OrderStoreSendTransformer;
 use App\Transformers\Mp\OrderTransformer;
@@ -140,13 +141,12 @@ class OrderController extends Controller
     }
 
     /**
-     * 重新支付订单
-     * @param string $type
-     * @param int $orderId
+     * 订单支付
+     * @param string $type 支付方式 wx|balance|default(ali)
+     * @param int $orderId 待支付订单ID
      * @return mixed
      */
-
-    public function payByOrderId(string $type = 'wx', int $orderId)
+    public function payByOrderId(string $type, int $orderId)
     {
         $order = $this->orderRepository->findWhere(['id' => $orderId])->first();
         return $this->order($order, $type);
@@ -177,9 +177,18 @@ class OrderController extends Controller
                     throw new UnifyOrderException($result['return_msg']);
                 }
             } else if ($type === 'balance') {
-                // 余额支付  重新支付订单时需要检查余额
+                // 余额支付
+                $user = $this->mpUser();
                 $order->payType = Order::BALANCE_PAY;
+                $order->status = Order::MAKE_SURE;
+                list($paymentAmount, $consumeRecords) = $this->useRechargeableCards($order, $user);
+                if ($paymentAmount) {
+                    return $this->response(new JsonResponse(['status' => false, 'msg' => '余额不足，请先充值']));
+                }
+                $order->status = Order::PAID;
                 $order->save();
+                $job = (new OrderBalancePaidRecordJob($order->id, $consumeRecords))->delay(3);
+                dispatch($job);
             } else {
                 /** @var AliChargeContext $charge */
                 $charge = app('mp.payment.ali.create');
@@ -255,74 +264,73 @@ class OrderController extends Controller
      * @param MpUser $user
      * @return int 金额数
      */
-    protected function useRechargeableCards(array &$order, MpUser $user)
+    protected function useRechargeableCards(Order &$order, MpUser $user)
     {
-        $paymentAmount = $order['payment_amount'];
+        $paymentAmount = $order->paymentAmount;
         $consumeRecords = [];
 
-        if (isset($order['use_rechargeable_card']) && $order['use_rechargeable_card']) {
-            // 用户持有的有效储蓄卡
-            $userOwnCards = $user->rechargeableCards()->wherePivot('status', '=', UserRechargeableCard::STATUS_VALID)
-                ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
-            $limitCard = false;
-            $unLimitCard = false;
-            $today = Carbon::now()->startOfDay();
+        // 用户持有的有效储蓄卡
+        $userOwnCards = $user->rechargeableCards()->wherePivot('status', '=', UserRechargeableCard::STATUS_VALID)
+            ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
+        $limitCard = false;
+        $unLimitCard = false;
+        $today = Carbon::now()->startOfDay();
 
-            // TODO 折扣卡
+        // TODO 折扣卡
 
-            /** @var RechargeableCard $rechargeableCard */
-            foreach ($userOwnCards as $rechargeableCard) {
-                /** @var UserRechargeableCard $pivot */
-                $pivot = $rechargeableCard->pivot;
-                if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
-                    $unLimitCard = compact('pivot', 'rechargeableCard');
-                } else if ($today->gte($pivot->validAt) && $today->lte($pivot->invalidAt) && !$limitCard) {
-                    $limitCard = compact('pivot', 'rechargeableCard');
-                }
-                if ($limitCard && $unLimitCard) {
-                    break;
-                }
+        // 找到无限期卡或者当前有效的限期卡
+        /** @var RechargeableCard $rechargeableCard */
+        foreach ($userOwnCards as $rechargeableCard) {
+            /** @var UserRechargeableCard $pivot */
+            $pivot = $rechargeableCard->pivot;
+            if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE && !$unLimitCard) {
+                $unLimitCard = compact('pivot', 'rechargeableCard');
+            } else if ($today->gte($pivot->validAt) && $today->lte($pivot->invalidAt) && !$limitCard) {
+                $limitCard = compact('pivot', 'rechargeableCard');
             }
+            if ($limitCard && $unLimitCard) {
+                break;
+            }
+        }
 
-            $i = 0;
-            if ($limitCard) {
-                $priceDisparity = $paymentAmount - $limitCard['pivot']->amount;
-                $saveRate = ($limitCard['rechargeableCard']->amount - $limitCard['rechargeableCard']->price) / $limitCard['rechargeableCard']->amount;
-                $consumeRecords[$i] = [
-                    'user_id' => $user->memberId,
-                    'customer_id' => $user->id,
-                    'rechargeable_card_id' => $limitCard['rechargeableCard']->id,
-                    'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME
-                ];
-                if ($priceDisparity <= 0) {
-                    $consumeRecords[$i]['consume'] = $paymentAmount;
-                    $consumeRecords[$i]['save'] = $paymentAmount * $saveRate;
-                } else {
-                    $consumeRecords[$i]['consume'] = $limitCard['pivot']->amount;
-                    $consumeRecords[$i]['save'] = $limitCard['pivot']->amount * $saveRate;
-                }
-                $paymentAmount = $priceDisparity;
-                $i++;
+        $i = 0;
+        if ($limitCard) {
+            $priceDisparity = $paymentAmount - $limitCard['pivot']->amount;
+            $saveRate = ($limitCard['rechargeableCard']->amount - $limitCard['rechargeableCard']->price) / $limitCard['rechargeableCard']->amount;
+            $consumeRecords[$i] = [
+                'user_id' => $user->memberId,
+                'customer_id' => $user->id,
+                'rechargeable_card_id' => $limitCard['rechargeableCard']->id,
+                'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME
+            ];
+            if ($priceDisparity <= 0) {
+                $consumeRecords[$i]['consume'] = $paymentAmount;
+                $consumeRecords[$i]['save'] = $paymentAmount * $saveRate;
+            } else {
+                $consumeRecords[$i]['consume'] = $limitCard['pivot']->amount;
+                $consumeRecords[$i]['save'] = $limitCard['pivot']->amount * $saveRate;
             }
-            // 如果没有有效有限期卡或者可用储蓄卡余额不足，使用有效无限期卡余额
-            if (!$limitCard || $paymentAmount > 0) {
-                $priceDisparity = $paymentAmount - $unLimitCard['pivot']->amount;
-                $saveRate = ($unLimitCard['rechargeableCard']->amount - $unLimitCard['rechargeableCard']->price) / $unLimitCard['rechargeableCard']->amount;
-                $consumeRecords[$i] = [
-                    'user_id' => $user->memberId,
-                    'customer_id' => $user->id,
-                    'rechargeable_card_id' => $unLimitCard['rechargeableCard']->id,
-                    'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME
-                ];
-                if ($priceDisparity <= 0) {
-                    $consumeRecords[$i]['consume'] = $paymentAmount;
-                    $consumeRecords[$i]['save'] = $paymentAmount * $saveRate;
-                } else {
-                    $consumeRecords[$i]['consume'] = $limitCard['pivot']->amount;
-                    $consumeRecords[$i]['save'] = $limitCard['pivot']->amount * $saveRate;
-                }
-                $paymentAmount = $priceDisparity > 0 ? $priceDisparity : 0;
+            $paymentAmount = $priceDisparity;
+            $i++;
+        }
+        // 如果没有有效有限期卡或者可用储蓄卡余额不足，使用有效无限期卡余额
+        if (!$limitCard || $paymentAmount > 0) {
+            $priceDisparity = $paymentAmount - $unLimitCard['pivot']->amount;
+            $saveRate = ($unLimitCard['rechargeableCard']->amount - $unLimitCard['rechargeableCard']->price) / $unLimitCard['rechargeableCard']->amount;
+            $consumeRecords[$i] = [
+                'user_id' => $user->memberId,
+                'customer_id' => $user->id,
+                'rechargeable_card_id' => $unLimitCard['rechargeableCard']->id,
+                'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME
+            ];
+            if ($priceDisparity <= 0) {
+                $consumeRecords[$i]['consume'] = $paymentAmount;
+                $consumeRecords[$i]['save'] = $paymentAmount * $saveRate;
+            } else {
+                $consumeRecords[$i]['consume'] = $limitCard['pivot']->amount;
+                $consumeRecords[$i]['save'] = $limitCard['pivot']->amount * $saveRate;
             }
+            $paymentAmount = $priceDisparity > 0 ? $priceDisparity : 0;
         }
 
         return compact('paymentAmount', 'consumeRecords');
@@ -333,28 +341,40 @@ class OrderController extends Controller
      *
      * @param array $order
      * @param Collection $shoppingCarts
+     * @param Merchandise|null $merchandise
      */
-    protected function buildOrderItemsFromShoppingCarts(array &$order, Collection $shoppingCarts)
+    protected function buildOrderItemsFromShoppingCarts(array &$order, Collection $shoppingCarts = null, Merchandise $merchandise = null)
     {
         $order['order_items'] = [];
         $order['shopping_cart_ids'] = [];
-        //取出购物车商品信息组装成一个子订单数组
-        $shoppingCarts->map(function (ShoppingCart $cart) use (&$order) {
-            $orderItem = $cart->only(['activity_id', 'shop_id', 'customer_id', 'merchandise_id', 'quality', 'sku_product_id']);
-            $orderItem['total_amount'] = $cart->amount;
-            $orderItem['payment_amount'] = $cart->amount;
-            $orderItem['discount_amount'] = 0;
-            $orderItem['status'] = Order::WAIT;
-            if ($cart->date) {
-                $orderItem['send_date'] = $cart->date;
-            }
 
-            if ($cart->batch) {
-                $orderItem['send_batch'] = $cart->batch;
-            }
+        if ($shoppingCarts) {
+            //取出购物车商品信息组装成一个子订单数组
+            $shoppingCarts->map(function (ShoppingCart $cart) use (&$order) {
+                $orderItem = $cart->only(['activity_id', 'shop_id', 'customer_id', 'merchandise_id', 'quality', 'sku_product_id']);
+                $orderItem['total_amount'] = $cart->amount;
+                $orderItem['payment_amount'] = $cart->amount;
+                $orderItem['discount_amount'] = 0;
+                $orderItem['status'] = Order::WAIT;
+                if ($cart->date) {
+                    $orderItem['send_date'] = $cart->date;
+                }
+
+                if ($cart->batch) {
+                    $orderItem['send_batch'] = $cart->batch;
+                }
+                array_push($order['order_items'], $orderItem);
+                array_push($order['shopping_cart_ids'], $cart->id);
+            });
+        } else {
+            $orderItem = [
+                'total_amount' => $merchandise->sellPrice,
+                'payment_amount' => $merchandise->sellPrice,
+                'discount_amount' => 0,
+                'status' => Order::WAIT
+            ];
             array_push($order['order_items'], $orderItem);
-            array_push($order['shopping_cart_ids'], $cart->id);
-        });
+        }
     }
 
     protected function setCustomerInfoForOrder(array &$order, MpUser $user)
@@ -405,13 +425,21 @@ class OrderController extends Controller
         }
 
         if ((int)$order['type'] !== Order::OFF_LINE_PAYMENT_ORDER) {
-            /** @var Collection $shoppingCarts */
-            $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
-            $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
+            if (isset($order['merchandise_id']) && $order['merchandise_id']) {
+                /** @var Merchandise $merchandise */
+                $merchandise = app(MerchandiseRepository::class)->find($order['merchandise_id']);
+                $order['total_amount'] = $merchandise->sellPrice;
+                $order['merchandise_num'] = 1;
+                $shoppingCarts = null;
+            } else {
+                /** @var Collection $shoppingCarts */
+                $shoppingCartType = $order['type'] === Order::SHOP_PURCHASE_ORDER ? ShoppingCart::MERCHANT_ORDER : ShoppingCart::USER_ORDER;
+                $shoppingCarts = $this->getShoppingCarts($order, $user, $shoppingCartType);
 
-            $order['total_amount'] = round($shoppingCarts->sum('amount'), 2);
-            $order['merchandise_num'] = $shoppingCarts->sum('quality');
-            $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts);
+                $order['total_amount'] = round($shoppingCarts->sum('amount'), 2);
+                $order['merchandise_num'] = $shoppingCarts->sum('quality');
+            }
+            $this->buildOrderItemsFromShoppingCarts($order, $shoppingCarts, isset($merchandise) ? $merchandise : null);
         }
 
 
@@ -420,11 +448,6 @@ class OrderController extends Controller
         $order['shop_id'] = isset($order['store_id']) ? $order['store_id'] : null;
 
         $order['payment_amount'] = round(($order['total_amount'] - $order['discount_amount']), 2);
-
-        // 使用余额支付后更新支付金额
-        $result = $this->useRechargeableCards($order, $user);
-        $order['payment_amount'] = $result['paymentAmount'];
-        $consumeRecords = $result['consumeRecords'];// 消费记录
 
         $order['year'] = $now->year;
         $order['month'] = $now->month;
@@ -437,20 +460,8 @@ class OrderController extends Controller
             ->make('order.builder')
             ->setInput($order)
             ->handle();
-        // 记录充值卡消费记录
-        $this->recordRechargeableCardConsumes($order, $consumeRecords, app(UserRechargeableCardConsumeRecordRepository::class));
 
         return $this->response()->item($order, new OrderTransformer());
-    }
-
-    // 记录充值卡消费记录
-    private function recordRechargeableCardConsumes(Order $order, array $consumeRecords,
-                                                    UserRechargeableCardConsumeRecordRepository $consumeRepository)
-    {
-        foreach ($consumeRecords as $consumeRecord) {
-            $consumeRecord['order_id'] = $order->id;
-            $consumeRepository->create($consumeRecord);
-        }
     }
 
     /**

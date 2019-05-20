@@ -9,14 +9,14 @@
 namespace App\Services;
 
 
+use App\Entities\ActivityMerchandise;
 use App\Entities\Merchandise;
-use App\Entities\ShoppingCart;
 use App\Entities\Order;
 use App\Entities\OrderItem;
-use App\Entities\SKUProduct;
 use App\Entities\ShopMerchandise;
+use App\Entities\ShoppingCart;
 use App\Entities\ShopProduct;
-use App\Entities\ActivityMerchandise;
+use App\Entities\SKUProduct;
 use App\Entities\User;
 use App\Repositories\ActivityMerchandiseRepository;
 use App\Repositories\MerchandiseRepository;

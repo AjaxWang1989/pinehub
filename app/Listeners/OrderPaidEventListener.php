@@ -28,6 +28,9 @@ class OrderPaidEventListener
         $order = $event->order;
         $merchandiseIds = $order->orderItems()->pluck('merchandise_id');
         $rechargeableCards = $rechargeableCardRepository->findWhereIn('merchandise_id', $merchandiseIds->toArray());
+        if (count($rechargeableCards) <= 0) {
+            return;
+        }
         /**
          * 添加用户持有卡片记录
          */
