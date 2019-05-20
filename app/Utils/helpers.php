@@ -133,6 +133,7 @@ if (!function_exists('buildUrl')) {
             $replace[] = $param;
         }
         if(\Illuminate\Support\Facades\Request::secure()){
+            var_dump($_SERVER);
             $proto = 'https://';
         }
         if (isset($search) && isset($replace)) {
