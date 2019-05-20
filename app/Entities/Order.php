@@ -226,6 +226,7 @@ class Order extends Model implements Transformable
                 }
 
                 if ($order->status === Order::PAID || $order->status === Order::COMPLETED) {
+                    Log::info('================订单已付款，触发订单支付完成时间==============');
                     event(new OrderPaidEvent($order));
                 }
 
