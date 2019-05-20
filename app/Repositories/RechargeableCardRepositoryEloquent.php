@@ -9,6 +9,7 @@ use App\Validators\Admin\RechargeableCardValidator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -95,6 +96,7 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             /** @var Collection $userRechargeableCards */
             $userRechargeableCards = $user->rechargeableCards()->wherePivot('status', '=', 1)
                 ->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT)->get();
+            Log::info("用户持有卡片：", [$userRechargeableCards]);
             $limitCard = false;
             $unLimitCard = false;
             $today = Carbon::now()->startOfDay();
@@ -122,7 +124,7 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
                  * 选择卡种：卡内金额大于等于差价 且 唯一性无限期储值
                  */
                 return $rechargeableCard->active()->where(function (Builder $query) use ($priceDisparity, $cardType, $unLimitCard) {
-                    if ($priceDisparity >= 0) {
+                    if ($priceDisparity > 0) {
                         $query->where('amount', '>=', $priceDisparity);
                     }
                     if ($cardType) {
