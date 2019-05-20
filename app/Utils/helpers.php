@@ -133,9 +133,10 @@ if (!function_exists('buildUrl')) {
             $replace[] = $param;
         }
         if(\Illuminate\Support\Facades\Request::secure()){
-            var_dump($_SERVER);
+//            var_dump($_SERVER);
             $proto = 'https://';
         }
+        \Illuminate\Support\Facades\Log::debug('-------- server --------', $_SERVER);
         if (isset($search) && isset($replace)) {
 
             $path = preg_replace($search, $replace, $path);
