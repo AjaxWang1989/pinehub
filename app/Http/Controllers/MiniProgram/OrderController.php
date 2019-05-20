@@ -334,7 +334,7 @@ class OrderController extends Controller
             $paymentAmount = $priceDisparity > 0 ? $priceDisparity : 0;
         }
 
-        return compact('paymentAmount', 'consumeRecords');
+        return [$paymentAmount, $consumeRecords];
     }
 
     /**
