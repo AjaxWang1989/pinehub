@@ -39,6 +39,8 @@ class MiniProgramApiRoutes extends ApiRoutes
             $router->get('/ticket/{cardId}', ['as' => 'ticket.detail', 'uses' => 'TicketController@show']);
             $router->get('/user/receive/ticket/{cardId}', ['as' => 'tickets', 'uses' => 'TicketController@userReceiveTicket']);
             $router->get('/user/info', ['as' => 'user.info', 'uses' => 'AuthController@userInfo']);
+            // 用户余额
+            $router->get('/user/balance', ['uses' => 'AuthController@balance']);
 
             $router->post('/save/mobile', ['as' => 'user.save.mobile', 'uses' => 'AuthController@saveMobile']);
 

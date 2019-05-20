@@ -13,26 +13,26 @@ use App\Entities\Card;
 use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MpUser;
+use App\Entities\RechargeableCard;
+use App\Entities\UserRechargeableCard;
+use App\Exceptions\UserCodeException;
 use App\Http\Requests\CreateRequest;
-use App\Repositories\MpUserRepository;
+use App\Http\Response\JsonResponse;
 use App\Repositories\AppRepository;
+use App\Repositories\CustomerTicketCardRepository;
+use App\Repositories\MpUserRepository;
 use App\Repositories\ShopRepository;
 use App\Repositories\UserRepository;
-use App\Repositories\CustomerTicketCardRepository;
 use App\Services\AppManager;
-use App\Transformers\Mp\MpUserTransformer;
-use App\Transformers\Mp\MpUserInfoMobileTransformer;
 use App\Transformers\Mp\AppAccessTransformer;
+use App\Transformers\Mp\MpUserInfoMobileTransformer;
+use App\Transformers\Mp\MpUserTransformer;
 use App\Transformers\Mp\MvpLoginTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Response\JsonResponse;
-use App\Exceptions\UserCodeException;
 use Illuminate\Support\Facades\Log;
 
 
@@ -41,22 +41,22 @@ class AuthController extends Controller
     /**
      * @var MpUserRepository|null
      */
-    protected  $mpUserRepository = null;
+    protected $mpUserRepository = null;
 
     /**
      * @var ShopRepository|null
      */
-    protected  $shopRepository = null;
+    protected $shopRepository = null;
 
     /**
      * @var UserRepository|null
      */
-    protected  $userRepository = null;
+    protected $userRepository = null;
 
     /**
      * @var CustomerTicketCardRepository|null
      */
-    protected  $customerTicketCardRepository = null;
+    protected $customerTicketCardRepository = null;
 
 
     /**
@@ -68,19 +68,19 @@ class AuthController extends Controller
      * @param AppRepository $appRepository
      * @param Request $request
      */
-    public function __construct( MpUserRepository $mpUserRepository,
+    public function __construct(MpUserRepository $mpUserRepository,
                                 CustomerTicketCardRepository $customerTicketCardRepository,
                                 UserRepository $userRepository,
                                 ShopRepository $shopRepository,
                                 AppRepository $appRepository,
-                                Request $request )
+                                Request $request)
     {
         parent::__construct($request, $appRepository);
 
-        $this->mpUserRepository             = $mpUserRepository;
-        $this->appRepository                = $appRepository;
-        $this->shopRepository               = $shopRepository;
-        $this->userRepository               = $userRepository;
+        $this->mpUserRepository = $mpUserRepository;
+        $this->appRepository = $appRepository;
+        $this->shopRepository = $shopRepository;
+        $this->userRepository = $userRepository;
         $this->customerTicketCardRepository = $customerTicketCardRepository;
     }
 
@@ -110,7 +110,7 @@ class AuthController extends Controller
                 ->findByField('platform_open_id', $data['openId'])
                 ->first();
 
-            if ($mpUser){
+            if ($mpUser) {
                 $mpUser->platformOpenId = $data['openId'];
                 $mpUser->nickname = $data['nickName'];
                 $mpUser->sex = $data['gender'] === 1 ? MALE : ($data['gender'] === 2 ? FEMALE : UNKNOWN);
@@ -124,7 +124,7 @@ class AuthController extends Controller
                 $mpUser->platformAppId = $currentApp->miniAppId;
                 $mpUser->appId = $currentApp->id;
                 $mpUser->save();
-            }else{
+            } else {
                 $mpUser = new MpUser();
                 $mpUser->platformAppId = $currentApp->miniAppId;
                 $mpUser->platformOpenId = $data['openId'];
@@ -149,7 +149,7 @@ class AuthController extends Controller
 
             $mpUser['token'] = $token;
 
-            Cache::put($token.'_session', $session, 60);
+            Cache::put($token . '_session', $session, 60);
 
             return $this->response()
                 ->item($mpUser, new MpUserTransformer());
@@ -158,14 +158,16 @@ class AuthController extends Controller
         }
     }
 
-    public function ticketsCount(MpUser $user) {
+    public function ticketsCount(MpUser $user)
+    {
         return (new CustomerTicketCard)->where(['customer_id' => $user->id, 'status' => CustomerTicketCard::STATUS_ON])
-            ->whereHas('card', function ($query){
+            ->whereHas('card', function ($query) {
                 $query->whereIn('card_type', [Card::DISCOUNT, Card::CASH]);
                 $query->where('app_id', app(AppManager::class)->getAppId());
-            })->where('card_id','!=', '')
+            })->where('card_id', '!=', '')
             ->count();
     }
+
     /**
      * 获取用户信息
      * @return \Dingo\Api\Http\Response
@@ -188,6 +190,41 @@ class AuthController extends Controller
     }
 
     /**
+     * 获取用户余额
+     */
+    public function balance()
+    {
+        $user = $this->mpUser();
+
+        $balance = 0;
+        $member = $user->member;
+        if ($member) {
+            $balance += $member->balance;
+        }
+
+        $userRechargeableCards = $user->rechargeableCardRecords()->with([
+            'rechargeableCard' => function ($query) {
+                $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
+            }
+        ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
+
+        $limitCard = false;
+        $today = Carbon::now();
+        /** @var UserRechargeableCard $userRechargeableCard */
+        foreach ($userRechargeableCards as $userRechargeableCard) {
+            $rechargeableCard = $userRechargeableCard->rechargeableCard;
+            if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
+                $balance += $userRechargeableCard->amount / 100;
+            } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
+                $balance += $userRechargeableCard->amount / 100;
+                $limitCard = true;
+            }
+        }
+
+        return $this->response(new JsonResponse(['balance' => $balance]));
+    }
+
+    /**
      * 判断是否为当前的小程序
      * @param Request $request
      * @return \Dingo\Api\Http\Response
@@ -198,12 +235,12 @@ class AuthController extends Controller
         $request = $request->all();
 
         $item = $this->appRepository
-            ->findWhere(['id'=>$request['app_id']])
+            ->findWhere(['id' => $request['app_id']])
             ->first();
 
-        $sign = md5(md5($item['id'].$item['secret']).$request['timestamp']);
+        $sign = md5(md5($item['id'] . $item['secret']) . $request['timestamp']);
 
-        if ($request['sign'] == $sign){
+        if ($request['sign'] == $sign) {
             $accessToken = Hash::make($item['id'], with($item, function (App $app) {
                 return $app->toArray();
             }));
@@ -216,7 +253,7 @@ class AuthController extends Controller
 
             return $this->response()
                 ->item($item, new AppAccessTransformer());
-        }else{
+        } else {
             $errCode = 'sign签名错误';
             throw new UserCodeException($errCode);
         }
@@ -239,29 +276,29 @@ class AuthController extends Controller
             ->auth
             ->session($code);
 
-        cache([$accessToken.'_session'=> $session], config('jwt.ttl'));
+        cache([$accessToken . '_session' => $session], config('jwt.ttl'));
         Log::info("==== wx session access token =======\n", cache("{$accessToken}_session"));
         $mpUser = $this->mpUserRepository
             ->findByField('platform_open_id', $session['openid'])
             ->first();
 
-        if(!$mpUser)
+        if (!$mpUser)
             $mpUser = new MpUser();
         $now = Carbon::now();
         $mpSession = [
             'open_id' => $session['openid'],
             'session_key' => $session['session_key'],
-            'over_date' => $now->copy()->addMinute( config('jwt.ttl'))->format('Y-m-d H:i:s')
+            'over_date' => $now->copy()->addMinute(config('jwt.ttl'))->format('Y-m-d H:i:s')
         ];
 
-        if($session) {
+        if ($session) {
             $shopUser = $this->shopRepository
-                ->findWhere(['user_id'  =>  $mpUser['member_id']])
+                ->findWhere(['user_id' => $mpUser['member_id']])
                 ->first();
 
 
-            with($mpUser, function (MpUser $mpUser) use($session){
-                if ($mpUser['member_id']){
+            with($mpUser, function (MpUser $mpUser) use ($session) {
+                if ($mpUser['member_id']) {
                     $mpUser->member()->update([
                         'last_login_at' => Carbon::now()
                     ]);
@@ -284,7 +321,7 @@ class AuthController extends Controller
             ];
 
             $token = Auth::attempt($param);
-            Cache::put($token.'_session', $session,  config('jwt.ttl'));
+            Cache::put($token . '_session', $session, config('jwt.ttl'));
 
             $mpUser['token'] = $token;
 
@@ -314,15 +351,15 @@ class AuthController extends Controller
 
         if ($errCode == 0) {
             $user = $mpUser->only(['nickname', 'city', 'province', 'city', 'avatar', 'can_use_score', 'total_score',
-                'score', 'sex','app_id']);
+                'score', 'sex', 'app_id']);
 
             $user['mobile'] = $data['phoneNumber'];
             $user['user_name'] = $data['phoneNumber'];
 
             $member = $this->userRepository->findWhere(['mobile' => $user['mobile']])->first();
-            if($member) {
+            if ($member) {
                 $member->update($user);
-            }else{
+            } else {
                 $member = $this->userRepository->create($user);
             }
 
@@ -332,7 +369,7 @@ class AuthController extends Controller
                 ->save($mpUser);
 
             return $this->response(new JsonResponse(['mobile' => $user['mobile']]));
-        }else{
+        } else {
             throw new UserCodeException($errCode);
         }
     }
@@ -352,7 +389,7 @@ class AuthController extends Controller
             'type' => Customer::ALIPAY_MINI_PROGRAM,
             'platform_open_id' => $token['user_id']
         ])->first();
-        if(!$customer) {
+        if (!$customer) {
             $customer = (new MpUser())->create([
                 'app_id' => $appId,
                 'platform_app_id' => $aliAppId,
@@ -360,7 +397,7 @@ class AuthController extends Controller
                 'platform_open_id' => $token['user_id'],
                 'session_key' => $token['access_token']
             ]);
-        }else {
+        } else {
             $customer->update([
                 'session_key' => $token['access_token']
             ]);
