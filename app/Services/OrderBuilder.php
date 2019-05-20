@@ -279,14 +279,14 @@ class OrderBuilder implements InterfaceServiceHandler
                     $subOrder = $this->buildOrderItem($product, $orderItem['quality'], $orderItem['customer_id']);
                     $subOrder = $subOrder->merge($orderItemProduct);
                 } elseif (isset($orderItem['merchandise_id'])) {
-                    if ($orderItem['activity_id']) {
+                    if (isset($orderItem['activity_id']) && $orderItem['activity_id']) {
                         $repository = app()->make(ActivityMerchandiseRepository::class);
                         $goods = $repository->scopeQuery(function (ActivityMerchandise $merchandise) use ($orderItem) {
                             return $merchandise->with('merchandise')
                                 ->whereActivityId($orderItem['activity_id'])
                                 ->whereMerchandiseId($orderItem['merchandise_id']);
                         })->first();
-                    } elseif ($orderItem['shop_id']) {
+                    } elseif (isset($orderItem['shop_id']) && $orderItem['shop_id']) {
                         $repository = app()->make(ShopMerchandiseRepository::class);
                         $goods = $repository->scopeQuery(function (ShopMerchandise $merchandise) use ($orderItem) {
                             return $merchandise->with('merchandise')
