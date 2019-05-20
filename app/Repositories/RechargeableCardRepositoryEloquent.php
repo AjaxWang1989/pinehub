@@ -127,9 +127,9 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
                     if ($cardType) {
                         $query->where('card_type', $cardType);
                     }
-                    if ($unLimitCard) {
-                        $query->where('type', '<>', RechargeableCard::TYPE_INDEFINITE);
-                    }
+//                    if ($unLimitCard) {
+//                        $query->where('type', '<>', RechargeableCard::TYPE_INDEFINITE);
+//                    }
                 });
             })->all();
         } else {

@@ -314,6 +314,7 @@ class OrderController extends Controller
             $paymentAmount = $priceDisparity;
             $i++;
         }
+
         // 如果没有有效有限期卡或者可用储蓄卡余额不足，使用有效无限期卡余额
         if (!$limitCard || $paymentAmount > 0) {
             $priceDisparity = $paymentAmount - $unLimitCard['pivot']['amount'] / 100;
