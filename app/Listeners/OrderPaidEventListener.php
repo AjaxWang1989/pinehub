@@ -14,6 +14,7 @@ use App\Events\OrderPaidEvent;
 use App\Repositories\RechargeableCardRepository;
 use App\Repositories\UserRechargeableCardRepository;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class OrderPaidEventListener
 {
@@ -28,6 +29,7 @@ class OrderPaidEventListener
         $order = $event->order;
         $merchandiseIds = $order->orderItems()->pluck('merchandise_id');
         $rechargeableCards = $rechargeableCardRepository->findWhereIn('merchandise_id', $merchandiseIds->toArray());
+        Log::info('订单中卡种数量为：' . count($rechargeableCards));
         if (count($rechargeableCards) <= 0) {
             return;
         }

@@ -368,6 +368,7 @@ class OrderController extends Controller
             });
         } else {
             $orderItem = [
+                'merchandise_id' => $merchandise->id,
                 'total_amount' => $merchandise->sellPrice,
                 'payment_amount' => $merchandise->sellPrice,
                 'discount_amount' => 0,
