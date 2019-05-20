@@ -132,11 +132,11 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
 
             $priceDisparity = $amount - $balance;// 差价，基于差价选择推荐卡种
 
-            $rechargeableCards = $this->scopeQuery(function (RechargeableCard $rechargeableCard) use ($priceDisparity, $cardType, $unLimitCard) {
+            $rechargeableCards = $this->scopeQuery(function (RechargeableCard $rechargeableCard) use ($priceDisparity, $cardType) {
                 /*
                  * 选择卡种：卡内金额大于等于差价 且 唯一性无限期储值
                  */
-                return $rechargeableCard->active()->where(function (Builder $query) use ($priceDisparity, $cardType, $unLimitCard) {
+                return $rechargeableCard->active()->where(function (Builder $query) use ($priceDisparity, $cardType) {
                     if ($priceDisparity > 0) {
                         $query->where('amount', '>=', $priceDisparity * 100);
                     }
