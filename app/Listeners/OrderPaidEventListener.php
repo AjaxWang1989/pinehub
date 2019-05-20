@@ -51,7 +51,10 @@ class OrderPaidEventListener
                     ->scopeQuery(function (Builder $query) use ($order) {
                         return $query->where(function (Builder $query) use ($order) {
                             $query->where('customer_id', $order->customerId)
-                                ->where('user_id', $order->memberId)->where('type', '<>', RechargeableCard::TYPE_INDEFINITE)
+                                ->where('user_id', $order->memberId)
+                                ->whereHas('rechargeableCard', function ($query) {
+                                    $query->where('type', '=', RechargeableCard::TYPE_INDEFINITE);
+                                })
                                 ->where('status', '=', UserRechargeableCard::STATUS_VALID);
                         });
                     })->all();
