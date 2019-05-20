@@ -7,6 +7,7 @@
 
 namespace App\Entities;
 
+use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -57,7 +58,7 @@ use Illuminate\Support\Carbon;
  */
 class UserRechargeableCard extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, ModelAttributesAccess;
 
     protected $fillable = [
         'user_id', 'customer_id', 'rechargeable_card_id', 'order_id', 'amount', 'valid_at', 'invalid_at', 'is_auto_renew', 'status'
