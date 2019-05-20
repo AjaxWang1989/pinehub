@@ -19,10 +19,10 @@ class OrderCreateEventListener
     {
     }
 
-    public function handle(OrderCreateEvent $event,
-                           RechargeableCardRepository $rechargeableCardRepository,
-                           UserRechargeableCardConsumeRecordRepository $consumeRepository)
+    public function handle(OrderCreateEvent $event)
     {
+        $rechargeableCardRepository = app(RechargeableCardRepository::class);
+        $consumeRepository = app(UserRechargeableCardConsumeRecordRepository::class);
         $order = $event->order;
         $merchandiseIds = $order->orderItems()->pluck('merchandise_id');
         $rechargeableCards = $rechargeableCardRepository->findWhereIn('merchandise_id', $merchandiseIds->toArray());
