@@ -25,8 +25,9 @@ class UserRechargeableCardConsumeOrderTransformer extends TransformerAbstract
             'id' => $consumeRecord,
             'type_desc' => $consumeRecord->typeDesc,
             'type' => $consumeRecord->type,
-            'consume' => $consumeRecord->consume / 100,// 单位：元
-            'save' => $consumeRecord->save * 100,
+            'consume' => UserRechargeableCardConsumeRecord::SIGNS[$consumeRecord->type] . number_format($consumeRecord->consume / 100, 2),// 单位：元
+            'save' => number_format($consumeRecord->save * 100, 2),
+            'created_at' => (string)$consumeRecord->createdAt
         ];
     }
 

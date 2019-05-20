@@ -3,6 +3,7 @@
 namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,6 +19,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $rechargeableCardId 卡片ID
  * @property int $userRechargeableCardId
  * @property int $type 类型 1->充值 2->消费
+ * @property Carbon|null $createdAt
  * @property-read string $typeDesc
  * @property int $consume 消费金额，单位：分
  * @property int $save 节省金额，单位：分
@@ -43,8 +45,12 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
     const TYPE_BUY = 1;
     const TYPE_CONSUME = 2;
     const TYPES = [
-        self::TYPE_BUY => '购买',
+        self::TYPE_BUY => '充值',
         self::TYPE_CONSUME => '消费'
+    ];
+    const SIGNS = [
+        self::TYPE_BUY => '+',
+        self::TYPE_CONSUME => '-'
     ];
 
     /**
