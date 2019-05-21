@@ -345,6 +345,8 @@ class OrderController extends Controller
             }
         }
 
+        Log::info('余额支付：', ['payment' => $paymentAmount, 'consumeRecords' => $consumeRecords]);
+
         return [$paymentAmount, $consumeRecords];
     }
 

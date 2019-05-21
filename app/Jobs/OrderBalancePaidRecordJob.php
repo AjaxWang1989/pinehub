@@ -12,6 +12,7 @@ use App\Entities\UserRechargeableCard;
 use App\Repositories\OrderRepository;
 use App\Repositories\UserRechargeableCardConsumeRecordRepository;
 use App\Repositories\UserRechargeableCardRepository;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class OrderBalancePaidRecord
@@ -43,6 +44,7 @@ class OrderBalancePaidRecordJob extends Job
 
         if (in_array($order->status, [Order::PAID, Order::SEND, Order::COMPLETED])) {
             foreach ($this->consumeRecords as $consumeRecord) {
+                Log::info('余额消费记录：', [$consumeRecord]);
                 $consumeRecord['order_id'] = $this->orderId;
                 $consumeRecordRepository->create($consumeRecord);
                 /** @var UserRechargeableCard $userRechargeableCardRecord */
