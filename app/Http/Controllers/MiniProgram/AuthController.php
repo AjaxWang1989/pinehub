@@ -221,6 +221,8 @@ class AuthController extends Controller
             }
         }
 
+        $balance = number_format($balance, 2);
+
         return $this->response(new JsonResponse(['balance' => $balance]));
     }
 
