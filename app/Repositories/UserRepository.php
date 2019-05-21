@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Entities\User;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -11,6 +12,7 @@ use Prettus\Repository\Contracts\RepositoryInterface;
  */
 interface UserRepository extends RepositoryInterface
 {
-    //
     public function pushCriteria($class);
+
+    public function getBalance(User $user);
 }

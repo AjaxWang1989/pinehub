@@ -13,8 +13,6 @@ use App\Entities\Card;
 use App\Entities\Customer;
 use App\Entities\CustomerTicketCard;
 use App\Entities\MpUser;
-use App\Entities\RechargeableCard;
-use App\Entities\UserRechargeableCard;
 use App\Exceptions\UserCodeException;
 use App\Http\Requests\CreateRequest;
 use App\Http\Response\JsonResponse;
@@ -30,6 +28,8 @@ use App\Transformers\Mp\MpUserTransformer;
 use App\Transformers\Mp\MvpLoginTransformer;
 use Carbon\Carbon;
 use Dingo\Api\Http\Request;
+use Dingo\Api\Http\Response;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
@@ -87,7 +87,7 @@ class AuthController extends Controller
     /**
      * 注册
      * @param CreateRequest $request
-     * @return AuthController|\Dingo\Api\Http\Response|
+     * @return AuthController|Response|
      * \Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|
      * \Laravel\Lumen\Application|mixed
      */
@@ -170,9 +170,10 @@ class AuthController extends Controller
 
     /**
      * 获取用户信息
-     * @return \Dingo\Api\Http\Response
+     * @param UserRepository $userRepository
+     * @return Response
      */
-    public function userInfo()
+    public function userInfo(UserRepository $userRepository)
     {
         $user = $this->mpUser();
 
@@ -185,43 +186,22 @@ class AuthController extends Controller
         $user['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
         $user['open_id'] = $user->platformOpenId;
 
+        $user['balance'] = $userRepository->getBalance($user->member);
+
         return $this->response()
             ->item($user, new MpUserInfoMobileTransformer());
     }
 
     /**
      * 获取用户余额
+     * @param UserRepository $userRepository
+     * @return AuthController|Application|\Laravel\Lumen\Application|mixed
      */
-    public function balance()
+    public function userBalance(UserRepository $userRepository)
     {
         $user = $this->mpUser();
 
-        $balance = 0;
-        $member = $user->member;
-        if ($member) {
-            $balance += $member->balance;
-        }
-
-        $userRechargeableCards = $user->rechargeableCardRecords()->with([
-            'rechargeableCard' => function ($query) {
-                $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
-            }
-        ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
-
-        $limitCard = false;
-        $today = Carbon::now();
-        /** @var UserRechargeableCard $userRechargeableCard */
-        foreach ($userRechargeableCards as $userRechargeableCard) {
-            $rechargeableCard = $userRechargeableCard->rechargeableCard;
-            if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
-                $balance += $userRechargeableCard->amount / 100;
-            } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
-                $balance += $userRechargeableCard->amount / 100;
-                $limitCard = true;
-            }
-        }
-
-        $balance = number_format($balance, 2);
+        $balance = $userRepository->getBalance($user->member);
 
         return $this->response(new JsonResponse(['balance' => $balance]));
     }
@@ -229,7 +209,7 @@ class AuthController extends Controller
     /**
      * 判断是否为当前的小程序
      * @param Request $request
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
 
     public function appAccess(Request $request)
@@ -265,7 +245,7 @@ class AuthController extends Controller
      * 用户登陆
      * @param string $code
      * @param Request $request
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \Exception
      */
@@ -337,7 +317,7 @@ class AuthController extends Controller
     /**
      * 保存手机号
      * @param Request $request
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function saveMobile(Request $request)
     {
