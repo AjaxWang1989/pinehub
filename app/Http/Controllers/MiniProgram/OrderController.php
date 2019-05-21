@@ -278,6 +278,7 @@ class OrderController extends Controller
                 $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
             }
         ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
+        Log::info('余额消费，用户持有有效储蓄卡：', [$userRechargeableCards]);
 
         $limitCard = false;
         $unLimitCard = [];
