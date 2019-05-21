@@ -122,9 +122,9 @@ class RechargeableCardController extends Controller
             }
             if (isset($postData['on_sale'])) {
                 if ($postData['on_sale']) {
-                    $price = $rechargeableCard->preferentialPrice;
+                    $price = $rechargeableCard->preferentialPrice / 100;
                 } else {
-                    $price = $rechargeableCard->price;
+                    $price = $rechargeableCard->price / 100;
                 }
                 $merchandiseDataNeedUpdate['origin_price'] = $price;
                 $merchandiseDataNeedUpdate['sell_price'] = $price;
