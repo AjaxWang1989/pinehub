@@ -34,9 +34,9 @@ class OrderCreateRequest extends FormRequest
     {
         return [
             //
-            'receiver_name' => 'required|string',
-            'receiver_address' => 'nullable|string',
-            'receiver_mobile' => 'nullable|mobile',
+//            'receiver_name' => 'required|string',
+//            'receiver_address' => 'nullable|string',
+//            'receiver_mobile' => 'nullable|mobile',
             'comment' => 'nullable|string',
             'type' => Rule::in(Order::OFF_LINE_PAYMENT_ORDER, Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER,
                 Order::SHOP_PURCHASE_ORDER),
@@ -44,8 +44,11 @@ class OrderCreateRequest extends FormRequest
             'card_id' => 'nullable|string',
             'store_id' => 'nullable|integer',
             'activity_id' => 'nullable|integer',
-            'activity_merchandises_id' =>'nullable|integer',
-            'pick_up_method' => Rule::in(Order::USER_SELF_PICK_UP, Order::SEND_ORDER_TO_USER, Order::NOT_NEED_PICK_UP_METHOD)
+            'activity_merchandises_id' => 'nullable|integer',
+            'pick_up_method' => [
+                'nullable',
+                Rule::in(Order::USER_SELF_PICK_UP, Order::SEND_ORDER_TO_USER, Order::NOT_NEED_PICK_UP_METHOD)
+            ]
         ];
     }
 
