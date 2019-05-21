@@ -111,14 +111,27 @@ class RechargeableCardController extends Controller
             $this->validator->with($postData)->passesOrFail(ValidatorInterface::RULE_UPDATE);
             /** @var RechargeableCard $rechargeableCard */
             $rechargeableCard = $this->repository->update($postData, $id);
+            $merchandiseDataNeedUpdate = [];
             if (isset($postData['status'])) {
                 if (in_array($postData['status'], [RechargeableCard::STATUS_ON, RechargeableCard::STATUS_PREFERENTIAL])) {
-                    $rechargeableCard->merchandise()->update(['status' => Merchandise::UP]);
+                    $merchandiseDataNeedUpdate['status'] = Merchandise::UP;
                 }
                 if ($postData['status'] === RechargeableCard::STATUS_OFF) {
-                    $rechargeableCard->merchandise()->update(['status' => Merchandise::DOWN]);
+                    $merchandiseDataNeedUpdate['status'] = Merchandise::DOWN;
                 }
             }
+            if (isset($postData['on_sale'])) {
+                if ($postData['on_sale']) {
+                    $price = $rechargeableCard->preferentialPrice;
+                } else {
+                    $price = $rechargeableCard->price;
+                }
+                $merchandiseDataNeedUpdate['origin_price'] = $price;
+                $merchandiseDataNeedUpdate['sell_price'] = $price;
+                $merchandiseDataNeedUpdate['cost_price'] = $price;
+                $merchandiseDataNeedUpdate['factory_price'] = $price;
+            }
+            $rechargeableCard->merchandise()->update($merchandiseDataNeedUpdate);
         } catch (ValidatorException $exception) {
             throw new HttpValidationException($exception->getMessageBag());
         }
