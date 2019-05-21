@@ -339,6 +339,7 @@ class OrderController extends Controller
                     $consumeRecords[$i]['consume'] = $userRechargeableCard->amount;
                     $consumeRecords[$i]['save'] = $userRechargeableCard->amount * $saveRate;
                 }
+                $i++;
                 $paymentAmount = $priceDisparity > 0 ? $priceDisparity : 0;
                 if ($paymentAmount === 0) {
                     break;
