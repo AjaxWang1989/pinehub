@@ -185,7 +185,8 @@ class OrderController extends Controller
                 if ($paymentAmount) {
                     return $this->response(new JsonResponse(['status' => false, 'msg' => '余额不足，请先充值']));
                 }
-                $order->status = Order::PAID;
+//                $order->status = Order::PAID;
+                $order->status = Order::COMPLETED;
                 $order->save();
                 $job = (new OrderBalancePaidRecordJob($order->id, $consumeRecords))->delay(3);
                 dispatch($job);
