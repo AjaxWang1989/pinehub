@@ -7,6 +7,7 @@ use App\Entities\User;
 use App\Entities\UserRechargeableCard;
 use App\Repositories\Traits\Destruct;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -72,6 +73,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         /** @var UserRechargeableCard $userRechargeableCard */
         foreach ($userRechargeableCards as $userRechargeableCard) {
             $rechargeableCard = $userRechargeableCard->rechargeableCard;
+            Log::info('%%%%%卡片%%%%%：', [$rechargeableCard]);
             if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
                 $balance += $userRechargeableCard->amount;
             } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
