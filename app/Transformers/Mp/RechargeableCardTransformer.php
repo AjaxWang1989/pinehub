@@ -14,6 +14,9 @@ class RechargeableCardTransformer extends TransformerAbstract
 {
     public function transform(RechargeableCard $rechargeableCard)
     {
+        $giftAmount = $rechargeableCard->onSale ? ($rechargeableCard->amount - $rechargeableCard->price) :
+            ($rechargeableCard->amount - $rechargeableCard->preferentialPrice);
+
         return [
             'id' => $rechargeableCard->id,
             'name' => $rechargeableCard->name,
@@ -22,6 +25,7 @@ class RechargeableCardTransformer extends TransformerAbstract
             'price' => (double)$rechargeableCard->price / 100,
             'amount' => (double)$rechargeableCard->amount / 100,
             'on_sale' => $rechargeableCard->onSale,
+            'gift_amount' => $giftAmount,
             'preferential_price' => (double)$rechargeableCard->preferentialPrice / 100,
             'auto_renew_price' => (double)$rechargeableCard->autoRenewPrice / 100,
             'card_type_desc' => $rechargeableCard->cardTypeDesc,
