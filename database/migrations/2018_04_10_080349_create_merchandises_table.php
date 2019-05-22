@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateMerchandisesTable extends Migration
 {
@@ -31,9 +31,10 @@ class CreateMerchandisesTable extends Migration
                 ->default(UNLIMITED_MERCHANDISE)
                 ->comment('产品类型');
             $table->unsignedInteger('capacity')->default(0)->comment('产能（工厂生产能力）');
-            $table->unsignedInteger('stock_num')->default(0)->comment('库存');
+            $table->integer('stock_num')->default(0)->comment('库存');
             $table->unsignedInteger('sell_num')->default('0')->comment('已售出数量');
             $table->unsignedTinyInteger('status')->default(0)->comment('状态：0-下架 1-上架');
+            $table->string('merchandisescol', 45)->nullable();
             $table->timestamps();
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_unicode_ci';

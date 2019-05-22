@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateCategoriesTable extends Migration
 {
@@ -18,6 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->string('app_id', 16)->nullable()->default(null)->comment('系统app id');
             $table->string('icon')->default(null)->comment('图标');
             $table->string('name', 8)->unique()->comment('分类名称');
+            $table->string('key', 50);
             $table->unsignedInteger('parent_id')->default(null)->comment('分类父级');
             $table->timestamps();
             $table->softDeletes();
