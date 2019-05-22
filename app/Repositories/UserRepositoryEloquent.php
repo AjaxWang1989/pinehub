@@ -66,7 +66,7 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
             'rechargeableCard' => function ($query) {
                 $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
             }
-        ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
+        ])->withTrashed()->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
 
         $limitCard = false;
         $today = Carbon::now();
