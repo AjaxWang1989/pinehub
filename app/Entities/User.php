@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Laravel\Lumen\Auth\Authorizable;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -86,7 +86,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
-    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess, SoftDeletes;
+    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
 
     const FREEZE_ACCOUNT = 0;
     const ACTIVATED_ACCOUNT = 1;
@@ -186,7 +186,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     // 用户持有卡种记录，如剩余金额，有效期等
     public function rechargeableCardRecords(): HasMany
     {
-        return $this->hasMany(UserRechargeableCard::class, 'user_id', 'id')->withTrashed();
+        return $this->hasMany(UserRechargeableCard::class, 'user_id', 'id')->withoutGlobalScope(SoftDeletingScope::class¬¬);
     }
 
     public function indefiniteRechargeCardRecords(): HasMany
