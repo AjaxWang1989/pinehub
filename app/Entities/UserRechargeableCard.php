@@ -11,6 +11,7 @@ use App\Entities\Traits\ModelAttributesAccess;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Carbon;
 
 /**
@@ -98,7 +99,7 @@ class UserRechargeableCard extends Model
 
     public function rechargeableCard(): BelongsTo
     {
-        return $this->belongsTo(RechargeableCard::class, 'rechargeable_card_id');
+        return $this->belongsTo(RechargeableCard::class, 'rechargeable_card_id')->withoutGlobalScope(SoftDeletingScope::class);
     }
 
     // 状态中文描述

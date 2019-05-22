@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Laravel\Lumen\Auth\Authorizable;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -186,7 +185,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     // 用户持有卡种记录，如剩余金额，有效期等
     public function rechargeableCardRecords(): HasMany
     {
-        return $this->hasMany(UserRechargeableCard::class, 'user_id', 'id')->withoutGlobalScope(SoftDeletingScope::class);
+        return $this->hasMany(UserRechargeableCard::class, 'user_id', 'id');
     }
 
     public function indefiniteRechargeCardRecords(): HasMany
