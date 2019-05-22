@@ -72,13 +72,11 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         /** @var UserRechargeableCard $userRechargeableCard */
         foreach ($userRechargeableCards as $userRechargeableCard) {
             $rechargeableCard = $userRechargeableCard->rechargeableCard;
-            if ($rechargeableCard) {
-                if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
-                    $balance += $userRechargeableCard->amount;
-                } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
-                    $balance += $userRechargeableCard->amount;
-                    $limitCard = true;
-                }
+            if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
+                $balance += $userRechargeableCard->amount;
+            } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
+                $balance += $userRechargeableCard->amount;
+                $limitCard = true;
             }
         }
 
