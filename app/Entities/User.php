@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Lumen\Auth\Authorizable;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
@@ -85,7 +86,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  */
 class User extends Model implements AuthenticatableContract, AuthorizableContract, Transformable
 {
-    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess;
+    use Authenticatable, Authorizable, TransformableTrait, ModelAttributesAccess, SoftDeletes;
 
     const FREEZE_ACCOUNT = 0;
     const ACTIVATED_ACCOUNT = 1;
