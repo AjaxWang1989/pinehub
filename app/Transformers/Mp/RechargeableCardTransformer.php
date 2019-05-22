@@ -25,7 +25,7 @@ class RechargeableCardTransformer extends TransformerAbstract
             'price' => (double)$rechargeableCard->price / 100,
             'amount' => (double)$rechargeableCard->amount / 100,
             'on_sale' => $rechargeableCard->onSale,
-            'gift_amount' => $giftAmount,
+            'gift_amount' => (double)$giftAmount / 100,
             'preferential_price' => (double)$rechargeableCard->preferentialPrice / 100,
             'auto_renew_price' => (double)$rechargeableCard->autoRenewPrice / 100,
             'card_type_desc' => $rechargeableCard->cardTypeDesc,
