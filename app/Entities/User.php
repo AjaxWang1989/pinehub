@@ -185,7 +185,7 @@ class User extends Model implements AuthenticatableContract, AuthorizableContrac
     // 用户持有卡种记录，如剩余金额，有效期等
     public function rechargeableCardRecords(): HasMany
     {
-        return $this->hasMany(UserRechargeableCard::class, 'user_id', 'id');
+        return $this->hasMany(UserRechargeableCard::class, 'user_id', 'id')->withTrashed();
     }
 
     public function indefiniteRechargeCardRecords(): HasMany
