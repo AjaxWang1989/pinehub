@@ -7,6 +7,7 @@ use App\Entities\User;
 use App\Entities\UserRechargeableCard;
 use App\Repositories\Traits\Destruct;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 
@@ -63,10 +64,10 @@ class UserRepositoryEloquent extends BaseRepository implements UserRepository
         }
 
         $userRechargeableCards = $user->rechargeableCardRecords()->with([
-            'rechargeableCard' => function ($query) {
-                $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
+            'rechargeableCard' => function (Builder $query) {
+                $query->withTrashed()->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
             }
-        ])->withTrashed()->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
+        ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
 
         $limitCard = false;
         $today = Carbon::now();
