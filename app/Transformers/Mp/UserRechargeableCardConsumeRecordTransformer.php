@@ -1,6 +1,6 @@
 <?php
 /**
- * UserRechargeableCardConsumeOrderTransformer.php
+ * UserRechargeableCardConsumeRecordTransformer.php
  * User: katherine
  * Date: 19-5-20 下午11:52
  */
@@ -11,7 +11,7 @@ use App\Entities\UserRechargeableCardConsumeRecord;
 use App\Transformers\OrderTransformer;
 use League\Fractal\TransformerAbstract;
 
-class UserRechargeableCardConsumeOrderTransformer extends TransformerAbstract
+class UserRechargeableCardConsumeRecordTransformer extends TransformerAbstract
 {
     protected $availableIncludes = [
         'rechargeableCard',

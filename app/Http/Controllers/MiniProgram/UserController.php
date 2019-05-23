@@ -17,7 +17,7 @@ use App\Repositories\FeedBackMessageRepository;
 use App\Repositories\ShoppingCartRepository;
 use App\Transformers\Mp\CustomerTicketCardTransformer;
 use App\Transformers\Mp\FeedBackMessageTransformer;
-use App\Transformers\Mp\UserRechargeableCardConsumeOrderTransformer;
+use App\Transformers\Mp\UserRechargeableCardConsumeRecordTransformer;
 use App\Transformers\Mp\UserRechargeableCardTransformer;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
@@ -179,7 +179,7 @@ class UserController extends Controller
             }
         })->orderBy('created_at', 'desc')->paginate();
 
-        return $this->response()->paginator($consumeRecords, new UserRechargeableCardConsumeOrderTransformer);
+        return $this->response()->paginator($consumeRecords, new UserRechargeableCardConsumeRecordTransformer);
     }
 
     public function userRechargeableCards()

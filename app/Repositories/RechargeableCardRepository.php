@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Entities\Customer;
+use Illuminate\Foundation\Application;
 use Prettus\Repository\Contracts\RepositoryInterface;
 use Prettus\Repository\Criteria\RequestCriteria;
 
@@ -10,7 +11,7 @@ use Prettus\Repository\Criteria\RequestCriteria;
  * Interface RechargeableCardRepository.
  *
  * @package namespace App\Repositories;
- * @method pushCriteria(\Illuminate\Foundation\Application|\Laravel\Lumen\Application|RequestCriteria $app)
+ * @method pushCriteria(Application|\Laravel\Lumen\Application|RequestCriteria $app)
  */
 interface RechargeableCardRepository extends RepositoryInterface
 {

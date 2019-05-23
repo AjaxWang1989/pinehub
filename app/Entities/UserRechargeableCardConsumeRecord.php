@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -20,6 +21,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $userRechargeableCardId
  * @property int $type 类型 1->充值 2->消费
  * @property Carbon|null $createdAt
+ * @property Carbon|null $updatedAt
  * @property-read string $typeDesc
  * @property int $consume 消费金额，单位：分
  * @property int $save 节省金额，单位：分
@@ -58,8 +60,7 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'customer_id', 'order_id', 'rechargeable_card_id',
-        'user_rechargeable_card_id', 'type', 'consume', 'save'];
+    protected $fillable = ['user_id', 'customer_id', 'order_id', 'rechargeable_card_id', 'user_rechargeable_card_id', 'type', 'consume', 'save'];
 
     // 订单
     public function order(): BelongsTo
@@ -82,7 +83,7 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
     // 卡片
     public function rechargeableCard(): BelongsTo
     {
-        return $this->belongsTo(RechargeableCard::class, 'rechargeable_card_id');
+        return $this->belongsTo(RechargeableCard::class, 'rechargeable_card_id')->withoutGlobalScope(SoftDeletingScope::class);
     }
 
     public function userRechargeableCard(): BelongsTo
