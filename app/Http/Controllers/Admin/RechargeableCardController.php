@@ -123,14 +123,17 @@ class RechargeableCardController extends Controller
             if (isset($postData['on_sale'])) {
                 if ($postData['on_sale']) {
                     $price = $rechargeableCard->preferentialPrice / 100;
+                    $rechargeableCard->status = RechargeableCard::STATUS_PREFERENTIAL;
                 } else {
                     $price = $rechargeableCard->price / 100;
+                    $rechargeableCard->status = RechargeableCard::STATUS_ON;
                 }
                 $merchandiseDataNeedUpdate['origin_price'] = $price;
                 $merchandiseDataNeedUpdate['sell_price'] = $price;
                 $merchandiseDataNeedUpdate['cost_price'] = $price;
                 $merchandiseDataNeedUpdate['factory_price'] = $price;
             }
+            $rechargeableCard->update();
             $rechargeableCard->merchandise()->update($merchandiseDataNeedUpdate);
         } catch (ValidatorException $exception) {
             throw new HttpValidationException($exception->getMessageBag());
