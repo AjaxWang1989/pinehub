@@ -32,7 +32,7 @@ class UserRechargeableCardTransformer extends TransformerAbstract
             'user_id' => $model->userId,
             'customer_id' => $model->customerId,
             'order_id' => $model->orderId,
-            'amount' => $model->amount,
+            'amount' => number_format($model->amount / 100, 2),
             'valid_at' => (string)$model->validAt,
             'invalid_at' => (string)$model->invalidAt,
             'is_auto_renew' => $model->isAutoRenew,
