@@ -38,6 +38,7 @@ class OrderCreateEventListener
                 'order_id' => $order->id,
                 'rechargeable_card_id' => $rechargeableCard->id,
                 'type' => UserRechargeableCardConsumeRecord::TYPE_BUY,
+                'amount' => $rechargeableCard->amount,// 记录卡内总额
             ];
             $consumeRepository->create($consumeData);
         }

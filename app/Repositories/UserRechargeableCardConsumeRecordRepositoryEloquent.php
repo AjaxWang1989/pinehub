@@ -53,7 +53,23 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
      */
     public function getStatistics(array $params): array
     {
+        $result = $this->scopeQuery(function ($query) {
+            return $query->selectRaw("count(*) as buy_count,sum(consume) as consume_count,sum(amount-consume) as gift_count")
+                ->where('type', UserRechargeableCardConsumeRecord::TYPE_BUY);
+        })->get()[0]->toArray();
+        $result['consume_count'] = number_format($result['consume_count'] / 100, 2);
+        $result['gift_count'] = number_format($result['gift_count'] / 100, 2);
 
+        /** @var UserRechargeableCardRepositoryEloquent $userRechargeableCardRepository */
+        $userRechargeableCardRepository = app(UserRechargeableCardRepository::class);
+        $balanceAmount = $userRechargeableCardRepository->scopeQuery(function ($query) {
+            return $query->selectRaw("sum(amount) as balance_amount");
+        })->get()[0]->toArray();
+        $balanceAmount['balance_amount'] = number_format($balanceAmount['balance_amount'] / 100, 2);
+
+        $return = array_merge($result, $balanceAmount);
+
+        return $return;
     }
 
     /**
@@ -81,21 +97,18 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
                     $query->whereDate('created_at', '>=', $params['end_at']);
                 }
             });
-        })->with([
-            'user' => function ($query) use ($params) {
-                if (isset($params['user_mobile'])) {
-                    $query->whereMobile($params['user_mobile']);
-                }
-                if (isset($params['user_nickname'])) {
-                    $query->whereOr('nick_name', 'like', '%' . $params['user_nickname'] . '%');
-                }
-            },
-            'rechargeableCard' => function ($query) use ($params) {
-                if (isset($params['rechargeable_card_name'])) {
-                    $query->where('name', 'like', '%' . $params['rechargeable_card_name'] . '%');
-                }
+        })->whereHas('user', function ($query) use ($params) {
+            if (isset($params['user_mobile'])) {
+                $query->whereMobile($params['user_mobile']);
             }
-        ])->orderBy('created_at', 'desc')->paginate(request()->input('limit', PAGE_LIMIT));
+            if (isset($params['user_nickname'])) {
+                $query->whereOr('nickname', 'like', '%' . $params['user_nickname'] . '%');
+            }
+        })->whereHas('rechargeableCard', function ($query) use ($params) {
+            if (isset($params['rechargeable_card_name'])) {
+                $query->where('name', 'like', '%' . $params['rechargeable_card_name'] . '%');
+            }
+        })->orderBy('created_at', 'desc')->paginate(request()->input('limit', PAGE_LIMIT));
 
         return $recordPaginator;
     }

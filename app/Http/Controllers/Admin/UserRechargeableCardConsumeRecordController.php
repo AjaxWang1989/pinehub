@@ -46,6 +46,6 @@ class UserRechargeableCardConsumeRecordController extends Controller
 
         $statistics = $this->repository->getStatistics($params);
 
-        return $this->response(new JsonResponse(['data' => $statistics]));
+        return $this->response(new JsonResponse($statistics));
     }
 }
