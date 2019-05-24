@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Entities\UserRechargeableCardConsumeRecord;
 use App\Validators\Admin\UserRechargeableCardConsumeRecordValidator;
-use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Builder;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 
@@ -58,15 +58,45 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
 
     /**
      * 获取消费列表
+     * @param array $params 查询参数
+     * params consists of : [
+     *      user_mobile,user_nickname ...
+     * ]
+     * @return mixed
      */
-    public function getList()
+    public function getList(array $params)
     {
-        $this->scopeQuery(function (UserRechargeableCardConsumeRecord $consumeRecord) use ($params) {
+        $recordPaginator = $this->scopeQuery(function ($consumeRecord) use ($params) {
             return $consumeRecord->where(function (Builder $query) use ($params) {
-                if (isset($params['mobile'])) {
-                    $query->
+                if (isset($params['type'])) {
+                    $query->where('type', $params['type']);
+                }
+                if (isset($params['channel'])) {
+                    $query->where('channel', '=', $params['channel']);
+                }
+                if (isset($params['start_at'])) {
+                    $query->whereDate('created_at', '<=', $params['start_at']);
+                }
+                if (isset($params['end_at'])) {
+                    $query->whereDate('created_at', '>=', $params['end_at']);
                 }
             });
-        });
+        })->with([
+            'user' => function ($query) use ($params) {
+                if (isset($params['user_mobile'])) {
+                    $query->whereMobile($params['user_mobile']);
+                }
+                if (isset($params['user_nickname'])) {
+                    $query->whereOr('nick_name', 'like', '%' . $params['user_nickname'] . '%');
+                }
+            },
+            'rechargeableCard' => function ($query) use ($params) {
+                if (isset($params['rechargeable_card_name'])) {
+                    $query->where('name', 'like', '%' . $params['rechargeable_card_name'] . '%');
+                }
+            }
+        ])->orderBy('created_at', 'desc')->paginate(request()->input('limit', PAGE_LIMIT));
+
+        return $recordPaginator;
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Response\JsonResponse;
 use App\Repositories\UserRechargeableCardConsumeRecordRepository;
 use App\Transformers\UserRechargeableCardConsumeRecordTransformer;
 use Dingo\Api\Http\Request;
+use Illuminate\Foundation\Application;
 use Prettus\Repository\Criteria\RequestCriteria;
 
 class UserRechargeableCardConsumeRecordController extends Controller
@@ -27,17 +28,23 @@ class UserRechargeableCardConsumeRecordController extends Controller
 
         $this->repository->pushCriteria(app(SearchRequestCriteria::class));
 
-        $paginator = $this->repository->orderBy('created_at', 'desc')->paginate($request->input('limit', PAGE_LIMIT));
+        $params = $request->all();
+
+        $paginator = $this->repository->getList($params);
 
         return $this->response()->paginator($paginator, new UserRechargeableCardConsumeRecordTransformer);
     }
 
     /**
      * 数据统计
+     * @param Request $request
+     * @return UserRechargeableCardConsumeRecordController|Application|\Laravel\Lumen\Application|mixed
      */
-    public function statistics()
+    public function statistics(Request $request)
     {
-        $statistics = $this->repository->getStatistics();
+        $params = $request->all();
+
+        $statistics = $this->repository->getStatistics($params);
 
         return $this->response(new JsonResponse(['data' => $statistics]));
     }

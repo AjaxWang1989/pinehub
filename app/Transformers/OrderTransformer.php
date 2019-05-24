@@ -2,10 +2,10 @@
 
 namespace App\Transformers;
 
-use App\Entities\OrderItem;
 use App\Entities\Merchandise;
-use League\Fractal\TransformerAbstract;
 use App\Entities\Order;
+use App\Entities\OrderItem;
+use League\Fractal\TransformerAbstract;
 
 /**
  * Class OrderTransformer.
@@ -24,22 +24,22 @@ class OrderTransformer extends TransformerAbstract
     public function transform(Order $model)
     {
         return [
-            'id'         => (int) $model->id,
+            'id' => (int)$model->id,
             'order_item' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
                 $data = $orderItem->merchandise ?
-                    with($orderItem->merchandise, function (Merchandise $merchandise){
+                    with($orderItem->merchandise, function (Merchandise $merchandise) {
                         $data = $merchandise->only(['name', 'merchandise_id', 'sku_product_id',
-                            'main_image', 'sell_price', 'quality','origin_price','cost_price']);
-                        $data['sell_price'] = number_format($data['sell_price'], 2);
-                        $data['origin_price'] = number_format($data['origin_price'], 2);
-                        $data['cost_price'] = number_format($data['cost_price'], 2);
+                            'main_image', 'sell_price', 'quality', 'origin_price', 'cost_price']);
+                        $data['sell_price'] = (double)number_format($data['sell_price'], 2);
+                        $data['origin_price'] = (double)number_format($data['origin_price'], 2);
+                        $data['cost_price'] = (double)number_format($data['cost_price'], 2);
                         return $data;
                     }) : [];
-                $data  = array_merge($data, $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'signed_at',
+                $data = array_merge($data, $orderItem->only(['code', 'total_amount', 'payment_amount', 'discount_amount', 'signed_at',
                     'consigned_at', 'status']));
-                $data['total_amount'] = number_format($data['total_amount'], 2);
-                $data['payment_amount'] = number_format($data['payment_amount'], 2);
-                $data['discount_amount'] = number_format($data['discount_amount'], 2);
+                $data['total_amount'] = (double)number_format($data['total_amount'], 2);
+                $data['payment_amount'] = (double)number_format($data['payment_amount'], 2);
+                $data['discount_amount'] = (double)number_format($data['discount_amount'], 2);
                 $data['shop'] = $orderItem->shop ? $orderItem->shop->only(['id', 'name']) : null;
                 $data['merchandise_stock_num'] = $orderItem->merchandise && $orderItem->merchandise ?
                     $orderItem->merchandise->stockNum : 0;
@@ -49,10 +49,10 @@ class OrderTransformer extends TransformerAbstract
             }) : null,
             'code' => $model->code,
             'customer' => $model->customer ? $model->customer->only(['id', 'nickname', 'mobile']) : null,
-            'member'   => $model->member ? $model->member->only(['id', 'nickname', 'user_name', 'mobile']) : null,
-            'total_amount' => number_format($model->totalAmount, 2),
-            'payment_amount' => number_format($model->paymentAmount, 2),
-            'discount_amount' => number_format($model->discountAmount, 2),
+            'member' => $model->member ? $model->member->only(['id', 'nickname', 'user_name', 'mobile']) : null,
+            'total_amount' => (double)number_format($model->totalAmount, 2),
+            'payment_amount' => (double)number_format($model->paymentAmount, 2),
+            'discount_amount' => (double)number_format($model->discountAmount, 2),
             'paid_at' => $model->paidAt,
             'pay_type' => $model->payType,
             'status' => $model->status,

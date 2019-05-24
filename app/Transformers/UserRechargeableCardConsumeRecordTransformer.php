@@ -23,6 +23,10 @@ class UserRechargeableCardConsumeRecordTransformer extends TransformerAbstract
             'user_rechargeable_card_id' => $consumeRecord->userRechargeableCardId,
             'type' => $consumeRecord->type,
             'type_desc' => $consumeRecord->typeDesc,
+            'consume' => number_format($consumeRecord->consume / 100, 2),
+            'save' => number_format($consumeRecord->save / 100, 2),
+            'channel' => $consumeRecord->channel,
+            'channel_desc' => $consumeRecord->channelDesc,
 
             'created_at' => (string)$consumeRecord->createdAt,
             'updated_at' => (string)$consumeRecord->updatedAt
@@ -40,14 +44,14 @@ class UserRechargeableCardConsumeRecordTransformer extends TransformerAbstract
     {
         $user = $consumeRecord->user;
 
-        return $this->item($user, new UserDetailTransformer);
+        return $user ? $this->item($user, new UserDetailTransformer) : null;
     }
 
     public function includeOrder(UserRechargeableCardConsumeRecord $consumeRecord)
     {
         $order = $consumeRecord->order;
 
-        return $this->item($order, new OrderTransformer);
+        return $order ? $this->item($order, new OrderTransformer) : null;
     }
 
     public function includeUserRechargeableCard(UserRechargeableCardConsumeRecord $consumeRecord)

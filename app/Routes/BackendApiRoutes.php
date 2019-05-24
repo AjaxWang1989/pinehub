@@ -224,6 +224,11 @@ class BackendApiRoutes extends ApiRoutes
                     $router->post('/', ['as' => 'rechargeable_card.create', 'uses' => 'RechargeableCardController@store']);
                     $router->put('/{id}', ['as' => 'rechargeable_card.update', 'uses' => 'RechargeableCardController@update']);
                     $router->delete('/{id}', ['as' => 'rechargeable_card.delete', 'uses' => 'RechargeableCardController@delete']);
+
+                    $router->group(['prefix' => 'records'], function (Router $router) {
+                        $router->get('/', ['uses' => 'UserRechargeableCardConsumeRecordController@index']);
+                        $router->get('/statistics', ['uses' => 'UserRechargeableCardConsumeRecordController@statistics']);
+                    });
                 });
             });
 

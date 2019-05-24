@@ -20,9 +20,11 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property int $rechargeableCardId 卡片ID
  * @property int $userRechargeableCardId
  * @property int $type 类型 1->充值 2->消费
+ * @property int $channel 途径|通道
  * @property Carbon|null $createdAt
  * @property Carbon|null $updatedAt
  * @property-read string $typeDesc
+ * @property-read string $channelDesc
  * @property int $consume 消费金额，单位：分
  * @property int $save 节省金额，单位：分
  * @property-read Order $order 所属订单
@@ -55,12 +57,23 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
         self::TYPE_CONSUME => '-'
     ];
 
+    const CHANNELS = [
+        self::CHANNEL_WX => '微信小程序',
+        self::CHANNEL_WX_CODE_SWEEP_PAYMENT => '微信扫码付',
+        self::CHANNEL_WX_BALANCE_CENTER => '微信小程序余额中心',
+        self::CHANNEL_ALI => '支付宝小程序'
+    ];
+    const CHANNEL_WX = 100;// 仅表明微信小程序
+    const CHANNEL_WX_CODE_SWEEP_PAYMENT = 101;// 微信小程序扫码付
+    const CHANNEL_WX_BALANCE_CENTER = 102;// 微信小程序余额中心
+    const CHANNEL_ALI = 200;// 仅表明支付宝小程序
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'customer_id', 'order_id', 'rechargeable_card_id', 'user_rechargeable_card_id', 'type', 'consume', 'save'];
+    protected $fillable = ['user_id', 'customer_id', 'order_id', 'rechargeable_card_id', 'user_rechargeable_card_id', 'type', 'channel', 'consume', 'save'];
 
     // 订单
     public function order(): BelongsTo
@@ -95,6 +108,11 @@ class UserRechargeableCardConsumeRecord extends Model implements Transformable
     public function getTypeDescAttribute(): string
     {
         return self::TYPES[$this->type];
+    }
+
+    public function getChannelDescAttribute(): string
+    {
+        return self::CHANNELS[$this->channel];
     }
 
 }

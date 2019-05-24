@@ -12,6 +12,11 @@ use League\Fractal\TransformerAbstract;
  */
 class UserRechargeableCardTransformer extends TransformerAbstract
 {
+
+    protected $defaultIncludes = [
+        'rechargeableCard'
+    ];
+
     /**
      * Transform the UserRechargeableCard entity.
      *
@@ -24,9 +29,25 @@ class UserRechargeableCardTransformer extends TransformerAbstract
         return [
             'id' => (int)$model->id,
 
+            'user_id' => $model->userId,
+            'customer_id' => $model->customerId,
+            'order_id' => $model->orderId,
+            'amount' => $model->amount,
+            'valid_at' => (string)$model->validAt,
+            'invalid_at' => (string)$model->invalidAt,
+            'is_auto_renew' => $model->isAutoRenew,
+            'status' => $model->status,
+            'status_desc' => $model->statusDesc,
 
             'created_at' => (string)$model->createdAt,
             'updated_at' => (string)$model->updatedAt
         ];
+    }
+
+    public function includeRechargeableCard(UserRechargeableCard $userRechargeableCard)
+    {
+        $rechargeableCard = $userRechargeableCard->rechargeableCard;
+
+        return $this->item($rechargeableCard, new RechargeableCardTransformer);
     }
 }

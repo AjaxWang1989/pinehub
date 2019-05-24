@@ -21,4 +21,11 @@ interface UserRechargeableCardConsumeRecordRepository extends RepositoryInterfac
      * 包括但不限于：储值总额，储值次数，账户余额，获赠总额
      */
     public function getStatistics(array $params): array;
+
+    /**
+     * 获取消费列表
+     * @param array $params
+     * @return mixed
+     */
+    public function getList(array $params);
 }
