@@ -44,7 +44,7 @@ class UserRechargeableCardConsumeRecordTransformer extends TransformerAbstract
     {
         $user = $consumeRecord->user;
 
-        return $user ? $this->item($user, new UserDetailTransformer) : null;
+        return $user ? $this->item($user, new UserSimplifyTransformer) : null;
     }
 
     public function includeOrder(UserRechargeableCardConsumeRecord $consumeRecord)
