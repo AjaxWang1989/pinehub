@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Entities\UserRechargeableCardConsumeRecord;
 use App\Validators\Admin\UserRechargeableCardConsumeRecordValidator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
 
@@ -15,6 +17,11 @@ use Prettus\Repository\Eloquent\BaseRepository;
  */
 class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository implements UserRechargeableCardConsumeRecordRepository
 {
+    protected $fieldSearchable = [
+        'type' => '=',
+        'channel' => '='
+    ];
+
     /**
      * Specify Model class name
      *
@@ -82,14 +89,16 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
      */
     public function getList(array $params)
     {
+        $searchStr = Request::query('searchJson', null);
+        Log::info('search fields', [$searchStr]);
+        if ($searchStr) {
+            $searchJson = is_array($searchStr) ? $searchStr : json_decode(urldecode(base64_decode($searchStr)), true);
+            $params = array_merge($params, $searchJson);
+        }
+        Log::info('最终参数：', [$params]);
+
         $recordPaginator = $this->scopeQuery(function ($consumeRecord) use ($params) {
             return $consumeRecord->where(function (Builder $query) use ($params) {
-                if (isset($params['type'])) {
-                    $query->where('type', $params['type']);
-                }
-                if (isset($params['channel'])) {
-                    $query->where('channel', '=', $params['channel']);
-                }
                 if (isset($params['start_at'])) {
                     $query->whereDate('created_at', '<=', $params['start_at']);
                 }
@@ -99,7 +108,7 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
             });
         })->whereHas('user', function ($query) use ($params) {
             if (isset($params['user_mobile'])) {
-                $query->whereMobile($params['user_mobile']);
+                $query->where('mobile', $params['user_mobile']);
             }
             if (isset($params['user_nickname'])) {
                 $query->whereOr('nickname', 'like', '%' . $params['user_nickname'] . '%');
