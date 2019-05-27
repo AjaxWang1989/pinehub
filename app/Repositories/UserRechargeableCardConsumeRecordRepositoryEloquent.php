@@ -118,15 +118,5 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
         })->orderBy('created_at', 'desc')->paginate(request()->input('limit', PAGE_LIMIT));
 
         return $recordPaginator;
-        /*
-          ->whereHas('user', function ($query) use ($params) {
-            if (isset($params['user_mobile'])) {
-                $query->where('mobile', $params['user_mobile']);
-            }
-            if (isset($params['user_nickname'])) {
-                $query->where('nickname', 'like', '%' . $params['user_nickname'] . '%');
-            }
-        })
-         */
     }
 }
