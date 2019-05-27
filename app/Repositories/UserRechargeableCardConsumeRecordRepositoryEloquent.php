@@ -111,7 +111,7 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
                 $query->where('mobile', $params['user_mobile']);
             }
             if (isset($params['user_nickname'])) {
-                $query->whereOr('nickname', 'like', '%' . $params['user_nickname'] . '%');
+                $query->where('nickname', 'like', '%' . $params['user_nickname'] . '%');
             }
         })->whereHas('rechargeableCard', function ($query) use ($params) {
             if (isset($params['rechargeable_card_name'])) {
