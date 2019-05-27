@@ -19,7 +19,7 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
 {
     protected $fieldSearchable = [
         'type' => '=',
-        'channel' => '='
+        'channel' => '=',
     ];
 
     /**
@@ -99,11 +99,9 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
 
         $recordPaginator = $this->scopeQuery(function ($consumeRecord) use ($params) {
             return $consumeRecord->where(function (Builder $query) use ($params) {
-                if (isset($params['start_at'])) {
-                    $query->whereDate('created_at', '<=', $params['start_at']);
-                }
-                if (isset($params['end_at'])) {
-                    $query->whereDate('created_at', '>=', $params['end_at']);
+                if (isset($params['created_at'])) {
+                    $query->whereDate('created_at', '>=', $params['created_at'][0])
+                        ->whereDate('created_at', '<', $params['created_at'][1]);
                 }
             });
         })->whereHas('user', function ($query) use ($params) {
@@ -120,5 +118,15 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
         })->orderBy('created_at', 'desc')->paginate(request()->input('limit', PAGE_LIMIT));
 
         return $recordPaginator;
+        /*
+          ->whereHas('user', function ($query) use ($params) {
+            if (isset($params['user_mobile'])) {
+                $query->where('mobile', $params['user_mobile']);
+            }
+            if (isset($params['user_nickname'])) {
+                $query->where('nickname', 'like', '%' . $params['user_nickname'] . '%');
+            }
+        })
+         */
     }
 }
