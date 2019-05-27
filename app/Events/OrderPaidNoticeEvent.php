@@ -27,8 +27,26 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
     {
         //
         $this->shopId = $shopId;
-        $this->voiceText = $order->payType === Order::ALI_PAY ? "支付宝收款{$order->paymentAmount}元"
-            : "微信收款{$order->paymentAmount}元";
+
+        switch ($order->payType) {
+            case Order::ALI_PAY: {
+                if($order->pickUpMethod !== Order::CHARGE_BALANCE) {
+                    $this->voiceText = "支付宝收款{$order->paymentAmount}元";
+                }
+                break;
+            }
+            case Order::WECHAT_PAY: {
+                if($order->pickUpMethod !== Order::CHARGE_BALANCE) {
+                    $this->voiceText = "微信收款{$order->paymentAmount}元";
+                }
+                break;
+            }
+            case Order::BALANCE_PAY: {
+                $this->voiceText = "快乐松收款{$order->paymentAmount}元";
+                break;
+            }
+        }
+
     }
 
     /**
