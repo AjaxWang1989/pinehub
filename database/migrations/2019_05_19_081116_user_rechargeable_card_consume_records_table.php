@@ -29,6 +29,8 @@ class UserRechargeableCardConsumeRecordsTable extends Migration
 
             $table->unsignedInteger('type')->comment('类型 1->购买 2->消费');
 
+            $table->unsignedInteger('amount')->comment('卡内充值时金额 卡内金额');
+
             $table->unsignedInteger('channel')->comment('储值途径|消费途径');
 
             $table->unsignedInteger('consume')->default(0)->comment('消费金额，单位：分');
