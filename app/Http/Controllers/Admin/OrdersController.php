@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\OrderCriteria;
-use App\Criteria\Admin\OrderSearchCriteria;
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Order;
 use App\Entities\OrderItem;
 use App\Exceptions\HttpValidationException;
-use App\Http\Requests\OrderSendRequest;
-use App\Http\Response\JsonResponse;
-
-use Dingo\Api\Http\Request;
-use Exception;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\OrderCreateRequest;
 use App\Http\Requests\Admin\OrderUpdateRequest;
-use App\Transformers\OrderTransformer;
-use App\Transformers\OrderItemTransformer;
+use App\Http\Requests\OrderSendRequest;
+use App\Http\Response\JsonResponse;
 use App\Repositories\OrderRepository;
-use App\Http\Controllers\Controller;
+use App\Transformers\OrderItemTransformer;
+use App\Transformers\OrderTransformer;
+use Dingo\Api\Http\Request;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -56,7 +54,7 @@ class OrdersController extends Controller
      */
     public function index(Request $request)
     {
-       // $this->repository->pushCriteria(OrderSearchCriteria::class);
+        // $this->repository->pushCriteria(OrderSearchCriteria::class);
         $this->repository->pushCriteria(OrderCriteria::class);
         $this->repository->pushCriteria(SearchRequestCriteria::class);
         $orders = $this->repository
@@ -87,7 +85,7 @@ class OrdersController extends Controller
             })
             ->orderBy('paid_at', 'desc')
             ->all();
-        $header = $request->input('header',  [
+        $header = $request->input('header', [
             '支付订单号',
             '商户名称',
             '店铺名称',
@@ -104,46 +102,44 @@ class OrdersController extends Controller
             '优惠金额',
             '实付'
         ]);
-        if(!$header || empty($header)) {
+        if (!$header || empty($header)) {
             throw new HttpValidationException(['缺少头部信息错误']);
         }
-        $list  = [];
+        $list = [];
         $list[] = $header;
-        $data = with($orders, function (Collection $orders) use (& $list){
-            $orders->map(function (Order $order) use (& $list){
-                $order->orderItems->map(function (OrderItem $item) use($order, & $list){
+        $data = with($orders, function (Collection $orders) use (& $list) {
+            $orders->map(function (Order $order) use (& $list) {
+                $order->orderItems->map(function (OrderItem $item) use ($order, & $list) {
                     $shop = $item->shop ? $item->shop : ($order->shop ? $order->shop : $order->receivingShopAddress);
-                    $nickname= ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
+                    $nickname = ($order->customer && $order->customer->nickname ? $order->customer->nickname : '匿名用户');
                     $mobile = $order->customer && $order->customer->mobile ? $order->customer->mobile : '未绑定手机';
                     $paidAt = $order->paidAt ? $order->paidAt->format('m/d/Y') : '--';
                     $list[] = [
                         "'$order->code",
                         '安徽青松食品有限公司',
-                         $shop ? $shop->name : '--',
-                         $shop ? $shop->code : '--',
-                         $nickname,
+                        $shop ? $shop->name : '--',
+                        $shop ? $shop->code : '--',
+                        $nickname,
                         "'$mobile",
-                         $paidAt,
-                         $order->payTypeStr(),
-                         $order->orderTypeStr(),
-                         $item->merchandiseName,
-                         $item->quality,
-                         $item->sellPrice,
-                         $order->tickets ? $order->tickets->cardInfo['base_info']['title'] : '--',
-                         number_format($order->discountAmount, 2),
-                         number_format($order->paymentAmount, 2)
+                        $paidAt,
+                        $order->payTypeStr(),
+                        $order->orderTypeStr(),
+                        $item->merchandiseName,
+                        $item->quality,
+                        $item->sellPrice,
+                        $order->tickets ? $order->tickets->cardInfo['base_info']['title'] : '--',
+                        number_format($order->discountAmount, 2),
+                        number_format($order->paymentAmount, 2)
                     ];
                 });
-               //return $items->toArray();
             });
-            //Log::debug('order items', $orderItems->toArray());
             return $list;
         });
         Log::debug('order excel data', [$data, $list]);
         /** @var LaravelExcelWriter $excel */
-        $excel = app(Excel::class)->create(Carbon::now()->format('Y-m-d').'订单', function(LaravelExcelWriter $excel) use ($data) {
+        $excel = app(Excel::class)->create(Carbon::now()->format('Y-m-d') . '订单', function (LaravelExcelWriter $excel) use ($data) {
 
-            $excel->sheet('Sheet', function(LaravelExcelWorksheet $sheet) use ($data) {
+            $excel->sheet('Sheet', function (LaravelExcelWorksheet $sheet) use ($data) {
 
                 // Sheet manipulation
                 $sheet->rows($data);
@@ -155,10 +151,11 @@ class OrdersController extends Controller
         $excel->export();
 #
     }
+
     /**
      * Store a newly created resource in storage.
      *
-     * @param  OrderCreateRequest $request
+     * @param OrderCreateRequest $request
      *
      * @return \Illuminate\Http\Response
      *
@@ -170,7 +167,7 @@ class OrdersController extends Controller
 
         $response = [
             'message' => 'Order created.',
-            'data'    => $order->toArray(),
+            'data' => $order->toArray(),
         ];
 
         if ($request->wantsJson()) {
@@ -184,7 +181,7 @@ class OrdersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -197,7 +194,7 @@ class OrdersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -211,8 +208,8 @@ class OrdersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  OrderUpdateRequest $request
-     * @param  string            $id
+     * @param OrderUpdateRequest $request
+     * @param string $id
      *
      * @return \Illuminate\Http\Response
      *
@@ -220,26 +217,26 @@ class OrdersController extends Controller
      */
     public function update(OrderUpdateRequest $request, $id)
     {
-       $order = $this->repository->update($request->all(), $id);
+        $order = $this->repository->update($request->all(), $id);
 
-       $response = [
-           'message' => 'Order updated.',
-           'data'    => $order->toArray(),
-       ];
+        $response = [
+            'message' => 'Order updated.',
+            'data' => $order->toArray(),
+        ];
 
-       if ($request->wantsJson()) {
+        if ($request->wantsJson()) {
 
-           return $this->response()->item($order, new OrderTransformer());
-       }
+            return $this->response()->item($order, new OrderTransformer());
+        }
 
-       return redirect()->back()->with('message', $response['message']);
+        return redirect()->back()->with('message', $response['message']);
     }
 
     public function orderSent(OrderSendRequest $request, int $id)
     {
         $order = $this->repository->with(['orderItems'])->find($id);
-        DB::transaction(function () use($order, $request) {
-            tap($order, function (Order $order) use($request){
+        DB::transaction(function () use ($order, $request) {
+            tap($order, function (Order $order) use ($request) {
                 $order->status = Order::SEND;
                 $order->postType = $request->input('post_type', null);
                 $order->postNo = $request->input('post_no', null);
@@ -258,7 +255,7 @@ class OrdersController extends Controller
     public function refund(int $id)
     {
         $order = $this->repository->with(['orderItems'])->find($id);
-        if($order) {
+        if ($order) {
 
         }
     }
@@ -267,7 +264,7 @@ class OrdersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */

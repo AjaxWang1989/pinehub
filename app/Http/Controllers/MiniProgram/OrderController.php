@@ -185,7 +185,6 @@ class OrderController extends Controller
                 if ($paymentAmount) {
                     return $this->response(new JsonResponse(['status' => false, 'msg' => '余额不足，请先充值']));
                 }
-//                $order->status = Order::PAID;
                 $order->status = Order::COMPLETED;
                 $order->save();
                 $job = (new OrderBalancePaidRecordJob($order->id, $consumeRecords))->delay(3);
@@ -304,6 +303,7 @@ class OrderController extends Controller
                 'customer_id' => $user->id,
                 'rechargeable_card_id' => $rechargeableCard->id,
                 'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME,
+                'amount' => $rechargeableCard->amount,
                 'user_rechargeable_card_id' => $limitCard->id
             ];
             if ($priceDisparity <= 0) {
@@ -331,6 +331,7 @@ class OrderController extends Controller
                     'customer_id' => $user->id,
                     'rechargeable_card_id' => $rechargeableCard->id,
                     'type' => UserRechargeableCardConsumeRecord::TYPE_CONSUME,
+                    'amount' => $rechargeableCard->amount,
                     'user_rechargeable_card_id' => $userRechargeableCard->id
                 ];
                 if ($priceDisparity <= 0) {

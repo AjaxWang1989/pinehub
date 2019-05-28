@@ -5,7 +5,6 @@ namespace App\Repositories;
 use App\Entities\UserRechargeableCardConsumeRecord;
 use App\Validators\Admin\UserRechargeableCardConsumeRecordValidator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
@@ -90,12 +89,10 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
     public function getList(array $params)
     {
         $searchStr = Request::query('searchJson', null);
-        Log::info('search fields', [$searchStr]);
         if ($searchStr) {
             $searchJson = is_array($searchStr) ? $searchStr : json_decode(urldecode(base64_decode($searchStr)), true);
             $params = array_merge($params, $searchJson);
         }
-        Log::info('最终参数：', [$params]);
 
         $recordPaginator = $this->scopeQuery(function ($consumeRecord) use ($params) {
             return $consumeRecord->where(function (Builder $query) use ($params) {

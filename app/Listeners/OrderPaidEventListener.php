@@ -98,6 +98,7 @@ class OrderPaidEventListener
                 'rechargeable_card_id' => $rechargeableCard->id,
                 'user_rechargeable_card_id' => $userRechargeableCardRecord->id,
                 'type' => UserRechargeableCardConsumeRecord::TYPE_BUY,
+                'amount' => $rechargeableCard->amount,
                 'consume' => $order->paymentAmount * 100
             ];
             $consumeRecordRepository->create($consumeRecord);
