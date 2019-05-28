@@ -162,7 +162,7 @@ class Order extends Model implements Transformable
 //    const SITE_SELF_EXTRACTION = 3;
 //    const SITE_DISTRIBUTION = 4;
 
-    // 订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单
+    // 订单类型：0-线下扫码 1-商城订单 2-站点用户订单  3-商家进货订单 4 -充值
     const OFF_LINE_PAYMENT_ORDER = 0;
 
     const SHOPPING_MALL_ORDER = 1;
@@ -170,6 +170,8 @@ class Order extends Model implements Transformable
     const SITE_USER_ORDER = 2;
 
     const SHOP_PURCHASE_ORDER = 3;
+
+    const CHARGE_BALANCE = 4;
 
     const EXPIRES_SECOND = 600;
 
