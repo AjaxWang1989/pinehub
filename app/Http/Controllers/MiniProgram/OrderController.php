@@ -181,6 +181,7 @@ class OrderController extends Controller
                 $user = $this->mpUser();
                 $order->payType = Order::BALANCE_PAY;
                 $order->status = Order::MAKE_SURE;
+                $order->type = Order::CHARGE_BALANCE;
                 list($paymentAmount, $consumeRecords) = $this->useRechargeableCards($order, $user);
                 if ($paymentAmount) {
                     return $this->response(new JsonResponse(['status' => false, 'msg' => '余额不足，请先充值']));
