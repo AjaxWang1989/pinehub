@@ -39,7 +39,7 @@ class OrderCreateRequest extends FormRequest
 //            'receiver_mobile' => 'nullable|mobile',
             'comment' => 'nullable|string',
             'type' => Rule::in(Order::OFF_LINE_PAYMENT_ORDER, Order::SHOPPING_MALL_ORDER, Order::SITE_USER_ORDER,
-                Order::SHOP_PURCHASE_ORDER),
+                Order::SHOP_PURCHASE_ORDER, Order::CHARGE_BALANCE),
             'send_batch' => 'nullable|integer',
             'card_id' => 'nullable|string',
             'store_id' => 'nullable|integer',
