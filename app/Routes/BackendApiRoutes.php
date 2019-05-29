@@ -219,6 +219,8 @@ class BackendApiRoutes extends ApiRoutes
 
                 // 卡种管理
                 $router->group(['prefix' => 'rechargeable_cards'], function (Router $router) {
+                    $router->get('/test', ['uses' => 'RechargeableCardController@test']);
+
                     $router->get('/', ['as' => 'rechargeable_card.list', 'uses' => 'RechargeableCardController@index']);
                     $router->get('/{id:[0-9]+}', ['as' => 'rechargeable_card.detail', 'uses' => 'RechargeableCardController@show']);
                     $router->post('/', ['as' => 'rechargeable_card.create', 'uses' => 'RechargeableCardController@store']);

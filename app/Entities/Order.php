@@ -235,7 +235,6 @@ class Order extends Model implements Transformable
                     $date = Carbon::now()->addMinute(config('order.auto_cancel_time'));
                     $job = (new OrderUpdateStatus($order->id, Order::CANCEL))
                         ->delay($date);
-//                    event(new OrderCreateEvent($order));
                     dispatch($job);
                 }
 
