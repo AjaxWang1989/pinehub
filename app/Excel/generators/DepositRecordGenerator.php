@@ -17,14 +17,14 @@ class DepositRecordGenerator extends BaseGenerator
     public function header()
     {
         return [
-            ['key' => 'code', 'desc' => '订单编号'],
-            ['key' => 'nickname', 'desc' => '用户昵称'],
-            ['key' => 'mobile', 'desc' => '手机号码'],
-            ['key' => 'rechargeableCardName', 'desc' => '储值卡名称'],
-            ['key' => 'rechargeableCardAmount', 'desc' => '充值金额'],
-            ['key' => 'rechargeableCardGift', 'desc' => '赠送金额'],
-            ['key' => 'channel', 'desc' => '充值途径'],
-            ['key' => 'createdAt', 'desc' => '时间']
+            ['key' => 'code', 'desc' => '订单编号', 'width' => 15],
+            ['key' => 'nickname', 'desc' => '用户昵称', 'width' => 15],
+            ['key' => 'mobile', 'desc' => '手机号码', 'width' => 15],
+            ['key' => 'rechargeableCardName', 'desc' => '储值卡名称', 'width' => 15],
+            ['key' => 'rechargeableCardAmount', 'desc' => '充值金额', 'width' => 15],
+            ['key' => 'rechargeableCardGift', 'desc' => '赠送金额', 'width' => 15],
+            ['key' => 'channel', 'desc' => '充值途径', 'width' => 15],
+            ['key' => 'createdAt', 'desc' => '时间', 'width' => 20]
         ];
     }
 
@@ -40,7 +40,7 @@ class DepositRecordGenerator extends BaseGenerator
 
     public function getRechargeableCardAmount(UserRechargeableCardConsumeRecord $model)
     {
-        return $model->rechargeableCard ? number_format($model->rechargeableCard->amount, 2) : 0;
+        return $model->rechargeableCard ? number_format($model->rechargeableCard->amount / 100, 2) : 0;
     }
 
     public function getMobile(UserRechargeableCardConsumeRecord $model)
@@ -50,7 +50,7 @@ class DepositRecordGenerator extends BaseGenerator
 
     public function getRechargeableCardGift(UserRechargeableCardConsumeRecord $model)
     {
-        return $model->rechargeableCard ? number_format(($model->rechargeableCard->amount - $model->consume), 2) : 0;
+        return $model->rechargeableCard ? number_format(($model->rechargeableCard->amount - $model->consume) / 100, 2) : 0;
     }
 
     public function getChannel(UserRechargeableCardConsumeRecord $model)

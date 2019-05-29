@@ -17,7 +17,7 @@ class GeneratorFactory
     public static function getGenerator(string $key)
     {
         $generator = null;
-        $generatorClass = config("generator-map.{$key}");
+        $generatorClass = config("generators.{$key}");
         if ($generatorClass) {
             $generator = new $generatorClass();
         }

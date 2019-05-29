@@ -5,10 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\Merchandise;
 use App\Entities\RechargeableCard;
-use App\Excel\generators\DepositRecordGenerator;
 use App\Exceptions\HttpValidationException;
 use App\Http\Controllers\Controller;
-use App\Http\Response\JsonResponse;
 use App\Repositories\MerchandiseRepository;
 use App\Repositories\RechargeableCardRepository;
 use App\Transformers\RechargeableCardTransformer;
@@ -38,12 +36,6 @@ class RechargeableCardController extends Controller
         $this->validator = $validator;
 
         parent::__construct();
-    }
-
-    public function test()
-    {
-        $bodyData = (new DepositRecordGenerator())->export([]);
-        return $this->response(new JsonResponse($bodyData));
     }
 
     /**
