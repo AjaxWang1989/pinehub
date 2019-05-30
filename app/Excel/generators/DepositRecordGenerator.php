@@ -17,12 +17,14 @@ class DepositRecordGenerator extends BaseGenerator
     public function header()
     {
         return [
-            ['key' => 'code', 'desc' => '订单编号', 'width' => 15],
-            ['key' => 'nickname', 'desc' => '用户昵称', 'width' => 15],
+            ['key' => 'code', 'desc' => '订单编号', 'width' => 20],
+            ['key' => 'type', 'desc' => '类型', 'width' => 10],
+            ['key' => 'nickname', 'desc' => '用户昵称', 'width' => 20],
             ['key' => 'mobile', 'desc' => '手机号码', 'width' => 15],
             ['key' => 'rechargeableCardName', 'desc' => '储值卡名称', 'width' => 15],
-            ['key' => 'rechargeableCardAmount', 'desc' => '充值金额', 'width' => 15],
-            ['key' => 'rechargeableCardGift', 'desc' => '赠送金额', 'width' => 15],
+//            ['key' => 'rechargeableCardAmount', 'desc' => '充值金额', 'width' => 15],
+            ['key' => 'consume', 'desc' => '消费(元)', 'width' => 15],
+            ['key' => 'rechargeableCardGift', 'desc' => '赠送金额(元)', 'width' => 15],
             ['key' => 'channel', 'desc' => '充值途径', 'width' => 15],
             ['key' => 'createdAt', 'desc' => '时间', 'width' => 20]
         ];
@@ -68,6 +70,16 @@ class DepositRecordGenerator extends BaseGenerator
         return (string)$model->createdAt;
     }
 
+    public function getType(UserRechargeableCardConsumeRecord $model)
+    {
+        return $model->typeDesc;
+    }
+
+    public function getConsume(UserRechargeableCardConsumeRecord $model)
+    {
+        return number_format($model->consume / 100, 2);
+    }
+
     /**
      * 表数据
      * @param array $params 查询参数
@@ -78,7 +90,7 @@ class DepositRecordGenerator extends BaseGenerator
         $consumeRecordRepository = app(UserRechargeableCardConsumeRecordRepository::class);
 
         $data = $consumeRecordRepository->with(['user', 'rechargeableCard', 'order'])->scopeQuery(function (Builder $query) {
-            return $query;
+            return $query->where('type', UserRechargeableCardConsumeRecord::TYPE_BUY);
         })->orderBy($params['order_by'] ?? 'created_at', $params['order_direction'] ?? 'asc')->all();
 
         return $data;

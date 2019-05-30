@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Excel\GeneratorFactory;
 use App\Http\Controllers\Controller;
 use App\Http\Response\JsonResponse;
-use Dingo\Api\Http\Request;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 
 class ExcelController extends Controller
@@ -26,6 +26,11 @@ class ExcelController extends Controller
         $generator = GeneratorFactory::getGenerator($key);
 
         $params = $request->input();
+        $searchStr = $request->query('searchJson', null);
+        if ($searchStr) {
+            $searchJson = is_array($searchStr) ? $searchStr : json_decode(urldecode(base64_decode($searchStr)), true);
+            $params = array_merge($params, $searchJson);
+        }
 
         if ($generator) {
             $generator->export($params);
