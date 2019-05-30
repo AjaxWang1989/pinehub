@@ -25,12 +25,11 @@ class ExcelController extends Controller
 
         $generator = GeneratorFactory::getGenerator($key);
 
-        $params = $request->input();
-        $searchStr = $request->query('searchJson', null);
-        if ($searchStr) {
-            $searchJson = is_array($searchStr) ? $searchStr : json_decode(urldecode(base64_decode($searchStr)), true);
-            $params = array_merge($params, $searchJson);
-        }
+        $queryString = $request->getQueryString();
+
+        $queryString = urldecode(urldecode($queryString));
+
+        parse_str($queryString, $params);
 
         if ($generator) {
             $generator->export($params);
