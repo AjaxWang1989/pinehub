@@ -127,7 +127,7 @@ abstract class BaseGenerator
 
             $spreadSheet->disconnectWorksheets();
             unset($spreadSheet);
-//            exit;
+            exit;
 
         } catch (Exception $e) {
             Log::error('数据导出错误：', [$e->getTraceAsString()]);
