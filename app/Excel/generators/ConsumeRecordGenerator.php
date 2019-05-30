@@ -9,7 +9,7 @@ use App\Repositories\UserRechargeableCardConsumeRecordRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Prettus\Repository\Criteria\RequestCriteria;
 
-class DepositRecordGenerator extends BaseGenerator
+class ConsumeRecordGenerator extends BaseGenerator
 {
 
     /**

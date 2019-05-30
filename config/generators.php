@@ -1,7 +1,7 @@
 <?php
 
-use App\Excel\generators\DepositRecordGenerator;
+use App\Excel\generators\ConsumeRecordGenerator;
 
 return [
-    'deposit_records' => DepositRecordGenerator::class
+    'deposit_records' => ConsumeRecordGenerator::class
 ];
