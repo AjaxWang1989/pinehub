@@ -2,12 +2,14 @@
 
 namespace App\Excel;
 
+use App\Excel\Factory as ExcelFactory;
+
 /**
  * Class GeneratorFactory
  *
  * @package App\Excel
  */
-class GeneratorFactory
+class GeneratorFactory implements ExcelFactory
 {
     /**
      * 获取Excel生成器

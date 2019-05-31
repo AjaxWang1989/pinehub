@@ -33,9 +33,9 @@ class ExcelController extends Controller
 
         if ($generator) {
             $generator->export($params);
-            return $this->response(new JsonResponse(['msg' => '数据导出成功']));
+            return $this->response(new JsonResponse(['msg' => '数据导出错误']));
         } else {
-            return $this->response(new JsonResponse(['msg' => '无导出数据']));
+            return $this->response(new JsonResponse(['msg' => '没有找到对应的数据Generator']));
         }
     }
 }
