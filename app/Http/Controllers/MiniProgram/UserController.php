@@ -175,8 +175,9 @@ class UserController extends Controller
 
         $consumeRecords = $customer->consumeRecords()->with('rechargeableCard')->where(function ($query) use ($type) {
             if ($type) {
-                $query->where('type', '=', $type)->groupBy(['order_id']);
+                $query->where('type', '=', $type);
             }
+            $query->groupBy(['order_id']);
         })->orderBy('created_at', 'desc')->paginate();
 
         return $this->response()->paginator($consumeRecords, new UserRechargeableCardConsumeRecordTransformer);
