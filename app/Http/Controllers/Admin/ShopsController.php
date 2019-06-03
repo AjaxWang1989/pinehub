@@ -232,7 +232,7 @@ class ShopsController extends Controller
     public function update(ShopUpdateRequest $request, $id)
     {
         $data = $request->only(['code', 'name', 'country_id', 'province_id', 'city_id', 'county_id',
-            'address', 'description', 'status', 'user_id', 'start_at', 'end_at']);
+            'address', 'description', 'status', 'user_id', 'start_at', 'end_at', 'manage_mobile', 'manage_name']);
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
         if (isset($data['user_id']) && $data['user_id'] && $request->input('manager_mobile', null) && $request->input('manager_name', null))
@@ -242,7 +242,9 @@ class ShopsController extends Controller
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
 
+        /** @var Shop $shop */
         $shop = $this->repository->update($data, $id);
+        $shop->shopManager->update(['mobile' => $data['manage_mobile'], 'nickname' => $data['manage_name']]);
         return $this->response()->item($shop, new ShopTransformer());
     }
 
