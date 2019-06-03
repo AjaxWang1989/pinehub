@@ -4,37 +4,31 @@ namespace App\Http\Controllers\Admin;
 
 use App\Criteria\Admin\SearchRequestCriteria;
 use App\Entities\App;
-use App\Entities\Merchandise;
-use App\Entities\Order;
 use App\Entities\Role;
 use App\Entities\Shop;
 use App\Entities\ShopManager;
 use App\Entities\ShopMerchandise;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\ShopCreateRequest;
+use App\Http\Requests\Admin\ShopUpdateRequest;
 use App\Http\Response\JsonResponse;
-
 use App\Repositories\SellerRepository;
 use App\Repositories\ShopManagerRepository;
 use App\Repositories\ShopMerchandiseRepository;
+use App\Repositories\ShopRepository;
 use App\Services\AppManager;
+use App\Transformers\ShopItemTransformer;
 use App\Transformers\ShopMerchandiseTransformer;
+use App\Transformers\ShopTransformer;
 use App\Utils\GeoHash;
-use Carbon\Carbon;
 use Dingo\Api\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
+use Exception;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request as IlluminateRequest;
-use Exception;
-use App\Http\Requests\Admin\ShopCreateRequest;
-use App\Http\Requests\Admin\ShopUpdateRequest;
-use App\Transformers\ShopTransformer;
-use App\Transformers\ShopItemTransformer;
-use App\Repositories\ShopRepository;
-use Grimzy\LaravelMysqlSpatial\Types\Point;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
 use Prettus\Repository\Criteria\RequestCriteria;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use App\Http\Controllers\Controller;
 
 /**
  * Class ShopsController.
@@ -99,7 +93,7 @@ class ShopsController extends Controller
     protected function getManager(string $mobile, string $name)
     {
         $shopManager = $this->shopManagerRepository->findWhere(['mobile' => $mobile])->first();
-        if(!$shopManager){
+        if (!$shopManager) {
             $shopManager = $this->shopManagerRepository->create([
                 'user_name' => $mobile,
                 'password' => password($mobile),
@@ -116,7 +110,7 @@ class ShopsController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  ShopCreateRequest $request
+     * @param ShopCreateRequest $request
      *
      * @return \Illuminate\Http\Response
      *
@@ -124,11 +118,11 @@ class ShopsController extends Controller
      */
     public function store(ShopCreateRequest $request)
     {
-        $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'description',
+        $data = $request->only(['code', 'name', 'country_id', 'province_id', 'city_id', 'county_id', 'address', 'description',
             'status']);
         $shopManager = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'));
         $data['user_id'] = $shopManager->id;
-        if($request->input('lat', null) && $request->input('lng', null)){
+        if ($request->input('lat', null) && $request->input('lng', null)) {
             $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
@@ -138,29 +132,29 @@ class ShopsController extends Controller
     }
 
 
-    public function paymentQRCode( int $id, IlluminateRequest $request)
+    public function paymentQRCode(int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
         $size = $request->input('size', 200);
-        if($shop  && $size !== null && $size > 0) {
-           $url  = webUriGenerator('/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
-           $url .= "?shop_id={$shop->id}";
-           $url .= "&selected_appid={$shop->appId}";
-           $qrCode = QrCode::format('png')->size($size)->generate($url);
-           if($request->wantsJson()) {
+        if ($shop && $size !== null && $size > 0) {
+            $url = webUriGenerator('/aggregate.html', env('WEB_PAYMENT_PREFIX'), env('WEB_DOMAIN'));
+            $url .= "?shop_id={$shop->id}";
+            $url .= "&selected_appid={$shop->appId}";
+            $qrCode = QrCode::format('png')->size($size)->generate($url);
+            if ($request->wantsJson()) {
                 $qrCode = base64_encode($qrCode);
                 return $this->response(new JsonResponse([
-                    'qr_code' => 'data:image/png;base64, '.$qrCode
+                    'qr_code' => 'data:image/png;base64, ' . $qrCode
                 ]));
-            }else{
+            } else {
                 return Response::create($qrCode)->header('Content-Type', 'image/png');
             }
-        }else{
-            if($request->wantsJson()) {
+        } else {
+            if ($request->wantsJson()) {
                 return $this->response(new JsonResponse([
                     'message' => '失败 '
                 ]));
-            }else{
+            } else {
                 return Response::create(['message' => '失败 ']);
             }
         }
@@ -169,9 +163,9 @@ class ShopsController extends Controller
     public function officialAccountQRCode(int $id, IlluminateRequest $request)
     {
         $shop = $this->repository->find($id);
-        if($shop) {
+        if ($shop) {
             $url = $shop->wechatParamsQrcodeUrl;
-            if(!$url) {
+            if (!$url) {
                 $data = [
                     'app_id' => $shop->appId,
                     'shop_id' => $shop->id
@@ -179,7 +173,7 @@ class ShopsController extends Controller
                 $currentApp = App::find($shop->appId);
                 $result = app('wechat')->openPlatform()->officialAccount($currentApp->wechatAppId, $currentApp->officialAccount->authorizerRefreshToken)
                     ->qrcode->forever(base64_encode(json_encode($data)));
-                if(!isset($result['ticket'])) {
+                if (!isset($result['ticket'])) {
                     throw new Exception('无法生成参数二维码');
                 }
                 $url = "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket={$result['ticket']}";
@@ -187,12 +181,12 @@ class ShopsController extends Controller
                 $shop->save();
             }
 
-            if($request->wantsJson()) {
+            if ($request->wantsJson()) {
                 return $this->response(new JsonResponse(['url' => $url]));
-            }else{
+            } else {
                 return redirect($url);
             }
-        }else{
+        } else {
             return new Response('错误');
         }
     }
@@ -200,7 +194,7 @@ class ShopsController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -214,7 +208,7 @@ class ShopsController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -228,8 +222,8 @@ class ShopsController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  ShopUpdateRequest $request
-     * @param  string            $id
+     * @param ShopUpdateRequest $request
+     * @param string $id
      *
      * @return Response
      *
@@ -237,18 +231,18 @@ class ShopsController extends Controller
      */
     public function update(ShopUpdateRequest $request, $id)
     {
-        $data = $request->only(['name', 'country_id', 'province_id', 'city_id', 'county_id',
+        $data = $request->only(['code', 'name', 'country_id', 'province_id', 'city_id', 'county_id',
             'address', 'description', 'status', 'user_id', 'start_at', 'end_at']);
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
-        if(isset($data['user_id']) && $data['user_id'] && $request->input('manager_mobile', null) && $request->input('manager_name', null))
+        if (isset($data['user_id']) && $data['user_id'] && $request->input('manager_mobile', null) && $request->input('manager_name', null))
             $data['user_id'] = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'))->id;
-        if($request->input('lat', null) && $request->input('lng', null)){
+        if ($request->input('lat', null) && $request->input('lng', null)) {
             $data['position'] = new Point($request->input('lat'), $request->input('lng'));
             $data['geo_hash'] = (new GeoHash())->encode($request->input('lat'), $request->input('lng'));
         }
 
-       $shop = $this->repository->update($data, $id);
+        $shop = $this->repository->update($data, $id);
         return $this->response()->item($shop, new ShopTransformer());
     }
 
@@ -256,7 +250,7 @@ class ShopsController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param int $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -278,14 +272,14 @@ class ShopsController extends Controller
     public function merchandises(int $shopId, Request $request, ShopMerchandiseRepository $repository)
     {
         $shop = $this->repository->find($shopId);
-        if($shop) {
+        if ($shop) {
             $repository->pushCriteria(app(RequestCriteria::class));
             $repository->pushCriteria(app(SearchRequestCriteria::class));
-            $items = $repository->with(['merchandise.categories'])->scopeQuery(function ($model) use($shopId){
+            $items = $repository->with(['merchandise.categories'])->scopeQuery(function ($model) use ($shopId) {
                 return $model->where('shop_id', $shopId);
             })->paginate($request->input('limit', PAGE_LIMIT));
             return $this->response()->paginator($items, new ShopMerchandiseTransformer());
-        }else{
+        } else {
             throw new ModelNotFoundException('没有相应店铺信息');
         }
     }
@@ -293,12 +287,12 @@ class ShopsController extends Controller
     public function addMerchandise(int $shopId, Request $request)
     {
         $shop = $this->repository->find($shopId);
-        if($shop) {
-            $merchandise = with($shop, function (Shop $shop) use($request) {
+        if ($shop) {
+            $merchandise = with($shop, function (Shop $shop) use ($request) {
                 return $shop->shopMerchandises()->save(new ShopMerchandise($request->all()));
             });
             return $this->response()->item($merchandise, new ShopMerchandiseTransformer());
-        }else{
+        } else {
             throw new ModelNotFoundException('没有相应店铺信息');
         }
     }
