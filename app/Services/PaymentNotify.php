@@ -48,7 +48,7 @@ class PaymentNotify implements PayNotifyInterface
                     $order->status = Order::COMPLETED;
                     $order->pickUpMethod = Order::USER_SELF_PICK_UP;
                 }
-                if ($order->consumeRecord) {
+                if ($order->type === Order::CHARGE_BALANCE) {
                     $order->status = Order::COMPLETED;
                 }
             } else {
