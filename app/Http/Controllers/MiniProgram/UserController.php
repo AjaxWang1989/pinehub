@@ -21,7 +21,6 @@ use App\Transformers\Mp\UserRechargeableCardConsumeRecordTransformer;
 use App\Transformers\Mp\UserRechargeableCardTransformer;
 use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
 
@@ -174,7 +173,7 @@ class UserController extends Controller
             }
         }
 
-        $consumeRecords = $customer->consumeRecords()->with('rechargeableCard')->where(function (Builder $query) use ($type) {
+        $consumeRecords = $customer->consumeRecords()->with('rechargeableCard')->where(function ($query) use ($type) {
             if ($type) {
                 $query->where('type', '=', $type)->groupBy(['order_id']);
             }
