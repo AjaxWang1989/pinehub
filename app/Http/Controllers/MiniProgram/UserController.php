@@ -177,7 +177,8 @@ class UserController extends Controller
             if ($type) {
                 $query->where('type', '=', $type);
             }
-        })->groupBy(['order_id'])->orderBy('created_at', 'desc')->paginate();
+        })->groupBy(['order_id'])->selectRaw('id,type,sum(consume) as consume,sum(save) as save,created_at')
+            ->orderBy('created_at', 'desc')->paginate();
 
         return $this->response()->paginator($consumeRecords, new UserRechargeableCardConsumeRecordTransformer);
     }
