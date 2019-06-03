@@ -78,6 +78,7 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property-read \App\Entities\Shop|null $receivingShopAddress
  * @property-read \App\Entities\Shop|null $shop
  * @property-read \App\Entities\Card $tickets
+ * @property-read \App\Entities\UserRechargeableCardConsumeRecord|null $consumeRecord
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order query()
  * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Order whereActivityId($value)
@@ -512,5 +513,10 @@ class Order extends Model implements Transformable
                 return '送货上门';
                 break;
         }
+    }
+
+    public function consumeRecord()
+    {
+        return $this->hasOne(UserRechargeableCardConsumeRecord::class, 'order_id');
     }
 }
