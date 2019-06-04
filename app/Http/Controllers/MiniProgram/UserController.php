@@ -173,7 +173,7 @@ class UserController extends Controller
             }
         }
 
-        $consumeRecords = $customer->consumeRecords()->with('rechargeableCard')->where(function ($query) use ($type) {
+        $consumeRecords = $customer->consumeRecords()->where(function ($query) use ($type) {
             if ($type) {
                 $query->where('type', '=', $type);
             }
