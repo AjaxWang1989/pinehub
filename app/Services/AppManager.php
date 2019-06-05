@@ -17,6 +17,7 @@ use App\Repositories\AppRepository;
 use App\Services\AliPay\AliPayOpenPlatform;
 use EasyWeChat\OpenPlatform\Application as OpenPlatform;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Laravel\Lumen\Application;
 
 /**
@@ -101,6 +102,7 @@ class AppManager implements \Serializable
 
     public function setAccessToken(string $accessToken)
     {
+        Log::debug("----- set app {$this->currentApp->id} by access token {$accessToken} ------");
         Cache::add($accessToken, $this->currentApp->id, $this->ttl);
     }
 

@@ -31,6 +31,7 @@ class Controller extends BaseController
         Log::info('access token '.$accessToken.' app id '.Cache::get($accessToken), $request->all());
         if($accessToken) {
             $appId = Cache::get($accessToken);
+            Log::debug("----- app id {$appId} -----");
             $app = $this->appRepository->find($appId);
         }
 
