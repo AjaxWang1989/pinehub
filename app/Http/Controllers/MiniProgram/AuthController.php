@@ -185,8 +185,9 @@ class AuthController extends Controller
 
         $user['shop_id'] = isset($shopUser) ? $shopUser['id'] : null;
         $user['open_id'] = $user->platformOpenId;
-
-        $user->member->balance = $userRepository->getBalance($user->member);
+        if($user->member){
+            $user->member->balance = $userRepository->getBalance($user->member);
+        }
 
         return $this->response()
             ->item($user, new MpUserInfoMobileTransformer());
