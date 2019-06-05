@@ -230,6 +230,9 @@ class BackendApiRoutes extends ApiRoutes
                         $router->get('/statistics', ['uses' => 'UserRechargeableCardConsumeRecordController@statistics']);
                     });
                 });
+
+                // 数据导出
+                $router->get('/export', ['uses' => 'ExcelController@export']);
             });
 
 

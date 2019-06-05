@@ -48,6 +48,9 @@ class PaymentNotify implements PayNotifyInterface
                     $order->status = Order::COMPLETED;
                     $order->pickUpMethod = Order::USER_SELF_PICK_UP;
                 }
+                if ($order->type === Order::CHARGE_BALANCE) {
+                    $order->status = Order::COMPLETED;
+                }
             } else {
                 $order->status = Order::PAY_FAILED;
                 $order->tradeStatus = Order::TRADE_FAILED;

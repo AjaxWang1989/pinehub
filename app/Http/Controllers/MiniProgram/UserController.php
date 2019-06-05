@@ -173,11 +173,12 @@ class UserController extends Controller
             }
         }
 
-        $consumeRecords = $customer->consumeRecords()->with('rechargeableCard')->where(function ($query) use ($type) {
+        $consumeRecords = $customer->consumeRecords()->where(function ($query) use ($type) {
             if ($type) {
                 $query->where('type', '=', $type);
             }
-        })->orderBy('created_at', 'desc')->paginate();
+        })->groupBy(['order_id'])->selectRaw('id,type,sum(consume) as consume,sum(save) as save,created_at')
+            ->orderBy('created_at', 'desc')->paginate();
 
         return $this->response()->paginator($consumeRecords, new UserRechargeableCardConsumeRecordTransformer);
     }

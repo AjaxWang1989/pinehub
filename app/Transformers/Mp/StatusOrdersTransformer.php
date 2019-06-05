@@ -8,9 +8,9 @@
 
 namespace App\Transformers\Mp;
 
-use League\Fractal\TransformerAbstract;
-use App\Entities\OrderItem;
 use App\Entities\Order;
+use App\Entities\OrderItem;
+use League\Fractal\TransformerAbstract;
 
 
 class StatusOrdersTransformer extends TransformerAbstract
@@ -22,6 +22,7 @@ class StatusOrdersTransformer extends TransformerAbstract
             'id' => $model->id,
             'code' => $model->code,
             'type' => $model->type,
+            'pay_type' => $model->payType,
             'pick_up_method' => $model->pickUpMethod,
             'status' => $model->status,
             'receiver_name' => $model->receiverName,
@@ -34,7 +35,7 @@ class StatusOrdersTransformer extends TransformerAbstract
             'payment_amount' => round($model->paymentAmount, 2),
             'shop_end_hour' => isset($model->shop->endAt) ? $model->shop->endAt : null,
             'created_at' => $model->createdAt->format('Y-m-d H:i:s'),
-            'paid_at' => $model->paidAt ? $model->paidAt->format('Y-m-d H:i:s'): null,
+            'paid_at' => $model->paidAt ? $model->paidAt->format('Y-m-d H:i:s') : null,
             'order_item_merchandises' => $model->orderItems ? $model->orderItems->map(function (OrderItem $orderItem) {
                 $data = $orderItem->only(['merchandise_name', 'sell_price', 'quality', 'total_amount', 'main_image']);
                 $data['sell_price'] = number_format($data['sell_price'], 2);

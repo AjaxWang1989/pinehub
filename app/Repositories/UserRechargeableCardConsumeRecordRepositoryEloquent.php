@@ -59,7 +59,8 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
      */
     public function getStatistics(array $params): array
     {
-        $result = $this->scopeQuery(function ($query) {
+        // TODO 根据条件获取统计数据
+        $result = $this->scopeQuery(function ($query) use ($params) {
             return $query->selectRaw("count(*) as buy_count,sum(consume) as consume_count,sum(amount-consume) as gift_count")
                 ->where('type', UserRechargeableCardConsumeRecord::TYPE_BUY);
         })->get()[0]->toArray();
@@ -68,7 +69,7 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
 
         /** @var UserRechargeableCardRepositoryEloquent $userRechargeableCardRepository */
         $userRechargeableCardRepository = app(UserRechargeableCardRepository::class);
-        $balanceAmount = $userRechargeableCardRepository->scopeQuery(function ($query) {
+        $balanceAmount = $userRechargeableCardRepository->scopeQuery(function ($query) use ($params) {
             return $query->selectRaw("sum(amount) as balance_amount");
         })->get()[0]->toArray();
         $balanceAmount['balance_amount'] = number_format($balanceAmount['balance_amount'] / 100, 2);

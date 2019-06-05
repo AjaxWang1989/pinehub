@@ -62,6 +62,6 @@ class RechargeableCardTransformer extends TransformerAbstract
     {
         $category = $rechargeableCard->category;
 
-        return $this->item($category, new CategoryTransformer);
+        return $category ? $this->item($category, new CategoryTransformer) : $category;
     }
 }
