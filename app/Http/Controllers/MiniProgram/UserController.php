@@ -101,6 +101,7 @@ class UserController extends Controller
 
     /**
      * 个人中心获取所有优惠券
+     * @param string $status
      * @return Response
      */
     public function customerTicketCards(string $status)
@@ -115,7 +116,6 @@ class UserController extends Controller
      * @param FeedBackMessageRequest $request
      * @return Response
      */
-
     public function feedBackMessage(FeedBackMessageRequest $request)
     {
         $user = $this->mpUser();
@@ -181,10 +181,5 @@ class UserController extends Controller
             ->orderBy('created_at', 'desc')->paginate();
 
         return $this->response()->paginator($consumeRecords, new UserRechargeableCardConsumeRecordTransformer);
-    }
-
-    public function userRechargeableCards()
-    {
-
     }
 }

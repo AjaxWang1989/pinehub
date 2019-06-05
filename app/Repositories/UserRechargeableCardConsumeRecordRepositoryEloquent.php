@@ -53,7 +53,7 @@ class UserRechargeableCardConsumeRecordRepositoryEloquent extends BaseRepository
 
     /**
      * @param array $params
-     * @return array 查询参数，如用户，
+     * @return array 查询参数，如指定用户的统计数据
      * 获取统计数据
      * 包括但不限于：储值总额，储值次数，账户余额，获赠总额
      */

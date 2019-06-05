@@ -13,6 +13,7 @@
     "albertcht/lumen-form-request": "^2.3",
     "armandgarot/laravel-workerman": "dev-master",
     "dingo/api": "2.*",
+    "doctrine/dbal": "^2.9",
     "echobool/getui-laravel5": "^1.5",
     "fxm5547/laravel-aliyun-sms": "^1.0",
     "grimzy/laravel-mysql-spatial": "^2.0",
@@ -44,7 +45,6 @@
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^2.4",
-    "doctrine/dbal": "^2.7",
     "fzaninotto/faker": "~1.4",
     "mockery/mockery": "~1.0",
     "phpunit/phpunit": "~7.0",
