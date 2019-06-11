@@ -87,26 +87,26 @@ class RechargeableCardRepositoryEloquent extends BaseRepository implements Recha
             $user = $customer->member;
             if ($user) {
                 $balance += $user->balance;// 用户账户余额
-            }
 
-            // 可用余额
-            // 用户持有的有效储蓄卡卡种
-            $userRechargeableCards = $user->rechargeableCardRecords()->with([
-                'rechargeableCard' => function ($query) {
-                    $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
-                }
-            ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
+                // 可用余额
+                // 用户持有的有效储蓄卡卡种
+                $userRechargeableCards = $user->rechargeableCardRecords()->with([
+                    'rechargeableCard' => function ($query) {
+                        $query->where('card_type', RechargeableCard::CARD_TYPE_DEPOSIT);
+                    }
+                ])->where('status', '=', UserRechargeableCard::STATUS_VALID)->orderBy('created_at', 'asc')->get();
 
-            $limitCard = false;
-            $today = Carbon::now();
-            /** @var UserRechargeableCard $userRechargeableCard */
-            foreach ($userRechargeableCards as $userRechargeableCard) {
-                $rechargeableCard = $userRechargeableCard->rechargeableCard;
-                if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
-                    $balance += $userRechargeableCard->amount / 100;
-                } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
-                    $balance += $userRechargeableCard->amount / 100;
-                    $limitCard = true;
+                $limitCard = false;
+                $today = Carbon::now();
+                /** @var UserRechargeableCard $userRechargeableCard */
+                foreach ($userRechargeableCards as $userRechargeableCard) {
+                    $rechargeableCard = $userRechargeableCard->rechargeableCard;
+                    if ($rechargeableCard->type === RechargeableCard::TYPE_INDEFINITE) {
+                        $balance += $userRechargeableCard->amount / 100;
+                    } else if (!$limitCard && $today->gte($userRechargeableCard->validAt->startOfDay()) && $today->lte($userRechargeableCard->invalidAt->startOfDay())) {
+                        $balance += $userRechargeableCard->amount / 100;
+                        $limitCard = true;
+                    }
                 }
             }
 
