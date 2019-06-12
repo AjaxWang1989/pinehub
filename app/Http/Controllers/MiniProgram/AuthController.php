@@ -31,7 +31,7 @@ use Dingo\Api\Http\Request;
 use Dingo\Api\Http\Response;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+//use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -149,7 +149,7 @@ class AuthController extends Controller
 
             $mpUser['token'] = $token;
 
-            Cache::put($token . '_session', $session, 60);
+            cache([$token . '_session'=> $session], 60);
 
             return $this->response()
                 ->item($mpUser, new MpUserTransformer());
@@ -304,7 +304,7 @@ class AuthController extends Controller
             ];
 
             $token = Auth::attempt($param);
-            Cache::put($token . '_session', $session, config('jwt.ttl'));
+            cache([$token . '_session'=> $session], config('jwt.ttl'));
 
             $mpUser['token'] = $token;
 
