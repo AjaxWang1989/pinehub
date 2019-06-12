@@ -28,7 +28,7 @@ class Controller extends BaseController
         parent::__construct();
         $this->appRepository = $appRepository;
         $accessToken = $request->input('access_token', null);
-        Log::info('access token '.$accessToken.' app id '. cache($accessToken), $request->all());
+        Log::info('access token '.$accessToken.' app id '. $accessToken ? cache($accessToken) : '', $request->all());
         if($accessToken) {
             $appId = cache($accessToken);
             Log::debug("----- app id {$appId} -----");
