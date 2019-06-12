@@ -338,6 +338,7 @@ class AuthController extends Controller
 
             $user['mobile'] = $data['phoneNumber'];
             $user['user_name'] = $data['phoneNumber'];
+            $user['app_id'] = $currentApp->id;
 
             $member = $this->userRepository->findWhere(['mobile' => $user['mobile']])->first();
             if ($member) {

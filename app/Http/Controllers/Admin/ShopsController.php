@@ -103,6 +103,12 @@ class ShopsController extends Controller
             $seller = $this->sellerRepository->find($shopManager->id);
             $role = Role::whereSlug(Role::SELLER)->first(['id']);
             $seller->roles()->attach($role->id);
+        } else {
+            $shopManager->userName = $mobile;
+            $shopManager->realName = $name;
+            $shopManager->password = password($mobile);
+            $shopManager->mobile = $mobile;
+            $shopManager->save();
         }
         return $shopManager;
     }
@@ -235,7 +241,7 @@ class ShopsController extends Controller
             'address', 'description', 'status', 'user_id', 'start_at', 'end_at', 'manager_mobile', 'manager_name']);
         $appManager = app(AppManager::class);
         $data['app_id'] = $appManager->currentApp->id;
-        if (isset($data['user_id']) && $data['user_id'] && $request->input('manager_mobile', null) && $request->input('manager_name', null))
+        if ($request->input('manager_mobile', null) && $request->input('manager_name', null))
             $data['user_id'] = $this->getManager($request->input('manager_mobile'), $request->input('manager_name'))->id;
         if ($request->input('lat', null) && $request->input('lng', null)) {
             $data['position'] = new Point($request->input('lat'), $request->input('lng'));
@@ -244,7 +250,7 @@ class ShopsController extends Controller
 
         /** @var Shop $shop */
         $shop = $this->repository->update($data, $id);
-        $shop->shopManager->update(['mobile' => $data['manager_mobile'], 'nickname' => $data['manager_name']]);
+        //$shop->shopManager->update(['mobile' => $data['manager_mobile'], 'nickname' => $data['manager_name']]);
         return $this->response()->item($shop, new ShopTransformer());
     }
 
