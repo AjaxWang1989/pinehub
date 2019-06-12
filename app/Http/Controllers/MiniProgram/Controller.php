@@ -50,7 +50,7 @@ class Controller extends BaseController
         $session = [];
         Log::info('!!!!!!!!!!!!!!!! session token !!!!!!!!!!!! '.$accessToken);
         if($accessToken){
-            $session = Cache::get($accessToken.'_session');
+            $session = cache($accessToken.'_session');
 
         }else{
             // $session = Cache::get(Auth::getToken().'_session');
