@@ -155,7 +155,11 @@ abstract class BaseGenerator
                         if ($key === 0) {
                             $workSheet->setCellValue($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i]);
                         } else {
-                            $workSheet->setCellValueExplicit($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i], $modelFieldHeaders[$i]['type']);
+                            try {
+                                $workSheet->setCellValueExplicit($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i], $modelFieldHeaders[$i]['type']);
+                            } catch (\Exception $e) {
+                                dd($i, $item, $modelFieldHeaders);
+                            }
                         }
                     } else {
                         $workSheet->setCellValue($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i]);
