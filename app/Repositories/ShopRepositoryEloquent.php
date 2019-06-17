@@ -92,10 +92,6 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     {
         return $this->withCount([
             'orders' => function (Builder $query) use ($params) {
-                if (isset($params['paid_at']) && count($params) === 2) {
-                    $query->whereDate('paid_at', '>=', $params['paid_at'][0])
-                        ->whereDate('paid_at', '<', $params['paid_at'][1]);
-                }
                 return $query->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
             }
         ]);
