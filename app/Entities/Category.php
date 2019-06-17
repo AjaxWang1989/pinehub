@@ -4,10 +4,13 @@ namespace App\Entities;
 
 use App\Entities\Traits\ModelAttributesAccess;
 use App\Services\AppManager;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Prettus\Repository\Contracts\Transformable;
 use Prettus\Repository\Traits\TransformableTrait;
 
@@ -20,24 +23,24 @@ use Prettus\Repository\Traits\TransformableTrait;
  * @property string $name 分类名称
  * @property string $key 分类标识key
  * @property int $parentId 分类父级
- * @property \Illuminate\Support\Carbon|null $createdAt
- * @property \Illuminate\Support\Carbon|null $updatedAt
+ * @property Carbon|null $createdAt
+ * @property Carbon|null $updatedAt
  * @property string|null $deletedAt
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Category[] $children
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\Entities\Merchandise[] $merchandises
- * @property-read \App\Entities\Category $parent
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category query()
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereAppId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereKey($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereDeletedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereIcon($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereParentId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\App\Entities\Category whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property-read Collection|Category[] $children
+ * @property-read Collection|Merchandise[] $merchandises
+ * @property-read Category $parent
+ * @method static Builder|Category newQuery()
+ * @method static Builder|Category query()
+ * @method static Builder|Category whereAppId($value)
+ * @method static Builder|Category whereKey($value)
+ * @method static Builder|Category whereCreatedAt($value)
+ * @method static Builder|Category whereDeletedAt($value)
+ * @method static Builder|Category whereIcon($value)
+ * @method static Builder|Category whereId($value)
+ * @method static Builder|Category whereName($value)
+ * @method static Builder|Category whereParentId($value)
+ * @method static Builder|Category whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class Category extends Model implements Transformable
 {

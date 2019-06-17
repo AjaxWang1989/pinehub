@@ -4,8 +4,6 @@ namespace App\Repositories;
 
 use App\Entities\Shop;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Arr;
-use phpDocumentor\Reflection\Types\Array_;
 use Prettus\Repository\Contracts\RepositoryInterface;
 
 /**
@@ -32,15 +30,17 @@ interface ShopRepository extends RepositoryInterface
     public function nearBy(float $lng, float $lat, float $distance = 15);
 
     /**
+     * @param array $params
      * @return $this
-     * */
-    public function withOrderCount();
+     */
+    public function withOrderCount(array $params = []);
 
 
     /**
+     * @param array $params
      * @return $this
-     * */
-    public function withSellAmount();
+     */
+    public function withSellAmount(array $params = []);
 
 
     /**
@@ -61,8 +61,8 @@ interface ShopRepository extends RepositoryInterface
     public function withMerchandiseCount();
 
     /**
-     *@param int $id
-     *@return Shop
+     * @param int $id
+     * @return Shop
      * */
     public function todayOrderInfo(int $id);
 }

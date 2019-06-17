@@ -24,7 +24,6 @@ class ConsumeRecordGenerator extends BaseGenerator
             ['key' => 'nickname', 'desc' => '用户昵称', 'width' => 20],
             ['key' => 'mobile', 'desc' => '手机号码', 'width' => 15],
             ['key' => 'rechargeableCardName', 'desc' => '储值卡名称', 'width' => 15],
-//            ['key' => 'rechargeableCardAmount', 'desc' => '充值金额', 'width' => 15],
             ['key' => 'consume', 'desc' => '消费(元)', 'width' => 15],
             ['key' => 'rechargeableCardGift', 'desc' => '赠送金额(元)', 'width' => 15],
             ['key' => 'channel', 'desc' => '充值途径', 'width' => 15],
