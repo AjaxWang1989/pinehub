@@ -43,7 +43,7 @@ class ConsumeRecordGenerator extends BaseGenerator
 
     public function getRechargeableCardAmount(UserRechargeableCardConsumeRecord $model)
     {
-        return $model->rechargeableCard ? number_format($model->rechargeableCard->amount / 100, 2) : 0;
+        return $model->rechargeableCard ? round($model->rechargeableCard->amount / 100, 2) : 0;
     }
 
     public function getMobile(UserRechargeableCardConsumeRecord $model)
@@ -53,7 +53,7 @@ class ConsumeRecordGenerator extends BaseGenerator
 
     public function getRechargeableCardGift(UserRechargeableCardConsumeRecord $model)
     {
-        return $model->rechargeableCard ? number_format(($model->rechargeableCard->amount - $model->consume) / 100, 2) : 0;
+        return $model->rechargeableCard ? round(($model->rechargeableCard->amount - $model->consume) / 100, 2) : 0;
     }
 
     public function getChannel(UserRechargeableCardConsumeRecord $model)
@@ -78,7 +78,7 @@ class ConsumeRecordGenerator extends BaseGenerator
 
     public function getConsume(UserRechargeableCardConsumeRecord $model)
     {
-        return number_format($model->consume / 100, 2);
+        return round($model->consume / 100, 2);
     }
 
     /**

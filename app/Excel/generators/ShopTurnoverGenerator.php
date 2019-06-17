@@ -37,7 +37,7 @@ class ShopTurnoverGenerator extends BaseGenerator
 
     public function getTurnover(Shop $shop)
     {
-        return $shop->sell_amount ?: 0;
+        return round($shop->sell_amount ?: 0, 2);
     }
 
     /**
