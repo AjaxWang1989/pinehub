@@ -30,7 +30,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
         'country_id' => '=',
         'city_id' => '=',
         'province_id' => '=',
-        'code' => 'like'
+        'code' => 'like',
     ];
 
     /**
@@ -88,19 +88,23 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     }
 
 
-    public function withOrderCount()
+    public function withOrderCount(array $params = [])
     {
         return $this->withCount([
-            'orders' => function (Builder $query) {
+            'orders' => function (Builder $query) use ($params) {
                 return $query->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
             }
         ]);
     }
 
-    public function withSellAmount()
+    public function withSellAmount(array $params = [])
     {
         return $this->withSum([
-            'orders as sell_amount' => function (Builder $query) {
+            'orders as sell_amount' => function (Builder $query) use ($params) {
+                if ($params && isset($params['paid_at']) && is_array($params['paid_at']) && count($params['paid_at']) >= 2) {
+                    $query->whereDate('paid_at', '>=', $params['paid_at'][0])
+                        ->whereDate('paid_at', '<', $params['paid_at'][1]);
+                }
                 return $query->select(DB::raw('sum(payment_amount) as payment_amount'))
                     ->whereIn('status', [Order::SEND, Order::COMPLETED, Order::PAID]);
             }

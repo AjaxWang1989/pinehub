@@ -20,6 +20,8 @@ abstract class BaseGenerator
 
     const START_ROW = 1;
 
+    protected $fieldOptions;
+
     /**
      * 表头
      * @return mixed
@@ -51,6 +53,9 @@ abstract class BaseGenerator
         $i = 0;
         foreach ($data as $row) {
             foreach ($this->header() as $header) {
+                if ($this->fieldOptions && $this->fieldOptions['fields'] && count($this->fieldOptions['fields']) && !in_array($header['key'], $this->fieldOptions['fields'])) {
+                    continue;
+                }
                 $method = "get" . ucfirst($header['key']);
                 $result[$i][$header['key']] = method_exists($this, $method) ? $this->$method($row) : $row->{$header['key']};
             }
@@ -58,6 +63,25 @@ abstract class BaseGenerator
         }
 
         return $result;
+    }
+
+    /**
+     * 导出项选择
+     * @param array $params
+     * @return void
+     */
+    public function setFieldOptions(array $params)
+    {
+        if (isset($params['fieldOptions'])) {
+            $this->fieldOptions = (array)$params['fieldOptions'];
+            if (isset($this->fieldOptions['fields'])) {
+                foreach ($this->fieldOptions['fields'] as &$field) {
+                    $field = camelize($field);
+                }
+            } else {
+                $this->fieldOptions['fields'] = null;
+            }
+        }
     }
 
     /**
@@ -70,10 +94,29 @@ abstract class BaseGenerator
 
         $headers = [];
         foreach ($modelFieldHeaders as $header) {
+            if ($this->fieldOptions && $this->fieldOptions['fields'] && count($this->fieldOptions['fields']) && !in_array($header['key'], $this->fieldOptions['fields'])) {
+                continue;
+            }
             $headers[] = $header['desc'];
         }
 
         return $headers;
+    }
+
+    public function modelFieldHeaders()
+    {
+        $header = $this->header();
+
+        $modelFieldHeaders = [];
+        foreach ($header as $item) {
+            if ($this->fieldOptions && $this->fieldOptions['fields'] && count($this->fieldOptions['fields']) && !in_array($item['key'], $this->fieldOptions['fields'])) {
+                continue;
+            } else {
+                $modelFieldHeaders[] = $item;
+            }
+        }
+
+        return $modelFieldHeaders;
     }
 
     /**
@@ -83,6 +126,8 @@ abstract class BaseGenerator
     public function export(array $params)
     {
         try {
+            $this->setFieldOptions($params);
+
             $bodyData = $this->bodyData($params);
 
             $bodyData = $this->integrate($bodyData);
@@ -91,7 +136,7 @@ abstract class BaseGenerator
                 // TODO
             }
 
-            $modelFieldHeaders = $this->header();
+            $modelFieldHeaders = $this->modelFieldHeaders();
 
             $headers = $this->getHeaderDesc();
 
@@ -107,7 +152,15 @@ abstract class BaseGenerator
                 for ($i = 0; $i < $columnCount; $i++) {
                     $column = strtoupper(chr($i + self::START_COLUMN));// 行 A,B,C,D,E...
                     if (isset($modelFieldHeaders[$i]['type'])) {
-                        $workSheet->setCellValueExplicit($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i], $modelFieldHeaders[$i]['type']);
+                        if ($key === 0) {
+                            $workSheet->setCellValue($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i]);
+                        } else {
+                            try {
+                                $workSheet->setCellValueExplicit($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i], $modelFieldHeaders[$i]['type']);
+                            } catch (\Exception $e) {
+                                dd($i, $item, $modelFieldHeaders);
+                            }
+                        }
                     } else {
                         $workSheet->setCellValue($column . ($key + self::START_ROW), isset($item[$modelFieldHeaders[$i]['key']]) ? $item[$modelFieldHeaders[$i]['key']] : $item[$i]);
                     }

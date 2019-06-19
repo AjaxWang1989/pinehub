@@ -24,7 +24,6 @@ class ConsumeRecordGenerator extends BaseGenerator
             ['key' => 'nickname', 'desc' => '用户昵称', 'width' => 20],
             ['key' => 'mobile', 'desc' => '手机号码', 'width' => 15],
             ['key' => 'rechargeableCardName', 'desc' => '储值卡名称', 'width' => 15],
-//            ['key' => 'rechargeableCardAmount', 'desc' => '充值金额', 'width' => 15],
             ['key' => 'consume', 'desc' => '消费(元)', 'width' => 15],
             ['key' => 'rechargeableCardGift', 'desc' => '赠送金额(元)', 'width' => 15],
             ['key' => 'channel', 'desc' => '充值途径', 'width' => 15],
@@ -44,7 +43,7 @@ class ConsumeRecordGenerator extends BaseGenerator
 
     public function getRechargeableCardAmount(UserRechargeableCardConsumeRecord $model)
     {
-        return $model->rechargeableCard ? number_format($model->rechargeableCard->amount / 100, 2) : 0;
+        return $model->rechargeableCard ? round($model->rechargeableCard->amount / 100, 2) : 0;
     }
 
     public function getMobile(UserRechargeableCardConsumeRecord $model)
@@ -54,7 +53,7 @@ class ConsumeRecordGenerator extends BaseGenerator
 
     public function getRechargeableCardGift(UserRechargeableCardConsumeRecord $model)
     {
-        return $model->rechargeableCard ? number_format(($model->rechargeableCard->amount - $model->consume) / 100, 2) : 0;
+        return $model->rechargeableCard ? round(($model->rechargeableCard->amount - $model->consume) / 100, 2) : 0;
     }
 
     public function getChannel(UserRechargeableCardConsumeRecord $model)
@@ -79,7 +78,7 @@ class ConsumeRecordGenerator extends BaseGenerator
 
     public function getConsume(UserRechargeableCardConsumeRecord $model)
     {
-        return number_format($model->consume / 100, 2);
+        return round($model->consume / 100, 2);
     }
 
     /**
