@@ -25,6 +25,7 @@ class StatusOrdersTransformer extends TransformerAbstract
             'pay_type' => $model->payType,
             'pick_up_method' => $model->pickUpMethod,
             'status' => $model->status,
+            'shop' => $model->shop->only(['id', 'name']),
             'receiver_name' => $model->receiverName,
             'receiver_address' => is_array($receiverAddress) ? $receiverAddress['receiver_address'] : $model->receiverAddress,
             'build_num' => is_array($receiverAddress) ? $receiverAddress['build_num'] : null,
