@@ -70,6 +70,7 @@ class NoticeController extends Controller
         })->toArray());
         $orders = $orders->map(function (Order $order) {
             return [
+                'order_no' => $order->code,
                 'pay_type' => $order->payTypeStr(),
                 'pay_amount' => number_format($order->paymentAmount, 2),
                 'paid_at' => $order->paidAt ? $order->paidAt->format('Y-m-d h:i:s') :
