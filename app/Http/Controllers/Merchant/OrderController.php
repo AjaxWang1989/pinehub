@@ -21,8 +21,11 @@ class OrderController extends Controller
     {
         /**@var ShopManager $manager**/
         $manager = Auth::user();
-        $orders  = $manager->orders()->where('paid_at', '>=', Carbon::now()->startOfDay())
-            ->where('paid_at', '<', Carbon::now())->get();
+        $orders  = Order::whereShopId($manager->shop->id)
+            ->where('paid_at', '>=', Carbon::now()->startOfDay())
+            ->where('paid_at', '<', Carbon::now())
+            ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED])
+            ->get();
         $count = $orders->count();
         $orders = $orders->map(function (Order $order) {
             return [
