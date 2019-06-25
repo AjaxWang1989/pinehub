@@ -65,7 +65,7 @@ class NoticeController extends Controller
         $voices = collect($messages)->map(function ($message) {
             return $message['voice'];
         });
-        $orders = app(OrderRepository::class)->findWhereIn(collect($messages)->map(function ($message) {
+        $orders = app(OrderRepository::class)->findWhereIn('id', collect($messages)->map(function ($message) {
             return $message['order_id'];
         }));
         $orders = $orders->map(function (Order $order) {
