@@ -77,7 +77,7 @@ class NoticeController extends Controller
                     \Illuminate\Support\Carbon::now()->format('Y-m-d H:i:s')
             ];
         });
-        Log::debug('------ shop info -----', $shop->toArray());
+
         return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
             ->addMeta('voices', $voices)
