@@ -23,6 +23,7 @@ class OrderController extends Controller
         $manager = Auth::user();
         $orders  = $manager->orders()->where('paid_at', '>=', Carbon::now()->startOfDay())
             ->where('paid_at', '<', Carbon::now())->get();
+        $count = $orders->count();
         $orders = $orders->map(function (Order $order) {
             return [
                 'pay_type' => $order->payTypeStr(),
@@ -31,7 +32,11 @@ class OrderController extends Controller
                     : Carbon::now()->format('Y-m-d h:i:s')
             ];
         });
+        $data = [
+            'orders' => $orders->toArray(),
+            'count' => $count()
+        ];
         /**@var Response $response**/
-        return $this->response($orders->toJson());
+        return $this->response($data);
     }
 }
