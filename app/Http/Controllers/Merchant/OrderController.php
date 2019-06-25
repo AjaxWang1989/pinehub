@@ -25,6 +25,7 @@ class OrderController extends Controller
             ->where('paid_at', '>=', Carbon::now()->startOfDay())
             ->where('paid_at', '<', Carbon::now())
             ->whereIn('status', [Order::PAID, Order::SEND, Order::COMPLETED])
+            ->orderBy('paid_at', 'desc')
             ->get();
         $count = $orders->count();
         $orders = $orders->map(function (Order $order) {
