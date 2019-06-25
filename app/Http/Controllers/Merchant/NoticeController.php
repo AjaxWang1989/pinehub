@@ -73,8 +73,8 @@ class NoticeController extends Controller
                 'order_no' => $order->code,
                 'pay_type' => $order->payTypeStr(),
                 'pay_amount' => number_format($order->paymentAmount, 2),
-                'paid_at' => $order->paidAt ? $order->paidAt->format('Y-m-d h:i:s') :
-                    \Illuminate\Support\Carbon::now()->format('Y-m-d h:i:s')
+                'paid_at' => $order->paidAt ? $order->paidAt->format('Y-m-d Hh:i:s') :
+                    \Illuminate\Support\Carbon::now()->format('Y-m-d H:i:s')
             ];
         });
         return $this->response->item($shop, new ShopTransformer($hasNotice))
