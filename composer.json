@@ -41,7 +41,8 @@
     "urameshibr/lumen-form-request": "^1.5",
     "vlucas/phpdotenv": "~2.2",
     "zhaohehe/laravel-echo-server": "^0.0.1",
-    "zoran-wang/jwt-auth-guard": "0.0.1.*"
+    "zoran-wang/jwt-auth-guard": "0.0.1.*",
+    "zoran-wang/routes-manager": "v0.0.1"
   },
   "require-dev": {
     "barryvdh/laravel-ide-helper": "^2.4",

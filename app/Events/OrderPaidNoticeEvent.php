@@ -17,6 +17,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
     protected $shopId = null;
     protected $voiceText = null;
     public  const CACHE_KEY = 'payment-notice-voice-shop-';
+    public $orderId = null;
     /**
      * Create a new event instance.
      * @param int $shopId
@@ -27,7 +28,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
     {
         //
         $this->shopId = $shopId;
-
+        $this->orderId = $order->id;
         switch ($order->payType) {
             case Order::ALI_PAY: {
                 if($order->type !== Order::CHARGE_BALANCE) {

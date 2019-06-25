@@ -8,9 +8,11 @@
 
 namespace App\Http\Controllers\Merchant;
 
+use App\Entities\Order;
 use App\Events\OrderPaidNoticeEvent;
 use App\Http\Response\JsonResponse;
 use App\Jobs\RemoveOrderPaidVoice;
+use App\Repositories\OrderRepository;
 use App\Repositories\ShopRepository;
 use App\Transformers\Merchant\ShopTransformer;
 use Carbon\Carbon;
@@ -60,12 +62,24 @@ class NoticeController extends Controller
             $hasNotice = true;
             app('redis')->del($key);
         }
-
+        $voices = collect($messages)->map(function ($message) {
+            return $message['voice'];
+        });
+        $orders = app(OrderRepository::class)->findWhereIn(collect($messages)->map(function ($message) {
+            return $message['order_id'];
+        }));
+        $orders = $orders->map(function (Order $order) {
+            return [
+                'pay_type' => $order->payTypeStr(),
+                'pay_amount' => number_format($order->paymentAmount, 2),
+                'paid_at' => $order->paidAt ? $order->paidAt->format('Y-m-d h:i:s') :
+                    \Illuminate\Support\Carbon::now()->format('Y-m-d h:i:s')
+            ];
+        });
         return $this->response->item($shop, new ShopTransformer($hasNotice))
             ->addMeta('token', $tokenMeta)
-            ->addMeta('voices', collect($messages)->map(function ($message) {
-                return $message['voice'];
-            }));
+            ->addMeta('voices', $voices)
+            ->addMeta('orders', $orders);
     }
 
     /**
