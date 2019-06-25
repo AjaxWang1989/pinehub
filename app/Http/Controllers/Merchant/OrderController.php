@@ -34,7 +34,7 @@ class OrderController extends Controller
         });
         $data = [
             'orders' => $orders->toArray(),
-            'count' => $count()
+            'count' => $count
         ];
         /**@var Response $response**/
         return $this->response($data);
