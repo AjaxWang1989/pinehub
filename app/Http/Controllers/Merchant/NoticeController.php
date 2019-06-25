@@ -67,7 +67,7 @@ class NoticeController extends Controller
         });
         $orders = app(OrderRepository::class)->findWhereIn('id', collect($messages)->map(function ($message) {
             return $message['order_id'];
-        }));
+        })->toArray());
         $orders = $orders->map(function (Order $order) {
             return [
                 'pay_type' => $order->payTypeStr(),
