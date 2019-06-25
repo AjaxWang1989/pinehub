@@ -27,7 +27,7 @@ class ShopTransformer extends TransformerAbstract
         $shop['wechat_payment_amount'] = number_format($shop['wechat_payment_amount'], 2);
         $data = $this->refreshed ? $shop->only([
             'buyer_num', 'order_num', 'need_send_order_num', 'self_pick_order_num',
-            'payment_amount', 'ali_payment_amount', 'wechat_payment_amount', 'id'
+            'payment_amount', 'ali_payment_amount', 'wechat_payment_amount', 'id', 'name'
         ]) : [];
         Log::debug('-------- shop data ---------', $shop->toArray());
         Log::debug('------ shop info -----', $data);
