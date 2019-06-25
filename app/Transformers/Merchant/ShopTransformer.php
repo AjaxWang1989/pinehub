@@ -10,6 +10,7 @@ namespace App\Transformers\Merchant;
 
 
 use App\Entities\Shop;
+use Illuminate\Support\Facades\Log;
 use League\Fractal\TransformerAbstract;
 
 class ShopTransformer extends TransformerAbstract
@@ -28,7 +29,7 @@ class ShopTransformer extends TransformerAbstract
             'buyer_num', 'order_num', 'need_send_order_num', 'self_pick_order_num',
             'payment_amount', 'ali_payment_amount', 'wechat_payment_amount', 'id'
         ]) : [];
-
+        Log::debug('-------- shop data ---------', $shop->toArray());
         Log::debug('------ shop info -----', $data);
         return $data;
     }
