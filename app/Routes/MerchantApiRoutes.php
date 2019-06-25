@@ -34,6 +34,7 @@ class MerchantApiRoutes extends ApiRoutes
 
             /** @var DingoRouter $router */
             $router->get('/store/orders', ['as' =>'store.orders', 'uses' => 'OrderController@orders']);
+            $router->get('/store', ['as' =>'store.detail', 'uses' => 'AuthController@shop']);
             $router->get('/store/{id}/order/notice', ['as' =>'order.notice', 'uses' => 'NoticeController@notice']);
             $router->post('/register/getui', ['as' =>'order.notice', 'uses' => 'NoticeController@registerGetTuiClientId']);
         });

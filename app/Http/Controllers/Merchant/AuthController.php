@@ -25,6 +25,7 @@ use App\Repositories\UserRepository;
 use App\Repositories\CustomerTicketCardRepository;
 use App\Services\AppManager;
 use App\Transformers\Merchant\ShopManagerTransformer;
+use App\Transformers\Merchant\ShopTransformer;
 use App\Transformers\Mp\MpUserTransformer;
 use App\Transformers\Mp\MpUserInfoMobileTransformer;
 use App\Transformers\Mp\AppAccessTransformer;
@@ -156,6 +157,10 @@ class AuthController extends Controller
 
     public function shop()
     {
-        app(ShopRepository::class)->todayOrderInfo(1);
+        /**@var ShopManager $shopManager**/
+        $shopManager = Auth::user();
+
+        $shop = app(ShopRepository::class)->todayOrderInfo($shopManager->shop->id);
+        return $this->response->item($shop, new ShopTransformer());
     }
 }
