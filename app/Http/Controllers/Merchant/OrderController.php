@@ -13,6 +13,7 @@ use App\Entities\Order;
 use App\Entities\ShopManager;
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
