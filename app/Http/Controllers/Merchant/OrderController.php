@@ -32,7 +32,6 @@ class OrderController extends Controller
             ];
         });
         /**@var Response $response**/
-        $response = $this->response($orders);
-        return $response;
+        return $this->response($orders->toJson());
     }
 }
