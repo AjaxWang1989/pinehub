@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Prettus\Repository\Eloquent\BaseRepository;
 
 /**
@@ -158,6 +159,7 @@ class ShopRepositoryEloquent extends BaseRepository implements ShopRepository
     {
         $start = Carbon::now()->startOfDay();
         $end = Carbon::now();
+        Log::debug('--------- date time -------', [$start, $end]);
         /** @var Shop $shop */
         $shop = $this->scopeQuery(function (Shop $shop) use ($start, $end) {
 
