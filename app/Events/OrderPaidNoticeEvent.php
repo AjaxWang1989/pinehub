@@ -58,12 +58,13 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
      */
     public function broadcastOn()
     {
-//        Log::info("shop-{$this->shopId}-registerId");
+        Log::info("shop-{$this->shopId}-registerId");
         return cache("shop-{$this->shopId}-registerId", null);
     }
 
     public function noticeVoiceCacheKey($key = "")
     {
+        Log::debug('---------noticeVoiceCacheKey-----------');
         return self::noticeVoiceCacheKey($this->shopId).$key;
     }
 
