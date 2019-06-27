@@ -81,7 +81,9 @@ class NoticeController extends Controller
                 ];
             });
         }
-
+        if ($voices->count() === 0 && empty($tokenMeta)){
+            return $this->response->errorBadRequest('没有支付语言');
+        }
 
         return $this->response->item($shop, new ShopTransformer($voices->count() > 0))
             ->addMeta('token', $tokenMeta)
