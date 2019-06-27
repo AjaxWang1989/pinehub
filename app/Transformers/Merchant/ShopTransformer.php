@@ -28,7 +28,9 @@ class ShopTransformer extends TransformerAbstract
         $data = $this->refreshed ? $shop->only([
             'buyer_num', 'order_num', 'need_send_order_num', 'self_pick_order_num',
             'payment_amount', 'ali_payment_amount', 'wechat_payment_amount', 'id', 'name'
-        ]) : [];
+        ]) : [
+            'refresh' =>false
+        ];
         return $data;
     }
 }
