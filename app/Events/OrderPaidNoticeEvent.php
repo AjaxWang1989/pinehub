@@ -66,7 +66,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
     {
 
         try{
-            Log::debug('---------noticeVoiceCacheKey-----------');
+            Log::debug('---------noticeVoiceCacheKey-----------'.self::noticeVoiceCacheKey($this->shopId).$key);
             return self::noticeVoiceCacheKey($this->shopId).$key;
         }catch (\Exception $exception) {
             Log::debug('---------noticeVoiceCacheKey-----------', [$exception->getMessage()]);
