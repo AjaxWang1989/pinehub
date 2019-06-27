@@ -34,11 +34,11 @@ class OrderPaidNoticeListener
     public function handle(OrderPaidNoticeEvent $event)
     {
         $messages = $event->broadcastWith();
-        Log::info('++++++++++++ messages ++++++++++++', $messages);
+        Log::info('++++++++++++ messages ++++++++++++', [$messages, $event->noticeVoiceCacheKey(), $event->orderId]);
         $voices = [];
         foreach ($messages as $message) {
             $result = BaiduSpeech::combine($message);
-            Log::info('========= 语音 ==========', [$result, $event->broadcastOn()]);
+            Log::info('========= 语音 ==========', [$result, $event->broadcastOn(), $event->noticeVoiceCacheKey(), $event->orderId]);
             if($result['success']) {
                 Log::info("========= result success ==========");
                 $file = Storage::url($result['data']);
