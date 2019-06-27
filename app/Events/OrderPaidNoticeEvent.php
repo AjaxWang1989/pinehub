@@ -64,7 +64,7 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
 
     public function noticeVoiceCacheKey($prefix = "")
     {
-        return self::CACHE_KEY.$this->shopId.$prefix;
+        return self::CACHE_KEY.$this->shopId.'-'.$prefix;
     }
 
     public function broadcastWith()

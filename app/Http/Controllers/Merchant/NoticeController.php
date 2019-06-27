@@ -36,13 +36,14 @@ class NoticeController extends Controller
      * @return \Dingo\Api\Http\Response
      * @throws
      */
-    public function notice(int $id, Request $request) {
+    public function notice(int $id, Request $request)
+    {
         $shop = app(ShopRepository::class)->todayOrderInfo($id);
         $token = Auth::getToken();
         Log::info('======== token =======', [$token]);
         $manager = Auth::user();
         $tokenMeta = null;
-        if(cache((string)$token) - time() < 10) {
+        if (cache((string)$token) - time() < 10) {
             $token = Auth::login($manager);
             $tokenMeta = [
                 'value' => $token,
@@ -51,23 +52,25 @@ class NoticeController extends Controller
             ];
             cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
         }
-        $key = OrderPaidNoticeEvent::CACHE_KEY.$id;
+        $key = OrderPaidNoticeEvent::CACHE_KEY . $id;
         $keys = app('redis')->keys("*$key*");
-        Log::debug('------- payment voice keys -------', ['keys' => $keys]);
+        if (count($keys) > 0)
+            Log::debug('------- payment voice keys -------', ['keys' => $keys]);
         $messages = [];
-        $hasNotice = false;
         foreach ($keys as $key) {
             $messages[] = unserialize(app('redis')->get($key));
-//            Log::debug('---------messages----------', $messages);
-            $hasNotice = true;
             app('redis')->del($key);
         }
         $voices = collect($messages)->map(function ($message) {
+            Log::debug('++++++++ payment message +++++++++', $message);
             return $message['voice'];
         });
         $orders = app(OrderRepository::class)->findWhereIn('id', collect($messages)->map(function ($message) {
             return $message['order_id'];
         })->toArray());
+        if ($orders->count() > 0) {
+            Log::debug('------------- payment order count --------- '.$orders->count());
+        }
         $orders = $orders->map(function (Order $order) {
             return [
                 'order_no' => $order->code,
@@ -89,7 +92,7 @@ class NoticeController extends Controller
      * @return NoticeController|\Dingo\Api\Http\Response\Factory|\Illuminate\Foundation\Application|\Laravel\Lumen\Application|mixed
      * @throws \Exception
      */
-    public function  registerGetTuiClientId(Request $request)
+    public function registerGetTuiClientId(Request $request)
     {
         $clientId = $request->input('client_id', null);
         $shopId = $request->input('shop_id', null);
