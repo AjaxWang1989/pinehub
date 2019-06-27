@@ -52,7 +52,7 @@ class NoticeController extends Controller
             ];
             cache([$token => $tokenMeta['ttl']->getTimestamp()], $tokenMeta['ttl']);
         }
-        $key = OrderPaidNoticeEvent::CACHE_KEY . $id;
+        $key = OrderPaidNoticeEvent::noticeVoiceKeyPrefix($id);
         $keys = app('redis')->keys("*$key*");
         if (count($keys) > 0)
             Log::debug('------- payment voice keys -------', ['keys' => $keys]);
