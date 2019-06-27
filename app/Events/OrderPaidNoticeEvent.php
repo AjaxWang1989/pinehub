@@ -64,9 +64,17 @@ class OrderPaidNoticeEvent extends Event implements ShouldQueue
 
     public function noticeVoiceCacheKey($key = "")
     {
-        Log::debug('---------noticeVoiceCacheKey-----------');
-        return self::noticeVoiceCacheKey($this->shopId).$key;
+
+        try{
+            Log::debug('---------noticeVoiceCacheKey-----------');
+            return self::noticeVoiceCacheKey($this->shopId).$key;
+        }catch (\Exception $exception) {
+            Log::debug('---------noticeVoiceCacheKey-----------', [$exception->getMessage()]);
+           return null;
+        }
+
     }
+
 
     public static function noticeVoiceKeyPrefix($id)
     {
