@@ -28,6 +28,8 @@ $app = new Laravel\Lumen\Application(
 
  $app->withEloquent();
 
+//class_alias('Intervention\Image\Facades\Image','Image');
+//class_alias('Illuminate\Contracts\Redis\Database', 'Redis');
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
@@ -108,6 +110,13 @@ $app->alias('Storage', \Illuminate\Support\Facades\Storage::class);
  $app->register(\Echobool\Getui\GetuiServiceProvider::class);
  $app->configure('filesystems');
  $app->register(Illuminate\Filesystem\FilesystemServiceProvider::class);
+
+// $app->register(\Intervention\Image\ImageServiceProvider::class);
+ $app->register(\Illuminate\Redis\RedisServiceProvider::class);
+// $app->register(\Vluzrmos\Socketio\SocketioServiceProvider::class);
+// $app->register(\Illuminate\Broadcasting\BroadcastServiceProvider::class);
+ $app->register(\EchoServer\BroadcastServerServiceProvider::class);
+
 
 /*
 |--------------------------------------------------------------------------

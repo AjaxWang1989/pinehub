@@ -9,6 +9,7 @@
 namespace App\Routes;
 
 
+use App\Entities\User;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Application;
 use Laravel\Lumen\Routing\Router;
@@ -46,6 +47,7 @@ class WebRoutes extends Routes
                 $router->addRoute(['GET', 'POST', 'HEADER', 'OPTION'], '/', function (Request $request) {
                     exit( 'web route v1.0.0' );
                 });
+
             });
 
         });

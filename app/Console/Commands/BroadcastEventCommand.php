@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Events\OrderPaidNoticeEvent;
+use App\Events\Socket\TestEvent;
 use Illuminate\Broadcasting\BroadcastManager;
 use Illuminate\Console\Command;
 use Illuminate\Queue\Connectors\BeanstalkdConnector;
@@ -46,8 +47,10 @@ class BroadcastEventCommand extends Command
 //        broadcast(new OrderPaidNoticeEvent(1));
 //        publish('test', 'event1', 'test message');
 //        app(BroadcastManager::class)->event(new OrderPaidNoticeEvent(1));
-
-        $result = app('redis')->publish('test-channel', 'test message');
-        Log::info('channel result ', [$result, app('redis')->keys('*')]);
+//        app('redis')->lpush('usr','test:value');
+//        $result = app('redis')->publish('usr', 'test message');
+//        Log::info('channel result ', [$result, app('redis')->keys('*')]);
+        broadcast(new TestEvent());
+        $this->info('channel result  '.json_encode([app('redis')->keys('*')]));
     }
 }

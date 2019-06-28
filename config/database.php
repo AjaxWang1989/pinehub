@@ -125,7 +125,6 @@ return [
     'redis' => [
 
         'cluster' => env('REDIS_CLUSTER', false),
-
         'default' => [
             'host'     => env('REDIS_HOST', '127.0.0.1'),
             'port'     => env('REDIS_PORT', 6379),

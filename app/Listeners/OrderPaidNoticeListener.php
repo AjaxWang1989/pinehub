@@ -2,7 +2,9 @@
 
 namespace App\Listeners;
 
+use App\Entities\Order;
 use App\Events\OrderPaidNoticeEvent;
+use App\Events\Socket\PaidNoticeEvent;
 use App\Facades\JPush;
 use App\Jobs\RemoveOrderPaidVoice;
 use Carbon\Carbon;
@@ -27,7 +29,7 @@ class OrderPaidNoticeListener
     /**
      * Handle the event.
      *
-     * @param  OrderPaidNoticeEvent  $event
+     * @param  OrderPaidNoticeEvent $event
      * @return void
      * @throws
      */
@@ -39,7 +41,7 @@ class OrderPaidNoticeListener
         foreach ($messages as $message) {
             $result = BaiduSpeech::combine($message);
             Log::info('========= 语音 ==========', [$result, $event->broadcastOn(), $event->noticeVoiceCacheKey(), $event->orderId]);
-            if($result['success']) {
+            if ($result['success']) {
                 Log::info("========= result success ==========");
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
@@ -51,43 +53,35 @@ class OrderPaidNoticeListener
                     'type' => 'PAYMENT_NOTICE',
                     'order_id' => $event->orderId
                 ];
-//                $list = Cache::get($event->noticeVoiceCacheKey(), []);
-//                $list[$messageId] = $content;
+                /*轮训数组*/
                 Cache::add($event->noticeVoiceCacheKey($messageId), $content, 1);
-                Log::debug("{$event->noticeVoiceCacheKey($messageId)} = ", Cache::get($event->noticeVoiceCacheKey($messageId)));
 
-                if(($registerIds = $event->broadcastOn())) {
-                    Log::info("========= result success ==========", [$registerIds]);
+                /*广播推送*/
+                broadcast(new PaidNoticeEvent(Order::find($event->orderId), $file));
 
-                    if(isset($registerIds['jpush'])) {
+                /*手机内部推送APNS*/
+                if (($registerIds = $event->broadcastOn())) {
+                    if (isset($registerIds['jpush'])) {
                         JPush::push()->setPlatform(['android', 'ios'])
                             ->addRegistrationId($registerIds['jpush'])
-                            ->setMessage($message, '平台收款', 'text',  $content)
+                            ->setMessage($message, '平台收款', 'text', $content)
                             ->send();
                     }
-
-                     if(isset($registerIds['igt'])) {
-                        try{
-                            Log::info('=========+ 推送 +==========');
-
-                            $result = app('Getui')->pushMessageToSingle($registerIds['igt'], [
-                                'content'=> json_encode($content),
+                    if (isset($registerIds['igt'])) {
+                        try {
+                            app('Getui')->pushMessageToSingle($registerIds['igt'], [
+                                'content' => json_encode($content),
                                 'payload' => json_encode($content),
                                 'body' => $message,
-                                'title'=> '平台收款'
+                                'title' => '平台收款'
                             ], 4);
-                            Log::info('========= 推送 ==========', [$result]);
-                        }catch (\Exception $exception) {
-                            Log::info('---------- error -----------'. $exception->getMessage(), $exception->getTrace());
+                        } catch (\Exception $exception) {
+
                         }
                     }
 
                 }
             }
         }
-
-//        Log::info('----- order paid notice voice -------', $voices);
-//        $cacheVoices = cache($event->broadcastOn(), []);
-//        cache([$event->broadcastOn() => array_merge($cacheVoices, $voices)], Carbon::now()->addMinute(10));
     }
 }
