@@ -2,7 +2,7 @@ var app   = require('express');
 var http  = require('http').Server(app);
 var io    = require('socket.io')(http);
 var Redis = require('ioredis');
-const PROTOCOL = 6001;
+const PROTOCOL = 6002;
 
 /*
  * Your Redis connection
