@@ -38,4 +38,13 @@ class TestEvent implements ShouldBroadcast
 
         return new Channel('usr');
     }
+
+    public function __toString()
+    {
+        // TODO: Implement __toString() method.
+        return json_encode([
+            'data' => $this->data,
+            'channel' => $this->broadcastOn()
+        ]);
+    }
 }

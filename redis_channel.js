@@ -1,30 +1,35 @@
-const express = require('express');
-const http = require('http');
 const WebSocket = require('ws');
+const Redis = require("ioredis");
 
-const app = express();
-
-//initialize a simple http server
-const server = http.createServer(app);
-
-//initialize the WebSocket server instance
-const wss = new WebSocket.Server({ server });
-
-wss.on('connection', (ws) => {
-
-    //connection is up, let's add a simple simple event
-    ws.on('message', (message) => {
-
-        //log the received message and send it back to the client
-        console.log('received: %s', message);
-        ws.send(`Hello, you sent -> ${message}`);
+const redis = new Redis('redis://redis:6379/0');
+const wss = new WebSocket.Server({ port: 6002 });
+const clients = {};
+// Broadcast to all.
+wss.broadcast = function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(data);
+        }
     });
+};
 
-    //send immediatly a feedback to the incoming connection
-    ws.send('Hi there, I am a WebSocket server');
+redis.on("message", function (channel, message) {
+    message = JSON.parse(message);
+    channel = message['channel']['name'];
+    let data = message['data'];
+    let socket = clients[channel];
+    if(socket && channel)
+        clients[channel].send(JSON.stringify(data));
+    console.log(typeof message, message);
 });
+redis.subscribe("broadcast");
 
-//start our server
-server.listen(process.env.PORT || 8999, () => {
-    console.log(`Server started on port ${server.address().port} :)`);
+wss.on('connection', function connection(ws, request) {
+    clients[request.headers['channel']] = ws;
+    ws.on('message', function incoming(data) {
+        // Broadcast to everyone else.
+        if(clients[data['to']]) {
+            clients[data['to']].send(data);
+        }
+    });
 });
