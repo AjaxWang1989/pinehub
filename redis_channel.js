@@ -2,7 +2,7 @@ const WebSocket = require('ws');
 const Redis = require("ioredis");
 
 const redis = new Redis('redis://redis:6379/0');
-const wss = new WebSocket.Server({ port: 6002 });
+const wss = new WebSocket.Server({ port: 6003 });
 const clients = {};
 // Broadcast to all.
 wss.broadcast = function broadcast(data) {
