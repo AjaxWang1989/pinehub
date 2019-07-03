@@ -25,6 +25,7 @@ redis.on("message", function (channel, message) {
 redis.subscribe("broadcast");
 
 wss.on('connection', function connection(ws, request) {
+    console.log('++++++++++++++ connection ++++++++++++');
     clients[request.headers['channel']] = ws;
     ws.on('message', function incoming(data) {
         // Broadcast to everyone else.
