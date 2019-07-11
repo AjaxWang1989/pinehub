@@ -109,9 +109,7 @@ class OpenPlatformController extends Controller
 
             Event::fire(new Authorized($payload));
 
-            Cache::set(CURRENT_APP_PREFIX.$authCode, with($app, function (App $app) use($request, $token) {
-                return ['app_id' => $app->id, 'token' => $token];
-            }), $expiresIn);
+            Cache::set(CURRENT_APP_PREFIX.$token, true, $expiresIn);
         }
         return view('open-platform.auth')->with('success', true);
     }
