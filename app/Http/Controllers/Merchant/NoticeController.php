@@ -82,7 +82,7 @@ class NoticeController extends Controller
             });
         }
         if ($voices->count() === 0 && empty($tokenMeta)){
-            usleep(250000);
+            sleep(1);
             return $this->notice($id, $request);
         }
 
