@@ -83,6 +83,8 @@ class NoticeController extends Controller
                 ];
             });
         }
+
+        Log::info('----------- voices and orders ----------', [$voices, $orders]);
         if ($voices->count() === 0 && empty($tokenMeta) && $this->timer < self::WAIT_SECOND){
             $this->timer ++;
             sleep(1);
