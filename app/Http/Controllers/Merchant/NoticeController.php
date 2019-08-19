@@ -40,7 +40,7 @@ class NoticeController extends Controller
     {
         $shop = app(ShopRepository::class)->todayOrderInfo($id);
         $token = Auth::getToken();
-        Log::info('======== token =======', [$token]);
+        Log::info('======== run time =======', [$this->timer]);
         $manager = Auth::user();
         $tokenMeta = null;
         if (cache((string)$token) - time() < 10) {
