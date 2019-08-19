@@ -53,8 +53,10 @@ class OrderPaidNoticeListener
                     'type' => 'PAYMENT_NOTICE',
                     'order_id' => $event->orderId
                 ];
+                $voiceCacheKey = $event->noticeVoiceCacheKey($messageId);
+                Log::info('------------ notice voice cache key ------', [$voiceCacheKey]);
                 /*轮训数组*/
-                Cache::add($event->noticeVoiceCacheKey($messageId), $content, 1);
+                Cache::add($voiceCacheKey, $content, 1);
 
                 /*广播推送*/
                 broadcast(new PaidNoticeEvent(Order::find($event->orderId), $file));
