@@ -29,6 +29,7 @@ use Jormin\BaiduSpeech\BaiduSpeech;
 class NoticeController extends Controller
 {
     protected $timer = 0;
+    const WAIT_SECOND = 20;
     /**
      * @param int $id
      * @param Request $request
@@ -80,7 +81,7 @@ class NoticeController extends Controller
                 ];
             });
         }
-        if ($voices->count() === 0 && empty($tokenMeta) && $this->timer < 30){
+        if ($voices->count() === 0 && empty($tokenMeta) && $this->timer < self::WAIT_SECOND){
             $this->timer ++;
             sleep(1);
             return $this->notice($id, $request);
