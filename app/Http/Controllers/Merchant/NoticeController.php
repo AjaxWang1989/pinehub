@@ -29,7 +29,7 @@ use Jormin\BaiduSpeech\BaiduSpeech;
 class NoticeController extends Controller
 {
     protected $timer = 0;
-    const WAIT_SECOND = 20;
+    const WAIT_SECOND = 30;
     /**
      * @param int $id
      * @param Request $request
