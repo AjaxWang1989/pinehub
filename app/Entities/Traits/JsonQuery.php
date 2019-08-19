@@ -27,7 +27,6 @@ trait JsonQuery
         if (count($keys) > 1) {
             $column = "`" . array_shift($keys) . "`";
             $searchKey .= '$."' . array_shift($keys) . '"';
-
             foreach ($keys as $k) {
                 $searchKey .= '."' . $k . '"';
             }
