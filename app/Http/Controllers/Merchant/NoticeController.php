@@ -85,7 +85,8 @@ class NoticeController extends Controller
         }
 
         Log::info('----------- voices and orders ----------', [$voices, $orders]);
-        if ($voices->count() === 0 && empty($tokenMeta) && $this->timer < self::WAIT_SECOND){
+        $waitSecond = $request->input('wait_second', null);
+        if ($waitSecond  && ($voices->count() === 0 && empty($tokenMeta) && $this->timer < $waitSecond)){
             $this->timer ++;
             sleep(1);
             return $this->notice($id, $request);
