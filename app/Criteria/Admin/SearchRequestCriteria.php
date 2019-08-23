@@ -46,7 +46,7 @@ class SearchRequestCriteria implements CriteriaInterface
                             'value' => $value
                         ];
                     }
-                } elseif (array_search($key, $fieldsSearchable)) {
+                } else {
                     $fields[$key] = $value;
                 }
             }
