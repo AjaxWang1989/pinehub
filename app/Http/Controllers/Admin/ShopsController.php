@@ -92,6 +92,7 @@ class ShopsController extends Controller
      * */
     protected function getManager(string $mobile, string $name)
     {
+        $mobile = trim($mobile);
         $shopManager = $this->shopManagerRepository->findWhere(['mobile' => $mobile])->first();
         if (!$shopManager) {
             $shopManager = $this->shopManagerRepository->create([
