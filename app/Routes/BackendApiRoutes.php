@@ -67,7 +67,7 @@ class BackendApiRoutes extends ApiRoutes
                 $router->get('/shops', ['as' => 'shop.list', 'uses' => 'ShopsController@index']);
                 $router->get('/shop/{id}', ['as' => 'shop.detail', 'uses' => 'ShopsController@show']);
                 $router->put('/shop/{id}', ['as' => 'shop.update', 'uses' => 'ShopsController@update']);
-                $router->delete('/shop/{id}', ['as' => 'shop.update', 'uses' => 'ShopsController@destory']);
+                $router->delete('/shop/{id}', ['as' => 'shop.delete', 'uses' => 'ShopsController@destory']);
                 $router->get('/shop/{shopId}/merchandises', ['as' => 'shop.merchandises', 'uses' => 'ShopsController@merchandises']);
                 $router->post('/shop/{shopId}/merchandise', ['as' => 'shop.merchandise.create', 'uses' => 'ShopsController@addMerchandise']);
                 $router->put('/shop/{shopId}/merchandise/{id}', ['as' => 'shop.merchandise.update', 'uses' => 'ShopsController@updateMerchandise']);
