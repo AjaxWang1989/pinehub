@@ -267,15 +267,19 @@ class ShopsController extends Controller
     {
         $deleted = $this->repository->delete($id);
 
-        if (request()->wantsJson()) {
+//        if (request()->wantsJson()) {
+//
+//            return $this->response(new JsonResponse([
+//                'message' => 'Shop deleted.',
+//                'deleted' => $deleted,
+//            ]));
+//        }
 
-            return $this->response(new JsonResponse([
-                'message' => 'Shop deleted.',
-                'deleted' => $deleted,
-            ]));
-        }
-
-        return redirect()->back()->with('message', 'Shop deleted.');
+        return $this->response(new JsonResponse([
+            'message' => 'Shop deleted.',
+            'deleted' => $deleted,
+        ]));
+        //return redirect()->back()->with('message', 'Shop deleted.');
     }
 
     public function merchandises(int $shopId, Request $request, ShopMerchandiseRepository $repository)
