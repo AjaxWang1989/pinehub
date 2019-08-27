@@ -46,8 +46,6 @@ class SearchRequestCriteria implements CriteriaInterface
                             'value' => $value
                         ];
                     }
-                } else {
-                    $fields[$key] = $value;
                 }
             }
             Log::info('search fields', [$fields, $searchJson]);
