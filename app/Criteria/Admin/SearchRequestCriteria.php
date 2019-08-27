@@ -198,9 +198,9 @@ class SearchRequestCriteria implements CriteriaInterface
         switch ($operator) {
             case '=':
                 {
-                    if (is_array($value)) {
+                    if (is_assoc($value)) {
                         $query->whereIn($key, $value);
-                    } elseif ($item['value'] === null) {
+                    } elseif ($value === null) {
                         $query->whereNull($key);
                     } else {
                         $query->where($key, $value);
@@ -211,7 +211,7 @@ class SearchRequestCriteria implements CriteriaInterface
                 {
                     if ($value === null) {
                         $query->whereNotNull($key);
-                    } elseif (is_array($item['value'])) {
+                    } elseif (is_assoc($value)) {
                         $query->whereNotIn($key, $value);
                     }
                     break;
