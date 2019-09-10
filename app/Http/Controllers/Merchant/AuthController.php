@@ -155,6 +155,14 @@ class AuthController extends Controller
         ])))->addMeta('token', $tokenMeta);
     }
 
+    public function logout()
+    {
+        Auth::logout();
+        return $this->response->array([
+            'message' => '退出'
+        ]);
+    }
+
     public function shop()
     {
         /**@var ShopManager $shopManager**/

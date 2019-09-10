@@ -45,7 +45,7 @@ class OrderPaidNoticeListener
                 Log::info("========= result success ==========");
                 $file = Storage::url($result['data']);
                 array_push($voices, $file);
-                dispatch((new RemoveOrderPaidVoice($file))->delay(60));
+                dispatch((new RemoveOrderPaidVoice($result['data']))->delay(60));
                 $messageId = md5(microtime(true));
                 $content = [
                     'voice' => $file,
