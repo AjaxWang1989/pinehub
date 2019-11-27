@@ -20,7 +20,10 @@ class ShopTurnoverGenerator extends BaseGenerator
     {
         return [
             ['key' => 'shopName', 'desc' => '店铺名称', 'width' => 20, 'type' => DataType::TYPE_STRING],
+            ['key' => 'shopKeeperName', 'desc' => '店铺主姓名', 'width' => 20, 'type' => DataType::TYPE_STRING],
+            ['key' => 'shopKeeperMobile', 'desc' => '店铺主手机号', 'width' => 20, 'type' => DataType::TYPE_STRING],
             ['key' => 'shopNo', 'desc' => '店铺编号', 'width' => 20, 'type' => DataType::TYPE_STRING],
+            ['key' => 'shopAddress', 'desc' => '店铺地址', 'width' => 40, 'type' => DataType::TYPE_STRING],
             ['key' => 'turnover', 'desc' => '汇总金额(元)', 'type' => DataType::TYPE_NUMERIC, 'width' => 20]
         ];
     }
@@ -40,6 +43,21 @@ class ShopTurnoverGenerator extends BaseGenerator
         return round($shop->sell_amount ?: 0, 2);
     }
 
+    public function getShopKeeperName(Shop $shop)
+    {
+        return $shop->shopManager->realName ?? $shop->shopManager->nickname;
+    }
+
+    public function getShopKeeperMobile(Shop $shop)
+    {
+        return $shop->shopManager->mobile;
+    }
+
+    public function getShopAddress(Shop $shop)
+    {
+        return $shop->address;
+    }
+
     /**
      * 表数据
      * @param array $params 查询参数
@@ -53,7 +71,7 @@ class ShopTurnoverGenerator extends BaseGenerator
 
         $shopRepository->pushCriteria(app(SearchRequestCriteria::class));
 
-        $data = $shopRepository->withSellAmount($params['fieldOptions'])->all();
+        $data = $shopRepository->with(['shopManager'])->withSellAmount($params['fieldOpt ions'])->all();
 
         return $data;
     }
