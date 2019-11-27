@@ -71,7 +71,7 @@ class ShopTurnoverGenerator extends BaseGenerator
 
         $shopRepository->pushCriteria(app(SearchRequestCriteria::class));
 
-        $data = $shopRepository->with(['shopManager'])->withSellAmount($params['fieldOpt ions'])->all();
+        $data = $shopRepository->with(['shopManager'])->withSellAmount($params['fieldOptions'])->all();
 
         return $data;
     }
