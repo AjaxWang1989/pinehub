@@ -20,8 +20,8 @@ class ShopTurnoverGenerator extends BaseGenerator
     {
         return [
             ['key' => 'shopName', 'desc' => '店铺名称', 'width' => 20, 'type' => DataType::TYPE_STRING],
-            ['key' => 'shopKeeperName', 'desc' => '店铺主姓名', 'width' => 20, 'type' => DataType::TYPE_STRING],
-            ['key' => 'shopKeeperMobile', 'desc' => '店铺主手机号', 'width' => 20, 'type' => DataType::TYPE_STRING],
+            ['key' => 'shopKeeperName', 'desc' => '店铺主姓名', 'width' => 30, 'type' => DataType::TYPE_STRING],
+            ['key' => 'shopKeeperMobile', 'desc' => '店铺主手机号', 'width' => 30, 'type' => DataType::TYPE_STRING],
             ['key' => 'shopNo', 'desc' => '店铺编号', 'width' => 20, 'type' => DataType::TYPE_STRING],
             ['key' => 'shopAddress', 'desc' => '店铺地址', 'width' => 40, 'type' => DataType::TYPE_STRING],
             ['key' => 'turnover', 'desc' => '汇总金额(元)', 'type' => DataType::TYPE_NUMERIC, 'width' => 20]
