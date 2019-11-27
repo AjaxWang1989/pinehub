@@ -45,12 +45,12 @@ class ShopTurnoverGenerator extends BaseGenerator
 
     public function getShopKeeperName(Shop $shop)
     {
-        return $shop->shopManager->realName ?? $shop->shopManager->nickname;
+        return $shop->shopManager ? ($shop->shopManager->realName ?? $shop->shopManager->nickname) : "未找到ID为{$shop->id}店铺的店铺主";
     }
 
     public function getShopKeeperMobile(Shop $shop)
     {
-        return $shop->shopManager->mobile;
+        return $shop->shopManager ? $shop->shopManager->mobile : "未找到ID为{$shop->id}店铺的店铺主";
     }
 
     public function getShopAddress(Shop $shop)
